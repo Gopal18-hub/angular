@@ -9,12 +9,12 @@
       </li>
     </ul>
     <div class="maxhealth-spacer"></div>
-    <div *ngFor="let icon of categoryIcons" class="flex">
+    <div *ngFor="let icon of categoryIcons" class="flex mr-2">
       <img
         [src]="icon['src']"
         [alt]="icon['tooltip']"
         width="45px"
-        class="mt-1 cursor-pointer"
+        class="cursor-pointer"
         [matTooltip]="icon['tooltip']"
         (click)="doCategoryIconAction(icon)"
       />
@@ -22,7 +22,7 @@
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <div
-      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg pb-2"
+      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg pb-1"
     >
       <div class="w-6/7 flex h-full">
         <form [formGroup]="OPRegForm" class="mt-1 mb-0" autocomplete="off">
@@ -694,8 +694,11 @@
 </section>
 
 <div class="flex ml-4 mr-4 justify-between font-xs">
-  <p *ngIf="MaxIDExist">Last Update By: {{ lastUpdatedBy }}</p>
-  <p  *ngIf="!MaxIDExist">Created By: {{lastUpdatedBy}}</p>
+  <p *ngIf="MaxIDExist && !LastupdateExist">Registered by: {{ lastUpdatedBy }} on {{lastupdatedDate}}</p>
+  <p *ngIf="MaxIDExist && LastupdateExist">Last updated by: {{ lastUpdatedBy }} on {{lastupdatedDate}} </p>
+  <p *ngIf="!MaxIDExist">Registered by: {{ lastUpdatedBy }} on 
+    {{ moment().format("DD-MM-YYYY") }} |  {{ moment().format("LT") }} </p>
+
   <div class="right">
     Date: {{ moment().format("DD-MM-YYYY") }} | Time:
     {{ moment().format("LT") }}

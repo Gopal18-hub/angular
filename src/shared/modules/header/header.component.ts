@@ -146,7 +146,7 @@ export class HeaderComponent implements OnInit {
             relativeTo: this.route,
           });
           window.location.href =
-            window.location.origin + window.location.pathname;
+            environment.IentityServerRedirectUrl + "/dashboard";
         }
       });
   }

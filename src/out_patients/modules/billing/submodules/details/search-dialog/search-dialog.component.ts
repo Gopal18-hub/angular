@@ -114,7 +114,7 @@ export class SearchDialogComponent implements OnInit {
       },
       mobileNo: {
         title: "Mobile No",
-        type: "string",
+        type: "tel",
         style: {
           width: "5rem"
         }
@@ -365,7 +365,7 @@ export class SearchDialogComponent implements OnInit {
       else
       {
         this.apiProcessing = false;
-        this.snackbar.open('Invalid Max ID');
+        this.snackbar.open('No Data Available / Invalid Input Data');
       }
     },
     (error) => {

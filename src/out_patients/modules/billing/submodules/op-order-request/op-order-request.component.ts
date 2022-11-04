@@ -61,7 +61,7 @@ export class OpOrderRequestComponent implements OnInit {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
-        type: "string",
+        type: "tel",
         title: "Mobile Number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },

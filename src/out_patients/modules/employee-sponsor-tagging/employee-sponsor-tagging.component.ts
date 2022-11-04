@@ -94,7 +94,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         //pattern: "^[a-zA-Z0-9.]$",
       },
       mobileNo: {
-        type: "number",
+        type: "tel",
         title: "Mobile Number",
         //required: true,
         pattern: "^[1-9]{1}[0-9]{9}",

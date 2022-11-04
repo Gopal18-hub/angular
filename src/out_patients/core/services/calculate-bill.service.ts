@@ -210,7 +210,7 @@ export class CalculateBillService {
     } else {
       if (
         this.discountSelectedItems.length == 1 &&
-        [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
+        [1, 6].includes(this.discountSelectedItems[0].discTypeId)
       ) {
         const discItem = this.discountSelectedItems[0];
         this.billingServiceRef.billItems.forEach((item: any) => {
@@ -222,12 +222,6 @@ export class CalculateBillService {
           item.discountType = this.discountSelectedItems[0].discTypeId;
           item.discountReason = discItem.reason;
         });
-        if (this.discountSelectedItems[0].discTypeId == 5) {
-          formGroup.controls["compDisc"].setValue(discItem.discAmt);
-        }
-        if (this.discountSelectedItems[0].discTypeId == 4) {
-          formGroup.controls["patientDisc"].setValue(discItem.discAmt);
-        }
       } else {
         this.discountSelectedItems.forEach((ditem: any) => {
           if (ditem.discTypeId == 3) {
@@ -262,6 +256,7 @@ export class CalculateBillService {
             formGroup.controls["patientDisc"].setValue(ditem.discAmt);
           } else if (ditem.discTypeId == 5) {
             formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
       }
@@ -365,7 +360,11 @@ export class CalculateBillService {
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
-    if (!this.billingServiceRef.company) {
+    if (
+      !this.billingServiceRef.company &&
+      !this.billingServiceRef.selectedHealthPlan &&
+      this.otherPlanSelectedItems.length == 0
+    ) {
       if (this.billingServiceRef.todayPatientBirthday) {
         const birthdayDialogRef = this.messageDialogService.confirm(
           "",
@@ -1231,6 +1230,72 @@ export class CalculateBillService {
       console.log(
         this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason
       );
+    }
+  }
+  //#endregion
+
+  //#region Domestic Tarrif for international patient
+  async checkDoemsticTarrif() {
+    if (
+      this.billingServiceRef.company &&
+      this.billingServiceRef.patientDetailsInfo &&
+      this.billingServiceRef.patientDetailsInfo.nationality != 149
+    ) {
+      if (
+        this.billingServiceRef.companyData &&
+        this.billingServiceRef.companyData.length > 0
+      ) {
+        const tpacompanyExist: any = this.billingServiceRef.companyData.filter(
+          (c: any) => c.id === this.billingServiceRef.company
+        );
+        if (tpacompanyExist && tpacompanyExist.length > 0) {
+          if (tpacompanyExist[0].isTPA != 5) {
+            const tarrifRef = this.messageDialogService.confirm(
+              "",
+              "Are you sure of domestic tariff?"
+            );
+            const result = await tarrifRef.afterClosed().toPromise();
+            if (result && "type" in result) {
+              if (result.type == "yes") {
+                await this.openDomesticTarrifReasonDialog();
+              } else {
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  async openDomesticTarrifReasonDialog() {
+    const domesticTarrifDialogref = this.matDialog.open(FormDialogueComponent, {
+      width: "28vw",
+      // height: "42vh",
+      data: {
+        title: "Domestic Tarrif",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            reason: {
+              type: "textarea",
+              title: "Reason",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+    let res = await domesticTarrifDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .toPromise();
+    if (res && res.data) {
+      console.log(res.data.reason);
+      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.markupnot =
+        res.data.reason;
     }
   }
   //#endregion

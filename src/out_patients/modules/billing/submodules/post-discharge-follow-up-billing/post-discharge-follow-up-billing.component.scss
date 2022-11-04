@@ -104,7 +104,7 @@
         color: #00B2A9;
       }
       .post-tab{
-        height: 33px !important;
+        height: 28px !important;
       }
       .services-tab-header-container {
         background-color: #45c0be;
@@ -161,6 +161,11 @@
   }
 .clr-red{
     color: #EB0000;
+}
+.default-label-none{
+  ::ng-deep mat-label{
+      display:none;
+  }
 }
 
 

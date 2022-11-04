@@ -354,7 +354,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.formGroup.value.procedure.value,
             this.opOrderrequestService.patientDemographicdata.gender,
             this.formGroup.value.procedure.serviceid,
-            "9"
+            "1"
           )
         )
         .pipe(takeUntil(this._destroying$))
@@ -370,10 +370,12 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.messageDialogService.info(
               "This service is not allowed for this sex"
             );
+            this.formGroup.reset();
           }
         });
     } else {
       this.messageDialogService.info("Please Select Procedure");
+      this.formGroup.reset();
     }
   }
 

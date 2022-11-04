@@ -139,6 +139,17 @@ export class DynamicFormQuestionComponent
             }
           }
           break;
+        case "required":
+          let questionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          const exprRequiredEvaluate = eval(conditionParam.expression);
+          if (exprRequiredEvaluate && questionIndex > -1) {
+            this.questions[questionIndex].required = true;
+          } else {
+            this.questions[questionIndex].required = false;
+          }
+          break;
         default:
           console.log(`NA`);
       }

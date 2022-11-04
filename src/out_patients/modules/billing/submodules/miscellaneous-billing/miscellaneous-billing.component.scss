@@ -27,10 +27,10 @@
   }
   .iom-message {
     position: absolute;
-    top: 23.8%;
+    top: 23%;
     color: red;
     left: 31.3%;
-    font-size : x-small;
+   // font-size : x-small;
   }
   .isDisabled {
     pointer-events: none;
@@ -138,4 +138,9 @@
   display: none;
 } 
   
+}
+.default-label-none{
+  ::ng-deep mat-label{
+      display:none;
+  }
 }

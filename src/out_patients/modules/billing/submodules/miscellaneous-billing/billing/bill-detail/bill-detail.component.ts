@@ -219,6 +219,7 @@ export class BillDetailComponent implements OnInit {
       availDiscCheck: {
         type: "checkbox",
         required: false,
+        readonly: true,
         options: [{ title: "Avail Plan Disc ( - )" }],
       },
       //12
@@ -232,7 +233,7 @@ export class BillDetailComponent implements OnInit {
       discAmtCheck: {
         type: "checkbox",
         required: false,
-        disabled: true,
+        //disabled: true,
         options: [{ title: " Discount  Amount  (  -  ) " }],
       },
       //14
@@ -246,7 +247,7 @@ export class BillDetailComponent implements OnInit {
       dipositAmtcheck: {
         type: "checkbox",
         required: false,
-        disabled: true,
+        //disabled: true,
         options: [{ title: "Deposit Amount ( - )" }],
       },
       //16
@@ -457,6 +458,7 @@ export class BillDetailComponent implements OnInit {
     );
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+    this.miscServBillForm.controls["availDiscCheck"].disable();
 
     this.miscPatient.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -621,9 +623,9 @@ export class BillDetailComponent implements OnInit {
           if (value.value) {
             this.itemID = value.value;
             this.itemName = value.title;
-            this.checkService();
             this.getservices_byprocedureidnew();
             this.setTarrifItemList();
+            this.checkService();
           }
         }
       });
@@ -702,7 +704,6 @@ export class BillDetailComponent implements OnInit {
           this.miscPatient.setCalculateBillItems(this.calcBillData);
           this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
           let calcBill0 = this.miscPatient.calculateBill();
-          this.miscServBillForm.controls["discAmtCheck"].setValue(false);
           this.calculateBillService.discountSelectedItems = [];
           this.serviceselectedList.forEach((e: any) => {
             e.Disc = 0;
@@ -806,17 +807,16 @@ export class BillDetailComponent implements OnInit {
     }
   }
   creditClick() {
-    if (
-      Number(this.miscServBillForm.value.paymentMode) === 3
-
-      //  &&
-      // this.miscServBillForm.value.credLimit
-      //  &&
-      // this.miscServBillForm.value.credLimit > 0
-    ) {
+    if (Number(this.miscServBillForm.value.paymentMode) === 3) {
       if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
         this.miscServBillForm.controls["discAmt"].setValue("0.00");
         this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+        this.calcBillData.totalDiscount = 0;
+        this.calcBillData.depositInput = 0;
+        this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
+        this.miscPatient.cacheBillTabdata.cacheDepositInput = 0;
+
+        this.miscPatient.setCalculateBillItems(this.calcBillData);
       }
       this.amtByComp();
     }
@@ -843,10 +843,10 @@ export class BillDetailComponent implements OnInit {
       this.miscServBillForm.controls["coPay"].setValue("0.00");
     }
 
-    if (this.serviceselectedList.length > 0) {
-      this.miscServBillForm.controls["discAmtCheck"].enable();
-      this.miscServBillForm.controls["dipositAmtcheck"].enable();
-    }
+    // if (this.serviceselectedList.length > 0) {
+    //   this.miscServBillForm.controls["discAmtCheck"].enable();
+    //   this.miscServBillForm.controls["dipositAmtcheck"].enable();
+    // }
   }
   onModifyMiscDepositAmt() {
     this.calcBillData.depositInput = Number(
@@ -881,9 +881,10 @@ export class BillDetailComponent implements OnInit {
       this.generatedBillNo == ""
     ) {
       this.enableItemsService = true;
-    } else {
-      this.enableItemsService = false;
     }
+    // else {
+    //   this.enableItemsService = false;
+    // }
   }
 
   selectedReferralDoctor(data: any) {
@@ -1110,10 +1111,6 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         this.noMap = data;
-        this.taxid = data[0].id;
-        this.taxcode = data[0].code;
-        this.taxtype = data[0].taxType;
-        this.taxService = data[0].serviceId;
       });
   }
   ////Service Tax map check
@@ -1123,6 +1120,26 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         this.noMap = data;
+        if (this.taxcode == "") {
+          this.taxcode = data[0].code;
+          this.taxid = data[0].id;
+          this.taxtype = data[0].taxType;
+          this.taxService = data[0].serviceId;
+        } else if (this.taxcode) {
+          if (this.taxcode !== data[0].code) {
+            console.log("t1");
+            this.snackbar.open(
+              "Kindly Prepare Sperate Bill For These Services As These Services have Different SAC Code.",
+              "error"
+            );
+            this.clearSelectedService();
+
+            return;
+          }
+          this.taxid = data[0].id;
+          this.taxtype = data[0].taxType;
+          this.taxService = data[0].serviceId;
+        }
       });
   }
   //Fetch GST Data
@@ -1144,9 +1161,9 @@ export class BillDetailComponent implements OnInit {
         if (data) {
           this.gstData = data;
           this.totaltaX_Value = data[0].totaltaX_Value;
-          this.miscServBillForm.controls["gstTax"].setValue(
-            this.totaltaX_Value.toFixed(2) || "0.00"
-          );
+          // this.miscServBillForm.controls["gstTax"].setValue(
+          //   this.totaltaX_Value.toFixed(2) || "0.00"
+          // );
           this.calcBillData.totalGst = this.totaltaX_Value;
           this.miscPatient.setCalculateBillItems(this.calcBillData);
           let calcBill0 = this.miscPatient.calculateBill();
@@ -1176,87 +1193,128 @@ export class BillDetailComponent implements OnInit {
   addService() {
     if (!this.miscServBillForm.value.serviceType) {
       this.snackbar.open("Select Service Item", "error");
+      this.question[0].elementRef.focus();
     } else if (!this.miscServBillForm.value.item) {
       this.snackbar.open("Enter the Item Description First", "error");
+      this.question[1].elementRef.focus();
     } else if (!this.miscServBillForm.value.qty) {
       this.snackbar.open("Enter the Item Quantity", "error");
+      this.question[3].elementRef.focus();
     } else if (this.miscServBillForm.value.qty <= 0) {
       this.snackbar.open("Quantity Can Not be Zero", "error");
+      this.question[3].elementRef.focus();
     } else if (!this.miscServBillForm.value.reqAmt) {
       this.snackbar.open("Enter the Item Price", "error");
+      this.question[4].elementRef.focus();
     } else if (this.miscServBillForm.value.reqAmt <= 0) {
       this.snackbar.open("Item Price Can Not be Zero", "error");
+      this.question[4].elementRef.focus();
     } else if (!this.miscServBillForm.value.remark) {
       this.snackbar.open("Please select remarks!", "error");
+      this.question[6].elementRef.focus();
     } else if (this.noMap.length === 0) {
       this.snackbar.open("Selected Service not Mapped with Tax.", "error");
       this.clearSelectedService();
       return;
     } else {
-      this.count = this.serviceselectedList.length + 1;
-      let ServiceType = this.serviceName;
-      let itemName = this.itemName;
-      let present = false;
-      this.serviceselectedList.forEach((element) => {
-        if (
-          ServiceType == element.ServiceType &&
-          itemName == element.ItemDescription
-        ) {
-          this.snackbar.open("Item Already Exits", "error");
-          present = true;
-          return;
-        }
-      });
-      if (!present) {
-        this.pushDataToServiceTable();
-        this.serviceselectedList.forEach((e: any) => {
-          e.TariffPriceNo = Number(e.TariffPrice).toFixed(2);
-          e.PriceNo = Number(e.Price).toFixed(2);
-          // e.DiscNo = Number(e.Disc).toFixed(2);
-          // e.DiscAmountNo = Number(e.DiscAmount).toFixed(2);
-          e.TotalAmntNo = Number(e.TotalAmount).toFixed(2);
-          e.GSTNo = Number(e.GST).toFixed(2);
-          e.amountNo = Number(e.amount).toFixed(2);
-          e.discountAmountNo = Number(e.discount).toFixed(2);
-          e.mPriceNo = Number(e.TariffPrice).toFixed(2);
-          e.qty = e.Qty;
-          //For Discount Reason
-          e.serviceId = e.serviceid;
-          e.itemId = e.itemId;
-          e.amount = e.TotalAmount;
-          e.discountamount = e.discount;
-          e.serviceName = e.ServiceType;
-          e.itemName = e.ItemDescription;
-          //Original
-          e.TotalAmount = e.TotalAmount;
-          e.Price = e.Price;
-          e.Disc = e.Disc;
-          e.DiscAmount = e.DiscAmount;
-          e.TotalAmnt = e.TotalAmount;
-          e.GST = e.GST;
-          e.amount = e.amount;
-          e.discountAmount = e.discount;
-          e.mPrice = e.TariffPrice;
-          e.Qty = e.Qty;
-        });
-        this.serviceselectedList = [...this.serviceselectedList];
-        this.miscPatient.cacheService(this.serviceselectedList);
-        if (this.serviceselectedList.length > 0) {
-          this.isEnableBillBtn = true;
-          this.enableForm = 1;
-          if (this.miscPatient.cacheBillTabdata.generatedBillNo > 0) {
-            //this.miscPatient.billNoGenerated.next(true);
-            this.isEnableBillBtn = false;
-            //this.enableForm = 0;
+      //this.getservices_byprocedureid();
+      this.http
+        .get(
+          ApiConstants.getservices_byprocedureid(this.itemID, this.serviceID)
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          this.noMap = data;
+          if (this.taxcode == "") {
+            this.taxcode = data[0].code;
+            this.taxid = data[0].id;
+            this.taxtype = data[0].taxType;
+            this.taxService = data[0].serviceId;
+            this.genAdd();
+          } else if (this.taxcode) {
+            if (this.taxcode !== data[0].code) {
+              console.log("t1");
+              this.snackbar.open(
+                "Kindly Prepare Sperate Bill For These Services As These Services have Different SAC Code.",
+                "error"
+              );
+              this.clearSelectedService();
+              return;
+            } else {
+              this.taxid = data[0].id;
+              this.taxtype = data[0].taxType;
+              this.taxService = data[0].serviceId;
+              this.genAdd();
+            }
           }
-          this.miscServBillForm.controls["discAmtCheck"].enable();
-          this.miscServBillForm.controls["dipositAmtcheck"].enable();
-        }
-      }
-
-      this.calculateTotalAmount();
-      this.clearSelectedService();
+        });
     }
+  }
+  genAdd() {
+    this.count = this.serviceselectedList.length + 1;
+    let ServiceType = this.serviceName;
+    let itemName = this.itemName;
+    let present = false;
+    this.serviceselectedList.forEach((element) => {
+      if (
+        ServiceType == element.ServiceType &&
+        itemName == element.ItemDescription
+      ) {
+        this.snackbar.open("Item Already Exits", "error");
+        present = true;
+        return;
+      }
+    });
+    if (!present) {
+      this.enableItemsService = false;
+      this.pushDataToServiceTable();
+      this.serviceselectedList.forEach((e: any) => {
+        e.TariffPriceNo = Number(e.TariffPrice).toFixed(2);
+        e.PriceNo = Number(e.Price).toFixed(2);
+        // e.DiscNo = Number(e.Disc).toFixed(2);
+        // e.DiscAmountNo = Number(e.DiscAmount).toFixed(2);
+        e.TotalAmntNo = Number(e.TotalAmount).toFixed(2);
+        e.GSTNo = Number(e.GST).toFixed(2);
+        e.amountNo = Number(e.amount).toFixed(2);
+        e.discountAmountNo = Number(e.discount).toFixed(2);
+        e.mPriceNo = Number(e.TariffPrice).toFixed(2);
+        e.qty = e.Qty;
+        //For Discount Reason
+        e.serviceId = e.serviceid;
+        e.itemId = e.itemId;
+        e.amount = e.TotalAmount;
+        e.discountamount = e.discount;
+        e.serviceName = e.ServiceType;
+        e.itemName = e.ItemDescription;
+        //Original
+        e.TotalAmount = e.TotalAmount;
+        e.Price = e.Price;
+        e.Disc = e.Disc;
+        e.DiscAmount = e.DiscAmount;
+        e.TotalAmnt = e.TotalAmount;
+        e.GST = e.GST;
+        e.amount = e.amount;
+        e.discountAmount = e.discount;
+        e.mPrice = e.TariffPrice;
+        e.Qty = e.Qty;
+      });
+      this.serviceselectedList = [...this.serviceselectedList];
+      this.miscPatient.cacheService(this.serviceselectedList);
+      if (this.serviceselectedList.length > 0) {
+        this.isEnableBillBtn = true;
+        this.enableForm = 1;
+        if (this.miscPatient.cacheBillTabdata.generatedBillNo > 0) {
+          //this.miscPatient.billNoGenerated.next(true);
+          this.isEnableBillBtn = false;
+          //this.enableForm = 0;
+        }
+        // this.miscServBillForm.controls["discAmtCheck"].enable();
+        // this.miscServBillForm.controls["dipositAmtcheck"].enable();
+      }
+    }
+
+    this.calculateTotalAmount();
+    this.clearSelectedService();
   }
   pushDataToServiceTable() {
     let pDoc = "";
@@ -1338,6 +1396,7 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["remark"].reset();
     this.miscServBillForm.controls["reqAmt"].reset();
     this.miscServBillForm.controls["serviceType"].reset();
+    this.enableItemsService = false;
     this.checkService();
   }
   clearSelectedService() {
@@ -1367,9 +1426,9 @@ export class BillDetailComponent implements OnInit {
 
     this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
 
-    this.miscServBillForm.controls["discAmtCheck"].disable();
+    //this.miscServBillForm.controls["discAmtCheck"].disable();
     this.miscServBillForm.controls["discAmtCheck"].setValue(false);
-    this.miscServBillForm.controls["dipositAmtcheck"].disable();
+    //this.miscServBillForm.controls["dipositAmtcheck"].disable();
     this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
 
     this.miscServBillForm.controls["amtPayByPatient"].setValue("0.00");
@@ -1398,6 +1457,7 @@ export class BillDetailComponent implements OnInit {
       this.enablePrint = false;
       this.resetAmt();
       this.enableForm = 0;
+      this.taxcode = "";
     }
   } //Dialog
   openDiscountdialog() {
@@ -1629,9 +1689,28 @@ export class BillDetailComponent implements OnInit {
         });
     }
   }
-  openMakeBilldialog() {
-    this.makebillFlag = true;
-    console.log(this.miscPatient.selectedcompanydetails, "checkc");
+  //Check For SACCODE
+  async checkForCreditLimit() {
+    const credLimitWarningPopup: any = this.messageDialogService.confirm(
+      "",
+      "Do you want to enter credit limit?"
+    );
+    const credLimitWarning = await credLimitWarningPopup
+      .afterClosed()
+      .toPromise();
+    if (credLimitWarning) {
+      if (credLimitWarning.type == "yes") {
+        this.question[22].elementRef.focus();
+        return false;
+      } else {
+        this.miscServBillForm.controls["paymentMode"].setValue("1");
+        return true;
+      }
+    }
+    return true;
+  }
+  async openMakeBilldialog() {
+    //this.makebillFlag = true;
     if (Number(this.miscServBillForm.value.paymentMode) === 3) {
       if (this.miscPatient.selectedcompanydetails.value) {
         this.miscCompanyId = this.miscPatient.selectedcompanydetails.value;
@@ -1645,18 +1724,11 @@ export class BillDetailComponent implements OnInit {
         this.getbilltocompany(this.miscCompanyId);
       }
       if (this.miscServBillForm.value.credLimit <= 0) {
-        this.snackbar.open(" Enter Credit limit", "error");
-      }
-      // else if (
-      //   Number(this.miscServBillForm.value.credLimit) <
-      //   this.miscServBillForm.value.amtPayByPatient
-      // ) {
-      //   this.snackbar.open(
-      //     "Credit limit should not be less than bill amount",
-      //     "error"
-      //   );
-      // }
-      else if (!this.miscPatient.selectedcompanydetails.value) {
+        const credLimitStatus = await this.checkForCreditLimit();
+        if (!credLimitStatus) {
+          return;
+        }
+      } else if (!this.miscPatient.selectedcompanydetails.value) {
         this.snackbar.open("Select the Company", "error");
       } else if (
         Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) === 1 &&
@@ -1970,13 +2042,13 @@ export class BillDetailComponent implements OnInit {
   //Calculate TA
   calculateTotalAmount() {
     this.TotalAmount = 0;
-    this.getgstdata();
     this.getDipositedAmountByMaxID();
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount =
         Number(this.TotalAmount) +
         Number(element.PriceNo) * Number(element.Qty);
     });
+    this.getgstdata();
     this.calcBillData.totalAmount = this.TotalAmount;
     this.miscPatient.setCalculateBillItems(this.calcBillData);
     this.billAmnt = this.TotalAmount;
@@ -2184,6 +2256,11 @@ export class BillDetailComponent implements OnInit {
     if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
       this.miscServBillForm.controls["discAmt"].setValue("0.00");
       this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+      this.calcBillData.totalDiscount = 0;
+      this.calcBillData.depositInput = 0;
+      this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
+      this.miscPatient.cacheBillTabdata.cacheDepositInput = 0;
+      this.miscPatient.setCalculateBillItems(this.calcBillData);
     }
     let balance =
       this.billAmnt -

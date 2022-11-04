@@ -6,13 +6,13 @@
       </li>
     </ul>
     <div class="maxhealth-spacer"></div>
-    <div class="mr-3 flex">
-      <div *ngFor="let icon of categoryIcons" class="flex category-icons">
+    <div class="flex">
+      <div *ngFor="let icon of categoryIcons" class="flex mr-2">
         <img
           [src]="icon['src']"
           [alt]="icon['tooltip']"
           width="45px"
-          class="mt-1 cursor-pointer"
+          class="cursor-pointer"
           [matTooltip]="icon['tooltip']"
           (click)="doCategoryIconAction(icon)"
         />
