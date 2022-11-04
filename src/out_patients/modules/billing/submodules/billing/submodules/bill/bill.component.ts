@@ -1267,7 +1267,8 @@ export class BillComponent implements OnInit, OnDestroy {
             `Do you want Print Blank Op Prescription?`
           );
           dialogref.afterClosed().subscribe((res: any) => {
-            if (res == "yes") {
+        
+            if (res.type == "yes") {
               this.reportService.openWindow(
                 "OP Prescription Report - " + this.billNo,
                 "PrintOPPrescriptionReport",

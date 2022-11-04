@@ -361,8 +361,9 @@ export class CalculateBillService {
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
     if (
-      !this.billingServiceRef.company &&
-      !this.billingServiceRef.selectedHealthPlan &&
+      (formGroup.value.paymentMode == 1 ||
+        (formGroup.value.paymentMode == 3 &&
+          !this.billingServiceRef.company)) &&
       this.otherPlanSelectedItems.length == 0
     ) {
       if (this.billingServiceRef.todayPatientBirthday) {
