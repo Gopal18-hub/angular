@@ -207,7 +207,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "paymentMode",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       // risReason: {
@@ -566,7 +566,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "risReason",
         style: {
-          width: "10rem",
+          width: "12rem",
         },
       },
     },
@@ -607,7 +607,7 @@ export class OprefundApprovalComponent implements OnInit {
       });
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 10),
+        new Date().setMonth(new Date().getMonth() - 2),
         "yyyy-MM-dd"
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -717,6 +717,20 @@ export class OprefundApprovalComponent implements OnInit {
           this.oprefundPendingList.forEach((item) => {
             item.refundAmt = item.refundAmt.toFixed(2);
             console.log(item.refundAmt);
+            // if (item.serviceId == 42) {
+            //   item.testStatus = 2;
+            // }
+            //enable dropdown only for radiology services.
+            if (item.serviceId == 42 && item.testStatus > 0) {
+              console.log("risreason enable condition");
+              console.log(item.serviceId);
+              console.log(item.testStatus);
+              item.risReason_disabled = false;
+            } else {
+              console.log(item.serviceId);
+              console.log(item.testStatus);
+              item.risReason_disabled = true;
+            }
           });
           if (this.oprefundPendingList.length > 0) {
             this.showapprovalspinner = false;
@@ -885,8 +899,8 @@ export class OprefundApprovalComponent implements OnInit {
           flag: this.flag,
           hostName: "HostNameTest",
           risReason: a.risReason,
-          serviceId: 0,
-          testStatus: 0,
+          serviceId: a.serviceId,
+          testStatus: a.testStatus,
           iacode: iacode,
           registrationNo: regno,
           billNo: a.billNo,
@@ -957,6 +971,16 @@ export class OprefundApprovalComponent implements OnInit {
                   } else if (value == 1) {
                     this.dialogservice.success("Update Rejected");
                   }
+                } else {
+                  console.log(httperrorResponse);
+                  this.pendingList = [];
+                  this.defaultUI = false;
+                  this.useridList = [];
+                  this.requesteduser = false;
+                  this.getoprefundPending();
+                  this.dialogservice.error(
+                    "There is an error occured while processing your transaction, check with administrator"
+                  );
                 }
               }
             );
