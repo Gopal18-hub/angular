@@ -145,6 +145,7 @@ export class BillingService {
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
     this.calculateBillService.clear();
+    this.billNo = "";
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
