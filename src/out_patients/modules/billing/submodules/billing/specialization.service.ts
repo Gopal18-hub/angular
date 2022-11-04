@@ -12,6 +12,8 @@ export class SpecializationService {
 
   specializationDocotorsList: any = {};
 
+  allDoctorsList: any = {};
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   getSpecialization() {
@@ -41,6 +43,33 @@ export class SpecializationService {
       });
       this.specializationDocotorsList[specializationId.toString()] = options;
       return options;
+    }
+  }
+
+  async getDoctorsListInfo(specializationId: number) {
+    if (!specializationId) return;
+    if (this.allDoctorsList[specializationId.toString()]) {
+      return this.allDoctorsList[specializationId.toString()];
+    } else {
+      const res = await this.http
+        .get(
+          BillingApiConstants.getdoctorlistonSpecializationClinic(
+            false,
+            specializationId,
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .toPromise();
+      this.allDoctorsList[specializationId.toString()] = res.map((r: any) => {
+        return {
+          title: r.doctorName,
+          value: r.doctorId,
+          originalTitle: r.doctorName,
+          specialisationid: r.specialisationid,
+          clinicId: r.clinicID,
+        };
+      });
+      return this.allDoctorsList[specializationId.toString()];
     }
   }
 }

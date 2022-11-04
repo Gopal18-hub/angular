@@ -20,6 +20,8 @@ export class LookupService {
     "/staff-dept": "/registration/find-patient",
     "/out-patient-billing/online-op-bill": "/registration/find-patient",
     "/out-patient-billing/dispatch-report": "/registration/find-patient",
+    "/configure/RIS": "/registration/find-patient",
+    "/configure/LIMS": "/registration/find-patient",
   };
   constructor(
     private cookie: CookieService,

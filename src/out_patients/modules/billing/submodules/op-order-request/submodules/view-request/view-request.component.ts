@@ -202,11 +202,11 @@ export class OPOrderViewRequest implements OnInit {
             for (let i = 0; i < this.data.length; i++) {
               this.data[i].sno = i + 1;
               if (this.data[i].orderStatus == "Bill Prepared") {
-                //this.data[i].disabled = "unclickable";
-                this.data[i].disablecheckbox = true;
+                this.data[i].disabled = "unclickable";
+                // this.data[i].disablecheckbox = true;
                 this.checkflag++;
               } else {
-                this.data[i].disablecheckbox = false;
+                // this.data[i].disablecheckbox = false;
               }
             }
           }

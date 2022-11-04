@@ -565,6 +565,7 @@
             (selectionChange)="controlValueChange($event, data)"
             [required]="data.element[data.col + '_required']"
             placeholder="--Select--"
+            [disabled]="data.element[data.col + '_disabled']"
           >
             <ng-container
               *ngIf="

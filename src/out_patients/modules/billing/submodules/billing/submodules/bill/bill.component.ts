@@ -26,6 +26,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { BillingStaticConstants } from "../../BillingStaticConstant";
+import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -60,12 +61,14 @@ export class BillComponent implements OnInit, OnDestroy {
         type: "checkbox",
         required: false,
         options: [{ title: "Avail Plan Disc ( - )" }],
+        disabled: false,
       },
       availDisc: {
         type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
+        disabled: false,
       },
       discAmtCheck: {
         type: "checkbox",
@@ -295,7 +298,8 @@ export class BillComponent implements OnInit, OnDestroy {
   totalDeposit = 0;
   gstBreakupDetails: any = [];
   finalgstDetails: any = {};
-
+  hspLocationid: any = this.cookie.get("HSPLocationId");
+  form60: any;
   precautionExcludeLocations = [69];
 
   private readonly _destroying$ = new Subject<void>();
@@ -346,6 +350,9 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
+    } else {
+      this.billDataForm.properties.availDiscCheck.disabled = true;
+      this.billDataForm.properties.availDisc.disabled = true;
     }
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
       this.billDataForm.properties.discAmtCheck.disabled = true;
@@ -390,7 +397,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.formGroup.patchValue({ planAmt: planAmount });
       this.formGroup.controls["self"].setValue(true);
     }
-    this.billTypeChange(this.formGroup.value.paymentMode);
+    //this.billTypeChange(this.formGroup.value.paymentMode);
 
     // #region GAV-1053 - referal doctor as self autochck
 
@@ -401,6 +408,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
+        this.resetDiscount();
       }
     });
 
@@ -432,6 +440,7 @@ export class BillComponent implements OnInit, OnDestroy {
       if (this.billingservice.selectedHealthPlan) {
         this.formGroup.patchValue({
           availDisc: this.totalPlanDiscount,
+          availDiscCheck: true,
         });
       }
       if (popuptext.length > 0) {
@@ -452,13 +461,13 @@ export class BillComponent implements OnInit, OnDestroy {
             this.refreshTable();
           }
         });
+      this.billTypeChange(this.formGroup.value.paymentMode);
     }
-    // this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
-    //   console.log(res);
-    //   if (res) {
-    //     this.formGroup.controls["paymentMode"].setValue(1);
-    //   }
-    // });
+    this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
+      if (res) {
+        this.formGroup.controls["paymentMode"].setValue(1);
+      }
+    });
   }
 
   rowRwmove($event: any) {
@@ -523,10 +532,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
+
     this.billTypeChange(this.formGroup.value.paymentMode);
-    // this.formGroup.controls["amtPayByPatient"].setValue(
-    //   this.getAmountPayByPatient()
-    // );
   }
 
   async billTypeChange(value: any) {
@@ -630,6 +637,8 @@ export class BillComponent implements OnInit, OnDestroy {
         if (value == 3) {
           this.question[14].readonly = false;
           this.question[13].readonly = false;
+          this.billingservice.setCompnay(0, "", this.formGroup, "header");
+          this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
           this.question[14].readonly = true;
           this.question[13].readonly = true;
@@ -640,6 +649,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["dipositAmtEdit"].setValue(0);
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
         );
@@ -745,15 +755,17 @@ export class BillComponent implements OnInit, OnDestroy {
       item.discountReason = 0;
     });
     this.calculateBillService.setDiscountSelectedItems([]);
+    if (this.calculateBillService.discountForm)
+      this.calculateBillService.discountForm.reset();
     this.calculateBillService.calculateDiscount();
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
     this.billTypeChange(this.formGroup.value.paymentMode);
-    this.applyCreditLimit();
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
+    this.applyCreditLimit();
   }
 
   applyCreditLimit() {
@@ -771,23 +783,40 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     });
     const amtPayByComp = creditAmount;
-    // const amountToBePaid =
-    //   this.billingservice.totalCost -
-    //   (this.formGroup.value.discAmt || 0) -
-    //   (this.formGroup.value.dipositAmtEdit || 0);
+
     let tempAmount = parseFloat(this.formGroup.value.credLimit);
     this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
+    let tempFAmount = 0;
     if (tempAmount <= amtPayByComp) {
-      this.formGroup.controls["amtPayByComp"].setValue(tempAmount.toFixed(2));
+      tempFAmount = tempAmount;
     } else {
-      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp.toFixed(2));
+      tempFAmount = amtPayByComp;
     }
     if (this.formGroup.value.coPay > 0) {
-      tempAmount =
-        this.formGroup.value.amtPayByComp -
-        (this.formGroup.value.amtPayByComp * this.formGroup.value.coPay) / 100;
-      this.formGroup.controls["amtPayByComp"].setValue(tempAmount.toFixed(2));
+      tempFAmount =
+        tempFAmount - (tempFAmount * this.formGroup.value.coPay) / 100;
     }
+    const companyDiscount =
+      this.calculateBillService.discountSelectedItems.find(
+        (dItem: any) => dItem.discTypeId == 5
+      );
+    if (companyDiscount) {
+      companyDiscount.price = tempFAmount;
+      companyDiscount.discAmt = (tempFAmount * companyDiscount.disc) / 100;
+      companyDiscount.totalAmt =
+        companyDiscount.price - companyDiscount.discAmt;
+      console.log(companyDiscount);
+      this.formGroup.controls["compDisc"].setValue(
+        companyDiscount.discAmt.toFixed(2)
+      );
+      this.calculateBillService.calculateDiscount();
+      this.formGroup.controls["discAmt"].setValue(
+        this.calculateBillService.totalDiscountAmt.toFixed(2)
+      );
+      tempFAmount -= parseFloat(companyDiscount.discAmt);
+    }
+    this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
     );
@@ -804,32 +833,40 @@ export class BillComponent implements OnInit, OnDestroy {
   onModifyDepositAmt() {
     if (this.formGroup.value.dipositAmtEdit > 0) {
       if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) >=
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.billAmt.toFixed(2)
+          parseFloat(this.formGroup.value.billAmt).toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
-        this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.dipositAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) >
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.billAmt.toFixed(2)
+          parseFloat(this.formGroup.value.billAmt).toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) <
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.dipositAmt.toFixed(2)
+          parseFloat(this.formGroup.value.dipositAmt).toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
+        parseFloat(this.formGroup.value.dipositAmt) <
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.dipositAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.dipositAmt.toFixed(2)
+          parseFloat(this.formGroup.value.dipositAmt).toFixed(2)
         );
       }
       this.formGroup.controls["amtPayByPatient"].setValue(
@@ -848,6 +885,9 @@ export class BillComponent implements OnInit, OnDestroy {
     }
     //CGHS Beneficiary check
     await this.calculateBillService.checkCGHSBeneficiary();
+
+    ////GAV-910 - Domestic Tarrif check
+    await this.calculateBillService.checkDoemsticTarrif();
 
     if (
       !this.billingservice.referralDoctor ||
@@ -1270,17 +1310,36 @@ export class BillComponent implements OnInit, OnDestroy {
         creditAmount += parseFloat(bItem.credit);
       }
     });
-    const temp =
-      cashAmount +
-      creditAmount -
-      (this.formGroup.value.dipositAmtEdit || 0) -
-      (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.amtPayByComp || 0) +
-      (parseFloat(this.formGroup.value.gstTax) || 0) -
-      (parseFloat(this.formGroup.value.planAmt) || 0) -
-      (parseFloat(this.formGroup.value.availDisc) || 0);
+    let temp = 0;
+    if (
+      parseFloat(this.formGroup.value.patientDisc) > 0 ||
+      parseFloat(this.formGroup.value.compDisc) > 0
+    ) {
+      temp =
+        cashAmount +
+        creditAmount -
+        (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
+        (parseFloat(this.formGroup.value.patientDisc) || 0) -
+        (parseFloat(this.formGroup.value.amtPayByComp) +
+          parseFloat(this.formGroup.value.compDisc) || 0) +
+        (parseFloat(this.formGroup.value.gstTax) || 0) -
+        (parseFloat(this.formGroup.value.planAmt) || 0) -
+        (parseFloat(this.formGroup.value.availDisc) || 0);
+    } else {
+      temp =
+        cashAmount +
+        creditAmount -
+        (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
+        (parseFloat(this.formGroup.value.discAmt) || 0) -
+        (parseFloat(this.formGroup.value.amtPayByComp) || 0) +
+        (parseFloat(this.formGroup.value.gstTax) || 0) -
+        (parseFloat(this.formGroup.value.planAmt) || 0) -
+        (parseFloat(this.formGroup.value.availDisc) || 0);
+    }
 
-    return temp.toFixed(2);
+    console.log("Amount Pay by Patinet: ", temp);
+
+    return temp > 0 ? temp.toFixed(2) : 0;
   }
 
   depositdetails() {
