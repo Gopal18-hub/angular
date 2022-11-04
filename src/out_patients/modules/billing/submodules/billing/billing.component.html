@@ -6,13 +6,13 @@
       </li>
     </ul>
     <div class="maxhealth-spacer"></div>
-    <div class="mr-3 flex">
-      <div *ngFor="let icon of categoryIcons" class="flex category-icons">
+    <div class="flex">
+      <div *ngFor="let icon of categoryIcons" class="flex mr-2">
         <img
           [src]="icon['src']"
           [alt]="icon['tooltip']"
           width="45px"
-          class="mt-1 cursor-pointer"
+          class="cursor-pointer"
           [matTooltip]="icon['tooltip']"
           (click)="doCategoryIconAction(icon)"
         />
@@ -147,32 +147,32 @@
             >
             <span class="ml-2"></span>
           </div>
-          <div class="w-1/6">
+          <div class="w-1/6 wt-nowrap">
             <mat-label class="max-health-primary-color"
               >Age: <span class="text-color">{{ age }}</span></mat-label
             >
             <span class="ml-2"></span>
           </div>
-          <div class="w-1/6">
+          <div class="w-1/6 wt-nowrap">
             <mat-label class="max-health-primary-color"
               >Gender: <span class="text-color">{{ gender }}</span></mat-label
             >
             <span class="ml-2"></span>
           </div>
-          <div class="w-1/6">
+          <div class="w-1/6 wt-nowrap">
             <mat-label class="max-health-primary-color"
               >DOB: <span class="text-color">{{ dob }}</span></mat-label
             >
             <span class="ml-2"></span>
           </div>
-          <div class="w-1/6">
+          <div class="w-1/6 wt-nowrap">
             <mat-label class="max-health-primary-color"
               >Nationality:
               <span class="text-color">{{ country }}</span></mat-label
             >
             <span class="ml-2"></span>
           </div>
-          <div class="w-1/6">
+          <div class="w-1/6 wt-nowrap">
             <mat-label class="max-health-primary-color"
               >SSN: <span class="text-color">{{ ssn }}</span></mat-label
             >

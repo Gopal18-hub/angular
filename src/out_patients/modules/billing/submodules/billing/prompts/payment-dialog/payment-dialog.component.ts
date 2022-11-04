@@ -144,7 +144,9 @@ export class BillPaymentDialogComponent implements OnInit {
    this.billpatientIdentityInfo = this.billingpatientidentity.patientidentityform.value;
    if(Number(this.data.toPaidAmount >= 200000) &&  (this.billpatientIdentityInfo.length == 0 || 
      this.billpatientIdentityInfo.mainradio == "pancardno" && (this.billpatientIdentityInfo.panno == undefined || this.billpatientIdentityInfo.panno == ""))){
-     this.messageDialogService.info('Please Enter a valid PAN Number');
+    const pannovalidate =  this.messageDialogService.info('Please Enter a valid PAN Number');
+    await pannovalidate.afterClosed().toPromise();
+    this.billingService.setpaymenthodpancardfocus();
      return;
    }
 

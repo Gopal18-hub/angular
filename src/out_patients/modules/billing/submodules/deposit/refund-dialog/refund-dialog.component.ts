@@ -400,7 +400,10 @@ export class RefundDialogComponent implements OnInit {
      this.depositservice.setcashlimitation(this.depositcashlimitationdetails);
     });
   }
-
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
 
 

@@ -70,6 +70,7 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
+  pancardpaymentmethod = new Subject<any>();
 
   companyData: any = [];
   corporateData: any = [];
@@ -1100,7 +1101,7 @@ export class BillingService {
         priority: priorityId,
         itemId: procedure.value,
         serviceId: procedure.serviceid,
-        locationId: this.cookie.get("HSPLocationId"),
+        locationId:this.cookie.get("HSPLocationId"),
         ipoptype: 1,
         bedType: 0,
         bundleId: 0,
@@ -1184,6 +1185,56 @@ export class BillingService {
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
+  }
+
+  async processProcedureAddWithOutApi(
+    priorityId: number,
+    serviceType: string,
+    procedure: any
+  ) {
+    this.addToProcedure({
+      sno: this.ProcedureItems.length + 1,
+      procedures: procedure.originalTitle,
+      qty: 1,
+      specialisation: "",
+      doctorName: "",
+      doctorName_required: procedure.docRequired ? true : false,
+      specialisation_required: procedure.docRequired ? true : false,
+      price: procedure.price,
+      unitPrice: procedure.price,
+      itemid: procedure.value,
+      priorityId: priorityId,
+      serviceId: procedure.serviceid,
+      billItem: {
+        popuptext: procedure.popuptext,
+        itemId: procedure.value,
+        priority: priorityId,
+        serviceId: procedure.serviceid,
+        price: procedure.price,
+        serviceName: "Procedure & Others",
+        itemName: procedure.originalTitle,
+        qty: 1,
+        precaution: "",
+        procedureDoctor: "",
+        credit: 0,
+        cash: 0,
+        disc: 0,
+        discAmount: 0,
+        totalAmount: procedure.price,
+        gst: 0,
+        gstValue: 0,
+        specialisationID: 0,
+        doctorID: 0,
+      },
+      gstDetail: {},
+      gstCode: {},
+    });
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: procedure.value,
+      serviceID: procedure.serviceid,
+      price: procedure.price,
+      willModify: false,
+    });
   }
 
   async processInvestigationAdd(
@@ -1558,5 +1609,9 @@ export class BillingService {
       }
     );
     this.calculateTotalAmount();
+  }
+
+  setpaymenthodpancardfocus(){
+    this.pancardpaymentmethod.next(true);
   }
 }
