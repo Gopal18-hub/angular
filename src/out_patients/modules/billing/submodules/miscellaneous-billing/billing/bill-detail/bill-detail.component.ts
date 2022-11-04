@@ -806,15 +806,24 @@ export class BillDetailComponent implements OnInit {
       }
     }
   }
+  discountValidation() {}
   creditClick() {
     if (Number(this.miscServBillForm.value.paymentMode) === 3) {
       if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
         this.miscServBillForm.controls["discAmt"].setValue("0.00");
         this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+        this.miscServBillForm.controls["dipositAmt"].setValue("0.00");
         this.calcBillData.totalDiscount = 0;
         this.calcBillData.depositInput = 0;
         this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
         this.miscPatient.cacheBillTabdata.cacheDepositInput = 0;
+        this.miscPatient.cacheBillTabdata.cacheDeposit = 0;
+        this.miscServBillForm.controls["dipositAmtcheck"].setValue(false, {
+          emitEvent: false,
+        });
+        this.miscServBillForm.controls["discAmtCheck"].setValue(false, {
+          emitEvent: false,
+        });
 
         this.miscPatient.setCalculateBillItems(this.calcBillData);
       }
@@ -1559,6 +1568,9 @@ export class BillDetailComponent implements OnInit {
       }
       if (discountRow.length == 0) {
         this.serviceselectedList.forEach((item: any) => {
+          this.miscServBillForm.controls["discAmtCheck"].setValue(false, {
+            emitEvent: false,
+          });
           item.Disc = "0";
           item.DiscAmount = "0.00"; //Number(d.discAmt).toFixed(2);
           item.TotalAmount = item.PriceNo * item.Qty; //Number(d.totalAmt).toFixed(2);
@@ -1616,8 +1628,8 @@ export class BillDetailComponent implements OnInit {
           dialogref.afterClosed().subscribe((res) => {
             this.depodialogTotal = 0;
             this.depositAvailFlag = true;
-            this.depodialogRows = res.data;
-            if (res.data) {
+            if (res) {
+              this.depodialogRows = res.data;
               res.data.forEach((element: any) => {
                 this.depodialogTotal += element.balanceamount;
               });
@@ -2270,10 +2282,19 @@ export class BillDetailComponent implements OnInit {
     if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
       this.miscServBillForm.controls["discAmt"].setValue("0.00");
       this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+      this.miscServBillForm.controls["dipositAmt"].setValue("0.00");
       this.calcBillData.totalDiscount = 0;
       this.calcBillData.depositInput = 0;
       this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
       this.miscPatient.cacheBillTabdata.cacheDepositInput = 0;
+      this.miscPatient.cacheBillTabdata.cacheDeposit = 0;
+      this.miscServBillForm.controls["dipositAmtcheck"].setValue(false, {
+        emitEvent: false,
+      });
+
+      this.miscServBillForm.controls["discAmtCheck"].setValue(false, {
+        emitEvent: false,
+      });
       this.miscPatient.setCalculateBillItems(this.calcBillData);
     }
     let balance =
