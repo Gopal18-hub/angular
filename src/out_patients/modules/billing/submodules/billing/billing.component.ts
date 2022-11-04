@@ -195,11 +195,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
-    this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(async (formdata: any) => {
-        await this.loadGrid(formdata);
-      });
+    this.searchService.searchTrigger.subscribe(async (formdata: any) => {
+      await this.loadGrid(formdata);
+    });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
@@ -1036,6 +1034,19 @@ export class BillingComponent implements OnInit, OnDestroy {
                             price: slItem.price,
                           }
                         );
+                      } else {
+                        this.billingService.processProcedureAddWithOutApi(
+                          1,
+                          slItem.serviceid,
+                          {
+                            serviceid: slItem.serviceid,
+                            value: slItem.itemid,
+                            originalTitle: slItem.itemName,
+                            docRequired: false,
+                            popuptext: false,
+                            price: slItem.price,
+                          }
+                        );
                       }
                     });
                     this.router.navigate(["bill"], {
@@ -1247,11 +1258,11 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         if (result && result.data) {
           let apppatientDetails = result.data.added[0];
-          if (apppatientDetails.iAcode == "") {
+          if (apppatientDetails.maxId.split(".")[1] == "") {
             this.snackbar.open("Invalid Max ID", "error");
           } else {
-            let maxid =
-              apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+            let maxid = apppatientDetails.maxId;
+            // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
             this.formGroup.controls["maxid"].setValue(maxid);
             this.apiProcessing = true;
             this.patient = false;
