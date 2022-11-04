@@ -1502,75 +1502,89 @@ export class BillDetailComponent implements OnInit {
 
     discountReasonPopup.afterClosed().subscribe((res) => {
       this.authoriseId = 0;
-      if ("applyDiscount" in res && res.applyDiscount) {
-        let discountedAmount = 0;
-        let discountRow = this.calculateBillService.discountSelectedItems;
-        if (discountRow.length > 0) {
-          this.authoriseId =
-            this.calculateBillService.discountForm.value.authorise.value;
-        }
-        this.serviceselectedList.forEach((e: any) => {
-          discountRow.forEach((d: any) => {
-            if (Number(d.discTypeId) == 1) {
-              if (
-                discountRow.length == 1 &&
-                [1].includes(discountRow[0].discTypeId)
-              ) {
-                const discItem = discountRow[0];
-                this.serviceselectedList.forEach((item: any) => {
-                  item.Disc = Number(discItem.disc);
-                  item.DiscAmount =
-                    (item.PriceNo * item.Qty * discItem.disc) / 100; //Number(d.discAmt).toFixed(2);
-                  item.TotalAmount = item.PriceNo * item.Qty - item.DiscAmount; //Number(d.totalAmt).toFixed(2);
-                  item.discType = discountRow[0].discTypeId;
-                  item.reason = Number(discItem.reason);
-                });
+      let discountedAmount = 0;
+      let discountRow = this.calculateBillService.discountSelectedItems;
+      if (res) {
+        if ("applyDiscount" in res && res.applyDiscount) {
+          // let discountedAmount = 0;
+          let discountRow = this.calculateBillService.discountSelectedItems;
+          if (discountRow.length > 0) {
+            this.authoriseId =
+              this.calculateBillService.discountForm.value.authorise.value;
+          }
+          this.serviceselectedList.forEach((e: any) => {
+            discountRow.forEach((d: any) => {
+              if (Number(d.discTypeId) == 1) {
+                if (
+                  discountRow.length == 1 &&
+                  [1].includes(discountRow[0].discTypeId)
+                ) {
+                  const discItem = discountRow[0];
+                  this.serviceselectedList.forEach((item: any) => {
+                    item.Disc = Number(discItem.disc);
+                    item.DiscAmount =
+                      (item.PriceNo * item.Qty * discItem.disc) / 100; //Number(d.discAmt).toFixed(2);
+                    item.TotalAmount =
+                      item.PriceNo * item.Qty - item.DiscAmount; //Number(d.totalAmt).toFixed(2);
+                    item.discType = discountRow[0].discTypeId;
+                    item.reason = Number(discItem.reason);
+                  });
+                }
+              } else if (Number(d.discTypeId) == 2) {
+                const items = this.serviceselectedList.filter(
+                  (l: any) => l.ServiceType == d.service
+                );
+                if (items) {
+                  items.forEach((item: any) => {
+                    item.Disc = Number(d.disc);
+                    item.DiscAmount = (item.PriceNo * item.Qty * d.disc) / 100; //Number(d.discAmt).toFixed(2);
+                    item.TotalAmount =
+                      item.PriceNo * item.Qty - item.DiscAmount; //Number(d.totalAmt).toFixed(2);
+                    item.discType = Number(d.discTypeId);
+                    item.reason = Number(d.reason);
+                  });
+                }
+              } else if (Number(d.discTypeId) == 3) {
+                if (e.ItemDescription == d.doctor) {
+                  e.Disc = Number(d.disc);
+                  e.DiscAmount = Number(d.discAmt).toFixed(2);
+                  e.TotalAmount = Number(d.totalAmt).toFixed(2);
+                  e.discType = Number(d.discTypeId);
+                  e.reason = Number(d.reason);
+                }
               }
-            } else if (Number(d.discTypeId) == 2) {
-              const items = this.serviceselectedList.filter(
-                (l: any) => l.ServiceType == d.service
-              );
-              if (items) {
-                items.forEach((item: any) => {
-                  item.Disc = Number(d.disc);
-                  item.DiscAmount = (item.PriceNo * item.Qty * d.disc) / 100; //Number(d.discAmt).toFixed(2);
-                  item.TotalAmount = item.PriceNo * item.Qty - item.DiscAmount; //Number(d.totalAmt).toFixed(2);
-                  item.discType = Number(d.discTypeId);
-                  item.reason = Number(d.reason);
-                });
-              }
-            } else if (Number(d.discTypeId) == 3) {
-              if (e.ItemDescription == d.doctor) {
-                e.Disc = Number(d.disc);
-                e.DiscAmount = Number(d.discAmt).toFixed(2);
-                e.TotalAmount = Number(d.totalAmt).toFixed(2);
-                e.discType = Number(d.discTypeId);
-                e.reason = Number(d.reason);
-              }
-            }
+            });
           });
-        });
-        this.serviceselectedList = [...this.serviceselectedList];
-        this.serviceselectedList.forEach((e: any) => {
-          discountedAmount += Number(e.DiscAmount);
-        });
-        this.miscServBillForm.controls["discAmt"].setValue(
-          discountedAmount.toFixed(2)
-        );
-        this.calcBillData.totalDiscount = discountedAmount;
-        this.miscPatient.setCalculateBillItems(this.calcBillData);
-        this.miscPatient.cacheBillTabdata.cacheDiscount =
-          discountedAmount.toFixed(2);
-        let calcBill0 = this.miscPatient.calculateBill();
-        this.miscServBillForm.controls["amtPayByPatient"].setValue(
-          calcBill0.amntPaidBythePatient.toFixed(2)
-        );
-        if (
-          Number(this.miscServBillForm.value.paymentMode) === 3 &&
-          this.miscServBillForm.value.coPay >= 0
-        ) {
-          this.amtByComp();
         }
+      }
+      if (discountRow.length == 0) {
+        this.serviceselectedList.forEach((item: any) => {
+          item.Disc = "0";
+          item.DiscAmount = "0.00"; //Number(d.discAmt).toFixed(2);
+          item.TotalAmount = item.PriceNo * item.Qty; //Number(d.totalAmt).toFixed(2);
+          item.discType = 0;
+        });
+      }
+      this.serviceselectedList = [...this.serviceselectedList];
+      this.serviceselectedList.forEach((e: any) => {
+        discountedAmount += Number(e.DiscAmount);
+      });
+      this.miscServBillForm.controls["discAmt"].setValue(
+        discountedAmount.toFixed(2)
+      );
+      this.calcBillData.totalDiscount = discountedAmount;
+      this.miscPatient.setCalculateBillItems(this.calcBillData);
+      this.miscPatient.cacheBillTabdata.cacheDiscount =
+        discountedAmount.toFixed(2);
+      let calcBill0 = this.miscPatient.calculateBill();
+      this.miscServBillForm.controls["amtPayByPatient"].setValue(
+        calcBill0.amntPaidBythePatient.toFixed(2)
+      );
+      if (
+        Number(this.miscServBillForm.value.paymentMode) === 3 &&
+        this.miscServBillForm.value.coPay >= 0
+      ) {
+        this.amtByComp();
       }
     });
   }
