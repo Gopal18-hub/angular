@@ -18,7 +18,7 @@ import { PaymentMethodsComponent } from "@core/UI/billing/submodules/payment-met
 import { FormSixtyComponent } from "@core/UI/billing/submodules/form60/form-sixty.component";
 import { DepositService } from "@core/services/deposit.service";
 import { DepositSuccessComponent } from "../deposit-success/deposit-success.component";
-
+import { BillingService } from "../../billing/billing.service";
 @Component({
   selector: "out-patients-deposit-dialog",
   templateUrl: "./deposit-dialog.component.html",
@@ -51,7 +51,7 @@ export class DepositDialogComponent implements OnInit {
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
-  
+
   private readonly _destroying$ = new Subject<void>();
 
   onDepositpage: boolean = true;
@@ -76,7 +76,8 @@ export class DepositDialogComponent implements OnInit {
     private messageDialogService: MessageDialogService,  private cookie: CookieService,
     private http: HttpService,
     private datepipe: DatePipe,
-    private depositservice: DepositService) { }
+    private depositservice: DepositService,
+    private billingservice: BillingService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -104,7 +105,7 @@ export class DepositDialogComponent implements OnInit {
   depositpatientidentityinfo:any=[];
 
   validationexists: boolean = false;
-  depositformvalidation(){
+  async depositformvalidation(){
     this.validationexists = false;
     this.PaymentTypedepositamount = 0;
     this.selecteddepositservicetype = this.servicedeposittype.servicedepositForm.value;
@@ -183,7 +184,10 @@ export class DepositDialogComponent implements OnInit {
      if((this.PaymentTypedepositamount >= 200000) && !this.validationexists &&  (this.depositpatientidentityinfo.length == 0 || 
       this.depositpatientidentityinfo.mainradio == "pancardno" && (this.depositpatientidentityinfo.panno == undefined || this.depositpatientidentityinfo.panno == "")))
       {
-        this.messageDialogService.error("Please Enter a valid PAN Number");   
+        const pannovalidate =  this.messageDialogService.info('Please Enter a valid PAN Number');
+        await pannovalidate.afterClosed().toPromise();
+        this.billingservice.setpaymenthodpancardfocus();
+         return;  
         this.validationexists = true;
      }
      else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false && !this.validationexists){

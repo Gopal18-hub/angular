@@ -275,7 +275,22 @@ export class OderInvestigationsComponent implements OnInit {
               console.log(this.invReferenceList);
               this.questions[1].options = this.invReferenceList.map(
                 (a: any) => {
-                  return { title: a.name, value: a.id };
+                  return {
+                    title: a.name,
+                    value: a.id,
+                    serviceid: a.serviceid,
+                    originalTitle: a.name,
+                    docRequired: a.docRequired,
+                    precaution: a.precaution,
+                    patient_Instructions: a.patient_Instructions,
+                    item_Instructions:
+                      BillingStaticConstants.investigationItemBasedInstructions[
+                        a.id.toString()
+                      ],
+                    ngStyle: {
+                      color: a.outsourceColor == 2 ? "red" : "",
+                    },
+                  };
                 }
               );
               this.questions[1] = { ...this.questions[1] };
@@ -319,6 +334,10 @@ export class OderInvestigationsComponent implements OnInit {
               docRequired: r.docRequired,
               precaution: r.precaution,
               patient_Instructions: r.patient_Instructions,
+              item_Instructions:
+                BillingStaticConstants.investigationItemBasedInstructions[
+                  r.id.toString()
+                ],
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
