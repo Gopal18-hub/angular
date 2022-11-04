@@ -2422,6 +2422,14 @@ export class OpRegistrationComponent implements OnInit {
           this.checkForMaxID();
           console.log(resultData);
           this.maxIDChangeCall = false;
+          this.lastupdatedDate = this.datepipe.transform(this.patientDetails.lastUpdatedOn,"dd/MM/yyyy") == "01/01/1900" ? this.datepipe.transform(this.patientDetails.registeredOn, "dd/MM/yyyy hh:mm aa") : this.datepipe.transform(this.patientDetails.lastUpdatedOn, "dd/MM/yyyy hh:mm aa");
+          this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
+          
+          if (this.datepipe.transform(this.patientDetails.lastUpdatedOn,"dd/MM/yyyy") == "01/01/1900") {             
+            this.LastupdateExist = false;
+          }else{
+            this.LastupdateExist = true;
+          }
         },
         (error) => {
           console.log(error);
@@ -3012,7 +3020,7 @@ export class OpRegistrationComponent implements OnInit {
 
                   data: {
                     message1:
-                      "Similar patient detail with Mobile Number exists.Do you want to proceed?",
+                      "Similar patient detail with Mobile Number exists. Do you want to proceed?",
                     message2: "",
                     btn1: true,
                     btn2: true,
@@ -3103,7 +3111,7 @@ export class OpRegistrationComponent implements OnInit {
 
                 data: {
                   message1:
-                    "Similar patient detail with Mobile Number exists.Do you want to proceed?",
+                    "Similar patient detail with Mobile Number exists. Do you want to proceed?",
                   message2: "",
                   btn1: true,
                   btn2: true,
