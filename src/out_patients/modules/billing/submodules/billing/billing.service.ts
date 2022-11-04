@@ -38,7 +38,7 @@ export class BillingService {
   totalCost = 0;
 
   totalCostWithOutGst = 0;
-
+  billNo = "";
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
@@ -519,6 +519,10 @@ export class BillingService {
 
   setBilltype(billtype: number) {
     this.billtype = billtype;
+  }
+
+  setBillNumber(billNo: any) {
+    this.billNo = billNo;
   }
 
   setActiveMaxId(
@@ -1101,7 +1105,7 @@ export class BillingService {
         priority: priorityId,
         itemId: procedure.value,
         serviceId: procedure.serviceid,
-        locationId:this.cookie.get("HSPLocationId"),
+        locationId: this.cookie.get("HSPLocationId"),
         ipoptype: 1,
         bedType: 0,
         bundleId: 0,
@@ -1611,7 +1615,7 @@ export class BillingService {
     this.calculateTotalAmount();
   }
 
-  setpaymenthodpancardfocus(){
+  setpaymenthodpancardfocus() {
     this.pancardpaymentmethod.next(true);
   }
 }
