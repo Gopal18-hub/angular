@@ -70,6 +70,7 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
+  pancardpaymentmethod = new Subject<any>();
 
   companyData: any = [];
   corporateData: any = [];
@@ -1100,7 +1101,7 @@ export class BillingService {
         priority: priorityId,
         itemId: procedure.value,
         serviceId: procedure.serviceid,
-        locationId: this.cookie.get("HSPLocationId"),
+        locationId:this.cookie.get("HSPLocationId"),
         ipoptype: 1,
         bedType: 0,
         bundleId: 0,
@@ -1608,5 +1609,9 @@ export class BillingService {
       }
     );
     this.calculateTotalAmount();
+  }
+
+  setpaymenthodpancardfocus(){
+    this.pancardpaymentmethod.next(true);
   }
 }
