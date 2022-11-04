@@ -1124,6 +1124,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.calculateBillService.blockActions.next(false);
     this.billingservice.billNoGenerated.next(true);
     this.billNo = result.billNo;
+    this.billingservice.setBillNumber(result.billNo);
     this.billId = result.billId;
     this.config.removeRow = false;
     this.config = { ...this.config };
@@ -1267,7 +1268,6 @@ export class BillComponent implements OnInit, OnDestroy {
             `Do you want Print Blank Op Prescription?`
           );
           dialogref.afterClosed().subscribe((res: any) => {
-        
             if (res.type == "yes") {
               this.reportService.openWindow(
                 "OP Prescription Report - " + this.billNo,
