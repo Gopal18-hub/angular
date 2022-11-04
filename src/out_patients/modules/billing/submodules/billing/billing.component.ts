@@ -471,7 +471,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
         this.expiredPatient = true;
-        const dialogRef = this.messageDialogService.error(
+        const dialogRef = this.messageDialogService.warning(
           "This is an expired patient, no transaction is allowed"
         );
         await dialogRef.afterClosed().toPromise();
