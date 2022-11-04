@@ -34,8 +34,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
   totalAmount = 0;
   // //GAV-530 Paid Online appointment
   onlinePaidAmount = 0;
-  isOnlinePaidAppointment=false;
-  paidAppointments:any={};
+  isOnlinePaidAppointment = false;
+  paidAppointments: any = {};
 
   remainingAmount = 0;
 
@@ -61,7 +61,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
       this.totalAmount = this.config.totalAmount;
     }
     // //GAV-530 Paid Online appointment
-    if(this.config.isonlinepaidappointment){
+    if (this.config.isonlinepaidappointment) {
       this.isOnlinePaidAppointment = this.config.isonlinepaidappointment;
     }
     const bankNames = await this.http
@@ -89,25 +89,26 @@ export class BillingPaymentMethodsComponent implements OnInit {
       this.tabs.push(temp);
       let formResult: any = this.formService.createForm(form.properties, {});
       this.paymentForm[method] = formResult.form;
-      this.questions[method] = formResult.questions;      
+      this.questions[method] = formResult.questions;
       if (index == 0) {
         // // //GAV-530 Paid Online appointment
-         if(this.isOnlinePaidAppointment){
-          if(this.config.formData){
+        if (this.isOnlinePaidAppointment) {
+          if (this.config.formData) {
             this.paymentForm[method].patchValue(this.config.formData[method]);
-             this.tabPrices.push(this.config.formData[method].price);
+            this.tabPrices.push(this.config.formData[method].price);
             this.remainingAmount = 0;
-          }else{
-            this.paymentForm[method].controls["price"].setValue(this.totalAmount);
+          } else {
+            this.paymentForm[method].controls["price"].setValue(
+              this.totalAmount
+            );
             this.tabPrices.push(this.totalAmount);
             this.remainingAmount = 0;
           }
+        } else {
+          this.paymentForm[method].controls["price"].setValue(this.totalAmount);
+          this.tabPrices.push(this.totalAmount);
+          this.remainingAmount = 0;
         }
-        else{
-           this.paymentForm[method].controls["price"].setValue(this.totalAmount);
-            this.tabPrices.push(this.totalAmount);
-            this.remainingAmount = 0;
-        }       
         this.questions[method][0].maximum = this.totalAmount;
         this.activeTab = this.tabs[0];
       }
@@ -134,24 +135,22 @@ export class BillingPaymentMethodsComponent implements OnInit {
     this.activeTab = this.tabs[event.index];
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
-      } else {       
-        if(this.activeTab.key=="onlinepayment"){
-          if(this.config.formData){
-            this.paymentForm[this.activeTab.key]
-              .patchValue(this.config.formData[this.activeTab.key]);
-          }
-          else{
+      } else {
+        if (this.activeTab.key == "onlinepayment") {
+          if (this.config.formData && this.config.formData.bookingId) {
+            this.paymentForm[this.activeTab.key].patchValue(
+              this.config.formData[this.activeTab.key]
+            );
+          } else {
             this.paymentForm[this.activeTab.key].controls["price"].setValue(
               this.remainingAmount
             );
           }
-        }        
-        else{
+        } else {
           this.paymentForm[this.activeTab.key].controls["price"].setValue(
             this.remainingAmount
           );
         }
-       
       }
     }
   }
@@ -160,7 +159,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   ngAfterViewInit(): void {}
 
-  clearTabForm(tab:any){
+  clearTabForm(tab: any) {
     console.log(tab);
     this.paymentForm[tab.key].reset();
   }

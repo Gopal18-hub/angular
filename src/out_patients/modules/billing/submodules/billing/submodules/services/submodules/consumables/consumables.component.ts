@@ -159,7 +159,7 @@ export class ConsumablesComponent implements OnInit {
             this.billingService.addToConsumables({
               sno: index + 1,
               surgeryName: head.itemName,
-              priority: head.priority,
+              priority: typeof head.priority == "string" ? 0 : head.priority, ////GAV1027 make bill priority issue
               credit: 0,
               cash: 0,
               doctorName: head.doctorName,
@@ -169,7 +169,7 @@ export class ConsumablesComponent implements OnInit {
               procedureDataForConsumable: res.procedureDataForConsumable,
               billItem: {
                 itemId: head.itemId,
-                priority: head.priority,
+                priority: typeof head.priority == "string" ? 0 : head.priority, ////GAV1027 make bill priority issue
                 serviceId: head.serviceId,
                 price: head.amount,
                 serviceName: "Consumables Charges",

@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-dms",
@@ -16,7 +17,8 @@ export class DMSComponent implements OnInit {
       maxid: string;
       firstName: string;
       lastName: string;
-    }
+    },
+    private cookie: CookieService
   ) {}
   // searchResults:{verify:string,isVerified:string,remarkss:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
 
@@ -84,7 +86,9 @@ export class DMSComponent implements OnInit {
   uploadkycclick() {
     // this.closeModal('DMSpopup');
     window.open(
-      "http://172.25.1.22:7020/eDocsLogin.do?mode=eDocsSSOLoginForm&loginMode=SSO&userId=M026749&maxId=" +
+      "http://172.25.1.22:7020/eDocsLogin.do?mode=eDocsSSOLoginForm&loginMode=SSO&userId=" +
+        this.cookie.get('UserId') +
+        "&maxId=" +
         this.data.maxid +
         "&pFirstName=" +
         this.data.firstName +

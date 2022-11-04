@@ -92,12 +92,16 @@ export class PaymentMethodsComponent implements OnInit {
       this.PaymentType = 2;
     } else if (Number(this.PaymentMethodcashdeposit.creditamount) > 0) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.creditamount);
+      this.PaymentType = 4;
     } else if (Number(this.PaymentMethodcashdeposit.demandamount) > 0) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.demandamount);
+      this.PaymentType = 3;
     } else if (Number(this.PaymentMethodcashdeposit.upiamount) > 0) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.upiamount);
+      this.PaymentType = 8;
     } else if (Number(this.PaymentMethodcashdeposit.internetamount) > 0) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.internetamount);
+      this.PaymentType = 5;
     }
 
     if (this.Refundavalaiblemaount) {
@@ -124,8 +128,9 @@ export class PaymentMethodsComponent implements OnInit {
       }
     }else if(Number(this.depositamount >= 200000) && this.PaymentType == 1){
       this.messageDialogService.error("Cash amount cannot exceed Rs.199999");
-     // this.questions[0].elementRef.focus();     
-    } else {
+      this.questions[0].elementRef.focus();     
+    } 
+    else {
       this.depositservice.setFormList(this.refundform.value);
     }
   }
