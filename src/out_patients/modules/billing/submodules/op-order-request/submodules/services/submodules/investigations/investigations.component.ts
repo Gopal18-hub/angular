@@ -283,6 +283,10 @@ export class OderInvestigationsComponent implements OnInit {
                     docRequired: a.docRequired,
                     precaution: a.precaution,
                     patient_Instructions: a.patient_Instructions,
+                    item_Instructions:
+                      BillingStaticConstants.investigationItemBasedInstructions[
+                        a.id.toString()
+                      ],
                     ngStyle: {
                       color: a.outsourceColor == 2 ? "red" : "",
                     },
@@ -330,6 +334,10 @@ export class OderInvestigationsComponent implements OnInit {
               docRequired: r.docRequired,
               precaution: r.precaution,
               patient_Instructions: r.patient_Instructions,
+              item_Instructions:
+                BillingStaticConstants.investigationItemBasedInstructions[
+                  r.id.toString()
+                ],
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
