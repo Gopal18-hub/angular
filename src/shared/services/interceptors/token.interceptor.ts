@@ -108,12 +108,14 @@ export class TokenInterceptor implements HttpInterceptor {
     next: HttpHandler,
     sharedCacheResponse: IHttpCacheResponse | null
   ) {
+    ////check added to resolve cache issue GAV-463
     const exist = AllowInDB.find((uri) => {
       return request.url.match(uri);
     });
     return next.handle(request).pipe(
       // Save the response in cache
       tap((event) => {
+        ////exist check added to resolve cache issue GAV-463
         if (event instanceof HttpResponse && request.method == "GET" && exist) {
           const body = event.body;
 
@@ -128,6 +130,7 @@ export class TokenInterceptor implements HttpInterceptor {
       // If any error occurs and a response in cache is available, return it.
       catchError((err, caught) => {
         // Require better logic but for the example, on error, return value cached
+        ////exist check added to resolve cache issue GAV-463
         if (
           err instanceof HttpErrorResponse &&
           request.method == "GET" &&
