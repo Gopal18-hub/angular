@@ -728,12 +728,12 @@ export namespace FormReport {
         dtpfromdate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
         dtptodate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
           minimum: new Date("From Date"),
         },
