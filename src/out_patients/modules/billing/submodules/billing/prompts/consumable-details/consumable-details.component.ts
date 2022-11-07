@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { CookieService } from "@shared/services/cookie.service";
+import { ReportService } from "@shared/services/report.service";
+import { BillingService } from "../../billing.service";
 
 @Component({
   selector: "out-patients-consumable-details",
@@ -58,8 +61,12 @@ export class ConsumableDetailsComponent implements OnInit {
     },
   };
   procedureDataForConsumable: any = [];
-
+  LocationID: any = Number(this.cookie.get("HSPLocationId"));
+  billno: any;
   constructor(
+    private reportService: ReportService,
+    public billingservice: BillingService,
+    private cookie: CookieService,
     public dialogRef: MatDialogRef<ConsumableDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -106,7 +113,20 @@ export class ConsumableDetailsComponent implements OnInit {
     });
     this.itemsData = [...this.itemsData];
   }
-
+  ConsumableBill() {
+    if (this.billingservice.activeMaxId && this.billingservice.billNo) {
+      this.dialogRef.close({ data: this.tableRows.selection.selected });
+      this.reportService.openWindow(
+        this.billno + "- Consumable Report",
+        "ConsumabaleEntryDetailsReport",
+        {
+          MAXID: this.billingservice.activeMaxId.maxId,
+          billno: this.billingservice.billNo,
+          locationId: this.LocationID,
+        }
+      );
+    }
+  }
   close() {
     this.dialogRef.close({ data: this.tableRows.selection.selected });
   }
