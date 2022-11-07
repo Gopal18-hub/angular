@@ -502,7 +502,6 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     var OtherGroupDoc;
     var dmgdata: any[] = [];
     console.log(dsGroupDoc, dsGroupDocprevious);
-    debugger;
     if (dsGroupDocprevious.dtGrpDocpre.length > 0) {
       this.userSelectedDMG = dsGroupDocprevious.dtGrpDocpre[0].dmg;
     }
@@ -571,13 +570,14 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       count++;
     });
     if (dmgdata.length > 0) {
+      console.log(this.formGroup.value)
       const dialogref = this.matDialog.open(DmgPopupComponent, {
         width: "70vw",
         height: "80vh",
         data: {
           dmgdata: dmgdata,
           selectedgrpdoc: SelectedGroupDoc,
-          specialization: this.formGroup.value.specialization.value,
+          specialization: this.formGroup.value.doctorName.specialisationid,
           unitdocid: this.formGroup.value.doctorName.value,
           reason: OtherGroupDoc ? OtherGroupDoc : "",
         },

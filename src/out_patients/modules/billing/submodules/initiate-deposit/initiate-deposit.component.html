@@ -100,7 +100,7 @@
                     </div>
                 </div>
                 <!-----------------------------------------THIRD ROW------------------------------------------------------------->
-                <div class="flex p-2 mt-3 ml-2 max-health-primary-color">
+                <div [class.isDisabled]="expiredpatientexists" class="flex p-2 mt-3 ml-2 max-health-primary-color">
                     <div class="flex w-full">
                         <div class="flex w-1/5">
                             <div class="font-semi-bold">
@@ -155,7 +155,7 @@
                 <div class="mt-10">&nbsp;</div>
                 <div class="mt-3">&nbsp;</div>
                 
-                <div class="float-right initiatedepositbutton">
+                <div [class.isDisabled]="expiredpatientexists" class="float-right initiatedepositbutton expiredpatientexists">
                     <button mat-raised-button color="primary" class="mr-5" (click)="saveinitaitedeposit()"  [disabled]="!initiatedepositForm.valid" >
                         Save
                     </button>

@@ -89,9 +89,24 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     this.depositservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
       this.patientidentityform.controls["panno"].setValue("");
+      this.patientidentityform.controls["mainradio"].setValue("pancardno");
       }
     });
-  }
+
+    this.billingservice.pancardpaymentmethod.subscribe((setfocus) => {
+      if(setfocus){
+        this.questions[2].elementRef.focus();
+      }
+    });
+
+    this.billingservice.clearAllItems.subscribe((clearItems: any) => {
+      if (clearItems) {
+        this.data = [];
+        this.patientidentityform.controls["panno"].setValue("");
+        this.patientidentityform.controls["mainradio"].setValue("pancardno");
+      }
+    });
+    }
 
   ngAfterViewInit(): void
   {

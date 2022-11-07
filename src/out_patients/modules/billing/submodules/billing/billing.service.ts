@@ -38,7 +38,7 @@ export class BillingService {
   totalCost = 0;
 
   totalCostWithOutGst = 0;
-
+  billNo = "";
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
@@ -70,6 +70,7 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
+  pancardpaymentmethod = new Subject<any>();
 
   companyData: any = [];
   corporateData: any = [];
@@ -144,6 +145,7 @@ export class BillingService {
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
     this.calculateBillService.clear();
+    this.billNo = "";
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
@@ -518,6 +520,10 @@ export class BillingService {
 
   setBilltype(billtype: number) {
     this.billtype = billtype;
+  }
+
+  setBillNumber(billNo: any) {
+    this.billNo = billNo;
   }
 
   setActiveMaxId(
@@ -1608,5 +1614,9 @@ export class BillingService {
       }
     );
     this.calculateTotalAmount();
+  }
+
+  setpaymenthodpancardfocus() {
+    this.pancardpaymentmethod.next(true);
   }
 }
