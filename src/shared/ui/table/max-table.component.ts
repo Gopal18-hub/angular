@@ -71,6 +71,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() actionItemClickTrigger: EventEmitter<any> = new EventEmitter();
 
+  @Output() buttonClickTrigger: EventEmitter<any> = new EventEmitter();
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
@@ -93,6 +95,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
   @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
   @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
+  @ViewChild("button") buttonTemplate!: TemplateRef<any>;
+  @ViewChild("Changeablebutton") ChangeablebuttonTemplate!: TemplateRef<any>;
 
   initiateTable: boolean = false;
 
@@ -364,6 +368,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "input_date") return this.inputboxDateTemplate;
     else if (col.type == "input_datetime") return this.inputboxDateTimeTemplate;
     else if (col.type == "dropdown") return this.dropdownTemplate;
+    else if(col.type == "button") return this.buttonTemplate;
+    else if(col.type == "Changeablebutton") return this.ChangeablebuttonTemplate;
     else return this.stringTemplate;
   }
 
@@ -461,5 +467,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
   actionItemClick(item: any, data: any) {
     this.actionItemClickTrigger.emit({ item, data });
+  }
+
+  btnClick(item: any) {
+    this.buttonClickTrigger.emit({col: item.col, data: item.element});
   }
 }

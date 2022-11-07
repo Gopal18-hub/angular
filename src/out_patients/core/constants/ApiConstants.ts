@@ -1525,4 +1525,14 @@ export namespace ApiConstants {
 
   export const checkonlinepaymentstaus =(bookingId:string)=>
     `${environment.BillingApiUrl}api/outpatientbilling/getforonlinebillpaymentstatus/${bookingId}`;
+
+  export const verifydmsdocument = (
+    ID: number,
+    flag: number,
+    IaCode: any,
+    RegistrationNo: number,
+    userId: number
+  ) => {
+    return `${environment.PatientApiUrl}api/patient/verifydmsdocument/${ID}/${flag}/${IaCode}/${RegistrationNo}/${userId}`
+  }
 }
