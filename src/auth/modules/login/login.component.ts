@@ -27,6 +27,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   authStatus: boolean = false;
   public username: string = "";
   Authentication: boolean = true;
+  PasswordLocked: boolean = false;
+  userValidationError: string = "";
   public name: string = "";
 
   loginFormData = {
@@ -156,6 +158,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   reLoginForm() {
     this.Authentication = true;
+    this.PasswordLocked = false;
     window.location.reload();
     setTimeout(() => {
       this.questions[0].elementRef.focus();
@@ -277,8 +280,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.Authentication = false;
               this.loginForm.reset();
             } else if (status == "UserValidationError") {
-              this.authStatus = false;
               this.Authentication = false;
+              this.authStatus = false;
+              if (data.userData) {
+                if (data.userData["error"]) {
+                  console.log(data.userData["error"]);
+                  if (
+                    data.userData["error"].includes(
+                      "Your password is locked due to invalid attempts"
+                    )
+                  ) {
+                    this.PasswordLocked = true;
+                  } else {
+                    this.PasswordLocked = false;
+                  }
+                  this.userValidationError = data.userData["error"];
+                }
+              }
               this.loginForm.reset();
             } else {
               this.authStatus = false;
