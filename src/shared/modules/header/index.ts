@@ -18,6 +18,7 @@ import { RedirectComponent } from "./redirect/redirect.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
+import { SelectimeiComponent } from './selectIMEI/selectimei.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { ChangepaswordComponent } from "./changepasword/changepasword.component"
     RedirectComponent,
     ChangelocationComponent,
     ChangepaswordComponent,
+    SelectimeiComponent,
   ],
   imports: [
     CommonModule,
