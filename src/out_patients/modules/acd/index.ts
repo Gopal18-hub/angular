@@ -22,6 +22,7 @@ import { InvestigationOrdersComponent } from './submodules/investigation-orders/
 import { MedicineOrdersComponent } from './submodules/medicine-orders/medicine-orders.component';
 import { ScheduleDateDialogComponent } from './submodules/schedule-date-dialog/schedule-date-dialog.component';
 import { SaveUpdateDialogComponent } from './submodules/save-update-dialog/save-update-dialog.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
     declarations: [AcdComponent, InvestigationOrdersComponent, MedicineOrdersComponent, ScheduleDateDialogComponent, SaveUpdateDialogComponent
@@ -42,7 +43,8 @@ import { SaveUpdateDialogComponent } from './submodules/save-update-dialog/save-
       MatIconModule,
       MatButtonModule,
       DynamicFormsModule,
-      MatDialogModule
+      MatDialogModule,
+      MatProgressSpinnerModule,
     ],
     exports: [],
     providers: [],    bootstrap: []
