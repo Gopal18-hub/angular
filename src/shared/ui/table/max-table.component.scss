@@ -92,6 +92,11 @@
       }
     }
   }
+  ::ng-deep .mat-raised-button{
+    min-width: 100px !important;
+    height: 1.875rem;
+    line-height: 1.875rem;
+  }
 }
 
 .more-actions {
