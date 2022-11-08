@@ -199,7 +199,7 @@ export namespace CrystalReport {
       params.EquipFromDate
     }&EquipToDate=${params.EquipToDate}&Cmb_Equip=${
       params.Cmb_Equip
-    }&locationID=${MaxHealthStorage.getCookie(
+    }&equipmentName=${params.equipmentName}&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
     )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };

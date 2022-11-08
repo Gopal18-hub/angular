@@ -11,20 +11,52 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        equipmentName: {
+
+          type: "hidden",
+
+        },
+
         Cmb_Equip: {
+
           // type: "dropdown",
+
           type: "autocomplete",
+
           placeholder: "---Equipment---",
+
           title: "Equipment Name",
+
           // defaultValue: "0",
+
           optionsModelConfig: {
+
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
+
             fields: {
+
               title: "name",
 
-              value: "name",
+              value: "id",
+
             },
+
           },
+
+          conditions: [
+
+            {
+
+              expression: "self.title",
+
+              controlKey: "equipmentName",
+
+              type: "value",
+
+            },
+
+          ],
+
         },
         EquipFromDate: {
           type: "date",
