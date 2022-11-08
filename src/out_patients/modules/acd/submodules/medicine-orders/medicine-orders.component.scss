@@ -56,6 +56,9 @@
       }
     }
   }
+  ::ng-deep  .api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
 }
 
 .checkbox-bottom-margin{
@@ -230,5 +233,5 @@
    
     text-align:right;
     padding-right: 42px !important;
-  }
+  } 
 }
