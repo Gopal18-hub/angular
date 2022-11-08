@@ -973,6 +973,12 @@ export class BillComponent implements OnInit, OnDestroy {
                 this.billingservice.selectedOtherPlan
                   ? this.billingservice.selectedOtherPlan.planId
                   : 0;
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId =
+                this.billingservice.patientDetailsInfo
+                  ? this.billingservice.patientDetailsInfo.peMail
+                    ? this.billingservice.patientDetailsInfo.peMail
+                    : "info@maxhealthcare.com"
+                  : "info@maxhealthcare.com";
 
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
@@ -1019,6 +1025,13 @@ export class BillComponent implements OnInit, OnDestroy {
       this.billingservice.selectedOtherPlan
         ? this.billingservice.selectedOtherPlan.planId
         : 0;
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId =
+      this.billingservice.patientDetailsInfo
+        ? this.billingservice.patientDetailsInfo.peMail
+          ? this.billingservice.patientDetailsInfo.peMail
+          : "info@maxhealthcare.com"
+        : "info@maxhealthcare.com";
 
     //GAV-530 Paid Online Appointment
     let amount = 0;
