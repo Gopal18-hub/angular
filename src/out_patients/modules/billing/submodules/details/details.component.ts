@@ -890,7 +890,7 @@ export class DetailsComponent implements OnInit {
         this.matDialog.open(DMSComponent, {
           width: "100vw",
           maxWidth: "90vw",
-          height: "90vh",
+          maxHeight: "80vh",
           data: {
             list: resultData,
             maxid: patientDetails.iacode + "." + patientDetails.registrationno,
