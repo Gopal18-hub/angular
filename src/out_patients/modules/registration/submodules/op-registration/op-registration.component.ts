@@ -92,8 +92,8 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   lastUpdatedBy: string | undefined;
-  lastupdatedDate:any;
-  LastupdateExist:boolean = false;
+  lastupdatedDate: any;
+  LastupdateExist: boolean = false;
   currentTime: any = this.datepipe.transform(new Date(), "dd/MM/yyyy hh:mm aa");
   localityList: LocalityModel[] = [];
   localitybyCityList: LocalityModel[] = [];
@@ -106,7 +106,7 @@ export class OpRegistrationComponent implements OnInit {
   categoryIcons: [] = [];
   passportNo: string = "";
   isNSSHLocation: boolean = false;
-  expiredPatient:boolean=false;
+  expiredPatient: boolean = false;
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -121,7 +121,7 @@ export class OpRegistrationComponent implements OnInit {
   today: Date = new Date(new Date().getTime() - 3888000000);
   maxIDSearch: boolean = false;
   moment = moment;
-
+  apiProcessing: boolean = false;
   passportDetails: {
     passportNo: string;
     IssueDate: string | null;
@@ -445,7 +445,7 @@ export class OpRegistrationComponent implements OnInit {
   hotlistquestion: any;
   hotlistRemark: any;
   hotlistRemarkdb: any;
-  isPatientdetailModified: boolean = false;  
+  isPatientdetailModified: boolean = false;
   private readonly _destroying$ = new Subject<void>();
 
   // @HostListener allows us to also guard against browser refresh, close, etc.
@@ -1282,7 +1282,11 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   hotlistClick(event: Event) {
-    if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist && ! this.expiredPatient) {
+    if (
+      !this.OPRegForm.controls["hotlist"].value &&
+      this.MaxIDExist &&
+      !this.expiredPatient
+    ) {
       this.openHotListDialog();
     }
   }
@@ -1630,11 +1634,11 @@ export class OpRegistrationComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
   hotlistdialogref: any;
   openHotListDialog() {
-    if(!this.expiredPatient){
+    if (!this.expiredPatient) {
       this.gethotlistMasterData();
       console.log(this.hotlistDialogList);
     }
-     
+
     // const dialogref = this.matDialog.open(HotListingDialogComponent, {
     //   width: "30vw",
     //   height: "52vh",
@@ -2229,6 +2233,7 @@ export class OpRegistrationComponent implements OnInit {
   maxIDChangeCall: boolean = false;
   MaxIDExist: boolean = false;
   async getPatientDetailsByMaxId() {
+    this.apiProcessing = true;
     this.maxIDChangeCall = true;
     console.log(this.OPRegForm.value.maxid);
 
@@ -2240,15 +2245,15 @@ export class OpRegistrationComponent implements OnInit {
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
         this.expiredPatient = true;
+        this.apiProcessing = false;
         this.OPRegForm.controls["hotlist"].disable();
         const dialogRef = this.messageDialogService.error(
           "Patient is an Expired Patient!"
         );
         await dialogRef.afterClosed().toPromise();
-      }
-      else{
-         this.expiredPatient = false;
-         this.OPRegForm.controls["hotlist"].enable();
+      } else {
+        this.expiredPatient = false;
+        this.OPRegForm.controls["hotlist"].enable();
       }
       this.http
         .get(ApiConstants.patientDetails(regNumber, iacode))
@@ -2256,6 +2261,7 @@ export class OpRegistrationComponent implements OnInit {
         .subscribe(
           (resultData: PatientDetails) => {
             if (!resultData) {
+              this.apiProcessing = false;
               // this.messageDialogService.info(error.error);
               this.router.navigate([], {
                 queryParams: {},
@@ -2275,15 +2281,32 @@ export class OpRegistrationComponent implements OnInit {
               this.flushAllObjects();
               this.maxIDChangeCall = true;
               this.patientDetails = resultData;
-              this.lastupdatedDate = this.datepipe.transform(this.patientDetails.lastUpdatedOn,"dd/MM/yyyy") == "01/01/1900" ? this.datepipe.transform(this.patientDetails.registeredOn, "dd/MM/yyyy hh:mm aa") : this.datepipe.transform(this.patientDetails.lastUpdatedOn, "dd/MM/yyyy hh:mm aa");
+              this.lastupdatedDate =
+                this.datepipe.transform(
+                  this.patientDetails.lastUpdatedOn,
+                  "dd/MM/yyyy"
+                ) == "01/01/1900"
+                  ? this.datepipe.transform(
+                      this.patientDetails.registeredOn,
+                      "dd/MM/yyyy hh:mm aa"
+                    )
+                  : this.datepipe.transform(
+                      this.patientDetails.lastUpdatedOn,
+                      "dd/MM/yyyy hh:mm aa"
+                    );
               this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
-              
-              if (this.datepipe.transform(this.patientDetails.lastUpdatedOn,"dd/MM/yyyy") == "01/01/1900") {             
+
+              if (
+                this.datepipe.transform(
+                  this.patientDetails.lastUpdatedOn,
+                  "dd/MM/yyyy"
+                ) == "01/01/1900"
+              ) {
                 this.LastupdateExist = false;
-              }else{
+              } else {
                 this.LastupdateExist = true;
               }
-             
+
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatient(
                   this.patientDetails
@@ -2302,6 +2325,7 @@ export class OpRegistrationComponent implements OnInit {
             }
           },
           (error) => {
+            this.apiProcessing = false;
             if (error.error == "Patient Not found") {
               // this.messageDialogService.info(error.error);
               this.router.navigate([], {
@@ -2382,6 +2406,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   postModifyCall() {
+    this.apiProcessing = true;
     this.http
       .post(
         ApiConstants.modifyPatientDetail,
@@ -2390,6 +2415,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
+          this.apiProcessing = false;
           if (this.OPRegForm.value.maxid) {
             this.getPatientDetailsByMaxId();
             this.maxIDSearch = false;
@@ -2408,6 +2434,7 @@ export class OpRegistrationComponent implements OnInit {
           }
         },
         (error) => {
+          this.apiProcessing = false;
           console.log(error);
           this.messageDialogService.error(error.error);
         }
@@ -2415,6 +2442,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   onUpdatePatientDetail() {
+    this.apiProcessing = true;
     this.http
       .post(ApiConstants.updatePatientDetail, this.getPatientUpdatedReqBody())
       .pipe(takeUntil(this._destroying$))
@@ -2422,6 +2450,7 @@ export class OpRegistrationComponent implements OnInit {
         (resultData: PatientDetails) => {
           this.maxIDChangeCall = true; // Added to avoid overlapping of ews popup and successdialog
           this.populateUpdatePatientDetail(resultData);
+          this.apiProcessing = false;
           if (!this.isPatientdetailModified && !this.nationalityChanged) {
             this.messageDialogService.success(
               "Patient Details has been modified"
@@ -2431,17 +2460,20 @@ export class OpRegistrationComponent implements OnInit {
           console.log(resultData);
         },
         (error) => {
+          this.apiProcessing = false;
           this.messageDialogService.error(error.error);
         }
       );
   }
   postForm() {
+    this.apiProcessing = true;
     console.log("request body" + this.getPatientSubmitRequestBody());
     this.http
       .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: PatientDetails) => {
+          this.apiProcessing = false;
           this.patientDetails = resultData;
           this.OPRegForm.markAllAsTouched();
           this.OPRegForm.markAsPristine();
@@ -2454,16 +2486,34 @@ export class OpRegistrationComponent implements OnInit {
           this.checkForMaxID();
           console.log(resultData);
           this.maxIDChangeCall = false;
-          this.lastupdatedDate = this.datepipe.transform(this.patientDetails.lastUpdatedOn,"dd/MM/yyyy") == "01/01/1900" ? this.datepipe.transform(this.patientDetails.registeredOn, "dd/MM/yyyy hh:mm aa") : this.datepipe.transform(this.patientDetails.lastUpdatedOn, "dd/MM/yyyy hh:mm aa");
+          this.lastupdatedDate =
+            this.datepipe.transform(
+              this.patientDetails.lastUpdatedOn,
+              "dd/MM/yyyy"
+            ) == "01/01/1900"
+              ? this.datepipe.transform(
+                  this.patientDetails.registeredOn,
+                  "dd/MM/yyyy hh:mm aa"
+                )
+              : this.datepipe.transform(
+                  this.patientDetails.lastUpdatedOn,
+                  "dd/MM/yyyy hh:mm aa"
+                );
           this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
-          
-          if (this.datepipe.transform(this.patientDetails.lastUpdatedOn,"dd/MM/yyyy") == "01/01/1900") {             
+
+          if (
+            this.datepipe.transform(
+              this.patientDetails.lastUpdatedOn,
+              "dd/MM/yyyy"
+            ) == "01/01/1900"
+          ) {
             this.LastupdateExist = false;
-          }else{
+          } else {
             this.LastupdateExist = true;
           }
         },
         (error) => {
+          this.apiProcessing = false;
           console.log(error);
           this.messageDialogService.info(error.error);
         }
@@ -2817,6 +2867,7 @@ export class OpRegistrationComponent implements OnInit {
 
     //SOURCE OF INFO DROPDOWN
     this.setSourceOfInforValues(patientDetails);
+    this.apiProcessing = false;
   }
 
   //SETTING THE RESPONSE TO ID AND VALUE FOR DROP DOWN
