@@ -152,12 +152,15 @@
                     <div class="h-full w-full mt-2 table">
                         <maxhealth-table
                         [config]="config"
-                        [data]="dispatchreport.dispatchlist"
+                        [data]="data"
                         (columnClick)="printrow($event)"
                         #showtable
                         ></maxhealth-table>
                     </div>
                 </ng-container>
+                <div *ngIf="apiprocessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+                    <mat-spinner strokeWidth="3"></mat-spinner>
+                </div>
             </div>
             
         </div>

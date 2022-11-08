@@ -65,6 +65,7 @@ import { TileStyler } from "@angular/material/grid-list/tile-styler";
 import { LookupService } from "@core/services/lookup.service";
 import * as moment from "moment";
 import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
+import { debug } from "console";
 
 export interface DialogData {
   expieryDate: Date;
@@ -335,6 +336,7 @@ export class OpRegistrationComponent implements OnInit {
         // required property is dependent on country
         options: this.disttList,
         required: true,
+        allowSearchInput: false,
       },
       state: {
         type: "autocomplete",
@@ -892,7 +894,7 @@ export class OpRegistrationComponent implements OnInit {
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
+      .subscribe( (value: any) => {
         this.clearAddressOnCountryChange();
         if (
           this.OPRegForm.value.country.value != undefined &&
@@ -902,13 +904,17 @@ export class OpRegistrationComponent implements OnInit {
           this.getStatesByCountry(value);
           this.getCitiesByCountry(value);
           if (this.OPRegForm.value.country.value != 1) {
+            this.OPRegForm.controls["pincode"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
             this.questions[24].required = false;
             this.questions[25].required = false;
             this.questions[26].required = false;
-            this.questions[21] = { ...this.questions[21] };
+            this.questions[24].allowSearchInput = true;
+            this.questions = {...this.questions};
+            console.log(this.OPRegForm.controls);
+            console.log(this.questions[21]);
             if (!this.OPRegForm.value.nationality.value) {
               this.OPRegForm.controls["nationality"].setValue(null);
             } else {
@@ -917,6 +923,16 @@ export class OpRegistrationComponent implements OnInit {
                 value: this.OPRegForm.value.nationality.value,
               });
             }
+          }
+          else
+          {
+            this.questions[21].required = true;
+            this.questions[22].required = true;
+            this.questions[23].required = true;
+            this.questions[24].required = true;
+            this.questions[25].required = true;
+            this.questions[26].required = true;
+            this.questions[24].allowSearchInput = false;
           }
         }
       });
@@ -958,6 +974,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["city"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
+        console.log(value)
         if (value) {
           if (value.value > 0) {
             if (
@@ -2087,6 +2104,7 @@ export class OpRegistrationComponent implements OnInit {
   cityListByState: CityModel[] = [];
   //CITY LIST FOR STATEID
   getCityListByState(state: any) {
+    console.log(state);
     if (state.value != undefined && state.value != null && state.value != "") {
       this.http
         .get(ApiConstants.cityByStateID(state.value))
@@ -2120,6 +2138,7 @@ export class OpRegistrationComponent implements OnInit {
   //locality by city
   getLocalityByCity(city: any) {
     console.log(city.value);
+    this.localitybyCityList = [];
     if (city.value != undefined && city.value != null && city.value != "") {
       this.http
         .get(ApiConstants.localityBycityID(city.value))
@@ -2138,19 +2157,24 @@ export class OpRegistrationComponent implements OnInit {
   //address BY City
   getAddressByCity(city: any) {
     if (city.value != undefined && city.value != null && city.value != "") {
+      this.addressByCity = [];
       this.http
         .get(ApiConstants.addressByCityID(city.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
+          console.log(resultData);
           this.addressByCity = resultData;
-          this.OPRegForm.controls["state"].setValue({
-            title: this.addressByCity[0].stateName,
-            value: this.addressByCity[0].stateId,
-          });
-          this.OPRegForm.controls["district"].setValue({
-            title: this.addressByCity[0].districtName,
-            value: this.addressByCity[0].districtId,
-          });
+          if(this.addressByCity.length > 0)
+          {
+            this.OPRegForm.controls["state"].setValue({
+              title: this.addressByCity[0].stateName,
+              value: this.addressByCity[0].stateId,
+            });
+            this.OPRegForm.controls["district"].setValue({
+              title: this.addressByCity[0].districtName,
+              value: this.addressByCity[0].districtId,
+            });
+          }
           this.questions[25].readonly = true;
           this.questions[26].readonly = true;
           this.getLocalityByCity(city);
@@ -2164,15 +2188,21 @@ export class OpRegistrationComponent implements OnInit {
       country.value != null &&
       country.value != ""
     ) {
+      console.log(country.value);
+      this.stateList = [];
+      // this.questions[26].options = [];
       this.http
         .get(ApiConstants.stateByCountryId(country.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
+          console.log(resultData);
           this.stateList = resultData;
           // console.log(this.localityListByPin);
           this.questions[26].options = this.stateList.map((l) => {
             return { title: l.stateName, value: l.id };
           });
+
+          this.questions[26] = { ...this.questions[26]};
         });
     }
   }
@@ -2184,6 +2214,7 @@ export class OpRegistrationComponent implements OnInit {
       country.value != null &&
       country.value != ""
     ) {
+      this.cityList = [];
       this.http
         .get(ApiConstants.CityDetail(country.value))
         .pipe(takeUntil(this._destroying$))
@@ -2193,6 +2224,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[24].options = this.cityList.map((l) => {
             return { title: l.cityName, value: l.id };
           });
+          this.questions[24] = { ...this.questions[24]};
         });
     }
   }
@@ -2324,10 +2356,13 @@ export class OpRegistrationComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
-    }
+      .toPromise()
+      .catch(() => {
+        return;
+      } );
+     if (res == null || res == undefined) {
+       return false;
+     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
         return true;

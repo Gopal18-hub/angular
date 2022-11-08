@@ -511,7 +511,16 @@ export class MiscellaneousBillingComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
+      .toPromise()
+      .catch((e) => {
+        //this.snackbar.open(e.error.errors.regiNo, "error");
+        this.snackbar.open("Invalid Max ID", "error");
+        return false;
+      });
+
+    if (res == null || res == undefined) {
+      return false;
+    }
     if (res)
       if (res.length > 0) {
         if (res[0].flagexpired == 1) {
