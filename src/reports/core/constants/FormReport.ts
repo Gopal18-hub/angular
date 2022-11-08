@@ -12,13 +12,10 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         equipmentName: {
-
           type: "hidden",
-
         },
 
         Cmb_Equip: {
-
           // type: "dropdown",
 
           type: "autocomplete",
@@ -30,33 +27,24 @@ export namespace FormReport {
           // defaultValue: "0",
 
           optionsModelConfig: {
-
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
 
             fields: {
-
               title: "name",
 
               value: "id",
-
             },
-
           },
 
           conditions: [
-
             {
-
               expression: "self.title",
 
               controlKey: "equipmentName",
 
               type: "value",
-
             },
-
           ],
-
         },
         EquipFromDate: {
           type: "date",
@@ -577,6 +565,7 @@ export namespace FormReport {
           title: "",
           required: false,
           questionClasses: "max-hide",
+
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -584,6 +573,7 @@ export namespace FormReport {
               value: "id",
             },
           },
+          defaultValue: "",
         },
 
         Location: {
@@ -618,7 +608,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "membershipno".trim(),
             },
           },
         },
