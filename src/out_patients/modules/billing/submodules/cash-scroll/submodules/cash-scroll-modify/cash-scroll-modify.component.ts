@@ -616,28 +616,29 @@ export class CashScrollModifyComponent implements OnInit {
           item.cash = Number(item.cash).toFixed(2);
           item.modifiedCash = Number(item.cash).toFixed(2);
           item.cheque = Number(item.cheque).toFixed(2);
-          item.modifiedCheqAmt = Number(item.modifiedCheqAmt).toFixed(2);
+          item.modifiedCheqAmt = Number(item.cheque) != 0 ? Number(item.cheque).toFixed(2): Number(item.modifiedCheqAmt).toFixed(2);
           item.dd = Number(item.dd).toFixed(2);
           item.dues = Number(item.dues).toFixed(2);
           item.tdsamount = Number(item.tdsamount).toFixed(2);
           item.totalamount = Number(item.netamount).toFixed(2);
           item.donationAmount = Number(item.donationAmount).toFixed(2);
           item.modifiedDonationAmount = Number(item.modifiedDonationAmount).toFixed(2);
-          item.modifiedCashPaymentMobile = Number(item.modifiedCashPaymentMobile).toFixed(2);
-          item.modifiedDDAmt = Number(item.modifiedDDAmt).toFixed(2);
+          item.modifiedCashPaymentMobile = Number(item.mobilePayment) != 0? Number(item.mobilePayment).toFixed(2): Number(item.modifiedCashPaymentMobile).toFixed(2);
+          item.modifiedDDAmt = Number(item.dd) != 0? Number(item.dd).toFixed(2) :Number(item.modifiedDDAmt).toFixed(2);
           item.creditCard = Number(item.creditCard).toFixed(2);
-          item.modifiedCCAmt = Number(item.modifiedCCAmt).toFixed(2);
+          item.modifiedCCAmt = Number(item.creditCard) != 0? Number(item.creditCard).toFixed(2): Number(item.modifiedCCAmt).toFixed(2);
           item.mobilePayment = Number(item.mobilePayment).toFixed(2);
-          item.modifiedCashMobileDetails = Number(item.modifiedCashMobileDetails).toFixed(2);
+          item.modifiedCashMobileDetails = Number(item.mobilePayment) != 0? Number(item.mobilePayment).toFixed(2): Number(item.modifiedCashMobileDetails).toFixed(2);
           item.onlinePayment = Number(item.onlinePayment).toFixed(2);
-          item.modifiedOnlinePayment = Number(item.modifiedOnlinePayment).toFixed(2);
+          item.modifiedOnlinePayment = Number(item.onlinePayment) != 0? Number(item.onlinePayment).toFixed(2): Number(item.modifiedOnlinePayment).toFixed(2);
           item.upiAmt = Number(item.upiAmt).toFixed(2);
-          item.modifiedUPIAmt = Number(item.modifiedUPIAmt).toFixed(2);
+          item.modifiedUPIAmt = Number(item.upiAmt) != 0? Number(item.upiAmt).toFixed(2): Number(item.modifiedUPIAmt).toFixed(2);
           item.mobilePayment = Number(item.mobilePayment).toFixed(2);
           item.chequeNo = this.isNull(item.chequeNo);
           item.batchno = this.isNull(item.batchno);
           item.onlinePaymentDetails = this.isNull(item.onlinePaymentDetails);
         })
+        console.log(this.table);
   }
 
   filtercall()
@@ -766,66 +767,73 @@ export class CashScrollModifyComponent implements OnInit {
     this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
 
       //Cash
-      if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
+      if(item.netamount != 0)
       {
-        var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
-        if(Number(total) == Number(item.netamount))
+        if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
         {
+          var total = Number(item.depositamount) +  Math.abs(Number(item.discountamount)) + Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
+          if(Number(total) == Number(item.netamount))
+          {
 
+          } 
+          else
+          {
+            cashflag = 1;
+            billforcash = item.billno;
+          }
+          console.log(Number(item.depositamount) ,  Math.abs(Number(item.discountamount)) , Number(item.dues) , Number(item.modifiedCash) , Number(item.modifiedCCAmt) , Number(item.modifiedCheqAmt) , Number(item.modifiedDDAmt) , Number(item.modifiedCashPaymentMobile) , Number(item.modifiedOnlinePayment) , Number(item.modifiedUPIAmt) , Number(item.modifiedDonationAmount))
+          console.log(item.receiptNo, Number(total),  Number(item.netamount))
+          return;
         }
-        else
+
+        if(Number(item.modifiedCheqAmt) > 0 ||
+          Number(item.modifiedDDAmt) > 0 ||
+          Number(item.modifiedCCAmt) > 0 ||
+          Number(item.modifiedCashPaymentMobile) > 0 ||
+          Number(item.modifiedOnlinePayment) > 0 ||
+          Number(item.modifiedUPIAmt) > 0 ||
+          Number(item.modifiedDonationAmount) > 0)
         {
-          cashflag = 1;
-          billforcash = item.billno;
-        }
-      }
+          var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
+          if(Number(total) == Number(item.netamount))
+          {
 
-      if(Number(item.modifiedCheqAmt) > 0 ||
-        Number(item.modifiedDDAmt) > 0 ||
-        Number(item.modifiedCCAmt) > 0 ||
-        Number(item.modifiedCashPaymentMobile) > 0 ||
-        Number(item.modifiedOnlinePayment) > 0 ||
-        Number(item.modifiedUPIAmt) > 0 ||
-        Number(item.modifiedDonationAmount) > 0)
-      {
-        var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
-        if(Number(total) == Number(item.netamount))
+          }
+          else
+          {
+            otherflag = 1;
+            billforother = item.billno;
+          }
+          console.log(Number(total),  Number(item.netamount))
+        }
+
+        //cheque
+        if(Number(item.modifiedCheqAmt) != 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
         {
-
+          chequeflag = 1;
+          billforcheque = item.billno;
         }
-        else
+
+        //credit card
+        if(Number(item.modifiedCCAmt) != 0 && (item.batchno == '' || item.batchno == null || Number(item.batchno) == 0))
         {
-          otherflag = 1;
-          billforother = item.billno;
+          ccflag = 1;
+          billforcc = item.billno;
         }
-      }
 
-      //cheque
-      if(Number(item.modifiedCheqAmt) != 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
-      {
-        chequeflag = 1;
-        billforcheque = item.billno;
-      }
+        //DD
+        if(Number(item.modifiedDDAmt) != 0 && (item.ddnumber == '' || item.ddnumber == null || Number(item.ddnumber) == 0))
+        {
+          ddflag = 1;
+          billfordd = item.billno;
+        }
 
-      //credit card
-      if(Number(item.modifiedCCAmt) != 0 && (item.batchno == '' || item.batchno == null || Number(item.batchno) == 0))
-      {
-        ccflag = 1;
-        billforcc = item.billno;
-      }
-
-      //DD
-      if(Number(item.modifiedDDAmt) != 0 && (item.ddnumber == '' || item.ddnumber == null || Number(item.ddnumber) == 0))
-      {
-        ddflag = 1;
-        billfordd = item.billno;
-      }
-
-      //Online
-      if(Number(item.modifiedOnlinePayment) != 0 && (item.onlinePaymentDetails == '' || item.onlinePaymentDetails == null || Number(item.onlinePaymentDetails) == 0))
-      {
-        onlineflag = 1;
-        billforonline = item.billno;
+        //Online
+        if(Number(item.modifiedOnlinePayment) != 0 && (item.onlinePaymentDetails == '' || item.onlinePaymentDetails == null || Number(item.onlinePaymentDetails) == 0))
+        {
+          onlineflag = 1;
+          billforonline = item.billno;
+        }
       }
 
     })

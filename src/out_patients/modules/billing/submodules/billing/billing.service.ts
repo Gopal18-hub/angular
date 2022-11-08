@@ -38,7 +38,7 @@ export class BillingService {
   totalCost = 0;
 
   totalCostWithOutGst = 0;
-
+  billNo = "";
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
@@ -145,6 +145,7 @@ export class BillingService {
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
     this.calculateBillService.clear();
+    this.billNo = "";
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
@@ -519,6 +520,10 @@ export class BillingService {
 
   setBilltype(billtype: number) {
     this.billtype = billtype;
+  }
+
+  setBillNumber(billNo: any) {
+    this.billNo = billNo;
   }
 
   setActiveMaxId(
@@ -1101,7 +1106,7 @@ export class BillingService {
         priority: priorityId,
         itemId: procedure.value,
         serviceId: procedure.serviceid,
-        locationId:this.cookie.get("HSPLocationId"),
+        locationId: this.cookie.get("HSPLocationId"),
         ipoptype: 1,
         bedType: 0,
         bundleId: 0,
@@ -1611,7 +1616,7 @@ export class BillingService {
     this.calculateTotalAmount();
   }
 
-  setpaymenthodpancardfocus(){
+  setpaymenthodpancardfocus() {
     this.pancardpaymentmethod.next(true);
   }
 }

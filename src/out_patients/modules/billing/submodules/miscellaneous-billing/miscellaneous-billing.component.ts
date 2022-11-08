@@ -646,7 +646,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
-            queryParams: { maxID: this.miscForm.value.maxid },
+            queryParams: { maxID: this.miscForm.value.maxid, from: 1 },
           });
           return;
         }
