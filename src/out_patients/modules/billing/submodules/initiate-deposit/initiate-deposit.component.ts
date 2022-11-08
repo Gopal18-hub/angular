@@ -158,7 +158,6 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
 
   private readonly _destroying$ = new Subject<void>();
   
-  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   ngOnInit(): void {
     let formResult = this.formService.createForm(
       this.initiatedepositformdata.properties,{}
@@ -300,7 +299,16 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           }
            
       }else{
-        this.messageDialogService.error("Please enter valid MAX ID or Phone Number for search");
+        if(this.initiatedepositForm.value.mobileno){          
+          this.initiatedepositForm.controls["mobileno"].setErrors({ incorrect: true });
+          this.questions[1].customErrorMessage = "Invalid Phone Number";
+        }else if(this.initiatedepositForm.value.maxid){ 
+          this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = "Invalid Max ID";
+        }
+        else{
+          this.messageDialogService.error("Please enter valid MAX ID or Phone Number for search");
+        }
       }     
     },
       (error) => {
@@ -386,7 +394,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       this.initiatedepositForm.value.mobilenoinput,
       this.operatorID,
       this.stationId,
-      this.hspLocationid,
+      this.hsplocationId,
       this.initiatedepositForm.value.remarks,
       0,
       0
@@ -402,10 +410,13 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
-    }
+      .toPromise()
+      .catch(() => {
+        return;
+      } );
+     if (res == null || res == undefined) {
+       return false;
+     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
         return true;

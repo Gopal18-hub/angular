@@ -52,6 +52,7 @@ export class DepositDialogComponent implements OnInit {
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
+
   private readonly _destroying$ = new Subject<void>();
 
   onDepositpage: boolean = true;
@@ -172,9 +173,18 @@ export class DepositDialogComponent implements OnInit {
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.upiamount);
       }
       else if(this.DepositcashMode.internetamount > 0){
+        this.PaymentType = 5;
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.internetamount);
+        if(this.DepositcashMode.internetemail.trim().toUpperCase() == "INFO@MAXHEALTHCARE.COM"){
+          this.messageDialogService.error("Please fill valid Email Id " + this.DepositcashMode.internetemail + " Not allowed to save internet payment request!!");
+          this.validationexists = true;
+        }
+        else if(this.DepositcashMode.internetremarks == "" || this.DepositcashMode.internetremarks == null ){
+          this.messageDialogService.error("Please fill Internet Payment Remarks !!");
+          this.validationexists = true;
+        }
       }
-      else if(this.PaymentTypedepositamount == 0){
+      else if(this.PaymentTypedepositamount <= 0){
         this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
       }      
