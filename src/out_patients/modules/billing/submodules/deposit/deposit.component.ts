@@ -657,6 +657,10 @@ export class DepositComponent implements OnInit {
           this.depositForm.controls["maxid"].setErrors({ incorrect: true });
           this.questions[0].customErrorMessage = "Invalid Max ID";
         }
+      },
+      (error) => {
+        this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+        this.questions[0].customErrorMessage = "Invalid Max ID";
       });
   }
 
@@ -985,9 +989,12 @@ export class DepositComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .toPromise()
+     .catch(() => {
+       return;
+     } );
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
