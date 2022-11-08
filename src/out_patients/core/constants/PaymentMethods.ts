@@ -249,6 +249,19 @@ export namespace PaymentMethods {
           label: "Bank TID",
         },
       },
+      actionItems: [
+        {
+          label: "Manual",
+          type: "",
+        },
+        {
+          label: "Get Approval",
+        },
+        {
+          label: "Retry",
+          type: "",
+        },
+      ],
     };
   };
 
@@ -313,6 +326,19 @@ export namespace PaymentMethods {
           label: "Bank TID",
         },
       },
+      actionItems: [
+        {
+          label: "Manual",
+          type: "",
+        },
+        {
+          label: "Get Approval",
+        },
+        {
+          label: "Retry",
+          type: "",
+        },
+      ],
     };
   };
 
@@ -403,6 +429,15 @@ export namespace PaymentMethods {
           label: "Transaction Reference",
         },
       },
+      actionItems: [
+        {
+          label: "Recheck",
+          type: "",
+        },
+        {
+          label: "OK",
+        },
+      ],
     };
   };
 
@@ -442,6 +477,15 @@ export namespace PaymentMethods {
           label: "Contact No.",
         },
       },
+      actionItems: [
+        {
+          label: "Search",
+          type: "",
+        },
+        {
+          label: "Clear",
+        },
+      ],
     };
   };
 
@@ -484,6 +528,15 @@ export namespace PaymentMethods {
           label: "Order ID",
         }, ///40
       },
+      actionItems: [
+        {
+          label: "Recheck",
+          type: "",
+        },
+        {
+          label: "OK",
+        },
+      ],
     };
   };
 
@@ -538,6 +591,15 @@ export namespace PaymentMethods {
           label: "Acquiring Bank",
         },
       },
+      actionItems: [
+        {
+          label: "Get Status",
+          type: "",
+        },
+        {
+          label: "OK",
+        },
+      ],
     };
   };
 

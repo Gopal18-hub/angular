@@ -71,6 +71,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() actionItemClickTrigger: EventEmitter<any> = new EventEmitter();
 
+  @Output() buttonClickTrigger: EventEmitter<any> = new EventEmitter();
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
@@ -93,6 +95,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
   @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
   @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
+  @ViewChild("button") buttonTemplate!: TemplateRef<any>;
+  @ViewChild("Changeablebutton") ChangeablebuttonTemplate!: TemplateRef<any>;
 
   initiateTable: boolean = false;
 
@@ -114,6 +118,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   childTableConfig: any = {};
 
   @ViewChildren("childTable") childTable!: QueryList<any>;
+
+  disabledCheckItems = 0;
 
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
@@ -312,7 +318,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.dataSource.data.length - this.disabledCheckItems;
     return numSelected === numRows;
   }
 
@@ -322,10 +328,19 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection.clear();
       return;
     }
-    this.selection.select(...this.dataSource.data);
+    let selected = 0;
+    this.disabledCheckItems = 0;
+    this.dataSource.data.forEach((item: any) => {
+      if ("disablecheckbox" in item && item.disablecheckbox) {
+        this.disabledCheckItems++;
+      } else {
+        this.selection.select(item);
+        selected++;
+      }
+    });
     //If mastercheck includes deselection,
     //the mastercheckbox has to change from indeterminate to checked status
-    this.selection.selected.length = this.dataSource.data.length;
+    this.selection.selected.length = selected;
   }
 
   /** The label for the checkbox on the passed row */
@@ -353,12 +368,15 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "input_date") return this.inputboxDateTemplate;
     else if (col.type == "input_datetime") return this.inputboxDateTimeTemplate;
     else if (col.type == "dropdown") return this.dropdownTemplate;
+    else if(col.type == "button") return this.buttonTemplate;
+    else if(col.type == "Changeablebutton") return this.ChangeablebuttonTemplate;
     else return this.stringTemplate;
   }
 
   columnClickFun(element: any, col: string) {
     this.columnClick.emit({ row: element, column: col });
     if (this.config.selectBox && this.config.clickedRows) return;
+    if (this.config.selectBox && !this.config.clickedRows) return;
     if (!this.config.selectBox && !this.config.clickedRows) return;
     this.selection.toggle(element);
   }
@@ -449,5 +467,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
   actionItemClick(item: any, data: any) {
     this.actionItemClickTrigger.emit({ item, data });
+  }
+
+  btnClick(item: any) {
+    this.buttonClickTrigger.emit({col: item.col, data: item.element});
   }
 }

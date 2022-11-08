@@ -9,7 +9,7 @@
   </div>
   <div
     class="h-22vh mt-1 mb-1"
-    [class.isDisabled]="billingservice.totalCost == 0"
+    [class.isDisabled]="billingservice.totalCostWithOutGst == 0"
   >
     <form [formGroup]="formGroup" class="sub-bill-form h-full">
       <div class="flex w-full h-full">
@@ -271,6 +271,13 @@
                       class="p-0 bg-deposit min-width-initial"
                       (click)="gsttaxdialog()"
                       type="button"
+                      [disabled]="
+                        !finalgstDetails ||
+                        !calculateBillService.dsTaxCode ||
+                        (calculateBillService.dsTaxCode &&
+                          calculateBillService.dsTaxCode.totaltaX_RATE_VALUE ==
+                            0)
+                      "
                     >
                       <mat-icon class="icon-more p-0 font-xs"
                         >more_horiz</mat-icon

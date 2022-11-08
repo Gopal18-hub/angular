@@ -428,7 +428,6 @@ export class BillDetailTableComponent implements OnInit {
           return;
         }
       }
-
       //For Acknowledged Items
       if(this.tableRows.selection.selected.length > 0)
       {  
@@ -438,7 +437,7 @@ export class BillDetailTableComponent implements OnInit {
         for(var i = 0; i < this.tableRows.selection.selected.length; i++)
         {
           var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-            return a.itemid == this.tableRows.selection.selected[i].itemid;
+            return a.itemid == this.tableRows.selection.selected.itemid;
           })
           console.log(list);
           for(var z = 0; z < list.length; z++)
@@ -448,15 +447,16 @@ export class BillDetailTableComponent implements OnInit {
               this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
               console.log(this.tableRows.selection);
               setTimeout(() => {
-                this.tableRows.selection.deselect(s.added[0]);
+                this.tableRows.selection.deselect(this.tableRows.selection.selected[0]);
               }, 100);
-              }
             }
+          }
             
             //For Normal Push
             console.log(this.tableRows.selection.selected[i])
             if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
             {
+              
               console.log(this.tableRows.selection.selected[i].itemid);
               this.billDetailservice.addForApproval({
               ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,

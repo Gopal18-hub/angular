@@ -76,14 +76,18 @@ export class DepositComponent implements OnInit {
         this.depositForm.value.maxid = lookupdata[0]["maxid"];
         this.iacode = this.depositForm.value.maxid.split(".")[0];
         this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
-        const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
+        const expiredStatus = await this.checkPatientExpired(
+          this.iacode,
+          this.regNumber
+        );
         if (expiredStatus) {
-          
           const dialogRef = this.messageDialogService.error(
             "Patient is an Expired Patient!"
           );
           await dialogRef.afterClosed().toPromise();
           this.expiredpatientexists = true;
+          this.questions[0].readonly = false;
+          this.questions[0].elementRef.focus();
         }
         this.getPatientDetailsForDeposit();
       }
@@ -107,13 +111,18 @@ export class DepositComponent implements OnInit {
 
             this.iacode = maxID.split(".")[0];
             this.regNumber = Number(maxID.split(".")[1]);
-            const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
-            if ( expiredStatus) {
+            const expiredStatus = await this.checkPatientExpired(
+              this.iacode,
+              this.regNumber
+            );
+            if (expiredStatus) {
               const dialogRef = this.messageDialogService.error(
                 "Patient is an Expired Patient!"
               );
-               dialogRef.afterClosed().toPromise();
-               this.expiredpatientexists = true;
+              await  dialogRef.afterClosed().toPromise();
+              this.expiredpatientexists = true;
+              this.questions[0].readonly = false;
+              this.questions[0].elementRef.focus();
             }
             this.getPatientDetailsForDeposit();
           }
@@ -132,7 +141,7 @@ export class DepositComponent implements OnInit {
         // title: "Max ID"
       },
       mobileno: {
-        type: "number",
+        type: "tel",
         title: "Mobile No.",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
@@ -346,7 +355,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string = "";
-  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any =  Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -403,6 +412,7 @@ export class DepositComponent implements OnInit {
         patientinfo: {
           emailId: this.patientpersonaldetails[0]?.pEMail,
           mobileno: this.patientpersonaldetails[0]?.pcellno,
+          screename: "Deposit",
         },
         clickedrowdepositdetails: this.patientRefundDetails,
       },
@@ -476,45 +486,56 @@ export class DepositComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.questions[0].elementRef.addEventListener("keypress", async (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
+    this.questions[0].elementRef.addEventListener(
+      "keypress",
+      async (event: any) => {
+        // If the user presses the "Enter" key on the keyboard
 
-      if (event.key === "Enter") {
-        event.preventDefault();
-        if (this.depositForm.value.maxid == "") {
-          this.messageDialogService.error(
-            "Blank Registration Number is not Allowed"
-          );
-        } else {
-          this.iacode = this.depositForm.value.maxid.split(".")[0];
-          this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
-          if (
-            this.iacode != "" &&
-            this.iacode != "0" &&
-            this.regNumber != 0 &&
-            !Number.isNaN(Number(this.regNumber))
-          ) {
-            const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
-            if ( expiredStatus) {
-              const dialogRef = this.messageDialogService.error(
-                "Patient is an Expired Patient!"
-              );
-               dialogRef.afterClosed().toPromise();
-               this.expiredpatientexists = true;
-            }
-            this.getDepositType();
-            this.getPatientDetailsForDeposit();
+        if (event.key === "Enter") {
+          this.expiredpatientexists = false;
+          event.preventDefault();
+          if (this.depositForm.value.maxid == "") {
+            this.messageDialogService.error(
+              "Blank Registration Number is not Allowed"
+            );
           } else {
-            this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-            this.questions[0].customErrorMessage = "Invalid Max ID";
+            this.iacode = this.depositForm.value.maxid.split(".")[0];
+            this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
+            if (
+              this.iacode != "" &&
+              this.iacode != "0" &&
+              this.regNumber != 0 &&
+              !Number.isNaN(Number(this.regNumber))
+            ) {
+              const expiredStatus = await this.checkPatientExpired(
+                this.iacode,
+                this.regNumber
+              );
+              if (expiredStatus) {
+                const dialogRef = this.messageDialogService.error(
+                  "Patient is an Expired Patient!"
+                );
+               await dialogRef.afterClosed().toPromise();
+                
+                this.questions[0].readonly = false;
+                this.questions[0].elementRef.focus();
+                this.expiredpatientexists = true;
+              }
+              this.getDepositType();
+              this.getPatientDetailsForDeposit();
+            } else {
+              this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+              this.questions[0].customErrorMessage = "Invalid Max ID";
+            }
           }
         }
       }
-    });
+    );
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
       console.log(event);
       if (event.key === "Enter" || event.key === "Tab") {
-        event.preventDefault();
+        //COMMENTED IN ORDER TO MOVE FOCUS TO THE NEXT BUTTON(FOR ERROR MESSAGE)
+        // event.preventDefault();
         this.mobilechange();
       }
     });
@@ -556,7 +577,10 @@ export class DepositComponent implements OnInit {
               this.nationality =
                 this.patientpersonaldetails[0]?.nationalityName;
               this.ssn = this.patientpersonaldetails[0]?.ssn;
-              this.questions[0].readonly = true;
+
+              if(!this.expiredpatientexists){
+                this.questions[0].readonly = true;
+              }
 
               this.depositForm.controls["panno"].setValue(
                 this.patientpersonaldetails[0]?.paNno
@@ -628,6 +652,10 @@ export class DepositComponent implements OnInit {
         } else if (resultData == CheckPatientDetails.HaveDeposit) {
           this.getPatientDetailsByMaxId();
           this.getPatientPreviousDepositDetails();
+        }
+        else if(resultData == null){
+          this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = "Invalid Max ID";
         }
       });
   }
@@ -778,7 +806,7 @@ export class DepositComponent implements OnInit {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
           {
-            if (this.similarContactPatientList.length != 0) {
+            if (this.similarContactPatientList.length > 1) {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
@@ -799,23 +827,34 @@ export class DepositComponent implements OnInit {
                     this.iacode = maxID.split(".")[0];
                     this.regNumber = Number(maxID.split(".")[1]);
                     this.depositForm.controls["maxid"].setValue(maxID);
-                    const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
-                    if ( expiredStatus) {
+                    const expiredStatus = await this.checkPatientExpired(
+                      this.iacode,
+                      this.regNumber
+                    );
+                    if (expiredStatus) {
                       const dialogRef = this.messageDialogService.error(
                         "Patient is an Expired Patient!"
                       );
-                       dialogRef.afterClosed().toPromise();
-                       this.expiredpatientexists = true;
+                      await dialogRef.afterClosed().toPromise();
+                      this.expiredpatientexists = true;
+                      this.questions[0].readonly = false;
+                      this.questions[0].elementRef.focus();
                     }
                     this.getPatientDetailsForDeposit();
                   }
                   this.similarContactPatientList = [];
                 });
+            } else if ((this.similarContactPatientList.length = 1)) {
+              console.log(resultData);
+              let maxID = resultData[0].maxid;
+              this.depositForm.controls["maxid"].setValue(maxID);
+              this.getPatientDetailsByMaxId();
             } else {
               this.depositForm.controls["mobile"].setErrors({
                 incorrect: true,
               });
               this.questions[1].customErrorMessage = "Invalid Mobile No";
+
               console.log("no data found");
             }
           }
@@ -830,60 +869,51 @@ export class DepositComponent implements OnInit {
   printpatientreceipt() {
     let regno = Number(this.depositForm.value.maxid.split(".")[1]);
     let iacode = this.depositForm.value.maxid.split(".")[0];
-   
-    if(this.deposittable.selection.selected[0]){
+
+    if (this.deposittable.selection.selected[0]) {
       let billno = this.deposittable.selection.selected[0].receiptno;
       this.http
-      .get(
-        ApiConstants.getform60(
-          this.hspLocationid,
-          billno,
-          iacode,
-          regno
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata: any) => {
-          console.log(resultdata);
-          this.form60 = resultdata;
-          console.log(this.form60);
-          if (this.form60 == 1) {
-            const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
-              width: "30vw",
-              height: "35vh",
-            });
-            dialogref.afterClosed().subscribe((res) => {
-              if (res == "yes") {
-                this.depositreport();
-                this.formreport();
-              } else if (res == "no") {
-                this.depositreport();
-              }
-            });
-          } else {
-            this.depositreport();
+        .get(ApiConstants.getform60(this.hspLocationid, billno, iacode, regno))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata: any) => {
+            console.log(resultdata);
+            this.form60 = resultdata;
+            console.log(this.form60);
+            if (this.form60 == 1) {
+              const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
+                width: "30vw",
+                height: "35vh",
+              });
+              dialogref.afterClosed().subscribe((res) => {
+                if (res == "yes") {
+                  this.depositreport();
+                  this.formreport();
+                } else if (res == "no") {
+                  this.depositreport();
+                }
+              });
+            } else {
+              this.depositreport();
+            }
+          },
+          (error) => {
+            console.log(error);
           }
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-
-    }
-   else{
-    this.deposittable.childTable.map((r: any) => {
-      r.selection.selected.map((res: any) => {
-        if (res) {
-          this.reportService.openWindow("rptRefund", "rptRefund", {
-            receiptno: res.receiptno,
-            locationID: this.hspLocationid,
-          });
-        }
+        );
+    } else {
+      this.deposittable.childTable.map((r: any) => {
+        r.selection.selected.map((res: any) => {
+          if (res) {
+            this.reportService.openWindow("rptRefund", "rptRefund", {
+              receiptno: res.receiptno,
+              locationID: this.hspLocationid,
+            });
+          }
+        });
       });
-    });
-   }
-  
+    }
+
     console.log(this.deposittable.selection.selected);
   }
   depositreport() {
@@ -893,18 +923,22 @@ export class DepositComponent implements OnInit {
         locationID: this.hspLocationid,
       });
     });
-
   }
   formreport() {
     let regno = Number(this.depositForm.value.maxid.split(".")[1]);
     let iacode = this.depositForm.value.maxid.split(".")[0];
     let billno = this.deposittable.selection.selected[0].receiptno;
-    this.reportService.openWindow("FormSixty", "FormSixty", {
-      LocationId: Number(this.cookie.get("HSPLocationId")),
-      Iacode: iacode,
-      RegistrationNo: regno,
-      BillNo: billno,
-    },"right","center"
+    this.reportService.openWindow(
+      "FormSixty",
+      "FormSixty",
+      {
+        LocationId: Number(this.cookie.get("HSPLocationId")),
+        Iacode: iacode,
+        RegistrationNo: regno,
+        BillNo: billno,
+      },
+      "right",
+      "center"
     );
   }
   depositCategoryIconAction(categoryIcon: any) {
@@ -943,7 +977,7 @@ export class DepositComponent implements OnInit {
     }
   }
 
- async checkPatientExpired(iacode: string , regNumber: number) {
+  async checkPatientExpired(iacode: string, regNumber: number) {
     const res = await this.http
       .get(
         BillingApiConstants.getforegexpiredpatientdetails(

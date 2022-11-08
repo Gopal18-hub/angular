@@ -28,7 +28,7 @@ export class ResendBillEmailDialogComponent implements OnInit {
         required: true,
       },
       mobileno: {
-        type: "string",
+        type: "tel",
         required: true,
       },
       Onlinecheckbox: {

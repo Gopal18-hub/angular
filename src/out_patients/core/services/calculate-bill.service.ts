@@ -12,6 +12,8 @@ import { BillingApiConstants } from "../../modules/billing/submodules/billing/Bi
 import { Subject, takeUntil } from "rxjs";
 import { DisountReasonComponent } from "../../modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
+import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 
 @Injectable({
   providedIn: "root",
@@ -46,6 +48,8 @@ export class CalculateBillService {
   blockActions = new Subject<boolean>();
 
   otherPlanSelectedItems: any = [];
+
+  consumablesUnselectedItems = [];
 
   constructor(
     public matDialog: MatDialog,
@@ -206,7 +210,7 @@ export class CalculateBillService {
     } else {
       if (
         this.discountSelectedItems.length == 1 &&
-        [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
+        [1, 6].includes(this.discountSelectedItems[0].discTypeId)
       ) {
         const discItem = this.discountSelectedItems[0];
         this.billingServiceRef.billItems.forEach((item: any) => {
@@ -218,12 +222,6 @@ export class CalculateBillService {
           item.discountType = this.discountSelectedItems[0].discTypeId;
           item.discountReason = discItem.reason;
         });
-        if (this.discountSelectedItems[0].discTypeId == 5) {
-          formGroup.controls["compDisc"].setValue(discItem.discAmt);
-        }
-        if (this.discountSelectedItems[0].discTypeId == 4) {
-          formGroup.controls["patientDisc"].setValue(discItem.discAmt);
-        }
       } else {
         this.discountSelectedItems.forEach((ditem: any) => {
           if (ditem.discTypeId == 3) {
@@ -258,6 +256,7 @@ export class CalculateBillService {
             formGroup.controls["patientDisc"].setValue(ditem.discAmt);
           } else if (ditem.discTypeId == 5) {
             formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
       }
@@ -361,7 +360,12 @@ export class CalculateBillService {
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
-    if (!this.billingServiceRef.company) {
+    if (
+      (formGroup.value.paymentMode == 1 ||
+        (formGroup.value.paymentMode == 3 &&
+          !this.billingServiceRef.company)) &&
+      this.otherPlanSelectedItems.length == 0
+    ) {
       if (this.billingServiceRef.todayPatientBirthday) {
         const birthdayDialogRef = this.messageDialogService.confirm(
           "",
@@ -1081,5 +1085,219 @@ export class CalculateBillService {
     return cstype;
   }
 
+  async mapFinalGSTDetails(details: any) {
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.gsT_value =
+      details.totaltaX_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.gsT_percent =
+      details.gst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cgsT_Value =
+      details.cgsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cgsT_Percent =
+      details.cgst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.sgsT_value =
+      details.sgsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.sgsT_percent =
+      details.sgst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.utgsT_value =
+      details.utgsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.utgsT_percent =
+      details.utgst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.igsT_Value =
+      details.igsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.igsT_percent =
+      details.igst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cesS_value =
+      details.cesS_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cesS_percent =
+      details.cess;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE1_Value =
+      details.taxratE1_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE1_Percent =
+      details.taxratE1;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE2_Value =
+      details.taxratE2_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE2_Percent =
+      details.taxratE2;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE3_Value =
+      details.taxratE3_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE3_Percent =
+      details.taxratE3;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE4_Value =
+      details.taxratE4_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE4_Percent =
+      details.taxratE4;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE5_Value =
+      details.taxratE5_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE5_Percent =
+      details.taxratE5;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.totaltaX_RATE =
+      details.totaltaX_RATE;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.totaltaX_RATE_VALUE =
+      details.totaltaX_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.saccode =
+      details.saccode;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxgrpid =
+      details.taxgrpid;
+  }
+
   //#endregion TaxableBill
+
+  //#region  CGHS Beneficiary
+  async checkCGHSBeneficiary() {
+    if (
+      this.billingServiceRef.patientDetailsInfo &&
+      this.billingServiceRef.patientDetailsInfo.adhaarID
+    ) {
+      let cghsBeneficiary = await this.http
+        .get(
+          BillingApiConstants.checkCGHSBeneficiary(
+            this.billingServiceRef.activeMaxId.iacode,
+            this.billingServiceRef.activeMaxId.regNumber,
+            this.billingServiceRef.company,
+            this.billingServiceRef.patientDetailsInfo.adhaarID
+          )
+        )
+        .toPromise();
+
+      if (cghsBeneficiary) {
+        if (
+          cghsBeneficiary.cghsResult &&
+          cghsBeneficiary.cghsResult.length > 0
+        ) {
+          if (cghsBeneficiary.cghsResult[0].result == 1) {
+            const infoRef = this.messageDialogService.info(
+              "Patient belongs to Panel CGHS beneficiary, but you have not selected that company, Please select appropriate reason."
+            );
+            await infoRef.afterClosed().toPromise();
+            await this.openCGHSChangeReason();
+          }
+        }
+
+        if (
+          cghsBeneficiary.cghS_ECHSFlag &&
+          cghsBeneficiary.cghS_ECHSFlag.length > 0
+        ) {
+          if (cghsBeneficiary.cghS_ECHSFlag[0].echs == 1) {
+            if (
+              this.billingServiceRef.patientDetailsInfo.agetype == 1 &&
+              this.billingServiceRef.patientDetailsInfo.age >= 18 &&
+              this.billingServiceRef.patientDetailsInfo.age <= 25
+            ) {
+              const infoECHSRef = this.messageDialogService.info(
+                "If Patient is ECHS Dependent & age is between 18-25 Years, Please collect dependent list."
+              );
+              await infoECHSRef.afterClosed().toPromise();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  async openCGHSChangeReason() {
+    const chgsChangeDialogref = this.matDialog.open(FormDialogueComponent, {
+      width: "28vw",
+      // height: "42vh",
+      data: {
+        title: "CGHS Beneficiary Change",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            reason: {
+              type: "dropdown",
+              title: "Reason",
+              required: true,
+              options: BillingStaticConstants.cghsBeneficiaryReasons,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+    let res = await chgsChangeDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .toPromise();
+    if (res && res.data) {
+      let reason = BillingStaticConstants.cghsBeneficiaryReasons.filter(
+        (r: any) => r.value === res.data.reason
+      );
+      if (reason && reason.length > 0) {
+        this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason =
+          reason[0].title;
+      }
+      console.log(
+        this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason
+      );
+    }
+  }
+  //#endregion
+
+  //#region Domestic Tarrif for international patient
+  async checkDoemsticTarrif() {
+    if (
+      this.billingServiceRef.company &&
+      this.billingServiceRef.patientDetailsInfo &&
+      this.billingServiceRef.patientDetailsInfo.nationality != 149
+    ) {
+      if (
+        this.billingServiceRef.companyData &&
+        this.billingServiceRef.companyData.length > 0
+      ) {
+        const tpacompanyExist: any = this.billingServiceRef.companyData.filter(
+          (c: any) => c.id === this.billingServiceRef.company
+        );
+        if (tpacompanyExist && tpacompanyExist.length > 0) {
+          if (tpacompanyExist[0].isTPA != 5) {
+            const tarrifRef = this.messageDialogService.confirm(
+              "",
+              "Are you sure of domestic tariff?"
+            );
+            const result = await tarrifRef.afterClosed().toPromise();
+            if (result && "type" in result) {
+              if (result.type == "yes") {
+                await this.openDomesticTarrifReasonDialog();
+              } else {
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  async openDomesticTarrifReasonDialog() {
+    const domesticTarrifDialogref = this.matDialog.open(FormDialogueComponent, {
+      width: "28vw",
+      // height: "42vh",
+      data: {
+        title: "Domestic Tarrif",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            reason: {
+              type: "textarea",
+              title: "Reason",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+    let res = await domesticTarrifDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .toPromise();
+    if (res && res.data) {
+      console.log(res.data.reason);
+      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.markupnot =
+        res.data.reason;
+    }
+  }
+  //#endregion
 }

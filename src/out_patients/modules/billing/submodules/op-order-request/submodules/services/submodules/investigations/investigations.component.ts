@@ -269,15 +269,34 @@ export class OderInvestigationsComponent implements OnInit {
       .pipe(
         filter((res) => {
           if (res == null) {
-            // if (this.invReferenceList) {
-            this.formGroup.controls["investigation"].reset();
-            console.log(this.invReferenceList);
-            this.questions[1].options = this.invReferenceList.map((a: any) => {
-              return { title: a.name, value: a.id };
-            });
-            this.questions[1] = { ...this.questions[1] };
+            if (this.invReferenceList.length > 0) {
+              // this.formGroup.controls["investigation"].reset();
+              console.log("inside reference list loop");
+              console.log(this.invReferenceList);
+              this.questions[1].options = this.invReferenceList.map(
+                (a: any) => {
+                  return {
+                    title: a.name,
+                    value: a.id,
+                    serviceid: a.serviceid,
+                    originalTitle: a.name,
+                    docRequired: a.docRequired,
+                    precaution: a.precaution,
+                    patient_Instructions: a.patient_Instructions,
+                    item_Instructions:
+                      BillingStaticConstants.investigationItemBasedInstructions[
+                        a.id.toString()
+                      ],
+                    ngStyle: {
+                      color: a.outsourceColor == 2 ? "red" : "",
+                    },
+                  };
+                }
+              );
+              this.questions[1] = { ...this.questions[1] };
+            } else {
+            }
           }
-          //  }
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
@@ -315,6 +334,10 @@ export class OderInvestigationsComponent implements OnInit {
               docRequired: r.docRequired,
               precaution: r.precaution,
               patient_Instructions: r.patient_Instructions,
+              item_Instructions:
+                BillingStaticConstants.investigationItemBasedInstructions[
+                  r.id.toString()
+                ],
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
@@ -486,6 +509,7 @@ export class OderInvestigationsComponent implements OnInit {
         });
     } else {
       this.messageDialogService.info("Please Select Investigation");
+      this.formGroup.reset();
     }
   }
 

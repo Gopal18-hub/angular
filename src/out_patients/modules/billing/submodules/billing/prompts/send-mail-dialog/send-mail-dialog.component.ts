@@ -18,18 +18,22 @@ export class SendMailDialogComponent implements OnInit {
       mailid: {
         title: "Enter Email id of the Patient",
         type: "string",
+        required: true
       },
       remarks: {
         title: "Remarks",
         type: "textarea",
+        required: true
       },
       mobileno: {
         title: "Mobile Number",
-        type: "string",
+        type: "tel",
+        required: true
       },
       sendtowhatsapp:{
         type: "checkbox",
         options: [{ title: "Send bill to WhatsApp" }],
+        disabled: true
       }
 
     },
@@ -54,7 +58,13 @@ export class SendMailDialogComponent implements OnInit {
     );
     this.sendMailForm = formResult.form;
     this.question = formResult.questions;
-    this.sendMailForm.controls['mailid'].setValue(this.data.mail);
+    if(this.data.mail = 'info@maxhealthcare.com')
+    {
+      this.sendMailForm.controls['mailid'].setValue('');
+    }
+    else{
+      this.sendMailForm.controls['mailid'].setValue(this.data.mail);
+    }
     this.sendMailForm.controls['mobileno'].setValue(this.data.mobile);
   }
   savebtn()
@@ -62,11 +72,11 @@ export class SendMailDialogComponent implements OnInit {
     this.http.post(BillingApiConstants.sendemailalerttoservice(
       Number(this.data.billid),
       this.sendMailForm.controls['mailid'].value,
-      this.sendMailForm.controls['mobileno'].value
+      this.sendMailForm.controls['remarks'].value
     ),'')
     .subscribe(res => {
       console.log(res);
-      if(res)
+      if(res.success == true)
       {
         this.dialogRef.close('close');
       }

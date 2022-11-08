@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges } from "@angular/core";
-import { DatePipe } from "@angular/common";
+
 import { ReportService } from "@shared/services/report.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
@@ -7,6 +7,7 @@ import { Subject } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "@environments/environment";
 import { CrystalReport } from "../../../../core/constants/CrystalReport";
+import * as moment from "moment";
 
 @Component({
   selector: "reports-single",
@@ -21,7 +22,6 @@ export class SingleComponent implements OnInit, OnChanges {
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
-    private datepipe: DatePipe,
     private reportService: ReportService,
     private formService: QuestionControlService,
     private http: HttpService,
@@ -61,7 +61,16 @@ export class SingleComponent implements OnInit, OnChanges {
 
   buttonAction(button: any) {
     if (button.type == "clear") {
-      this.formGroup.reset();
+      let defaultValues: any = {};
+      Object.keys(this.reportConfig.filterForm.properties).forEach(
+        (controlKey: any) => {
+          if (this.reportConfig.filterForm.properties[controlKey].defaultValue)
+            defaultValues[controlKey] =
+              this.reportConfig.filterForm.properties[controlKey].defaultValue;
+        }
+      );
+      this.formGroup.reset(defaultValues);
+      //this.init();
     } else if (button.type == "export") {
       let url = "";
       let tempValues: any = {};
@@ -90,11 +99,14 @@ export class SingleComponent implements OnInit, OnChanges {
       this.downloadFile(url, button.fileName, button.contenType);
     } else if (button.type == "crystalReport") {
       let tempValues: any = {};
+
       Object.keys(this.formGroup.value).forEach((va: any) => {
+        let fValue = this.formGroup.value[va];
+        if (this.reportConfig.filterForm.properties[va].type == "date") {
+          fValue = moment(fValue).format("YYYY-MM-DD");
+        }
         tempValues[va] =
-          typeof this.formGroup.value[va] == "string"
-            ? this.formGroup.value[va]
-            : this.formGroup.value[va].value;
+          typeof fValue == "string" ? fValue : fValue ? fValue.value : "";
       });
       this.reportService.openWindow(
         button.reportConfig.reportName,

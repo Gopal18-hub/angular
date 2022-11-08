@@ -132,6 +132,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
       mobileNo: {
         type: "tel",
+        title: "Mobile Number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
       company: {
@@ -171,10 +172,6 @@ export class MiscellaneousBillingComponent implements OnInit {
   dsPersonalDetails: any = [];
 
   ngOnInit(): void {
-    this.setItemsToBill.enableBill = false;
-    this.setItemsToBill.enablecompanyId = true;
-    this.setItemsToBill.corporateId = 0;
-    this.setItemsToBill.companyId = 0;
     let formResult = this.formService.createForm(
       this.miscFormData.properties,
       {}
@@ -198,20 +195,11 @@ export class MiscellaneousBillingComponent implements OnInit {
     // this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
-    // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
-    //   if (res.companyIdComp != "Misc") {
-    //     if (res.companyId) {
-    //       this.miscForm.controls["company"].setValue(res.companyId, {
-    //         emitEvent: false,
-    //       });
-    //     }
-    //     if (res.corporateId) {
-    //       this.miscForm.controls["corporate"].setValue(res.corporateId, {
-    //         emitEvent: false,
-    //       });
-    //     }
-    //   }
-    // });
+    this.setItemsToBill.enableBill = false;
+    this.setItemsToBill.enablecompanyId = true;
+    this.setItemsToBill.corporateId = 0;
+    this.setItemsToBill.companyId = 0;
+
     this.Misc.misccompanyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
         this.miscForm.controls["company"].setValue(res.company, {
@@ -231,13 +219,6 @@ export class MiscellaneousBillingComponent implements OnInit {
         }
       }
     });
-    // this.Misc.billNoGenerated.subscribe((res: boolean) => {
-    //   if (res) {
-    //     this.links[1].disabled = true;
-    //   } else {
-    //     this.links[1].disabled = false;
-    //   }
-    // });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -319,6 +300,17 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   onPhoneModify() {
     this.matDialog.closeAll();
+
+    if (
+      !this.miscForm.value.mobileNo ||
+      this.miscForm.value.mobileNo.length != 10
+    ) {
+      this.snackbar.open("Invalid Mobile No.", "error");
+      this.apiProcessing = false;
+      // this.patient = false;
+      return;
+    }
+
     this.http
       .post(ApiConstants.similarSoundPatientDetail, {
         phone: this.miscForm.value.mobileNo,
@@ -335,6 +327,7 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.miscForm.controls["corporate"].enable();
             let maxID = this.similarContactPatientList[0].maxid;
             this.miscForm.controls["maxid"].setValue(maxID);
+            this.getPatientDetailsByMaxId();
           } else {
             if (this.similarContactPatientList.length != 0) {
               const similarSoundDialogref = this.matDialog.open(
@@ -363,6 +356,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         },
         (error) => {
           this.messageDialogService.info(error.error);
+          this.apiProcessing = false;
         }
       );
   }
@@ -424,7 +418,6 @@ export class MiscellaneousBillingComponent implements OnInit {
       this.getAllCompany();
       this.getAllCorporate();
       this.getSimilarSoundDetails(iacode, regNumber);
-      this.disableBtn = true;
       this.http
         .get(
           ApiConstants.getregisteredpatientdetailsForMisc(
@@ -436,6 +429,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
+            this.disableBtn = true;
             this.patientDetails = resultData;
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length !=
@@ -461,9 +455,6 @@ export class MiscellaneousBillingComponent implements OnInit {
                 this.dsPersonalDetails.dtPersonalDetails1[0].cashLimit;
               this.setItemsToBill.cashLimit = cashLimit;
               this.setItemsToBill.enableBill = true;
-            } else {
-              this.snackbar.open("Invalid Max ID", "error");
-              this.disableBtn = false;
             }
           },
           (error) => {
@@ -471,14 +462,17 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.setMaxIdError(iacode, regNumber);
               this.MaxIDExist = false;
             }
-            this.snackbar.open("Invalid Max ID", "error");
-            this.disableBtn = false;
+            // this.snackbar.open("Invalid Max ID", "error");
+            // this.disableBtn = false;
           }
         );
     } else if (regNumber === 0 || iacode === 0) {
       this.snackbar.open("Not a valid registration number", "error");
     } else {
       this.snackbar.open("Invalid Max ID", "error");
+      this.disableBtn = false;
+      this.questions[0].readonly = false;
+      return;
     }
   }
   getSimilarSoundDetails(iacode: string, regNumber: number) {
@@ -502,8 +496,10 @@ export class MiscellaneousBillingComponent implements OnInit {
           }
         },
         (error) => {
-          this.snackbar.open("Invalid Max ID", "error");
-          this.apiProcessing = false;
+          if (error.error == "Patient Not found") {
+            this.setMaxIdError(iacode, regNumber);
+            this.MaxIDExist = false;
+          }
         }
       );
   }
@@ -516,11 +512,12 @@ export class MiscellaneousBillingComponent implements OnInit {
         )
       )
       .toPromise();
-    if (res.length > 0) {
-      if (res[0].flagexpired == 1) {
-        return true;
+    if (res)
+      if (res.length > 0) {
+        if (res[0].flagexpired == 1) {
+          return true;
+        }
       }
-    }
     return false;
   }
 
@@ -606,12 +603,15 @@ export class MiscellaneousBillingComponent implements OnInit {
           } else {
             this.apiProcessing = false;
             this.snackbar.open("Invalid Max ID", "error");
+            this.disableBtn = false;
+            this.questions[0].readonly = false;
+            return;
           }
         },
         (error) => {
           if (error.error == "Patient Not found") {
-            this.miscForm.controls["maxid"].setValue(iacode + "." + regNumber);
-            this.snackbar.open("Invalid Max ID", "error");
+            this.setMaxIdError(iacode, regNumber);
+            this.MaxIDExist = false;
           }
           this.apiProcessing = false;
         }
@@ -646,7 +646,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
-            queryParams: { maxID: this.miscForm.value.maxid },
+            queryParams: { maxID: this.miscForm.value.maxid, from: 1 },
           });
           return;
         }
@@ -689,6 +689,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   setValuesToMiscForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
       this.snackbar.open("Invalid Max ID", "error");
+      this.disableBtn = false;
       this.apiProcessing = false;
       return;
     }

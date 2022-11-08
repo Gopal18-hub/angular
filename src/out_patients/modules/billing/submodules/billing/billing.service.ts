@@ -38,7 +38,7 @@ export class BillingService {
   totalCost = 0;
 
   totalCostWithOutGst = 0;
-
+  billNo = "";
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
@@ -70,10 +70,11 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
-  allowCreditcompany: boolean = false;
+  pancardpaymentmethod = new Subject<any>();
 
   companyData: any = [];
   corporateData: any = [];
+  creditcorporateData: any = [];
   selectedcompanydetails: any = {};
   selectedcorporatedetails: any = [];
   iomMessage: string = "";
@@ -144,11 +145,13 @@ export class BillingService {
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
     this.calculateBillService.clear();
+    this.billNo = "";
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
     this.companyData = [];
     this.corporateData = [];
+    this.creditcorporateData = [];
     this.selectedcompanydetails = {};
     this.selectedcorporatedetails = [];
     this.selectedHealthPlan = null;
@@ -331,10 +334,8 @@ export class BillingService {
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
       this.iomMessage = "";
-    } else if (res.title) {
+    } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
-
-      //this.checkcreditcompany(res, formGroup);
       //fix for Staff company validation
       if (res.company.isStaffcompany && from != "companyexists") {
         if (this.patientDetailsInfo.companyid > 0) {
@@ -394,33 +395,77 @@ export class BillingService {
   }
 
   //check company credit
-  checkcreditcompany(res: any, formGroup: any) {
-    if (this.billtype == 3 && res.company.id > 0) {
-      if (Number(this.patientDetailsInfo.creditFlag) == 0) {
-      } else {
-        this.http
-          .get(
-            BillingApiConstants.getcompanydetailcreditallow(
-              res.company.id,
-              "OP",
-              // Number(this.cookie.get("HSPLocationId")),
-              // Number(this.cookie.get("UserId"))))
-              67,
-              60925
-            )
-          )
-          .subscribe(async (data) => {
-            if (data == 0) {
-              this.allowCreditcompany = true;
-              const creditbasedcompany = await this.messageDialogService.error(
-                "Credit not allow for this company.Please contact marketing, if credit need to be extended for this company."
-              );
-              creditbasedcompany.afterClosed().toPromise();
-              formGroup.controls["company"].setValue(null);
+  checkcreditcompany(
+    companyid: number,
+    res: any,
+    formGroup: any,
+    from: string = "header"
+  ) {
+    if (Number(this.patientDetailsInfo.creditFlag) == 0) {
+      let creditallowcompany = this.companyData.find(
+        (c: any) => c.id == res.company.id && c.creditAllow == 0
+      );
+      if (creditallowcompany.length == 1) {
+        if (this.creditcorporateData.length > 0) {
+          let locationfilter = this.creditcorporateData.find(
+            (c: any) => c.hspLocationId == 67
+          );
+          if (locationfilter.length > 0) {
+            const locationbasedcompany = this.messageDialogService.error(
+              "As per Policy this corporate does not have the credit facility on this location"
+            );
+            locationbasedcompany.afterClosed().toPromise();
+            this.cerditCompanyBilltypeEvent.next({ billtype: 1 });
+            formGroup.controls["company"].setValue(null);
+          } else {
+            const dialogref = this.messageDialogService.confirm(
+              "",
+              `As per Policy this corporate does not have the credit facility. Still you want to give the cashless facility ?`
+            );
+            dialogref.afterClosed().subscribe((res: any) => {
+              if (res == "yes") {
+              } else {
+                this.cerditCompanyBilltypeEvent.next({ billtype: 1 });
+              }
+            });
+          }
+        } else {
+          const dialogref = this.messageDialogService.confirm(
+            "",
+            `As per Policy this corporate does not have the credit facility. Still you want to give the cashless facility ?`
+          );
+          dialogref.afterClosed().subscribe((res: any) => {
+            if (res == "yes") {
+            } else {
               this.cerditCompanyBilltypeEvent.next({ billtype: 1 });
             }
           });
+        }
       }
+    } else {
+      this.http
+        .get(
+          BillingApiConstants.getcompanydetailcreditallow(
+            res.company.id,
+            "OP",
+            // Number(this.cookie.get("HSPLocationId")),
+            // Number(this.cookie.get("UserId"))))
+            67,
+            60925
+          )
+        )
+        .subscribe((data) => {
+          if (data == 0) {
+            const creditbasedcompany = this.messageDialogService.error(
+              "Credit not allow for this company.Please contact marketing, if credit need to be extended for this company."
+            );
+            creditbasedcompany.afterClosed().toPromise();
+            formGroup.controls["company"].setValue(null);
+            this.cerditCompanyBilltypeEvent.next({ billtype: 1 });
+          } else {
+            this.setCompnay(companyid, res, formGroup, from);
+          }
+        });
     }
   }
 
@@ -469,8 +514,16 @@ export class BillingService {
     this.corporateData = data;
   }
 
+  setcreditcorporateData(data: any) {
+    this.creditcorporateData = data;
+  }
+
   setBilltype(billtype: number) {
     this.billtype = billtype;
+  }
+
+  setBillNumber(billNo: any) {
+    this.billNo = billNo;
   }
 
   setActiveMaxId(
@@ -1139,6 +1192,56 @@ export class BillingService {
     }
   }
 
+  async processProcedureAddWithOutApi(
+    priorityId: number,
+    serviceType: string,
+    procedure: any
+  ) {
+    this.addToProcedure({
+      sno: this.ProcedureItems.length + 1,
+      procedures: procedure.originalTitle,
+      qty: 1,
+      specialisation: "",
+      doctorName: "",
+      doctorName_required: procedure.docRequired ? true : false,
+      specialisation_required: procedure.docRequired ? true : false,
+      price: procedure.price,
+      unitPrice: procedure.price,
+      itemid: procedure.value,
+      priorityId: priorityId,
+      serviceId: procedure.serviceid,
+      billItem: {
+        popuptext: procedure.popuptext,
+        itemId: procedure.value,
+        priority: priorityId,
+        serviceId: procedure.serviceid,
+        price: procedure.price,
+        serviceName: "Procedure & Others",
+        itemName: procedure.originalTitle,
+        qty: 1,
+        precaution: "",
+        procedureDoctor: "",
+        credit: 0,
+        cash: 0,
+        disc: 0,
+        discAmount: 0,
+        totalAmount: procedure.price,
+        gst: 0,
+        gstValue: 0,
+        specialisationID: 0,
+        doctorID: 0,
+      },
+      gstDetail: {},
+      gstCode: {},
+    });
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: procedure.value,
+      serviceID: procedure.serviceid,
+      price: procedure.price,
+      willModify: false,
+    });
+  }
+
   async processInvestigationAdd(
     priorityId: number,
     serviceType: string,
@@ -1166,7 +1269,7 @@ export class BillingService {
             : investigation.precaution,
         priority: priorityId,
         priority_required: false,
-        specialisation: "",
+        // specialisation: investigation.specializationId || "",
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,
         doctorName_required: investigation.docRequired ? true : false,
@@ -1184,7 +1287,7 @@ export class BillingService {
             investigation.precaution == "P"
               ? '<span class="max-health-red-color">P</span>'
               : investigation.precaution,
-          procedureDoctor: "",
+          procedureDoctor: investigation.docName || "",
           credit: 0,
           cash: 0,
           disc: 0,
@@ -1192,8 +1295,8 @@ export class BillingService {
           totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
           gst: res[0].totaltaX_RATE,
           gstValue: res[0].totaltaX_Value,
-          specialisationID: 0,
-          doctorID: 0,
+          specialisationID: investigation.specializationId || 0,
+          doctorID: investigation.doctorid || 0,
           patient_Instructions: investigation.patient_Instructions,
         },
         gstDetail: {
@@ -1285,6 +1388,8 @@ export class BillingService {
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
       },
+      gstDetail: {},
+      gstCode: {},
     });
     this.makeBillPayload.tab_o_opItemBasePrice.push({
       itemID: investigation.value,
@@ -1330,6 +1435,8 @@ export class BillingService {
         specialisationID: doctorName.specialisationid,
         doctorID: doctorName.value,
       },
+      gstDetail: {},
+      gstCode: {},
     });
     this.consultationItemsAdded.next(true);
     this.makeBillPayload.tab_o_opItemBasePrice.push({
@@ -1458,5 +1565,58 @@ export class BillingService {
   setReferralDoctor(doctor: any) {
     this.referralDoctor = doctor;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
+  }
+
+  resetgstfromservices(service: any, reason: any) {
+    this.makeBillPayload.taxReason = reason;
+    service[0].gstDetail = {
+      gsT_value: 0,
+      gsT_percent: 0,
+      cgsT_Value: 0,
+      cgsT_Percent: 0,
+      sgsT_value: 0,
+      sgsT_percent: 0,
+      utgsT_value: 0,
+      utgsT_percent: 0,
+      igsT_Value: 0,
+      igsT_percent: 0,
+      cesS_value: 0,
+      cesS_percent: 0,
+      taxratE1_Value: 0,
+      taxratE1_Percent: 0,
+      taxratE2_Value: 0,
+      taxratE2_Percent: 0,
+      taxratE3_Value: 0,
+      taxratE3_Percent: 0,
+      taxratE4_Value: 0,
+      taxratE4_Percent: 0,
+      taxratE5_Value: 0,
+      taxratE5_Percent: 0,
+      totaltaX_RATE: 0,
+      totaltaX_RATE_VALUE: 0,
+      taxgrpid: 0,
+      codeId: 0,
+    };
+    service[0].billItem.totalAmount =
+      service[0].billItem.totalAmount - service[0].billItem.gstValue;
+    service[0].billItem.gst = 0;
+    service[0].billItem.gstValue = 0;
+    this.makeBillPayload.tab_o_opItemBasePrice.forEach((item: any) => {
+      if (item.itemID == service[0].itemid) {
+        item.price = service[0].billItem.totalAmount;
+      }
+    });
+    this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+      (item: any) => {
+        if (item.itemId == service[0].itemid) {
+          item.amount = service[0].billItem.totalAmount;
+        }
+      }
+    );
+    this.calculateTotalAmount();
+  }
+
+  setpaymenthodpancardfocus() {
+    this.pancardpaymentmethod.next(true);
   }
 }

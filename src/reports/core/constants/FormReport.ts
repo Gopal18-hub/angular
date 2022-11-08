@@ -11,20 +11,52 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        equipmentName: {
+
+          type: "hidden",
+
+        },
+
         Cmb_Equip: {
+
           // type: "dropdown",
+
           type: "autocomplete",
+
           placeholder: "---Equipment---",
+
           title: "Equipment Name",
+
           // defaultValue: "0",
+
           optionsModelConfig: {
+
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
+
             fields: {
+
               title: "name",
 
-              value: "name",
+              value: "id",
+
             },
+
           },
+
+          conditions: [
+
+            {
+
+              expression: "self.title",
+
+              controlKey: "equipmentName",
+
+              type: "value",
+
+            },
+
+          ],
+
         },
         EquipFromDate: {
           type: "date",
@@ -358,6 +390,7 @@ export namespace FormReport {
       properties: {
         specilizationName: {
           type: "hidden",
+          //defaultValue: "specilizationName",
         },
         Cmb_Special: {
           type: "autocomplete",
@@ -488,7 +521,7 @@ export namespace FormReport {
             { title: "Plan Name", value: "Plan Name" },
             { title: "Membership No", value: "Membership No" },
           ],
-          required: false,
+          required: true,
           defaultValue: "Plan Name",
           conditions: [
             {
@@ -498,6 +531,11 @@ export namespace FormReport {
             },
             {
               expression: "self == 'Plan Name'",
+              controlKey: "planID",
+              type: "required",
+            },
+            {
+              expression: "self == 'Plan Name'",
               controlKey: "Location",
               type: "hide",
             },
@@ -520,6 +558,16 @@ export namespace FormReport {
               expression: "self == 'Membership No'",
               controlKey: "Location",
               type: "show",
+            },
+            {
+              expression: "self == 'Membership No'",
+              controlKey: "Location",
+              type: "required",
+            },
+            {
+              expression: "self == 'Membership No'",
+              controlKey: "MemberShipNo",
+              type: "required",
             },
           ],
         },
@@ -536,7 +584,6 @@ export namespace FormReport {
               value: "id",
             },
           },
-          defaultValue: "0",
         },
 
         Location: {
@@ -545,7 +592,10 @@ export namespace FormReport {
           title: "Location",
           required: false,
           questionClasses: "max-hide",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          defaultValue: {
+            title: MaxHealthStorage.getCookie("Location"),
+            value: MaxHealthStorage.getCookie("HSPLocationId"),
+          },
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -571,8 +621,6 @@ export namespace FormReport {
               value: "membershipno",
             },
           },
-
-          defaultValue: "membershipno",
         },
       },
     },
@@ -712,12 +760,12 @@ export namespace FormReport {
         dtpfromdate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
         dtptodate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
           minimum: new Date("From Date"),
         },
@@ -1265,7 +1313,7 @@ export namespace FormReport {
           fileName: "OP Refund Report.xls",
           contenType: "application/vnd.ms-excel",
         },
-        
+
         {
           label: "Clear",
           type: "clear",

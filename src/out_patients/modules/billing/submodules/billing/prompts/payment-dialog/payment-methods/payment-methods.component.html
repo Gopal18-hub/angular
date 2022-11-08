@@ -54,6 +54,22 @@
                 </div>
               </div>
             </ng-container>
+            <!-- [disabled]="!activeTab.form.valid" -->
+            <!-- <div
+              class="max-health-primary-color mx-6 flex justify-between"
+              *ngIf="activeTab.form?.actionItems"
+            >
+              <ng-container *ngFor="let button of activeTab.form?.actionItems">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  class="w-5/2 mt-2"
+                  type="button"
+                >
+                  {{ button.label }}
+                </button>
+              </ng-container>
+            </div> -->
           </div>
         </mat-tab>
       </ng-container>

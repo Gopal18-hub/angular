@@ -6,6 +6,7 @@ import { HttpService } from "@shared/services/http.service";
 import { ConsumableDetailsComponent } from "../../../../prompts/consumable-details/consumable-details.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-consumables",
@@ -91,7 +92,8 @@ export class ConsumablesComponent implements OnInit {
     public billingService: BillingService,
     public matDialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -112,14 +114,17 @@ export class ConsumablesComponent implements OnInit {
           orderSet: res.element,
           items: res.element.items,
           procedureDataForConsumable: res.element.procedureDataForConsumable,
+          consumablesUnselectedItems:
+            this.calculateBillService.consumablesUnselectedItems,
         },
       });
       dialogConst.afterClosed().subscribe((result: any) => {
-        if ("data" in result) {
+        if (result && "data" in result) {
           let tempAmount = 0;
           result.data.forEach((selectedItem: any) => {
             tempAmount += selectedItem.amount;
           });
+          this.calculateBillService.consumablesUnselectedItems = result.data;
           this.billingService.ConsumableItems[res.index].totalAmount =
             this.billingService.ConsumableItems[res.index].totalAmount -
             tempAmount;
@@ -154,7 +159,7 @@ export class ConsumablesComponent implements OnInit {
             this.billingService.addToConsumables({
               sno: index + 1,
               surgeryName: head.itemName,
-              priority: head.priority,
+              priority: typeof head.priority == "string" ? 0 : head.priority, ////GAV1027 make bill priority issue
               credit: 0,
               cash: 0,
               doctorName: head.doctorName,
@@ -164,7 +169,7 @@ export class ConsumablesComponent implements OnInit {
               procedureDataForConsumable: res.procedureDataForConsumable,
               billItem: {
                 itemId: head.itemId,
-                priority: head.priority,
+                priority: typeof head.priority == "string" ? 0 : head.priority, ////GAV1027 make bill priority issue
                 serviceId: head.serviceId,
                 price: head.amount,
                 serviceName: "Consumables Charges",
