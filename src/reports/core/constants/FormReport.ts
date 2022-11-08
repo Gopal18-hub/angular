@@ -545,6 +545,7 @@ export namespace FormReport {
           title: "",
           required: false,
           questionClasses: "max-hide",
+          defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -586,7 +587,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "membershipno".trim(),
             },
           },
         },
