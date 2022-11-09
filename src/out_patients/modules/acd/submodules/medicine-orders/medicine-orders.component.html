@@ -1,5 +1,10 @@
 <div class="flex flex-column h-full sub-bill-overall ">
-
+    <div
+    *ngIf="apiProcessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+  >
+    <mat-spinner strokeWidth="3"></mat-spinner>
+  </div>
     <form [formGroup]="investigationForm">
         <!------------------------------------------- FIRST ROW------------------------------------------>
         <div class="flex justify-between border-radius-md mt-1 align-items-center">
@@ -68,7 +73,7 @@
             <mat-label class="max-health-primary-color">Order List</mat-label>
         </div> -->
         <div class="tableh">
-            <maxhealth-table [config]="medListConfig" class="input-align"[data]="medOrderList" (columnClick)="listRowClick($event)"></maxhealth-table>
+            <maxhealth-table [config]="medListConfig"[data]="medOrderList" (columnClick)="listRowClick($event)"></maxhealth-table>
         </div>
         <div class="employeeclass font-semi-bold  pt-1 pb-1">
             <mat-label class="max-health-primary-color">Order Details</mat-label>
