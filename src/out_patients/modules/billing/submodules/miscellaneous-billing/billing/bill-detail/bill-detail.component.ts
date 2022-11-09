@@ -1691,7 +1691,7 @@ export class BillDetailComponent implements OnInit {
               this.miscServBillForm.controls["dipositAmtcheck"].setValue(true, {
                 emitEvent: false,
               });
-              this.snackbar.open("Deposit Amount availed successfully!");
+              //this.snackbar.open("Deposit Amount availed successfully!");
               // if (this.makebillFlag == true && this.depositAvailFlag == true) {
               //   this.openPaymentModeDialog();
               // }
