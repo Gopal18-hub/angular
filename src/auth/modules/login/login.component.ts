@@ -11,7 +11,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { environment } from "@environments/environment";
 import { ActivatedRoute } from "@angular/router";
-
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "auth-login",
   templateUrl: "./login.component.html",
@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   authStatus: boolean = false;
   public username: string = "";
   Authentication: boolean = true;
+  userValidationError: string = "";
   public name: string = "";
 
   loginFormData = {
@@ -71,7 +72,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private adauth: ADAuthService,
     private cookie: CookieService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private messageDialogService: MessageDialogService
   ) {}
 
   async ngOnInit() {
@@ -156,6 +158,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   reLoginForm() {
     this.Authentication = true;
+    this.PasswordLocked = false;
     window.location.reload();
     setTimeout(() => {
       this.questions[0].elementRef.focus();
@@ -277,8 +280,22 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.Authentication = false;
               this.loginForm.reset();
             } else if (status == "UserValidationError") {
-              this.authStatus = false;
               this.Authentication = false;
+              this.authStatus = false;
+              if (data.userData) {
+                if (data.userData["error"]) {
+                  console.log(data.userData["error"]);
+                  if (
+                    data.userData["error"].includes(
+                      "Your password is locked due to invalid attempts"
+                    )
+                  ) {
+                    this.messageDialogService.warning(data.userData["error"]);
+                  } else {
+                    this.userValidationError = data.userData["error"];
+                  }
+                }
+              }
               this.loginForm.reset();
             } else {
               this.authStatus = false;
