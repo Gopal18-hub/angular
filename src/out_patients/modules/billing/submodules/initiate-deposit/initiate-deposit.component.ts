@@ -302,13 +302,16 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
         if(this.initiatedepositForm.value.mobileno){          
           this.initiatedepositForm.controls["mobileno"].setErrors({ incorrect: true });
           this.questions[1].customErrorMessage = "Invalid Phone Number";
-        }else if(this.initiatedepositForm.value.maxid){ 
-          this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
-          this.questions[0].customErrorMessage = "Invalid Max ID";
-        }
-        else{
+          this.questions[1].elementRef.focus();
+        }else if(this.initiatedepositForm.value.maxid == (this.cookie.get("LocationIACode") + ".")){ 
           this.messageDialogService.error("Please enter valid MAX ID or Phone Number for search");
         }
+        else
+        {
+          this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = "Invalid Max ID";
+          this.questions[0].elementRef.focus();
+            }
       }     
     },
       (error) => {
