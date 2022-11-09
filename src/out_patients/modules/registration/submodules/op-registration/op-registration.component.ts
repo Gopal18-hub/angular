@@ -447,7 +447,8 @@ export class OpRegistrationComponent implements OnInit {
   hotlistRemarkdb: any;
   isPatientdetailModified: boolean = false;
   private readonly _destroying$ = new Subject<void>();
-
+  maxIDChangeCall: boolean = false;
+  MaxIDExist: boolean = false;
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener("window:beforeunload")
   canDeactivate(): Observable<boolean> | boolean {
@@ -914,7 +915,7 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[24].allowSearchInput = true;
             this.questions = {...this.questions};
             console.log(this.OPRegForm.controls);
-            console.log(this.questions[21]);
+            console.log(this.questions);
             if (!this.OPRegForm.value.nationality.value) {
               this.OPRegForm.controls["nationality"].setValue(null);
             } else {
@@ -2230,8 +2231,6 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   //Get Patient Details by Max ID
-  maxIDChangeCall: boolean = false;
-  MaxIDExist: boolean = false;
   async getPatientDetailsByMaxId() {
     this.apiProcessing = true;
     this.maxIDChangeCall = true;
@@ -2790,12 +2789,14 @@ export class OpRegistrationComponent implements OnInit {
           title: patientDetails?.otherlocality,
           value: 0,
         });
+        this.OPRegForm.controls['localityTxt'].setValue(patientDetails?.otherlocality);
       }
     } else {
       this.OPRegForm.controls["locality"].setValue({
         title: patientDetails?.localityName,
         value: patientDetails?.locality,
       });
+      this.OPRegForm.controls['localityTxt'].setValue(patientDetails?.localityName);
     }
 
     this.questions[24].readonly = true;
