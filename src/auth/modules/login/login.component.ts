@@ -11,7 +11,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { environment } from "@environments/environment";
 import { ActivatedRoute } from "@angular/router";
-
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "auth-login",
   templateUrl: "./login.component.html",
@@ -27,7 +27,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   authStatus: boolean = false;
   public username: string = "";
   Authentication: boolean = true;
-  PasswordLocked: boolean = false;
   userValidationError: string = "";
   public name: string = "";
 
@@ -73,7 +72,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private adauth: ADAuthService,
     private cookie: CookieService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private messageDialogService: MessageDialogService
   ) {}
 
   async ngOnInit() {
@@ -290,11 +290,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
                       "Your password is locked due to invalid attempts"
                     )
                   ) {
-                    this.PasswordLocked = true;
+                    this.messageDialogService.warning(data.userData["error"]);
                   } else {
-                    this.PasswordLocked = false;
+                    this.userValidationError = data.userData["error"];
                   }
-                  this.userValidationError = data.userData["error"];
                 }
               }
               this.loginForm.reset();

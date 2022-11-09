@@ -6,7 +6,7 @@
       <img src="assets/brandLogo.svg" class="w-2/5" />
     </div>
     <form
-      *ngIf="Authentication && !PasswordLocked"
+      *ngIf="Authentication"
       (ngSubmit)="loginSubmit()"
       [formGroup]="loginForm"
       class="mt-4 mb-6"
@@ -39,7 +39,7 @@
       </div>
     </form>
     <div
-      *ngIf="!Authentication && !PasswordLocked"
+      *ngIf="!Authentication"
       class="flex justify-between flex-wrap flex-column mt-4 mb-6"
     >
       <div class="mt-6 mb-6 mr-12">
@@ -61,29 +61,5 @@
         Login <mat-icon>east</mat-icon>
       </button>
     </div>
-    <div
-    *ngIf="PasswordLocked && !Authentication"
-    class="flex justify-between flex-wrap flex-column mt-4 mb-6"
-  >
-    <div class="mt-6 mb-6 mr-12">
-      <label class="mb-6 mt-6 mr-12 font-base color-red"
-        >User Validation error</label
-      >
-    </div>
-    <div class="mt-6 mb-12 ml-1 font-sm">
-      {{userValidationError}}
-      <a class="cursor-pointer login-link"
-          >Change Password</a
-        >
-    </div>
-    <button
-      mat-raised-button
-      color="primary"
-      class="w-1/3"
-      (click)="reLoginForm()"
-    >
-      Login <mat-icon>east</mat-icon>
-    </button>
-  </div>
   </div>
 </div>
