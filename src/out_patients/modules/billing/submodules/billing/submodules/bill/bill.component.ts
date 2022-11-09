@@ -539,7 +539,8 @@ export class BillComponent implements OnInit, OnDestroy {
   async billTypeChange(value: any) {
     if (value == 1) {
       this.data = this.data.map((dItem: any) => {
-        dItem.cash = dItem.price * dItem.qty;
+        let quantity = !isNaN(Number(dItem.qty)) ? dItem.qty : 1;
+        dItem.cash = dItem.price * quantity;
         dItem.credit = 0;
         return dItem;
       });
@@ -551,12 +552,13 @@ export class BillComponent implements OnInit, OnDestroy {
         (cnci: any) => cnci.itemId
       );
       this.data = this.data.map((dItem: any) => {
+        let quantity = !isNaN(Number(dItem.qty)) ? dItem.qty : 1;
         if (exceptions.includes(dItem.itemId)) {
-          dItem.cash = dItem.price * dItem.qty;
+          dItem.cash = dItem.price * quantity;
           dItem.credit = 0;
         } else {
           dItem.cash = 0;
-          dItem.credit = dItem.price * dItem.qty;
+          dItem.credit = dItem.price * quantity;
         }
 
         return dItem;
@@ -748,7 +750,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.billItems.forEach((item: any) => {
       item.disc = 0;
       item.discAmount = 0;
-      const price = item.price * item.qty;
+      let quantity = !isNaN(Number(item.qty)) ? item.qty : 1;
+      const price = item.price * quantity;
       item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
       item.totalAmount = price + item.gstValue;
       item.discountType = 0;
