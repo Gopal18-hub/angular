@@ -562,6 +562,7 @@ export namespace FormReport {
           title: "",
           required: false,
           questionClasses: "max-hide",
+
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -569,6 +570,7 @@ export namespace FormReport {
               value: "id",
             },
           },
+          defaultValue: "",
         },
 
         Location: {
@@ -603,7 +605,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "membershipno".trim(),
             },
           },
         },

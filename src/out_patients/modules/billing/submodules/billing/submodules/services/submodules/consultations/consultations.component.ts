@@ -183,8 +183,16 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         item["sno"] = index + 1;
         return item;
       });
+    this.billingService.makeBillPayload.dtCheckedItem = [];
+    this.billingService.makeBillPayload.dtFinalGrpDoc = {};
+    this.billingService.makeBillPayload.txtOtherGroupDoc = '';
+    this.billingService.dtCheckedItem = [];
+    this.billingService.dtFinalGrpDoc = {};
+    this.billingService.txtOtherGroupDoc = '';
     this.data = [...this.billingService.consultationItems];
+    this.userSelectedDMG = 0;
     this.billingService.calculateTotalAmount();
+    console.log(this.billingService.makeBillPayload);
   }
 
   showDmgPopup() {
