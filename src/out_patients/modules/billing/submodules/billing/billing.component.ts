@@ -452,9 +452,12 @@ export class BillingComponent implements OnInit, OnDestroy {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .toPromise()
+      .catch((reason: any) => {
+        return reason;
+      });
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {

@@ -48,6 +48,7 @@ export class InvestigationOrdersComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   maxid = "";
   orderid = "";
+  apiProcessing: boolean = false;
 
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
@@ -205,7 +206,7 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       amount: {
         title: "Amt",
-        type: "string",
+        type: "currency",
         style: {
           width: "7%",
         },
@@ -422,6 +423,7 @@ export class InvestigationOrdersComponent implements OnInit {
     }
   }
   search() {
+    this.apiProcessing = true;
     this.invOrderList = [];
     this.invOrderDetails = [];
     this.patientInfo = "";
@@ -485,6 +487,7 @@ export class InvestigationOrdersComponent implements OnInit {
         item.amount = Number(item.amount).toFixed(2);
       //console.log(item.amount)
     });
+    this.apiProcessing = false;
   }
   listRowClick(event: any) {
     this.EnableBill = false;

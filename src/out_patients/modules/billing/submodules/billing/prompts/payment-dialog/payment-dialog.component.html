@@ -120,7 +120,7 @@
 
   <!-- Footer Part -->
   <div class="mt-12 bottom">
-    <patient-identity-info [data]="patientInfo" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
+    <patient-identity-info [data]="patientInfo" [form60payment]="paymentmethod" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
 
     </patient-identity-info>
   </div>
