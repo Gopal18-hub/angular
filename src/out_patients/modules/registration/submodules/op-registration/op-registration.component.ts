@@ -2355,10 +2355,13 @@ export class OpRegistrationComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
-    }
+      .toPromise()
+      .catch(() => {
+        return;
+      } );
+     if (res == null || res == undefined) {
+       return false;
+     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
         return true;
