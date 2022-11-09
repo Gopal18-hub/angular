@@ -279,8 +279,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.Authentication = false;
               this.loginForm.reset();
             } else if (status == "UserValidationError") {
-              this.Authentication = false;
-              this.authStatus = false;
               if (data.userData) {
                 if (data.userData["error"]) {
                   console.log(data.userData["error"]);
@@ -291,6 +289,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
                   ) {
                     this.messageDialogService.warning(data.userData["error"]);
                   } else {
+                    this.Authentication = false;
+                    this.authStatus = false;
                     this.userValidationError = data.userData["error"];
                   }
                 }
