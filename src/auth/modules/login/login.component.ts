@@ -158,7 +158,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   reLoginForm() {
     this.Authentication = true;
-    this.PasswordLocked = false;
     window.location.reload();
     setTimeout(() => {
       this.questions[0].elementRef.focus();
