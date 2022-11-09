@@ -11,6 +11,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ChangelocationComponent } from "./changelocation/changelocation.component";
 import { Subject, takeUntil } from "rxjs";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
+import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
 
 @Component({
   selector: "maxhealth-header",
@@ -179,6 +180,39 @@ export class HeaderComponent implements OnInit {
             confirmpasword: {
               type: "password",
               title: "Confirm New Password",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+
+    changePasswordDialoref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          window.location.reload();
+        }
+      });
+  }
+
+  openIMEIDialog()
+  {
+    const changePasswordDialoref = this.matDialog.open(SelectimeiComponent, {
+      width: "25vw",
+      height: "33vh",
+      data: {
+        title: "Select POS IMEI",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            imei: {
+              type: "autocomplete",
+              title: "POS IMEI",
               required: true,
             },
           },

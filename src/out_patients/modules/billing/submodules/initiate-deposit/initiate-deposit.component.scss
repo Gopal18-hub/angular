@@ -11,6 +11,11 @@
         margin-top: 9% !important;
     }
 }
+.phonenumber{
+    ::ng-deep .mat-error{
+        margin-top: 7% !important;
+    }
+}
 .isDisabled {
     pointer-events: none;
     opacity: 0.7;
