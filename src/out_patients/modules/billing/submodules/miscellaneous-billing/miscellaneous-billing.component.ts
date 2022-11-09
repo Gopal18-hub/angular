@@ -667,7 +667,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       resultData.dtPatientPastDetails[2].id > 0 &&
       resultData.dtPatientPastDetails[2].data > 0
     ) {
-      this.Misc.depositDetails(iacode, regNumber);
+      //this.Misc.depositDetails(iacode, regNumber);
     }
   }
 

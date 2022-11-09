@@ -543,19 +543,19 @@ export class BillDetailComponent implements OnInit {
       this.discountValidation();
     }
 
-    this.miscPatient.miscdepositdetailsEvent.subscribe((res: any) => {
-      if (res.deposit) {
-        res.deposit.forEach((element: any) => {
-          this.totalDeposit += element.balanceamount;
-        });
-        if (this.totalDeposit > 0) {
-          this.miscServBillForm.controls["dipositAmt"].setValue(
-            this.totalDeposit.toFixed(2)
-          );
-          this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
-        }
-      }
-    });
+    // this.miscPatient.miscdepositdetailsEvent.subscribe((res: any) => {
+    //   if (res.deposit) {
+    //     res.deposit.forEach((element: any) => {
+    //       this.totalDeposit += element.balanceamount;
+    //     });
+    //     if (this.totalDeposit > 0) {
+    //       this.miscServBillForm.controls["dipositAmt"].setValue(
+    //         this.totalDeposit.toFixed(2)
+    //       );
+    //       this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+    //     }
+    //   }
+    // });
   }
   ngAfterViewInit() {
     this.formEvents();
