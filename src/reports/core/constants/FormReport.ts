@@ -11,20 +11,40 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        equipmentName: {
+          type: "hidden",
+        },
+
         Cmb_Equip: {
           // type: "dropdown",
+
           type: "autocomplete",
+
           placeholder: "---Equipment---",
+
           title: "Equipment Name",
+
           // defaultValue: "0",
+
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
+
             fields: {
               title: "name",
 
-              value: "name",
+              value: "id",
             },
           },
+
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "equipmentName",
+
+              type: "value",
+            },
+          ],
         },
         EquipFromDate: {
           type: "date",
@@ -545,6 +565,7 @@ export namespace FormReport {
           title: "",
           required: false,
           questionClasses: "max-hide",
+
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -552,6 +573,7 @@ export namespace FormReport {
               value: "id",
             },
           },
+          defaultValue: "",
         },
 
         Location: {
@@ -586,7 +608,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "membershipno".trim(),
             },
           },
         },
@@ -728,12 +750,12 @@ export namespace FormReport {
         dtpfromdate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
         dtptodate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
           minimum: new Date("From Date"),
         },

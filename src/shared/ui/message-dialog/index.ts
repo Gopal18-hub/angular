@@ -10,6 +10,7 @@ import {
   MessageInfoComponent,
   MessageWarningComponent,
   MessageConfirmComponent,
+  MessageErrorComponent
 } from "./message.component";
 
 @NgModule({
@@ -20,6 +21,7 @@ import {
     MessageInfoComponent,
     MessageWarningComponent,
     MessageConfirmComponent,
+    MessageErrorComponent
   ],
   providers: [],
 })

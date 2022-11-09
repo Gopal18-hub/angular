@@ -183,8 +183,16 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         item["sno"] = index + 1;
         return item;
       });
+    this.billingService.makeBillPayload.dtCheckedItem = [];
+    this.billingService.makeBillPayload.dtFinalGrpDoc = {};
+    this.billingService.makeBillPayload.txtOtherGroupDoc = '';
+    this.billingService.dtCheckedItem = [];
+    this.billingService.dtFinalGrpDoc = {};
+    this.billingService.txtOtherGroupDoc = '';
     this.data = [...this.billingService.consultationItems];
+    this.userSelectedDMG = 0;
     this.billingService.calculateTotalAmount();
+    console.log(this.billingService.makeBillPayload);
   }
 
   showDmgPopup() {
@@ -502,7 +510,6 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     var OtherGroupDoc;
     var dmgdata: any[] = [];
     console.log(dsGroupDoc, dsGroupDocprevious);
-    debugger;
     if (dsGroupDocprevious.dtGrpDocpre.length > 0) {
       this.userSelectedDMG = dsGroupDocprevious.dtGrpDocpre[0].dmg;
     }
@@ -571,13 +578,14 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       count++;
     });
     if (dmgdata.length > 0) {
+      console.log(this.formGroup.value)
       const dialogref = this.matDialog.open(DmgPopupComponent, {
         width: "70vw",
         height: "80vh",
         data: {
           dmgdata: dmgdata,
           selectedgrpdoc: SelectedGroupDoc,
-          specialization: this.formGroup.value.specialization.value,
+          specialization: this.formGroup.value.doctorName.specialisationid,
           unitdocid: this.formGroup.value.doctorName.value,
           reason: OtherGroupDoc ? OtherGroupDoc : "",
         },

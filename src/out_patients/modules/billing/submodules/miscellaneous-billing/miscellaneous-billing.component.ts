@@ -511,7 +511,16 @@ export class MiscellaneousBillingComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
+      .toPromise()
+      .catch((e) => {
+        //this.snackbar.open(e.error.errors.regiNo, "error");
+        this.snackbar.open("Invalid Max ID", "error");
+        return false;
+      });
+
+    if (res == null || res == undefined) {
+      return false;
+    }
     if (res)
       if (res.length > 0) {
         if (res[0].flagexpired == 1) {
@@ -646,7 +655,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
-            queryParams: { maxID: this.miscForm.value.maxid },
+            queryParams: { maxID: this.miscForm.value.maxid, from: 1 },
           });
           return;
         }

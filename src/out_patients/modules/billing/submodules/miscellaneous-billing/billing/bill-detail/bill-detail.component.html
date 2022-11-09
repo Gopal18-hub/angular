@@ -177,6 +177,7 @@
                       class="min-width-initial p-0 bg-deposit"
                       (click)="opendiscAmtDialog()"
                       type="button"
+                      [disabled]="!enableDialogHoriz"
                       
                     >
                       <mat-icon class="icon-more p-0 font-xs"
@@ -249,7 +250,7 @@
             </div>
             <div>
               <div class="flex">
-                <mat-label class="wt-nowrap mr-24">Plan Amt(-)</mat-label>
+                <mat-label class="wt-nowrap mr-24">Plan Amt.</mat-label>
 
                 <maxhealth-question
                   [question]="question[19]"
