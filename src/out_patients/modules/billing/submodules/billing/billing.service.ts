@@ -156,6 +156,9 @@ export class BillingService {
     this.selectedcorporatedetails = [];
     this.selectedHealthPlan = null;
     this.selectedOtherPlan = null;
+    this.dtCheckedItem = [];
+    this.dtFinalGrpDoc = {};
+    this.txtOtherGroupDoc = '';
   }
 
   calculateTotalAmount() {
