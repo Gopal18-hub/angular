@@ -166,7 +166,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
               (resultData) => {
                 //this.matDialog.closeAll();
                 this.dialogRef.close("Success");
-                this.messageDialogService.success("Form 60 details have been saved. Please click deposit.");
+                this.messageDialogService.success("Form 60 details have been successfully saved.");
               
               },
               (error) => {
