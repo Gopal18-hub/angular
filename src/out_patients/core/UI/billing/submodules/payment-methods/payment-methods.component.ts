@@ -29,6 +29,7 @@ import { HttpService } from '@shared/services/http.service';
 export class PaymentMethodsComponent implements OnInit {
   @Input() config: any;
   @Input() Refundavalaiblemaount: any;
+  @Input() paymentpatientinfo: any;
 
   bankname: getBankName[] = [];
   creditcard: getcreditcard[] = [];
@@ -82,25 +83,63 @@ export class PaymentMethodsComponent implements OnInit {
     this.clearpaymentmethod();
   }
 
-  PaymentMethodvalidation() {
+  async PaymentMethodvalidation() {
     this.PaymentMethodcashdeposit = this.refundform.value;
-
-    if (Number(this.PaymentMethodcashdeposit.cashamount) > 0) {
+    this.depositamount = 0;
+    if (Number(this.PaymentMethodcashdeposit.cashamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.cashamount);
-    } else if (Number(this.PaymentMethodcashdeposit.chequeamount) > 0) {
+    } else if (Number(this.PaymentMethodcashdeposit.chequeamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.chequeamount);
       this.PaymentType = 2;
-    } else if (Number(this.PaymentMethodcashdeposit.creditamount) > 0) {
+    } else if (Number(this.PaymentMethodcashdeposit.creditamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.creditamount);
-    } else if (Number(this.PaymentMethodcashdeposit.demandamount) > 0) {
+      this.PaymentType = 4;
+    } else if (Number(this.PaymentMethodcashdeposit.demandamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.demandamount);
-    } else if (Number(this.PaymentMethodcashdeposit.upiamount) > 0) {
+      this.PaymentType = 3;
+    } else if (Number(this.PaymentMethodcashdeposit.upiamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.upiamount);
-    } else if (Number(this.PaymentMethodcashdeposit.internetamount) > 0) {
+      this.PaymentType = 8;
+    } else if (Number(this.PaymentMethodcashdeposit.internetamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.internetamount);
+      this.PaymentType = 5;
     }
-
-    if (this.Refundavalaiblemaount) {
+    if (Number(this.depositamount < 0)) {
+      const depositamt =  this.messageDialogService.error(
+          "Amount Zero or Negative number is not Allowed"
+        );
+        await depositamt.afterClosed().toPromise();
+        if(this.PaymentType == 1){
+          this.refundform.controls["cashamount"].setValue("0.00");
+          this.questions[0].elementRef.focus();
+        } 
+        else if(this.PaymentType == 2)
+        {
+          this.refundform.controls["chequeamount"].setValue("0.00");
+          this.questions[5].elementRef.focus();
+        }
+        else if(this.PaymentType == 4)
+        {
+          this.refundform.controls["creditamount"].setValue("0.00");
+          this.questions[11].elementRef.focus();
+        }
+        else if(this.PaymentType == 3)
+        {
+          this.refundform.controls["demandamount"].setValue("0.00");
+          this.questions[19].elementRef.focus();
+        }
+        else if(this.PaymentType == 8)
+        {
+          this.refundform.controls["upiamount"].setValue("0.00");
+          this.questions[44].elementRef.focus();
+        }
+        else if(this.PaymentType == 5)
+        {
+          this.refundform.controls["internetamount"].setValue("0.00");
+          this.questions[51].elementRef.focus();
+        }
+  
+      } else if (this.Refundavalaiblemaount) {
       let cashlimit = this.depositservice.refundcashlimit;
       if (
         Number(this.depositamount) >
@@ -117,15 +156,16 @@ export class PaymentMethodsComponent implements OnInit {
         this.messageDialogService.error(
           "Refund through Cash Cannot be more then Rs 10000"
         );
-      } else if (Number(this.depositamount == 0)) {
+      } else if (Number(this.depositamount <= 0)) {
         this.messageDialogService.error(
           "Refund Amount must not be Zero or Negative number"
         );
       }
     }else if(Number(this.depositamount >= 200000) && this.PaymentType == 1){
       this.messageDialogService.error("Cash amount cannot exceed Rs.199999");
-     // this.questions[0].elementRef.focus();     
-    } else {
+      this.questions[0].elementRef.focus();     
+    } 
+    else {
       this.depositservice.setFormList(this.refundform.value);
     }
   }
@@ -141,6 +181,31 @@ export class PaymentMethodsComponent implements OnInit {
       "blur",
       this.PaymentMethodvalidation.bind(this)
     );
+    this.questions[11].elementRef.addEventListener(
+      "blur",
+      this.PaymentMethodvalidation.bind(this)
+    );
+    this.questions[19].elementRef.addEventListener(
+      "blur",
+      this.PaymentMethodvalidation.bind(this)
+    ); 
+     this.questions[44].elementRef.addEventListener(
+      "blur",
+      this.PaymentMethodvalidation.bind(this)
+    );
+    this.questions[51].elementRef.addEventListener(
+      "blur",
+      this.PaymentMethodvalidation.bind(this)
+    );
+
+   this.questions[49].elementRef.addEventListener("keypress", (event: any) => {
+        if (event.key === "Enter") {
+          if(this.refundform.value.internetmobile.length != 10)
+          {          
+              this.messageDialogService.error("Invalid Mobile No.");             
+          }
+        }
+      });
   }
 
   Enablecreditfields() {
@@ -174,7 +239,10 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["chequeamount"].setValue("0.00");
     this.refundform.controls["creditamount"].setValue("0.00");
     this.refundform.controls["demandamount"].setValue("0.00");
-    this.refundform.controls["paytmamount"].setValue("0.00");
+    this.refundform.controls["upiamount"].setValue("0.00");
+    this.refundform.controls["internetamount"].setValue("0.00");
+    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo.patientinfo.mobileno);
+    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo.patientinfo.emailId);
   }
 
   resetcreditcard() {

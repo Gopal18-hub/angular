@@ -12,6 +12,8 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { threadId } from "worker_threads";
+import { InstantiateExpr } from "@angular/compiler";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 @Injectable({
   providedIn: "root",
 })
@@ -38,7 +40,7 @@ export class BillingService {
   totalCost = 0;
 
   totalCostWithOutGst = 0;
-
+  billNo = "";
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
@@ -70,6 +72,7 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
+  pancardpaymentmethod = new Subject<any>();
 
   companyData: any = [];
   corporateData: any = [];
@@ -144,6 +147,7 @@ export class BillingService {
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
     this.calculateBillService.clear();
+    this.billNo = "";
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
@@ -154,14 +158,19 @@ export class BillingService {
     this.selectedcorporatedetails = [];
     this.selectedHealthPlan = null;
     this.selectedOtherPlan = null;
+    this.dtCheckedItem = [];
+    this.dtFinalGrpDoc = {};
+    this.txtOtherGroupDoc = "";
   }
 
   calculateTotalAmount() {
+    let quanity;
     this.totalCost = 0;
     this.totalCostWithOutGst = 0;
     this.billItems.forEach((item: any) => {
+      quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
       this.totalCost += item.totalAmount;
-      this.totalCostWithOutGst += item.price * item.qty;
+      this.totalCostWithOutGst += item.price * quanity;
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
@@ -520,6 +529,10 @@ export class BillingService {
     this.billtype = billtype;
   }
 
+  setBillNumber(billNo: any) {
+    this.billNo = billNo;
+  }
+
   setActiveMaxId(
     maxId: string,
     iacode: string,
@@ -611,8 +624,12 @@ export class BillingService {
   }
 
   addToBill(data: any) {
+    let quantity = "1";
     this.billItems.push(data);
     this.billItemsTrigger.next({ data: this.billItems });
+    if (!isNaN(Number(data.qty.toString()))) {
+      quantity = data.qty.toString();
+    }
     this.makeBillPayload.ds_insert_bill.tab_d_opbillList.push({
       opBillId: 0,
       serviceId: data.serviceId,
@@ -624,7 +641,7 @@ export class BillingService {
       cancelled: false,
       discountType: 0,
       refund: false,
-      qty: data.qty.toString(),
+      qty: quantity,
       refundId: 0,
       posted: "",
       qtSlno: 1,
@@ -1186,6 +1203,56 @@ export class BillingService {
     }
   }
 
+  async processProcedureAddWithOutApi(
+    priorityId: number,
+    serviceType: string,
+    procedure: any
+  ) {
+    this.addToProcedure({
+      sno: this.ProcedureItems.length + 1,
+      procedures: procedure.originalTitle,
+      qty: 1,
+      specialisation: "",
+      doctorName: "",
+      doctorName_required: procedure.docRequired ? true : false,
+      specialisation_required: procedure.docRequired ? true : false,
+      price: procedure.price,
+      unitPrice: procedure.price,
+      itemid: procedure.value,
+      priorityId: priorityId,
+      serviceId: procedure.serviceid,
+      billItem: {
+        popuptext: procedure.popuptext,
+        itemId: procedure.value,
+        priority: priorityId,
+        serviceId: procedure.serviceid,
+        price: procedure.price,
+        serviceName: "Procedure & Others",
+        itemName: procedure.originalTitle,
+        qty: 1,
+        precaution: "",
+        procedureDoctor: "",
+        credit: 0,
+        cash: 0,
+        disc: 0,
+        discAmount: 0,
+        totalAmount: procedure.price,
+        gst: 0,
+        gstValue: 0,
+        specialisationID: 0,
+        doctorID: 0,
+      },
+      gstDetail: {},
+      gstCode: {},
+    });
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: procedure.value,
+      serviceID: procedure.serviceid,
+      price: procedure.price,
+      willModify: false,
+    });
+  }
+
   async processInvestigationAdd(
     priorityId: number,
     serviceType: string,
@@ -1397,13 +1464,15 @@ export class BillingService {
     doctorName: any,
     clinics: any
   ) {
+    let consultType: any = {};
+    let consultationtype = "Consultation – CPT 99202";
     let onlinePaidAppoinment = this.PaidAppointments
       ? this.PaidAppointments.paymentstatus == "Yes"
         ? true
         : false
       : false;
     if (!this.selectedOtherPlan && !onlinePaidAppoinment) {
-      let consultType = await this.http
+      consultType = await this.http
         .get(
           BillingApiConstants.getDoctorConsultType(
             Number(this.cookie.get("HSPLocationId")),
@@ -1415,6 +1484,16 @@ export class BillingService {
         .toPromise();
       if (consultType) {
         priorityId = consultType[0].consultId;
+        consultationtype = consultType[0].strConsult;
+
+        //#region GAV-777
+        if (
+          consultType[0].strConsult.includes("Follow up") &&
+          Number(this.cookie.get("HSPLocationId")) == 69
+        ) {
+          this.visitHistory();
+        }
+        //#endregion
       }
     }
     const res = await this.http
@@ -1447,7 +1526,7 @@ export class BillingService {
           price: res[0].returnOutPut,
           serviceName: "Consultation Charges",
           itemName: doctorName.originalTitle,
-          qty: 1,
+          qty: consultationtype,
           precaution: "",
           procedureDoctor: "",
           credit: 0,
@@ -1558,5 +1637,21 @@ export class BillingService {
       }
     );
     this.calculateTotalAmount();
+  }
+
+  setpaymenthodpancardfocus() {
+    this.pancardpaymentmethod.next(true);
+  }
+
+  // ///GAV-777 visit history popup for Nanvati location
+  visitHistory() {
+    this.matDialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.activeMaxId.maxId,
+        docid: "",
+      },
+    });
   }
 }

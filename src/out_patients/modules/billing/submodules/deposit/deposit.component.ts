@@ -86,6 +86,8 @@ export class DepositComponent implements OnInit {
           );
           await dialogRef.afterClosed().toPromise();
           this.expiredpatientexists = true;
+          this.questions[0].readonly = false;
+          this.questions[0].elementRef.focus();
         }
         this.getPatientDetailsForDeposit();
       }
@@ -117,8 +119,10 @@ export class DepositComponent implements OnInit {
               const dialogRef = this.messageDialogService.error(
                 "Patient is an Expired Patient!"
               );
-              dialogRef.afterClosed().toPromise();
+              await  dialogRef.afterClosed().toPromise();
               this.expiredpatientexists = true;
+              this.questions[0].readonly = false;
+              this.questions[0].elementRef.focus();
             }
             this.getPatientDetailsForDeposit();
           }
@@ -351,7 +355,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string = "";
-  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any =  Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -488,6 +492,7 @@ export class DepositComponent implements OnInit {
         // If the user presses the "Enter" key on the keyboard
 
         if (event.key === "Enter") {
+          this.expiredpatientexists = false;
           event.preventDefault();
           if (this.depositForm.value.maxid == "") {
             this.messageDialogService.error(
@@ -510,7 +515,10 @@ export class DepositComponent implements OnInit {
                 const dialogRef = this.messageDialogService.error(
                   "Patient is an Expired Patient!"
                 );
-                dialogRef.afterClosed().toPromise();
+               await dialogRef.afterClosed().toPromise();
+                
+                this.questions[0].readonly = false;
+                this.questions[0].elementRef.focus();
                 this.expiredpatientexists = true;
               }
               this.getDepositType();
@@ -569,7 +577,10 @@ export class DepositComponent implements OnInit {
               this.nationality =
                 this.patientpersonaldetails[0]?.nationalityName;
               this.ssn = this.patientpersonaldetails[0]?.ssn;
-              this.questions[0].readonly = true;
+
+              if(!this.expiredpatientexists){
+                this.questions[0].readonly = true;
+              }
 
               this.depositForm.controls["panno"].setValue(
                 this.patientpersonaldetails[0]?.paNno
@@ -642,6 +653,14 @@ export class DepositComponent implements OnInit {
           this.getPatientDetailsByMaxId();
           this.getPatientPreviousDepositDetails();
         }
+        else if(resultData == null){
+          this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = "Invalid Max ID";
+        }
+      },
+      (error) => {
+        this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+        this.questions[0].customErrorMessage = "Invalid Max ID";
       });
   }
 
@@ -820,8 +839,10 @@ export class DepositComponent implements OnInit {
                       const dialogRef = this.messageDialogService.error(
                         "Patient is an Expired Patient!"
                       );
-                      dialogRef.afterClosed().toPromise();
+                      await dialogRef.afterClosed().toPromise();
                       this.expiredpatientexists = true;
+                      this.questions[0].readonly = false;
+                      this.questions[0].elementRef.focus();
                     }
                     this.getPatientDetailsForDeposit();
                   }
@@ -968,9 +989,12 @@ export class DepositComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .toPromise()
+     .catch(() => {
+       return;
+     } );
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {

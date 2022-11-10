@@ -22,6 +22,7 @@ export class AppointmentSearchComponent implements OnInit {
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI: boolean = false;
+  apiProcessing: boolean = false;
   // appointmentSearchForm = new FormGroup({
   //   name: new FormControl(""),
   //   booknumber: new FormControl(""),
@@ -68,10 +69,7 @@ export class AppointmentSearchComponent implements OnInit {
       name: {
         type: "string",
         title: "Name",
-
         defaultValue: "",
-        // pattern: "^[A-Za-z]{1}[A-Za-z. '']+"
-        // defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       bookingNo: {
         type: "string",
@@ -81,18 +79,18 @@ export class AppointmentSearchComponent implements OnInit {
       },
 
       phone: {
-        type: "number",
+        type: "tel",
         title: "Phone",
-        required: false,
-        //  pattern: "^[1-9]{1}[0-9]{9}",
-        maximum: 10,
+        maximum: 9999999999,
+        // pattern: "^[0-9]{10}",
+        // maximum: 10,
         defaultValue: this.data.phoneNumber,
-      },
+    },
       datevalidation: {
         type: "checkbox",
         required: false,
         options: [{ title: "" }],
-        defaultValue: 0,
+        defaultValue: 1,
       },
       fromDate: {
         type: "date",
@@ -581,14 +579,16 @@ export class AppointmentSearchComponent implements OnInit {
   searchAppointment() {
     this.searchResults = [];
     console.log("app search called");
+    this.apiProcessing = true;
     //this.http.getExternal(ApiConstants.getAppointmentPatientSearch(this.appointmentSearchForm.value.phone,this.appointmentSearchForm.value.name,'',this.appointmentSearchForm.value.isDateRange,this.appointmentSearchForm.value.startdate,this.appointmentSearchForm.value.enddate,'',this.appointmentSearchForm.value.booknumber)).subscribe((response)=>{
     this.getAppointmentSearch().subscribe(
       (response) => {
         if (response.length == 0) {
-          this.searchAppPatient = false;
-          this.defaultUI = true;
-          this.findpatientimage = "norecordfound";
-          this.findpatientmessage = "No Appointment Found";
+          this.apiProcessing = false;
+          // this.searchAppPatient = false;
+          // this.defaultUI = true;
+          // this.findpatientimage = "norecordfound";
+          // this.findpatientmessage = "No Appointment Found";
         } else {
           let temp: billingAppointmentSearch[] = [];
           response.forEach((item: any) => {
@@ -597,8 +597,9 @@ export class AppointmentSearchComponent implements OnInit {
             }
           });
           this.searchResults = temp;
-          this.searchAppPatient = true;
-          this.defaultUI = false;
+          this.apiProcessing = false;
+          // this.searchAppPatient = true;
+          // this.defaultUI = false;
           console.log(this.searchResults)
           this.searchResults = this.searchResults.map((item: any) => {
             return {
@@ -613,17 +614,14 @@ export class AppointmentSearchComponent implements OnInit {
       (error: any) => {
         console.log(error);
         this.searchResults = [];
-        this.defaultUI = true;
-        this.searchAppPatient = false;
-        this.findpatientmessage = "No records found";
-        this.findpatientimage = "norecordfound";
+        this.apiProcessing = false;
+        // this.defaultUI = true;
+        // this.searchAppPatient = false;
+        // this.findpatientmessage = "No records found";
+        // this.findpatientimage = "norecordfound";
       }
     );
   }
-
-  // get patternError() {
-  //   return this.appointmentSearchForm.controls["phoneNo"].errors?.["pattern"];
-  // }
 
   clear() {
     this.OPAppointmentForm.reset();

@@ -210,7 +210,7 @@ export class CalculateBillService {
     } else {
       if (
         this.discountSelectedItems.length == 1 &&
-        [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
+        [1, 6].includes(this.discountSelectedItems[0].discTypeId)
       ) {
         const discItem = this.discountSelectedItems[0];
         this.billingServiceRef.billItems.forEach((item: any) => {
@@ -222,12 +222,6 @@ export class CalculateBillService {
           item.discountType = this.discountSelectedItems[0].discTypeId;
           item.discountReason = discItem.reason;
         });
-        if (this.discountSelectedItems[0].discTypeId == 5) {
-          formGroup.controls["compDisc"].setValue(discItem.discAmt);
-        }
-        if (this.discountSelectedItems[0].discTypeId == 4) {
-          formGroup.controls["patientDisc"].setValue(discItem.discAmt);
-        }
       } else {
         this.discountSelectedItems.forEach((ditem: any) => {
           if (ditem.discTypeId == 3) {
@@ -262,6 +256,7 @@ export class CalculateBillService {
             formGroup.controls["patientDisc"].setValue(ditem.discAmt);
           } else if (ditem.discTypeId == 5) {
             formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
       }
@@ -365,7 +360,10 @@ export class CalculateBillService {
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
-    if (!this.billingServiceRef.company) {
+    if (
+      formGroup.value.paymentMode == 1 &&
+      this.otherPlanSelectedItems.length == 0
+    ) {
       if (this.billingServiceRef.todayPatientBirthday) {
         const birthdayDialogRef = this.messageDialogService.confirm(
           "",

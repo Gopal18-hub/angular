@@ -172,10 +172,6 @@ export class MiscellaneousBillingComponent implements OnInit {
   dsPersonalDetails: any = [];
 
   ngOnInit(): void {
-    this.setItemsToBill.enableBill = false;
-    this.setItemsToBill.enablecompanyId = true;
-    this.setItemsToBill.corporateId = 0;
-    this.setItemsToBill.companyId = 0;
     let formResult = this.formService.createForm(
       this.miscFormData.properties,
       {}
@@ -199,20 +195,11 @@ export class MiscellaneousBillingComponent implements OnInit {
     // this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
-    // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
-    //   if (res.companyIdComp != "Misc") {
-    //     if (res.companyId) {
-    //       this.miscForm.controls["company"].setValue(res.companyId, {
-    //         emitEvent: false,
-    //       });
-    //     }
-    //     if (res.corporateId) {
-    //       this.miscForm.controls["corporate"].setValue(res.corporateId, {
-    //         emitEvent: false,
-    //       });
-    //     }
-    //   }
-    // });
+    this.setItemsToBill.enableBill = false;
+    this.setItemsToBill.enablecompanyId = true;
+    this.setItemsToBill.corporateId = 0;
+    this.setItemsToBill.companyId = 0;
+
     this.Misc.misccompanyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
         this.miscForm.controls["company"].setValue(res.company, {
@@ -232,13 +219,6 @@ export class MiscellaneousBillingComponent implements OnInit {
         }
       }
     });
-    // this.Misc.billNoGenerated.subscribe((res: boolean) => {
-    //   if (res) {
-    //     this.links[1].disabled = true;
-    //   } else {
-    //     this.links[1].disabled = false;
-    //   }
-    // });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -320,6 +300,17 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   onPhoneModify() {
     this.matDialog.closeAll();
+
+    if (
+      !this.miscForm.value.mobileNo ||
+      this.miscForm.value.mobileNo.length != 10
+    ) {
+      this.snackbar.open("Invalid Mobile No.", "error");
+      this.apiProcessing = false;
+      // this.patient = false;
+      return;
+    }
+
     this.http
       .post(ApiConstants.similarSoundPatientDetail, {
         phone: this.miscForm.value.mobileNo,
@@ -520,12 +511,22 @@ export class MiscellaneousBillingComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res.length > 0) {
-      if (res[0].flagexpired == 1) {
-        return true;
-      }
+      .toPromise()
+      .catch((e) => {
+        //this.snackbar.open(e.error.errors.regiNo, "error");
+        this.snackbar.open("Invalid Max ID", "error");
+        return false;
+      });
+
+    if (res == null || res == undefined) {
+      return false;
     }
+    if (res)
+      if (res.length > 0) {
+        if (res[0].flagexpired == 1) {
+          return true;
+        }
+      }
     return false;
   }
 
@@ -654,7 +655,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
-            queryParams: { maxID: this.miscForm.value.maxid },
+            queryParams: { maxID: this.miscForm.value.maxid, from: 1 },
           });
           return;
         }
@@ -666,7 +667,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       resultData.dtPatientPastDetails[2].id > 0 &&
       resultData.dtPatientPastDetails[2].data > 0
     ) {
-      this.Misc.depositDetails(iacode, regNumber);
+      //this.Misc.depositDetails(iacode, regNumber);
     }
   }
 
@@ -747,21 +748,23 @@ export class MiscellaneousBillingComponent implements OnInit {
   }
   setCompany(patientDetails: PatientDetail) {
     if (patientDetails.companyid != 0) {
-      const companyExist: any = this.companyList.find(
-        (c: any) => c.id == patientDetails.companyid
-      );
-      if (companyExist) {
-        let res = {
-          company: companyExist,
-          title: companyExist.name,
-          value: patientDetails.companyid,
-        };
-        this.Misc.setCompnay(
-          patientDetails.companyid,
-          res,
-          this.miscForm,
-          "companyexists"
+      if (this.companyList) {
+        const companyExist: any = this.companyList.find(
+          (c: any) => c.id == patientDetails.companyid
         );
+        if (companyExist) {
+          let res = {
+            company: companyExist,
+            title: companyExist.name,
+            value: patientDetails.companyid,
+          };
+          this.Misc.setCompnay(
+            patientDetails.companyid,
+            res,
+            this.miscForm,
+            "companyexists"
+          );
+        }
       }
     }
   }

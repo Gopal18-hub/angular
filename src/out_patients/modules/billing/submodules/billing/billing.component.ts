@@ -195,11 +195,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
-    this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(async (formdata: any) => {
-        await this.loadGrid(formdata);
-      });
+    this.searchService.searchTrigger.subscribe(async (formdata: any) => {
+      await this.loadGrid(formdata);
+    });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
@@ -252,20 +250,24 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         let referalDoctor: any = null;
         if (res.tempOrderBreakup.length > 0) {
-          res.tempOrderBreakup.forEach((item: any) => {
+          res.tempOrderBreakup.forEach(async (item: any) => {
             if (item.serviceType == "Investigation") {
-              this.billingService.processInvestigationAdd(1, item.serviceId, {
-                title: item.testName,
-                value: item.testID,
-                originalTitle: item.testName,
-                docRequired: item.doctorid ? true : false,
-                patient_Instructions: "",
-                item_Instructions: "",
-                serviceid: item.serviceId,
-                doctorid: item.doctorid,
-                specialization: item.specialization,
-                specializationId: item.specializationId,
-              });
+              await this.billingService.processInvestigationAdd(
+                1,
+                item.serviceId,
+                {
+                  title: item.testName,
+                  value: item.testID,
+                  originalTitle: item.testName,
+                  docRequired: item.doctorid ? true : false,
+                  patient_Instructions: "",
+                  item_Instructions: "",
+                  serviceid: item.serviceId,
+                  doctorid: item.doctorid,
+                  specialization: item.specialization,
+                  specializationId: item.specializationId,
+                }
+              );
               if (item.doctorid)
                 referalDoctor = {
                   id: item.refDocID,
@@ -274,14 +276,16 @@ export class BillingComponent implements OnInit, OnDestroy {
                 };
             }
           });
+          setTimeout((res: any) => {
+            this.billingService.servicesTabStatus.next({
+              goToTab: 1,
+            });
+          }, 500);
 
           if (referalDoctor) {
             this.billingService.setReferralDoctor(referalDoctor);
           }
           this.apiProcessing = false;
-          this.billingService.servicesTabStatus.next({
-            goToTab: 1,
-          });
         }
       });
   }
@@ -448,9 +452,12 @@ export class BillingComponent implements OnInit, OnDestroy {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .toPromise()
+      .catch((reason: any) => {
+        return reason;
+      });
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
@@ -473,7 +480,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
         this.expiredPatient = true;
-        const dialogRef = this.messageDialogService.error(
+        const dialogRef = this.messageDialogService.warning(
           "This is an expired patient, no transaction is allowed"
         );
         await dialogRef.afterClosed().toPromise();
@@ -1036,6 +1043,19 @@ export class BillingComponent implements OnInit, OnDestroy {
                             price: slItem.price,
                           }
                         );
+                      } else {
+                        this.billingService.processProcedureAddWithOutApi(
+                          1,
+                          slItem.serviceid,
+                          {
+                            serviceid: slItem.serviceid,
+                            value: slItem.itemid,
+                            originalTitle: slItem.itemName,
+                            docRequired: false,
+                            popuptext: false,
+                            price: slItem.price,
+                          }
+                        );
                       }
                     });
                     this.router.navigate(["bill"], {
@@ -1247,11 +1267,11 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         if (result && result.data) {
           let apppatientDetails = result.data.added[0];
-          if (apppatientDetails.maxId.split('.')[1] == "") {
+          if (apppatientDetails.maxId.split(".")[1] == "") {
             this.snackbar.open("Invalid Max ID", "error");
           } else {
             let maxid = apppatientDetails.maxId;
-              // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+            // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
             this.formGroup.controls["maxid"].setValue(maxid);
             this.apiProcessing = true;
             this.patient = false;

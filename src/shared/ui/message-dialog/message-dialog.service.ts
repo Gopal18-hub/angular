@@ -4,6 +4,7 @@ import {
   MessageInfoComponent,
   MessageWarningComponent,
   MessageConfirmComponent,
+  MessageErrorComponent,
 } from "./message.component";
 import { MatDialog } from "@angular/material/dialog";
 
@@ -27,7 +28,7 @@ export class MessageDialogService {
   }
 
   error(message: string) {
-    const dialogRef = this.dialog.open(MessageWarningComponent, {
+    const dialogRef = this.dialog.open(MessageErrorComponent, {
       //width: "40vw",
       minWidth: "25vw",
       maxWidth: "40vw",
@@ -57,8 +58,20 @@ export class MessageDialogService {
       //width: "40vw",
       minWidth: "25vw",
       maxWidth: "40vw",
-      minHeight: "25vh",
+      minHeight: "30vh",
       panelClass: "message-confirm",
+      data: { message: message },
+      autoFocus: false,
+    });
+    return dialogRef;
+  }
+
+  warning(message: string) {
+    const dialogRef = this.dialog.open(MessageWarningComponent, {
+      width: "30vw",
+      minWidth: "20vw",
+      maxWidth: "30vw",
+      panelClass: "message-warning",
       data: { message: message },
       autoFocus: false,
     });

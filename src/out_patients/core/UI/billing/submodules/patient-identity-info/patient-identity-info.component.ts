@@ -17,6 +17,7 @@ import { BillingService } from '@modules/billing/submodules/billing/billing.serv
 export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
   @Input() data!: any;
   @Output() neweventform60ssave = new EventEmitter<boolean>();
+  @Input() form60payment! :any;
   
   patientidentityformData = {
     title: "",
@@ -89,9 +90,24 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     this.depositservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
       this.patientidentityform.controls["panno"].setValue("");
+      this.patientidentityform.controls["mainradio"].setValue("pancardno");
       }
     });
-  }
+
+    this.billingservice.pancardpaymentmethod.subscribe((setfocus) => {
+      if(setfocus){
+        this.questions[2].elementRef.focus();
+      }
+    });
+
+    this.billingservice.clearAllItems.subscribe((clearItems: any) => {
+      if (clearItems) {
+        this.data = [];
+        this.patientidentityform.controls["panno"].setValue("");
+        this.patientidentityform.controls["mainradio"].setValue("pancardno");
+      }
+    });
+    }
 
   ngAfterViewInit(): void
   {
@@ -100,17 +116,17 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
       if(value == "form60")
       { 
         let tobepaidby: number = 0, paymentmode:string = "" ;
-        if(this.data.patientinfo.screenname == "Billing"){
-          if(this.billingservice.makeBillPayload.ds_paymode.tab_paymentList){
-            this.billingservice.makeBillPayload.ds_paymode.tab_paymentList.forEach((item: any) => {
-              tobepaidby += Number(item.amount);
-              paymentmode = paymentmode + " ," + item.modeOfPayment
+        if(this.data.patientinfo.screenname == "Billing" && this.form60payment){          
+            this.form60payment.tabs.forEach((payment: any) => {
+              if (Number(this.form60payment.paymentForm[payment.key].value.price) > 0) {              
+              tobepaidby += Number(this.form60payment.paymentForm[payment.key].value.price);
+              paymentmode = paymentmode + " ," + this.form60payment.paymentForm[payment.key].value.modeOfPayment
+            }
             });
             this.PaymentMethod = [{
               transactionamount : tobepaidby ,
               MOP : paymentmode
-            }]
-          }
+            }];          
         }
         else if(this.data.patientinfo.screenname == "Deposit"){          
         this.PaymentMethod = this.depositservice.data;  
@@ -132,6 +148,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
                 this.Form60success = true;
                 this.neweventform60ssave.emit(this.Form60success);
                 console.log("Form 60 successfull");
+              }else{
+                this.patientidentityform.controls["mainradio"].setValue("pancardno");
               }
             });
 

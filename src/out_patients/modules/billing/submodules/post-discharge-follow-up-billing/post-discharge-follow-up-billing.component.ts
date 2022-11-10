@@ -485,6 +485,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       .subscribe((resultData: DMSrefreshModel[]) => {
         this.matdialog.open(DMSComponent, {
           width: "100vw",
+          maxWidth: "90vw",
+          maxHeight: "80vh",
           data: {
             list: resultData,
             maxid: patientDetails.iacode + "." + patientDetails.registrationno,
