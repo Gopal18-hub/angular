@@ -204,27 +204,24 @@ export class BillingComponent implements OnInit, OnDestroy {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res) => {
+      .subscribe(async (res) => {
         let referalDoctor: any = null;
         if (res.tempOrderBreakup.length > 0) {
-          res.tempOrderBreakup.forEach(async (item: any) => {
+          const tempBulkInvPayload: any = [];
+          res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
-              await this.billingService.processInvestigationAdd(
-                1,
-                item.serviceId,
-                {
-                  title: item.testName,
-                  value: item.testID,
-                  originalTitle: item.testName,
-                  docRequired: item.doctorid ? true : false,
-                  patient_Instructions: "",
-                  item_Instructions: "",
-                  serviceid: item.serviceId,
-                  doctorid: item.doctorid,
-                  specialization: item.specialization,
-                  specializationId: item.specializationId,
-                }
-              );
+              tempBulkInvPayload.push({
+                title: item.testName,
+                value: item.testID,
+                originalTitle: item.testName,
+                docRequired: item.doctorid ? true : false,
+                patient_Instructions: "",
+                item_Instructions: "",
+                serviceid: item.serviceId,
+                doctorid: item.doctorid,
+                specialization: item.specialization,
+                specializationId: item.specializationId,
+              });
               if (item.doctorid)
                 referalDoctor = {
                   id: item.refDocID,
@@ -233,15 +230,22 @@ export class BillingComponent implements OnInit, OnDestroy {
                 };
             }
           });
-          setTimeout((res: any) => {
-            this.billingService.servicesTabStatus.next({
-              goToTab: 1,
-            });
-          }, 500);
+          if (tempBulkInvPayload.length > 0) {
+            await this.billingService.processInvestigationBulk(
+              1,
+              tempBulkInvPayload
+            );
+            setTimeout((res: any) => {
+              this.billingService.servicesTabStatus.next({
+                goToTab: 1,
+              });
+            }, 10);
 
-          if (referalDoctor) {
-            this.billingService.setReferralDoctor(referalDoctor);
+            if (referalDoctor) {
+              this.billingService.setReferralDoctor(referalDoctor);
+            }
           }
+
           this.apiProcessing = false;
         }
       });
