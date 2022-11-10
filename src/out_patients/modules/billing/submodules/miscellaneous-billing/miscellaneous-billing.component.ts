@@ -674,7 +674,6 @@ export class MiscellaneousBillingComponent implements OnInit {
   ngOnDestroy(): void {
     this.clearForm();
     this.calculateBillService.discountSelectedItems = [];
-    this.calculateBillService.discountForm.value.authorise.value = 0;
     this.billingService.totalCost = 0;
     this.Misc.selectedcompanydetails = [];
     this.Misc.selectedcorporatedetails = [];
