@@ -152,9 +152,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
-    this.searchService.searchTrigger.subscribe(async (formdata: any) => {
-      await this.loadGrid(formdata);
-    });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        await this.loadGrid(formdata);
+      });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
@@ -409,6 +411,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           Number(regNumber)
         )
       )
+      .pipe(takeUntil(this._destroying$))
       .toPromise()
       .catch((reason: any) => {
         return reason;
@@ -440,7 +443,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         const dialogRef = this.messageDialogService.warning(
           "This is an expired patient, no transaction is allowed"
         );
-        await dialogRef.afterClosed().toPromise();
+        await dialogRef
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .toPromise();
       }
       this.getSimilarSoundDetails(iacode, regNumber);
     } else {
@@ -836,7 +842,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           maxId: this.formGroup.value.maxid,
         },
       });
-      const resAction = await dialogRef.afterClosed().toPromise();
+      const resAction = await dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .toPromise();
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
