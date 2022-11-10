@@ -667,7 +667,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       resultData.dtPatientPastDetails[2].id > 0 &&
       resultData.dtPatientPastDetails[2].data > 0
     ) {
-      this.Misc.depositDetails(iacode, regNumber);
+      //this.Misc.depositDetails(iacode, regNumber);
     }
   }
 
@@ -748,21 +748,23 @@ export class MiscellaneousBillingComponent implements OnInit {
   }
   setCompany(patientDetails: PatientDetail) {
     if (patientDetails.companyid != 0) {
-      const companyExist: any = this.companyList.find(
-        (c: any) => c.id == patientDetails.companyid
-      );
-      if (companyExist) {
-        let res = {
-          company: companyExist,
-          title: companyExist.name,
-          value: patientDetails.companyid,
-        };
-        this.Misc.setCompnay(
-          patientDetails.companyid,
-          res,
-          this.miscForm,
-          "companyexists"
+      if (this.companyList) {
+        const companyExist: any = this.companyList.find(
+          (c: any) => c.id == patientDetails.companyid
         );
+        if (companyExist) {
+          let res = {
+            company: companyExist,
+            title: companyExist.name,
+            value: patientDetails.companyid,
+          };
+          this.Misc.setCompnay(
+            patientDetails.companyid,
+            res,
+            this.miscForm,
+            "companyexists"
+          );
+        }
       }
     }
   }
