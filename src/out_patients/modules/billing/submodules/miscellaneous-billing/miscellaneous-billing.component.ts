@@ -181,6 +181,8 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.getAllCompany();
+    this.getAllCorporate();
     //Enable narration for BLKH & nanavati
     if (
       Number(this.cookie.get("HSPLocationId")) === 67 ||
