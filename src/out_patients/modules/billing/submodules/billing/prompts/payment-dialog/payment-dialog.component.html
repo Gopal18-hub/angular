@@ -1,8 +1,14 @@
-<section class="payment-dialog">
+<section class="payment-dialog relative">
   <!-- Cross Icon -->
-  <div class="flex justify-content-end">
-    <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
-  </div>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
 
   <!-- Blue Banner -->
   <div
