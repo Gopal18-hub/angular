@@ -99,6 +99,9 @@ export class ConsumableDetailsComponent implements OnInit {
         this.tableRows.selection.select(item);
       }
     });
+    this.tableRows.selection.changed.subscribe((ch: any) => {
+      console.log(ch);
+    });
   }
 
   copyReason() {
