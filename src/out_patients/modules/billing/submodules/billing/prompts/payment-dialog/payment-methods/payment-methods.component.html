@@ -31,20 +31,21 @@
             </button>
             {{ tab.method.label }}
           </ng-template>
-          <div class="ml-10">
+          <div class="ml-4 w-4/5">
             <mat-label class="max-health-primary-color font-base font-medium"
               >{{ tab.form.title }}
             </mat-label>
-            <ng-container
+            <div class="flex flex-wrap justify-between">
+              <ng-container
               *ngFor="let question of questions[tab.key]; let i = index"
             >
-              <div class="flex w-3/4 mt-2">
-                <div class="w-3/5">
+              <div class="flex flex-column w-1/45 mt-2" [ngClass]="{'max-hide':question.type == 'hidden'}">
+                <div class="w-full">
                   <mat-label class="max-health-primary-color font-medium">{{
                     tab.form.properties[question.key].label
                   }}</mat-label>
                 </div>
-                <div class="w-5/9 ml-3 input1">
+                <div class="w-full ml-3 input1">
                   <maxhealth-question
                     [question]="question"
                     [form]="paymentForm[tab.key]"
@@ -54,8 +55,10 @@
                 </div>
               </div>
             </ng-container>
+            </div>
+          
             <!-- [disabled]="!activeTab.form.valid" -->
-            <!-- <div
+            <div
               class="max-health-primary-color mx-6 flex justify-between"
               *ngIf="activeTab.form?.actionItems"
             >
@@ -69,7 +72,7 @@
                   {{ button.label }}
                 </button>
               </ng-container>
-            </div> -->
+            </div>
           </div>
         </mat-tab>
       </ng-container>

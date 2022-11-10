@@ -23,7 +23,7 @@ export class UpdatepatientModel{
     pdistrict: number;
     pstate: number;
     pcountry: number;
-    ppinCode: number;
+    ppinCode: string;
     ppagerNumber: string;
     religion: number;
     otherAllergies: string;
@@ -102,7 +102,7 @@ pcity:number,
 pdistrict:number,
 pstate: number,
 pcountry: number,
-ppinCode: number,
+ppinCode: string,
 ppagerNumber: string,
 religion: number,
 otherAllergies:string,
