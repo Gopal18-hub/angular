@@ -22,6 +22,7 @@ import { DmgPopupComponent } from "../../../../prompts/dmg-popup/dmg-popup.compo
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { TwiceConsultationReasonComponent } from "../../../../prompts/twice-consultation-reason/twice-consultation-reason.component";
 import { DmgOthergrpDocPopupComponent } from "@modules/billing/submodules/billing/prompts/dmg-othergrp-doc-popup/dmg-othergrp-doc-popup.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
@@ -185,10 +186,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
     this.billingService.makeBillPayload.dtCheckedItem = [];
     this.billingService.makeBillPayload.dtFinalGrpDoc = {};
-    this.billingService.makeBillPayload.txtOtherGroupDoc = '';
+    this.billingService.makeBillPayload.txtOtherGroupDoc = "";
     this.billingService.dtCheckedItem = [];
     this.billingService.dtFinalGrpDoc = {};
-    this.billingService.txtOtherGroupDoc = '';
+    this.billingService.txtOtherGroupDoc = "";
     this.data = [...this.billingService.consultationItems];
     this.userSelectedDMG = 0;
     this.billingService.calculateTotalAmount();
@@ -578,7 +579,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       count++;
     });
     if (dmgdata.length > 0) {
-      console.log(this.formGroup.value)
+      console.log(this.formGroup.value);
       const dialogref = this.matDialog.open(DmgPopupComponent, {
         width: "70vw",
         height: "80vh",
@@ -593,14 +594,18 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       await dialogref.afterClosed().toPromise();
     }
   }
-  async getCalculateOpBill(priorityId = 57) {
+  async getCalculateOpBill(
+    priorityId = 57,
+    consultationtype = "Consultation – CPT 99202"
+  ) {
+    let consultType: any = {};
     let onlinePaidAppoinment = this.billingService.PaidAppointments
       ? this.billingService.PaidAppointments.paymentstatus == "Yes"
         ? true
         : false
       : false;
     if (!this.billingService.selectedOtherPlan && !onlinePaidAppoinment) {
-      let consultType = await this.http
+      consultType = await this.http
         .get(
           BillingApiConstants.getDoctorConsultType(
             Number(this.cookie.get("HSPLocationId")),
@@ -612,7 +617,15 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         .toPromise();
       if (consultType) {
         priorityId = consultType[0].consultId;
+        consultationtype = consultType[0].strConsult;
       }
+    }
+    /////GAV-777
+    if (
+      consultType[0].strConsult.includes("Follow up") &&
+      Number(this.cookie.get("HSPLocationId")) == 69
+    ) {
+      this.billingService.visitHistory();
     }
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
@@ -634,7 +647,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             type: priorityId,
             scheduleSlot: "",
             bookingDate: "",
-            price: res[0].returnOutPut + res[0].totaltaX_Value,
+            price: res[0].returnOutPut,
             specialization: this.formGroup.value.doctorName.specialisationid,
             clinics: this.formGroup.value.clinics
               ? this.formGroup.value.clinics.value
@@ -643,10 +656,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
               serviceId: 25,
-              price: res[0].returnOutPut + res[0].totaltaX_Value,
+              price: res[0].returnOutPut,
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
-              qty: 1,
+              qty: consultationtype,
               precaution: "",
               procedureDoctor: "",
               credit: 0,
