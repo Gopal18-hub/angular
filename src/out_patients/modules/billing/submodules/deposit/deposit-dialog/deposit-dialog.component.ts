@@ -173,7 +173,7 @@ export class DepositDialogComponent implements OnInit {
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.upiamount);
       }
       else if(this.DepositcashMode.internetamount > 0){
-        this.PaymentType = 5;
+        this.PaymentType = 9;
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.internetamount);
         if(this.DepositcashMode.internetemail.trim().toUpperCase() == "INFO@MAXHEALTHCARE.COM"){
           this.messageDialogService.error("Please fill valid Email Id " + this.DepositcashMode.internetemail + " Not allowed to save internet payment request!!");
