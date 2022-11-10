@@ -128,7 +128,7 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
               MOP : paymentmode
             }];          
         }
-        else if(this.data.patientinfo.screenname == "Deposit"){          
+        else if(this.data.type == "Deposit"){          
         this.PaymentMethod = this.depositservice.data;  
         }
         else{
@@ -147,7 +147,6 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
               if(result == "Success"){
                 this.Form60success = true;
                 this.neweventform60ssave.emit(this.Form60success);
-                console.log("Form 60 successfull");
               }else{
                 this.patientidentityform.controls["mainradio"].setValue("pancardno");
               }

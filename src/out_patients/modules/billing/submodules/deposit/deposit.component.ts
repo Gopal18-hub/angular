@@ -680,11 +680,18 @@ export class DepositComponent implements OnInit {
             .filter((dp) => dp.depositRefund == "Deposit")
             .map((t) => t.deposit)
             .reduce((acc, value) => acc + value, 0);
+
           this.totalrefund = resultData
             .filter((dp) => dp.depositRefund == "Refund")
             .map((t) => t.refund)
+            .reduce((acc, value) => acc + value, 0);            
+
+            this.avalaibleamount = resultData
+            .filter((dp) => dp.depositRefund == "Deposit")
+            .map((t) => t.balance)
             .reduce((acc, value) => acc + value, 0);
-          this.avalaibleamount = this.totaldeposit - this.totalrefund;
+
+          //this.avalaibleamount = this.totaldeposit - this.totalrefund;
           this.depositForm.controls["totaldeposit"].setValue(
             this.totaldeposit.toFixed(2)
           );
