@@ -1055,8 +1055,8 @@ export class BillComponent implements OnInit, OnDestroy {
     // //GAV-530 Paid Online appointment
     if (ispaid) {
       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-        width: "70vw",
-        height: "99vh",
+        width: "80vw",
+        height: "96vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
@@ -1083,8 +1083,8 @@ export class BillComponent implements OnInit, OnDestroy {
     } // //GAV-530 Paid Online appointment
     else {
       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-        width: "70vw",
-        height: "99vh",
+        width: "80vw",
+        height: "96vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
