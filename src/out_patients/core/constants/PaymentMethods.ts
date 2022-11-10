@@ -143,6 +143,7 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
       },
     };
@@ -161,28 +162,34 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         chequeNo: {
           type: "number",
           label: "Cheque No",
+          require: true,
         },
         chequeDate: {
           type: "date",
           maximum: new Date(),
           label: "Issue Date",
+          require: true,
         },
         bankName: {
           type: "autocomplete",
           label: "Bank Name",
           options: options.bankList,
+          require: true,
         },
         branchName: {
           type: "string",
           label: "Branch Name",
+          require: true,
         },
         chequeauth: {
           type: "string",
           label: "Authorised By",
+          require: true,
         },
       },
     };
@@ -201,52 +208,64 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         posimei: {
           type: "dropdown",
           label: "POS IMEI",
+          require: true,
         },
         transactionid: {
           type: "string",
           label: "Transaction ID",
+          require: true,
         },
         ccNumber: {
           type: "number",
           label: "Card No.",
+          require: true,
         },
         creditholdername: {
           type: "string",
           label: "Card Holder Name",
+          require: true,
         },
         cCvalidity: {
           type: "date",
           label: "Validity",
+          require: true,
         },
         bankName: {
           type: "autocomplete",
           label: "Bank Name",
           options: options.bankList,
+          require: true,
         },
         approvalno: {
           type: "string",
           label: "Batch No.",
+          require: true,
         }, //10
 
         approvalcode: {
           type: "number",
           label: "Approval Code",
+          require: true,
         },
         terminalID: {
           type: "string",
           label: "Terminal ID",
+          require: true,
         },
         acquirer: {
           type: "string",
           label: "Acquiring Bank",
+          require: true,
         },
         banktid: {
           type: "string",
           label: "Bank TID",
+          require: true,
         },
       },
       actionItems: [
@@ -278,52 +297,64 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         posimei: {
           type: "dropdown",
           label: "POS IMEI",
+          require: true,
         },
         transactionid: {
           type: "string",
           label: "Transaction ID",
+          require: true,
         },
         ccNumber: {
           type: "number",
           label: "Card No.",
+          require: true,
         },
         creditholdername: {
           type: "string",
           label: "Card Holder Name",
+          require: true,
         },
         cCvalidity: {
           type: "date",
           label: "Validity",
+          require: true,
         },
         bankName: {
           type: "autocomplete",
           label: "Bank Name",
           options: options.bankList,
+          require: true,
         },
         creditbatchno: {
           type: "string",
           label: "Batch No.",
+          require: true,
         }, //10
 
         creditapproval: {
           type: "number",
           label: "Approval Code",
+          require: true,
         },
         creditterminal: {
           type: "string",
           label: "Terminal ID",
+          require: true,
         },
         creditacquiring: {
           type: "string",
           label: "Acquiring Bank",
+          require: true,
         },
         banktid: {
           type: "string",
           label: "Bank TID",
+          require: true,
         },
       },
       actionItems: [
@@ -355,28 +386,34 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         ddNumber: {
           type: "string",
           label: "DD No.",
+          require: true,
         },
         ddDate: {
           type: "date",
           maximum: new Date(),
           label: "Issue Date",
+          require: true,
         },
         bankName: {
           type: "autocomplete",
           label: "Bank Name",
           options: options.bankList,
+          require: true,
         },
         branchName: {
           type: "string",
           label: "Branch Name",
+          require: true,
         },
         demandauth: {
           type: "string",
           label: "Authorised By",
+          require: true,
         }, //20
       },
     };
@@ -395,30 +432,37 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         mobileNo: {
           type: "number",
           label: "Sender Mobile",
+          require: true,
         },
         mmid: {
           type: "number",
           label: "Sender MMID No.",
+          require: true,
         },
         senderName: {
           type: "string",
           label: "Sender Name",
+          require: true,
         },
         bankName: {
           type: "string",
           label: "Bank Name",
+          require: true,
         },
         branchName: {
           type: "string",
           label: "Branch Name",
+          require: true,
         },
         beneficiaryMobile: {
           type: "number",
           label: "Beneficiary Mob No.",
+          require: true,
         },
         // mobiletransactionamt: {
         //   type: "number",
@@ -427,6 +471,7 @@ export namespace PaymentMethods {
         transactionRef: {
           type: "string",
           label: "Transaction Reference",
+          require: true,
         },
       },
       actionItems: [
@@ -454,14 +499,17 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         transactionId: {
           type: "string",
           label: "Transaction ID",
+          require: true,
         },
         bookingId: {
           type: "string",
           label: "Booking ID",
+          require: true,
         }, //30
         cardValidation: {
           type: "radio",
@@ -471,10 +519,12 @@ export namespace PaymentMethods {
             { title: "No", value: "no" },
           ],
           label: "Card Validation",
+          require: true,
         },
         onlineContact: {
           type: "number",
           label: "Contact No.",
+          require: true,
         },
       },
       actionItems: [
@@ -502,15 +552,18 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         paytmwallet: {
           type: "autocomplete",
           label: "Wallet",
           placeholder: "PayTM",
+          require: true,
         },
         mobileNo: {
           type: "number",
           label: "Sender Mobile No.",
+          require: true,
         },
         // paytmsenername: {
         //   type: "string",
@@ -518,14 +571,17 @@ export namespace PaymentMethods {
         paytmotp: {
           type: "number",
           label: "OTP",
+          require: true,
         },
         paytmtransacref: {
           type: "string",
           label: "Transaction Reference",
+          require: true,
         },
         paytmorderid: {
           type: "string",
           label: "Order ID",
+          require: true,
         }, ///40
       },
       actionItems: [
@@ -553,42 +609,52 @@ export namespace PaymentMethods {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
+          require: true,
         },
         ccNumber_UPI: {
           type: "number",
           label: "Card No.",
+          require: true,
         },
         cardholdername_UPI: {
           type: "string",
           label: "Card Holder Name",
+          require: true,
         },
         cCvalidity_UPI: {
           type: "date",
           label: "Validity",
+          require: true,
         },
         approvalno_UPI: {
           type: "string",
           label: "Transaction ID",
+          require: true,
         },
         bankname_UPI: {
           type: "string",
           label: "Bank Name",
+          require: true,
         },
         flagman_UPI: {
           type: "string",
           label: "Batch No.",
+          require: true,
         },
         approvalcode_UPI: {
           type: "string",
           label: "Approval Code",
+          require: true,
         },
         terminalID_UPI: {
           type: "string",
           label: "Terminal ID",
+          require: true,
         },
         acquirer_UPI: {
           type: "string",
           label: "Acquiring Bank",
+          require: true,
         },
       },
       actionItems: [
