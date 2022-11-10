@@ -305,6 +305,7 @@ export class BillingService {
       )
       .subscribe((res: any) => {
         res.forEach((resItem: any, index: number) => {
+          //GAV-1070
           let quanity = !isNaN(Number(this.billItems[index].qty))
             ? this.billItems[index].qty
             : 1;
