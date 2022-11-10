@@ -1587,33 +1587,33 @@ export class BillComponent implements OnInit, OnDestroy {
               if (this.gstBreakupDetails.length <= 0) {
                 this.gstBreakupDetails.push({
                   service: "CGST",
-                  percentage: res[0].cgst,
-                  value: res[0].cgsT_Value,
+                  percentage: res[0].cgst.toFixed(2),
+                  value: res[0].cgsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "SGST",
-                  percentage: res[0].sgst,
-                  value: res[0].sgsT_Value,
+                  percentage: res[0].sgst.toFixed(2),
+                  value: res[0].sgsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "UTGST",
-                  percentage: res[0].utgst,
-                  value: res[0].utgsT_Value,
+                  percentage: res[0].utgst.toFixed(2),
+                  value: res[0].utgsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "IGST",
-                  percentage: res[0].igst,
-                  value: res[0].igsT_Value,
+                  percentage: res[0].igst.toFixed(2),
+                  value: res[0].igsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "CESS",
-                  percentage: res[0].cess,
-                  value: res[0].cesS_Value,
+                  percentage: res[0].cess.toFixed(2),
+                  value: res[0].cesS_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "TotalTax",
-                  percentage: res[0].totaltaX_RATE,
-                  value: res[0].totaltaX_Value,
+                  percentage: res[0].totaltaX_RATE.toFixed(2),
+                  value: res[0].totaltaX_Value.toFixed(2),
                 });
                 this.formGroup.controls["gstTax"].setValue(
                   this.finalgstDetails.totaltaX_Value.toFixed(2)
