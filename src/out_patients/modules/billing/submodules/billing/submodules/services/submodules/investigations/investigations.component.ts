@@ -188,6 +188,7 @@ export class InvestigationsComponent implements OnInit {
       this.billingService.changeBillTabStatus(false);
     }
     this.billingService.calculateTotalAmount();
+    this.checkTableValidation();
   }
 
   ngAfterViewInit(): void {
