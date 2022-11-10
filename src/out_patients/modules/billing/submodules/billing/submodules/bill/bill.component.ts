@@ -1296,6 +1296,25 @@ export class BillComponent implements OnInit, OnDestroy {
             }
           });
         }
+        //PHP Track Sheet -- Added by Abirami
+        if (this.billingservice.billItems[0].serviceName == "Health Checkups") {
+          const dialogref = this.messageDialogService.confirm(
+            "",
+            `Do you want Print Track sheet?`
+          );
+          dialogref.afterClosed().subscribe((res: any) => {
+            if (res.type == "yes") {
+              this.reportService.openWindow(
+                "PHP Track Sheet - " + this.billNo,
+                "PHPTracksheet",
+                {
+                  BillNo: this.billNo,
+                }
+              );
+            }
+          });
+        }
+        //Ends
 
         if ("type" in result) {
           if (result.type == "yes") {
