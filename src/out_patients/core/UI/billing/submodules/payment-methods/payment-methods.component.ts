@@ -102,7 +102,10 @@ export class PaymentMethodsComponent implements OnInit {
       this.PaymentType = 8;
     } else if (Number(this.PaymentMethodcashdeposit.internetamount)) {
       this.depositamount = Number(this.PaymentMethodcashdeposit.internetamount);
-      this.PaymentType = 5;
+      this.PaymentType = 9;
+    }else if (Number(this.PaymentMethodcashdeposit.upiamount)) {
+      this.depositamount = Number(this.PaymentMethodcashdeposit.internetamount);
+      this.PaymentType = 6;
     }
     if (Number(this.depositamount < 0)) {
       const depositamt =  this.messageDialogService.error(
@@ -133,7 +136,7 @@ export class PaymentMethodsComponent implements OnInit {
           this.refundform.controls["upiamount"].setValue("0.00");
           this.questions[44].elementRef.focus();
         }
-        else if(this.PaymentType == 5)
+        else if(this.PaymentType == 9)
         {
           this.refundform.controls["internetamount"].setValue("0.00");
           this.questions[51].elementRef.focus();
