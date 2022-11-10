@@ -573,17 +573,6 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.miscForm.controls["company"].enable();
             this.miscForm.controls["corporate"].enable();
             this.setValuesToMiscForm(this.patientDetails);
-            // if (this.billingService.todayPatientBirthday) {
-            //   const birthdayDialog = this.messageDialogService.info(
-            //     "It’s their birthday today"
-            //   );
-            //   await birthdayDialog.afterClosed().toPromise();
-            // }
-            // if (this.patientDetails.dtPatientPastDetails.length > 1) {
-            //   this.checkPastPatientDetails(
-            //     this.patientDetails.dtPatientPastDetails
-            //   );
-            // }
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
@@ -729,7 +718,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
       if (diffMonths == 0 && diffDays == 0) {
-        this.snackbar.open("It’s their birthday today", "info");
+        this.snackbar.open("Today is Patient’s birthday", "info");
       }
       let returnAge = "";
       if (diffYears > 0) {

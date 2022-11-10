@@ -496,7 +496,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
-                "It’s their birthday today"
+                "Today is Patient’s birthday"
               );
               await birthdayDialog.afterClosed().toPromise();
             }
