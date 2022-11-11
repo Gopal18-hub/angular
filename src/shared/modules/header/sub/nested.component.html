@@ -1,0 +1,24 @@
+<mat-menu #childMenu="matMenu">
+  <div class="flex flex-column flex-wrap box">
+    <ng-container *ngFor="let menuItem of menu.childrens">
+      <button
+        [disabled]="menuItem.disabled"
+        mat-menu-item
+        class="max-health-primary-color"
+        disableRipple="true"
+      >
+        {{ menuItem.title }}
+      </button>
+      <ng-container *ngIf="menuItem.childrens?.length > 0">
+        <maxhealth-sub-nested-menu
+          #nestedMenu
+          [module]="module"
+          [menu]="menuItem"
+          [subMenuTrigger]="subMenuTrigger"
+          [baseHref]="baseHref"
+          [onPageRouterLinkActive]="onPageRouterLinkActive"
+        ></maxhealth-sub-nested-menu>
+      </ng-container>
+    </ng-container>
+  </div>
+</mat-menu>
