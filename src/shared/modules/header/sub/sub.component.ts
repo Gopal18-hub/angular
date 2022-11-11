@@ -69,6 +69,7 @@ export class SubComponent implements OnInit, OnChanges {
     if (!this.submodules) {
       this.submodules = [];
     }
+    console.log(this.submodules);
     this.submodules.forEach((element: any) => {
       if (
         element.defaultPath &&
@@ -143,5 +144,27 @@ export class SubComponent implements OnInit, OnChanges {
     setTimeout(() => {
       this.globalSearchInputBox.nativeElement.value = "";
     }, 800);
+  }
+}
+
+@Component({
+  selector: "maxhealth-sub-nested-menu",
+  templateUrl: "./nested.component.html",
+  styleUrls: ["./sub.component.scss"],
+})
+export class SubNestedComponent implements OnInit {
+  @ViewChild("childMenu") childMenu: any;
+  @Input() menu: any;
+  @Input() module: any;
+  @Input() subMenuTrigger: any;
+
+  @Input() baseHref: any;
+
+  @Input() onPageRouterLinkActive: any;
+
+  activeSubModule: any;
+
+  ngOnInit(): void {
+    console.log(this.menu);
   }
 }
