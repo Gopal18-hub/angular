@@ -35,9 +35,11 @@ export namespace FormReport {
 
             fields: {
 
+
               title: "name",
 
               value: "id",
+              filter:"hsplocationid",
 
             },
 
