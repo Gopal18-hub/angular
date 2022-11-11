@@ -52,7 +52,6 @@ export class DepositDialogComponent implements OnInit {
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
-
   private readonly _destroying$ = new Subject<void>();
 
   onDepositpage: boolean = true;
@@ -220,16 +219,9 @@ export class DepositDialogComponent implements OnInit {
             if(resultData[0].returnFlag == 0){
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
-              let savedepositdialog = this.matDialog.open(
-                DepositSuccessComponent,
-                {
-                  width: "30vw",          
-                  data: {
-                    message: "Deposit Has Been Successfully Saved"                 
-                    },
-                }
-              );
-                       
+              const successInfo = this.messageDialogService.info(
+                `Deposit Has Been Successfully Saved`
+              );                  
             }else
            {
              const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
