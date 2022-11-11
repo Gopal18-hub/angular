@@ -152,9 +152,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
-    this.searchService.searchTrigger.subscribe(async (formdata: any) => {
-      await this.loadGrid(formdata);
-    });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        await this.loadGrid(formdata);
+      });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
@@ -204,27 +206,24 @@ export class BillingComponent implements OnInit, OnDestroy {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res) => {
+      .subscribe(async (res) => {
         let referalDoctor: any = null;
         if (res.tempOrderBreakup.length > 0) {
-          res.tempOrderBreakup.forEach(async (item: any) => {
+          const tempBulkInvPayload: any = [];
+          res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
-              await this.billingService.processInvestigationAdd(
-                1,
-                item.serviceId,
-                {
-                  title: item.testName,
-                  value: item.testID,
-                  originalTitle: item.testName,
-                  docRequired: item.doctorid ? true : false,
-                  patient_Instructions: "",
-                  item_Instructions: "",
-                  serviceid: item.serviceId,
-                  doctorid: item.doctorid,
-                  specialization: item.specialization,
-                  specializationId: item.specializationId,
-                }
-              );
+              tempBulkInvPayload.push({
+                title: item.testName,
+                value: item.testID,
+                originalTitle: item.testName,
+                docRequired: item.doctorid ? true : false,
+                patient_Instructions: "",
+                item_Instructions: "",
+                serviceid: item.serviceId,
+                doctorid: item.doctorid,
+                specialization: item.specialization,
+                specializationId: item.specializationId,
+              });
               if (item.doctorid)
                 referalDoctor = {
                   id: item.refDocID,
@@ -233,15 +232,22 @@ export class BillingComponent implements OnInit, OnDestroy {
                 };
             }
           });
-          setTimeout((res: any) => {
-            this.billingService.servicesTabStatus.next({
-              goToTab: 1,
-            });
-          }, 500);
+          if (tempBulkInvPayload.length > 0) {
+            await this.billingService.processInvestigationBulk(
+              1,
+              tempBulkInvPayload
+            );
+            setTimeout((res: any) => {
+              this.billingService.servicesTabStatus.next({
+                goToTab: 1,
+              });
+            }, 10);
 
-          if (referalDoctor) {
-            this.billingService.setReferralDoctor(referalDoctor);
+            if (referalDoctor) {
+              this.billingService.setReferralDoctor(referalDoctor);
+            }
           }
+
           this.apiProcessing = false;
         }
       });
@@ -409,6 +415,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           Number(regNumber)
         )
       )
+      .pipe(takeUntil(this._destroying$))
       .toPromise()
       .catch((reason: any) => {
         return reason;
@@ -440,7 +447,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         const dialogRef = this.messageDialogService.warning(
           "This is an expired patient, no transaction is allowed"
         );
-        await dialogRef.afterClosed().toPromise();
+        await dialogRef
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .toPromise();
       }
       this.getSimilarSoundDetails(iacode, regNumber);
     } else {
@@ -492,7 +502,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
-                "It’s their birthday today"
+                "Today is Patient’s birthday"
               );
               await birthdayDialog.afterClosed().toPromise();
             }
@@ -836,7 +846,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           maxId: this.formGroup.value.maxid,
         },
       });
-      const resAction = await dialogRef.afterClosed().toPromise();
+      const resAction = await dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .toPromise();
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
