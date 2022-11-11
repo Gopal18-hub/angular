@@ -76,7 +76,6 @@ export class RefundDialogComponent implements OnInit {
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));
 
-
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
   flagto_set_btnname:number = 0;
@@ -143,27 +142,21 @@ export class RefundDialogComponent implements OnInit {
   }
 
   validationexists: boolean = true;
-  saverefunddialog(){
-    
-    const RefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Do you want to make Refund?"
-      },
-    });
-
-    RefundDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success")  
-         {
-         this.refundformvalidation();
-         this.submitrefundamount();       
-         
-        }
-      });  
+  async saverefunddialog(){
+    const RefundDepositDialogref = this.messageDialogService.confirm(
+      "",
+      `Do you want to make Refund?`
+    );
+    const availDepositResult = await RefundDepositDialogref
+      .afterClosed()
+      .toPromise();
+    if (availDepositResult) {
+      if (availDepositResult.type == "yes") {
+        this.refundformvalidation();
+        this.submitrefundamount();      
+       } 
+    }
   }
-  
-
 
   RefundcashMode:any=[];
   refundformvalidation(){
@@ -215,28 +208,37 @@ export class RefundDialogComponent implements OnInit {
   }
 
   
-  MoreRefunddialog(){
-    const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '42vh', data: {    
-        message: "Refund has been done Successfully!",
-        message1: "Do you want to Make More Refund?"
-      },
-    });
-
-    MoreRefundDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success")  
-         {    
-         this.clear();          
-         this.SendOTP="Send OTP";
-         this.ResendOTP="Send OTP to Manager";          
-          console.log("More Refund Dialog closed");
-        }else{
-            this.matDialog.closeAll(); 
-             this.dialogRef.close("Success");
-        }
-      }); 
+  MoreRefunddialog()
+  { 
+    const successInfo = this.messageDialogService.info(
+      `Refund has been done Successfully!`
+    );     
+    successInfo
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                
+                      const availDepositsPopup = this.messageDialogService.confirm(
+                        "",
+                        `Do you want to Make More Refund?`
+                      );
+                      availDepositsPopup
+                        .afterClosed()
+                        .pipe(takeUntil(this._destroying$))
+                        .subscribe((result) => {
+                          if ("type" in result) {
+                          if (result.type == "yes") {
+                            this.clear();          
+                            this.SendOTP="Send OTP";
+                            this.ResendOTP="Send OTP to Manager";  
+                          }else{
+                            this.matDialog.closeAll(); 
+                            this.dialogRef.close("Success");
+                          }                  
+                        }
+                    });
+                   
+                  });
   }
 
   submitrefundamount(){   
@@ -253,16 +255,9 @@ export class RefundDialogComponent implements OnInit {
               this.clear();
               this.dialogRef.close();
               this.matDialog.closeAll();
-              let saverefunddialog = this.matDialog.open(
-                DepositSuccessComponent,
-                {
-                  width: "30vw",          
-                  data: {
-                    message: "Refund has been done Successfully!"                 
-                    },
-                }
-              );
-            //   this.messageDialogService.success("Refund has been done Successfully!");
+              this.messageDialogService.info(
+                `Refund has been done Successfully!`
+              );  
             }else{
               this.MoreRefunddialog();   
             }
@@ -339,7 +334,9 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          this.messageDialogService.success("OTP Sent Successfully");
+          const otpsuccessInfo = this.messageDialogService.info(
+            `OTP Sent Successfully`
+          ); 
           setTimeout(()=>{                           
             this.otpsenttomobile = false;
             this.otpresenttomobile = true;
