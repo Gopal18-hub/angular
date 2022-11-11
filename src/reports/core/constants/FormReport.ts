@@ -304,7 +304,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---All Doctors---",
           title: "",
-          defaultValue: "0",
+          defaultValue: { title: "", value: 0 },
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl

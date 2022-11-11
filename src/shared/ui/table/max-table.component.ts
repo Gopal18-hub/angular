@@ -368,8 +368,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "input_date") return this.inputboxDateTemplate;
     else if (col.type == "input_datetime") return this.inputboxDateTimeTemplate;
     else if (col.type == "dropdown") return this.dropdownTemplate;
-    else if(col.type == "button") return this.buttonTemplate;
-    else if(col.type == "Changeablebutton") return this.ChangeablebuttonTemplate;
+    else if (col.type == "button") return this.buttonTemplate;
+    else if (col.type == "Changeablebutton")
+      return this.ChangeablebuttonTemplate;
     else return this.stringTemplate;
   }
 
@@ -470,6 +471,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   btnClick(item: any) {
-    this.buttonClickTrigger.emit({col: item.col, data: item.element});
+    this.buttonClickTrigger.emit({ col: item.col, data: item.element });
   }
 }
