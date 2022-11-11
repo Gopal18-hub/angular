@@ -21,14 +21,20 @@
     </ul>
   </nav>
   <mat-tab-nav-panel #tabPanel>
-    <mat-progress-spinner
+    <!-- <mat-progress-spinner
       mode="indeterminate"
       value="25"
       diameter="60"
       *ngIf="!defaultUI && showunmergespinner"
       class="spinner"
     >
-    </mat-progress-spinner>
+    </mat-progress-spinner> -->
+    <div
+    *ngIf="!defaultUI && showunmergespinner"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
     <div class="w-full h-full" *ngIf="!defaultUI">
       <div class="p-2 w-full h-4/5 display-block">
         <ng-container *ngIf="isAPIProcess" class="w-full h-4/5">

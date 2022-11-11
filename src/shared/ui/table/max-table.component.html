@@ -468,9 +468,11 @@
   <ng-container *ngIf="!data.element[data.col + '_disabled']">
     <div
       (click)="data.element['isOpen'] = true"
+      (keydown.enter)="data.element['isOpen'] = true"
       cdkOverlayOrigin
       #trigger="cdkOverlayOrigin"
       class="cursor-pointer editable-textarea-label"
+      [attr.tabindex]="0"
     >
       {{ data.isOpen }} {{ data.output }} &nbsp;
     </div>
@@ -605,10 +607,23 @@
 </ng-template>
 
 <ng-template #button let-data>
-  <button class="mt-1 mb-1" color="primary" mat-raised-button (click)="btnClick(data)">{{data.config.columnsInfo[data.col]?.title}}</button>
+  <button
+    class="mt-1 mb-1"
+    color="primary"
+    mat-raised-button
+    (click)="btnClick(data)"
+  >
+    {{ data.config.columnsInfo[data.col]?.title }}
+  </button>
 </ng-template>
 
 <ng-template #Changeablebutton let-data>
-  <button class="mt-1 mb-1" color="primary" mat-raised-button (click)="btnClick(data)">{{data.element[data.col]}}</button>
+  <button
+    class="mt-1 mb-1"
+    color="primary"
+    mat-raised-button
+    (click)="btnClick(data)"
+  >
+    {{ data.element[data.col] }}
+  </button>
 </ng-template>
-
