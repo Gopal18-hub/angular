@@ -72,6 +72,7 @@
             </div>
         </div>
         <div class="w-1/2 float-right">
+          <mat-label class="max-health-primary-color font-semi-bold cursor-pointer" [ngClass]="{ 'mat-form-field-required-marker': question[1].required }" (click)="remarksclick()">Remarks</mat-label>
             <div class="">
                 <maxhealth-question
                   [question]="question[1]"
