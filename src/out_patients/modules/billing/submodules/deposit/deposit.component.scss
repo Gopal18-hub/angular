@@ -41,7 +41,11 @@
 .wt-nowrap {
     white-space: nowrap;
 }
-
+.nationality_wt-nowrap{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 .clr-primary {
     color: #004084;
 }

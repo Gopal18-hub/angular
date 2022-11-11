@@ -432,51 +432,45 @@ export class DepositComponent implements OnInit {
   }
 
   openDepositdialog() {
-    const MakeDepositDialogref = this.matDialog.open(
-      MakedepositDialogComponent,
-      {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to make Deposits?",
-        },
-      }
+    const availDepositsPopup = this.messageDialogService.confirm(
+      "",
+      `Do you want to make Deposits?`
     );
-
-    MakeDepositDialogref.afterClosed()
+    availDepositsPopup
+      .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        if (result == "Success") {
-          const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-            width: "70vw",
-            height: "98vh",
-            data: {
-              servicetype: this.patientservicetype,
-              deposittype: this.patientdeposittype,
-              patientinfo: {
-                emailId: this.patientpersonaldetails[0]?.pEMail,
-                mobileno: this.patientpersonaldetails[0]?.pcellno,
-                panno: this.patientpersonaldetails[0]?.paNno,
-                registrationno: this.regNumber,
-                iacode: this.iacode,
-              },
+        if ("type" in result) {
+        if (result.type == "yes") {
+        const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
+          width: "70vw",
+          height: "98vh",
+          data: {
+            servicetype: this.patientservicetype,
+            deposittype: this.patientdeposittype,
+            patientinfo: {
+              emailId: this.patientpersonaldetails[0]?.pEMail,
+              mobileno: this.patientpersonaldetails[0]?.pcellno,
+              panno: this.patientpersonaldetails[0]?.paNno,
+              registrationno: this.regNumber,
+              iacode: this.iacode,
             },
+          },
+        });
+
+        DepositDialogref.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            this.MaxIDdepositExist = false;
+            this.tableselectionexists = false;
+            this.deposittable.selection.clear();
+            if (result == "Success") {
+              this.getPatientPreviousDepositDetails();
+            }
           });
-
-          DepositDialogref.afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
-              this.MaxIDdepositExist = false;
-              this.tableselectionexists = false;
-              this.deposittable.selection.clear();
-              if (result == "Success") {
-                this.getPatientPreviousDepositDetails();
-
-                console.log("Deposit Dialog closed");
-              }
-            });
-        }
-      });
+      }
+    }
+  });
   }
 
   openinitiatedeposit() {
@@ -657,6 +651,10 @@ export class DepositComponent implements OnInit {
           this.depositForm.controls["maxid"].setErrors({ incorrect: true });
           this.questions[0].customErrorMessage = "Invalid Max ID";
         }
+      },
+      (error) => {
+        this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+        this.questions[0].customErrorMessage = "Invalid Max ID";
       });
   }
 
@@ -676,11 +674,18 @@ export class DepositComponent implements OnInit {
             .filter((dp) => dp.depositRefund == "Deposit")
             .map((t) => t.deposit)
             .reduce((acc, value) => acc + value, 0);
+
           this.totalrefund = resultData
             .filter((dp) => dp.depositRefund == "Refund")
             .map((t) => t.refund)
+            .reduce((acc, value) => acc + value, 0);            
+
+            this.avalaibleamount = resultData
+            .filter((dp) => dp.depositRefund == "Deposit")
+            .map((t) => t.balance)
             .reduce((acc, value) => acc + value, 0);
-          this.avalaibleamount = this.totaldeposit - this.totalrefund;
+
+          //this.avalaibleamount = this.totaldeposit - this.totalrefund;
           this.depositForm.controls["totaldeposit"].setValue(
             this.totaldeposit.toFixed(2)
           );
@@ -985,9 +990,12 @@ export class DepositComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .toPromise()
+     .catch(() => {
+       return;
+     } );
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {

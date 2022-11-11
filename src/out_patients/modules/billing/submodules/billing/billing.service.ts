@@ -12,6 +12,8 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { threadId } from "worker_threads";
+import { InstantiateExpr } from "@angular/compiler";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 @Injectable({
   providedIn: "root",
 })
@@ -156,14 +158,19 @@ export class BillingService {
     this.selectedcorporatedetails = [];
     this.selectedHealthPlan = null;
     this.selectedOtherPlan = null;
+    this.dtCheckedItem = [];
+    this.dtFinalGrpDoc = {};
+    this.txtOtherGroupDoc = "";
   }
 
   calculateTotalAmount() {
+    let quanity;
     this.totalCost = 0;
     this.totalCostWithOutGst = 0;
     this.billItems.forEach((item: any) => {
+      quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
       this.totalCost += item.totalAmount;
-      this.totalCostWithOutGst += item.price * item.qty;
+      this.totalCostWithOutGst += item.price * quanity;
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
@@ -298,9 +305,12 @@ export class BillingService {
       )
       .subscribe((res: any) => {
         res.forEach((resItem: any, index: number) => {
+          //GAV-1070
+          let quanity = !isNaN(Number(this.billItems[index].qty))
+            ? this.billItems[index].qty
+            : 1;
           this.billItems[index].price = resItem.returnOutPut;
-          this.billItems[index].totalAmount =
-            this.billItems[index].qty * resItem.returnOutPut;
+          this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
           this.updateServiceItemPrice(this.billItems[index]);
         });
         this.calculateTotalAmount();
@@ -617,8 +627,12 @@ export class BillingService {
   }
 
   addToBill(data: any) {
+    let quantity = "1";
     this.billItems.push(data);
     this.billItemsTrigger.next({ data: this.billItems });
+    if (!isNaN(Number(data.qty.toString()))) {
+      quantity = data.qty.toString();
+    }
     this.makeBillPayload.ds_insert_bill.tab_d_opbillList.push({
       opBillId: 0,
       serviceId: data.serviceId,
@@ -630,7 +644,7 @@ export class BillingService {
       cancelled: false,
       discountType: 0,
       refund: false,
-      qty: data.qty.toString(),
+      qty: quantity,
       refundId: 0,
       posted: "",
       qtSlno: 1,
@@ -1242,6 +1256,114 @@ export class BillingService {
     });
   }
 
+  async processInvestigationBulk(priorityId: number, investigations: any = []) {
+    const investigationItems: any = [];
+    investigations.forEach((inv: any) => {
+      investigationItems.push({
+        serviceID: inv.serviceid,
+        itemId: inv.value,
+        bundleId: 0,
+        priority: priorityId,
+      });
+    });
+    const res: any = await this.http
+      .post(
+        BillingApiConstants.getPriceBulk(
+          this.cookie.get("HSPLocationId"),
+          this.company
+        ),
+        investigationItems
+      )
+      .toPromise();
+
+    if (res.length > 0) {
+      res.forEach((rItem: any, index: number) => {
+        const investigation = investigations[index];
+        this.addToInvestigations({
+          sno: this.InvestigationItems.length + 1,
+          investigations: investigation.title,
+          precaution:
+            investigation.precaution == "P"
+              ? '<span class="max-health-red-color">P</span>'
+              : investigation.precaution,
+          priority: priorityId,
+          priority_required: false,
+          // specialisation: investigation.specializationId || "",
+          doctorName: investigation.doctorid || "",
+          specialisation_required: investigation.docRequired ? true : false,
+          doctorName_required: investigation.docRequired ? true : false,
+          price: rItem.returnOutPut,
+          billItem: {
+            popuptext: investigation.popuptext,
+            itemId: investigation.value,
+            priority: priorityId,
+            serviceId: investigation.serviceid,
+            price: rItem.returnOutPut,
+            serviceName: "Investigations",
+            itemName: investigation.title,
+            qty: 1,
+            precaution:
+              investigation.precaution == "P"
+                ? '<span class="max-health-red-color">P</span>'
+                : investigation.precaution,
+            procedureDoctor: investigation.docName || "",
+            credit: 0,
+            cash: 0,
+            disc: 0,
+            discAmount: 0,
+            totalAmount: rItem.returnOutPut + rItem.totaltaX_Value,
+            gst: rItem.totaltaX_RATE,
+            gstValue: rItem.totaltaX_Value,
+            specialisationID: investigation.specializationId || 0,
+            doctorID: investigation.doctorid || 0,
+            patient_Instructions: investigation.patient_Instructions,
+          },
+          gstDetail: {
+            gsT_value: rItem.totaltaX_Value,
+            gsT_percent: rItem.totaltaX_RATE,
+            cgsT_Value: rItem.cgsT_Value,
+            cgsT_Percent: rItem.cgst,
+            sgsT_value: rItem.sgsT_Value,
+            sgsT_percent: rItem.sgst,
+            utgsT_value: rItem.utgsT_Value,
+            utgsT_percent: rItem.utgst,
+            igsT_Value: rItem.igsT_Value,
+            igsT_percent: rItem.igst,
+            cesS_value: rItem.cesS_Value,
+            cesS_percent: rItem.cess,
+            taxratE1_Value: rItem.taxratE1_Value,
+            taxratE1_Percent: rItem.taxratE1,
+            taxratE2_Value: rItem.taxratE2_Value,
+            taxratE2_Percent: rItem.taxratE2,
+            taxratE3_Value: rItem.taxratE3_Value,
+            taxratE3_Percent: rItem.taxratE3,
+            taxratE4_Value: rItem.taxratE4_Value,
+            taxratE4_Percent: rItem.taxratE4,
+            taxratE5_Value: rItem.taxratE5_Value,
+            taxratE5_Percent: rItem.taxratE5,
+            totaltaX_RATE: rItem.totaltaX_RATE,
+            totaltaX_RATE_VALUE: rItem.totaltaX_Value,
+            saccode: rItem.saccode,
+            taxgrpid: rItem.taxgrpid,
+            codeId: rItem.codeId,
+          },
+          gstCode: {
+            tax: rItem.tax,
+            taxType: rItem.taxType,
+            codeId: rItem.codeId,
+            code: rItem.code,
+          },
+        });
+        this.makeBillPayload.tab_o_opItemBasePrice.push({
+          itemID: investigation.value,
+          serviceID: investigation.serviceid,
+          price: rItem.returnOutPut + rItem.totaltaX_Value,
+          willModify: rItem.ret_value == 1 ? true : false,
+        });
+      });
+    }
+  }
+
   async processInvestigationAdd(
     priorityId: number,
     serviceType: string,
@@ -1453,13 +1575,15 @@ export class BillingService {
     doctorName: any,
     clinics: any
   ) {
+    let consultType: any = {};
+    let consultationtype = "Consultation – CPT 99202";
     let onlinePaidAppoinment = this.PaidAppointments
       ? this.PaidAppointments.paymentstatus == "Yes"
         ? true
         : false
       : false;
     if (!this.selectedOtherPlan && !onlinePaidAppoinment) {
-      let consultType = await this.http
+      consultType = await this.http
         .get(
           BillingApiConstants.getDoctorConsultType(
             Number(this.cookie.get("HSPLocationId")),
@@ -1471,6 +1595,16 @@ export class BillingService {
         .toPromise();
       if (consultType) {
         priorityId = consultType[0].consultId;
+        consultationtype = consultType[0].strConsult;
+
+        //#region GAV-777
+        if (
+          consultType[0].strConsult.includes("Follow up") &&
+          Number(this.cookie.get("HSPLocationId")) == 69
+        ) {
+          this.visitHistory();
+        }
+        //#endregion
       }
     }
     const res = await this.http
@@ -1503,7 +1637,7 @@ export class BillingService {
           price: res[0].returnOutPut,
           serviceName: "Consultation Charges",
           itemName: doctorName.originalTitle,
-          qty: 1,
+          qty: consultationtype,
           precaution: "",
           procedureDoctor: "",
           credit: 0,
@@ -1618,5 +1752,17 @@ export class BillingService {
 
   setpaymenthodpancardfocus() {
     this.pancardpaymentmethod.next(true);
+  }
+
+  // ///GAV-777 visit history popup for Nanvati location
+  visitHistory() {
+    this.matDialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.activeMaxId.maxId,
+        docid: "",
+      },
+    });
   }
 }

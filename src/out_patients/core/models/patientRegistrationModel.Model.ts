@@ -50,7 +50,7 @@ export class patientRegistrationModel{
     //drop down id
     pcountry: number;
     //send pin code
-    ppinCode: number;
+    ppinCode: string;
 
     pphone: string;
     //unknown default empty
@@ -167,7 +167,7 @@ pcity: number,
 pdistrict:number,
 pstate: number,
 pcountry: number,
-ppinCode: number,
+ppinCode: string,
 pphone: string,
 pcellno: string,
 pemail: string,

@@ -172,9 +172,18 @@ export class DepositDialogComponent implements OnInit {
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.upiamount);
       }
       else if(this.DepositcashMode.internetamount > 0){
+        this.PaymentType = 9;
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.internetamount);
+        if(this.DepositcashMode.internetemail.trim().toUpperCase() == "INFO@MAXHEALTHCARE.COM"){
+          this.messageDialogService.error("Please fill valid Email Id " + this.DepositcashMode.internetemail + " Not allowed to save internet payment request!!");
+          this.validationexists = true;
+        }
+        else if(this.DepositcashMode.internetremarks == "" || this.DepositcashMode.internetremarks == null ){
+          this.messageDialogService.error("Please fill Internet Payment Remarks !!");
+          this.validationexists = true;
+        }
       }
-      else if(this.PaymentTypedepositamount == 0){
+      else if(this.PaymentTypedepositamount <= 0){
         this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
       }      
@@ -210,16 +219,9 @@ export class DepositDialogComponent implements OnInit {
             if(resultData[0].returnFlag == 0){
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
-              let savedepositdialog = this.matDialog.open(
-                DepositSuccessComponent,
-                {
-                  width: "30vw",          
-                  data: {
-                    message: "Deposit Has Been Successfully Saved"                 
-                    },
-                }
-              );
-                       
+              const successInfo = this.messageDialogService.info(
+                `Deposit Has Been Successfully Saved`
+              );                  
             }else
            {
              const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);

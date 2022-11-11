@@ -69,10 +69,7 @@ export class AppointmentSearchComponent implements OnInit {
       name: {
         type: "string",
         title: "Name",
-
         defaultValue: "",
-        // pattern: "^[A-Za-z]{1}[A-Za-z. '']+"
-        // defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       bookingNo: {
         type: "string",
@@ -82,18 +79,18 @@ export class AppointmentSearchComponent implements OnInit {
       },
 
       phone: {
-        type: "number",
+        type: "tel",
         title: "Phone",
-        required: false,
-        //  pattern: "^[1-9]{1}[0-9]{9}",
-        maximum: 10,
+        maximum: 9999999999,
+        // pattern: "^[0-9]{10}",
+        // maximum: 10,
         defaultValue: this.data.phoneNumber,
-      },
+    },
       datevalidation: {
         type: "checkbox",
         required: false,
         options: [{ title: "" }],
-        defaultValue: 0,
+        defaultValue: 1,
       },
       fromDate: {
         type: "date",

@@ -22,6 +22,12 @@
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <div
+          *ngIf="apiProcessing"
+          class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+        >
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
+    <div
       class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg pb-1"
     >
       <div class="w-6/7 flex h-full">

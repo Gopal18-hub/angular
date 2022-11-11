@@ -169,7 +169,7 @@ export namespace BillingForm {
             type: "string"
           },
           internetmobile: {
-              type: "number"
+              type: "tel",
           },
           internetemail: {
               type: "string"
@@ -212,7 +212,10 @@ export namespace BillingForm {
           },
           creditcardtransactionid:{
             type: "string",
-          }
+          },
+          internetremarks: {
+            type: "textarea"
+        },
         },
     };
     

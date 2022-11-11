@@ -176,9 +176,11 @@ export class DispatchReportComponent implements OnInit {
   printbtn: boolean = true;
   userId: any;
   reporttable: boolean = true;
+  apiprocessing: boolean = false;
   @ViewChild("showtable") tableRows: any;
 
   private readonly _destroying$ = new Subject<void>();
+  data: any = [];
   constructor(
     private formService: QuestionControlService,
     private msgdialog: MessageDialogService,
@@ -305,10 +307,11 @@ export class DispatchReportComponent implements OnInit {
 
   getDispatchReport() {
     this.reporttable = false;
+    this.apiprocessing = true;
     setTimeout(() => {
       this.reporttable = true;
     }, 100);
-
+    this.data = [];
     this.dispatchreport = {} as dispatchReportList;
     this.http
       .get(
@@ -355,15 +358,19 @@ export class DispatchReportComponent implements OnInit {
                 });
               console.log(this.dispatchreport.dispatchlist);
             }
+            this.data = this.dispatchreport.dispatchlist;
+            this.apiprocessing = false;
           } else {
             this.pendingbtn = true;
             this.savebtn = true;
             this.exportbtn = true;
             this.printbtn = true;
+            this.apiprocessing = false;
           }
         },
         (error) => {
           console.log(error.error);
+          this.apiprocessing = false;
         }
       );
   }
@@ -388,6 +395,8 @@ export class DispatchReportComponent implements OnInit {
     setTimeout(() => {
       this.reporttable = true;
     }, 100);
+    this.apiprocessing = false;
+    this.data = [];
   }
   savedialog() {
     var flag = 0;
