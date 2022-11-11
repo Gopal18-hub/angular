@@ -35,19 +35,13 @@ export class StaffDeptDialogComponent implements OnInit {
         //placeholder: "Select"
         //readonly: true,
       },
-      department: {
-        type: "string",
-        title: "Department",
-        // defaultValue: "0.00"
-        //readonly: true,
-      },
     },
   };
   staffFormConfig: any = {
     actionItems: false,
     //dateformat: 'dd/MM/yyyy',
     selectBox: false,
-    displayedColumns: ["sNo", "empCode", "empName", "department"],
+    displayedColumns: ["sNo", "empCode", "empName"],
     clickedRows: true,
     clickSelection: "single",
     columnsInfo: {
@@ -70,13 +64,6 @@ export class StaffDeptDialogComponent implements OnInit {
         type: "string",
         style: {
           width: "30%",
-        },
-      },
-      department: {
-        title: "Department",
-        type: "string",
-        style: {
-          width: "40%",
         },
       },
     },

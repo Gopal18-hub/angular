@@ -347,6 +347,21 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           );
           this.billingService.consultationItems[index].price = res.amount;
           this.billingService.consultationItems[index].type = priorityId;
+          //#region GAV-1054
+          this.billingService.consultationItems[index].billItem.price =
+            res.amount;
+          this.billingService.consultationItems[index].billItem.totalAmount =
+            res.amount +
+            this.billingService.consultationItems[index].billItem.gstValue;
+
+          let consultType: any = this.consultationTypes.filter(
+            (c: any) => c.id === priorityId
+          );
+          if (consultType && consultType.length > 0) {
+            this.billingService.consultationItems[index].billItem.qty =
+              consultType[0].name;
+          }
+          //#endregion GAV-1054
           this.data = [...this.billingService.consultationItems];
         }
 

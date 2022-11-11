@@ -181,6 +181,8 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.getAllCompany();
+    this.getAllCorporate();
     //Enable narration for BLKH & nanavati
     if (
       Number(this.cookie.get("HSPLocationId")) === 67 ||
@@ -571,17 +573,6 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.miscForm.controls["company"].enable();
             this.miscForm.controls["corporate"].enable();
             this.setValuesToMiscForm(this.patientDetails);
-            // if (this.billingService.todayPatientBirthday) {
-            //   const birthdayDialog = this.messageDialogService.info(
-            //     "It’s their birthday today"
-            //   );
-            //   await birthdayDialog.afterClosed().toPromise();
-            // }
-            // if (this.patientDetails.dtPatientPastDetails.length > 1) {
-            //   this.checkPastPatientDetails(
-            //     this.patientDetails.dtPatientPastDetails
-            //   );
-            // }
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
@@ -674,7 +665,6 @@ export class MiscellaneousBillingComponent implements OnInit {
   ngOnDestroy(): void {
     this.clearForm();
     this.calculateBillService.discountSelectedItems = [];
-    this.calculateBillService.discountForm.value.authorise.value = 0;
     this.billingService.totalCost = 0;
     this.Misc.selectedcompanydetails = [];
     this.Misc.selectedcorporatedetails = [];
@@ -728,7 +718,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
       if (diffMonths == 0 && diffDays == 0) {
-        this.snackbar.open("It’s their birthday today", "info");
+        this.snackbar.open("Today is Patient’s birthday", "info");
       }
       let returnAge = "";
       if (diffYears > 0) {
