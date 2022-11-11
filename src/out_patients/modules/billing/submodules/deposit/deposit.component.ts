@@ -432,51 +432,45 @@ export class DepositComponent implements OnInit {
   }
 
   openDepositdialog() {
-    const MakeDepositDialogref = this.matDialog.open(
-      MakedepositDialogComponent,
-      {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to make Deposits?",
-        },
-      }
+    const availDepositsPopup = this.messageDialogService.confirm(
+      "",
+      `Do you want to make Deposits?`
     );
-
-    MakeDepositDialogref.afterClosed()
+    availDepositsPopup
+      .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        if (result == "Success") {
-          const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-            width: "70vw",
-            height: "98vh",
-            data: {
-              servicetype: this.patientservicetype,
-              deposittype: this.patientdeposittype,
-              patientinfo: {
-                emailId: this.patientpersonaldetails[0]?.pEMail,
-                mobileno: this.patientpersonaldetails[0]?.pcellno,
-                panno: this.patientpersonaldetails[0]?.paNno,
-                registrationno: this.regNumber,
-                iacode: this.iacode,
-              },
+        if ("type" in result) {
+        if (result.type == "yes") {
+        const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
+          width: "70vw",
+          height: "98vh",
+          data: {
+            servicetype: this.patientservicetype,
+            deposittype: this.patientdeposittype,
+            patientinfo: {
+              emailId: this.patientpersonaldetails[0]?.pEMail,
+              mobileno: this.patientpersonaldetails[0]?.pcellno,
+              panno: this.patientpersonaldetails[0]?.paNno,
+              registrationno: this.regNumber,
+              iacode: this.iacode,
             },
+          },
+        });
+
+        DepositDialogref.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            this.MaxIDdepositExist = false;
+            this.tableselectionexists = false;
+            this.deposittable.selection.clear();
+            if (result == "Success") {
+              this.getPatientPreviousDepositDetails();
+            }
           });
-
-          DepositDialogref.afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
-              this.MaxIDdepositExist = false;
-              this.tableselectionexists = false;
-              this.deposittable.selection.clear();
-              if (result == "Success") {
-                this.getPatientPreviousDepositDetails();
-
-                console.log("Deposit Dialog closed");
-              }
-            });
-        }
-      });
+      }
+    }
+  });
   }
 
   openinitiatedeposit() {

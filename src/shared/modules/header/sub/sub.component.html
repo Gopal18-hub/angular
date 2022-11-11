@@ -226,7 +226,6 @@
       <ng-container *ngFor="let module of submodules">
         <ng-container *ngIf="module.moreOptions">
           <li
-        
             [matMenuTriggerFor]="menu"
             #subMenuTrigger="matMenuTrigger"
             class="mr-2 cursor-pointer max-health-primary-color"
@@ -234,20 +233,21 @@
               module: module,
               subMenuTrigger: subMenuTrigger
             }"
-            [ngClass]="{ active: activeSubModule?.title == module.title,disabled: module.disabled }"
+            [ngClass]="{
+              active: activeSubModule?.title == module.title,
+              disabled: module.disabled
+            }"
             (mouseover)="subMenuTrigger.openMenu()"
             (click)="activeSubModule = module"
             routerLinkActive="active-link"
-            (isActiveChange)="
-              onRouterLinkActive($event, module)             
-            "
+            (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
           >
             {{ module.title }}
           </li>
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
-          <li         
+          <li
             class="mr-2 cursor-pointer max-health-primary-color"
             (click)="activeSubModule = module"
             [routerLink]="
@@ -258,13 +258,17 @@
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
-            [ngClass]="{ active: activeSubModule?.title == module.title,  disabled: module.disabled }"
+            [ngClass]="{
+              active: activeSubModule?.title == module.title,
+              disabled: module.disabled
+            }"
           >
             {{ module.title }}
           </li>
         </ng-container>
       </ng-container>
     </ul>
+
     <mat-menu #menu="matMenu" class="sub-header-menu">
       <ng-template
         matMenuContent
@@ -273,28 +277,46 @@
         let-module="module"
         let-subMenuTrigger="subMenuTrigger"
       >
-        <div
-          class="flex flex-column flex-wrap box"
-          (mouseleave)="subMenuTrigger.closeMenu()"
-        >
+        <div class="flex flex-wrap">
           <ng-container *ngFor="let menuItem of aliasMenuItems">
-            <button
-            [disabled]="menuItem.disabled"
-              mat-button
-              class="max-health-primary-color"
-              (click)="activeSubModule = module"
-              [routerLink]="
-                baseHref == tenentPath
-                  ? menuItem.defaultPath
-                  : tenentPath + menuItem.defaultPath
-              "
-              disableRipple="true"
-              routerLinkActive="active-link"
-              (isActiveChange)="onPageRouterLinkActive($event, menuItem)"
-              [routerLinkActiveOptions]="{ exact: true }"
+            <ng-container *ngIf="menuItem.childrens?.length > 0">
+              <button
+                [disabled]="menuItem.disabled"
+                class="max-health-primary-color"
+                mat-menu-item
+              >
+                {{ menuItem.title }}
+              </button>
+              <maxhealth-sub-nested-menu
+                #nestedMenu
+                [module]="module"
+                [menu]="menuItem"
+                [subMenuTrigger]="subMenuTrigger"
+                [baseHref]="baseHref"
+                [onPageRouterLinkActive]="onPageRouterLinkActive"
+              ></maxhealth-sub-nested-menu>
+            </ng-container>
+            <ng-container
+              *ngIf="menuItem.childrens?.length == 0 || !menuItem.childrens"
             >
-              {{ menuItem.title }}
-            </button>
+              <button
+                [disabled]="menuItem.disabled"
+                mat-button
+                class="max-health-primary-color w-1/3"
+                (click)="activeSubModule = module"
+                [routerLink]="
+                  baseHref == tenentPath
+                    ? menuItem.defaultPath
+                    : tenentPath + menuItem.defaultPath
+                "
+                disableRipple="true"
+                routerLinkActive="active-link"
+                (isActiveChange)="onPageRouterLinkActive($event, menuItem)"
+                [routerLinkActiveOptions]="{ exact: true }"
+              >
+                {{ menuItem.title }}
+              </button>
+            </ng-container>
           </ng-container>
         </div>
       </ng-template>
