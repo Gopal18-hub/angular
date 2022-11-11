@@ -58,7 +58,7 @@ export class MessageDialogService {
       //width: "40vw",
       minWidth: "25vw",
       maxWidth: "40vw",
-      minHeight: "25vh",
+      minHeight: "30vh",
       panelClass: "message-confirm",
       data: { message: message },
       autoFocus: false,

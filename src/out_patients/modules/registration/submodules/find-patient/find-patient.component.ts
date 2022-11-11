@@ -188,7 +188,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
                 resultData = resultData.map((item: any) => {
                   item.fullname = item.firstName + " " + item.lastName;
                   item.notereason = item.noteReason;
-                  item.age= this.onageCalculator(item.dob);
+                  item.age = this.onageCalculator(item.dob);
                   return item;
                 });
                 this.patientList = resultData as PatientSearchModel[];
@@ -269,6 +269,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
         console.log(formdata);
+        this.showspinner = true;
         await this.loadGrid(formdata);
       });
   }
@@ -361,7 +362,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
     const resultData = lookupdata.map((item: any) => {
       item.fullname = item.firstName + " " + item.lastName;
       item.notereason = item.noteReason;
-      item.age= this.onageCalculator(item.dob);
+      item.age = this.onageCalculator(item.dob);
       return item;
     });
     this.patientList = resultData;
@@ -430,7 +431,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-     
+
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";

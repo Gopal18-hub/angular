@@ -44,6 +44,7 @@ export class MedicineOrdersComponent implements OnInit {
   name: any;
   questions: any;
   private readonly _destroying$ = new Subject<void>();
+  apiProcessing: boolean = false;
 
   medOrderLists: any = [];
   medOrderList: any = [];
@@ -198,7 +199,7 @@ export class MedicineOrdersComponent implements OnInit {
       },
       mrpValue: {
         title: "Amt",
-        type: "string",
+        type: "currency",
         style: {
           width: "8%",
         },
@@ -440,6 +441,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
   }
   search() {
+    this.apiProcessing = true;
     this.medOrderList = [];
     this.medOrderDetails = [];
     this.patientInfo = "";
@@ -497,6 +499,7 @@ export class MedicineOrdersComponent implements OnInit {
         item.mrpValue = Number(item.mrpValue).toFixed(2);
       console.log(item.mrpValue);
     });
+    this.apiProcessing = false;
   }
   listRowClick(event: any) {
     this.EnableBill = false;

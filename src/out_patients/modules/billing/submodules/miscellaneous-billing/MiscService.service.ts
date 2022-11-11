@@ -352,20 +352,20 @@ export class MiscService {
     return this.interactionDetails;
   }
 
-  depositDetails(iacode: string, regNumber: number) {
-    this.http
-      .get(
-        ApiConstants.getDipositedAmountByMaxID(
-          iacode,
-          regNumber,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((resultData: any) => {
-        this.miscdepositDetailsData = resultData;
-        this.miscdepositdetailsEvent.next({ deposit: resultData });
-      });
-  }
+  // depositDetails(iacode: string, regNumber: number) {
+  //   this.http
+  //     .get(
+  //       ApiConstants.getDipositedAmountByMaxID(
+  //         iacode,
+  //         regNumber,
+  //         Number(this.cookie.get("HSPLocationId"))
+  //       )
+  //     )
+  //     .subscribe((resultData: any) => {
+  //       this.miscdepositDetailsData = resultData;
+  //       this.miscdepositdetailsEvent.next({ deposit: resultData });
+  //     });
+  // }
 
   async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {

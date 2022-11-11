@@ -1,8 +1,14 @@
-<section class="payment-dialog">
+<section class="payment-dialog relative">
   <!-- Cross Icon -->
-  <div class="flex justify-content-end">
-    <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
-  </div>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
 
   <!-- Blue Banner -->
   <div
@@ -120,7 +126,7 @@
 
   <!-- Footer Part -->
   <div class="mt-12 bottom">
-    <patient-identity-info [data]="patientInfo" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
+    <patient-identity-info [data]="patientInfo" [form60payment]="paymentmethod" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
 
     </patient-identity-info>
   </div>

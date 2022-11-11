@@ -1,67 +1,77 @@
-.paymentmethod-wrapper{
-.height{
-    height: 63vh;
-}
-::ng-deep .mat-tab-label{
+.paymentmethod-wrapper {
+  .height {
+    height: 60%;
+  }
+  ::ng-deep .mat-tab-label {
     height: 30px !important;
-    color: #004084 ;
+    color: #004084;
     opacity: 1 !important;
-    font-weight: 500!important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
-{
+    font-weight: 500 !important;
+  }
+  ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels {
     height: 50vh !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels .mat-tab-label:nth-child(8){
+  }
+  ::ng-deep
+    .maxhealth-vertical-tab
+    .mat-tab-group
+    .mat-tab-labels
+    .mat-tab-label:nth-child(8) {
     border-bottom: 0 !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active{
-    background-color:#004084;
+  }
+  ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active {
+    background-color: #004084;
     opacity: 1;
     color: white;
     border-bottom: none !important;
     border-radius: 5px;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+  }
+  ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header {
     border-right: none !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body-content{
+  }
+  ::ng-deep
+    .maxhealth-vertical-tab
+    .mat-tab-group
+    .mat-tab-body-wrapper
+    .mat-tab-body-content {
     height: 55vh !important;
-}
-::ng-deep .mat-dialog-container{
+  }
+  ::ng-deep .mat-dialog-container {
     overflow: hidden !important;
     padding: 10px 24px 24px 24px;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+  }
+  ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header {
     width: auto !important;
-}
-::ng-deep .mat-tab-label{
+  }
+  ::ng-deep .mat-tab-label {
     padding: 0 24px !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
+  }
+  ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels {
     display: flex !important;
     row-gap: 10px !important;
-}
-.input1{
-    ::ng-deep  .mat-form-field-infix {
-        text-align: right !important;
+  }
+  .input1 {
+    ::ng-deep .mat-form-field-infix {
+      text-align: right !important;
     }
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body{
+  }
+  ::ng-deep
+    .maxhealth-vertical-tab
+    .mat-tab-group
+    .mat-tab-body-wrapper
+    .mat-tab-body {
     left: 40px !important;
-}
-.width{
-    width: 65%!important;
-}
-.creditbuttonwidth
-{    .mat-raised-button
-    {
-        min-width: initial !important;
-        height: 1.875rem !important;
-        line-height: 1.875rem  !important;
+  }
+  .width {
+    width: 65% !important;
+  }
+  .creditbuttonwidth {
+    .mat-raised-button {
+      min-width: initial !important;
+      height: 1.875rem !important;
+      line-height: 1.875rem !important;
     }
-// ::ng-deep .mat-raised-button {
-//     min-width: 120px !important;
-// }
-}
+    // ::ng-deep .mat-raised-button {
+    //     min-width: 120px !important;
+    // }
+  }
 }

@@ -12,13 +12,10 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         equipmentName: {
-
           type: "hidden",
-
         },
 
         Cmb_Equip: {
-
           // type: "dropdown",
 
           type: "autocomplete",
@@ -30,33 +27,24 @@ export namespace FormReport {
           // defaultValue: "0",
 
           optionsModelConfig: {
-
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
 
             fields: {
-
               title: "name",
 
               value: "id",
-
             },
-
           },
 
           conditions: [
-
             {
-
               expression: "self.title",
 
               controlKey: "equipmentName",
 
               type: "value",
-
             },
-
           ],
-
         },
         EquipFromDate: {
           type: "date",
@@ -114,16 +102,19 @@ export namespace FormReport {
         fromdate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date(),
         },
         todate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date(),
         },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: "true",
+          // defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -133,13 +124,14 @@ export namespace FormReport {
           },
         },
         RepType: {
+          title: "Report Type",
           type: "radio",
-          defaultValue: "",
+          defaultValue: "1",
           options: [
-            { title: "OP", value: "OP" },
-            { title: "PreAdmission", value: "PreAdmission" },
-            { title: "Emergency", value: "Emergency" },
-            { title: "IP", value: "IP" },
+            { title: "OP", value: "1" },
+            { title: "PreAdmission", value: "2" },
+            { title: "Emergency", value: "3" },
+            { title: "IP", value: "4" },
           ],
         },
       },
@@ -160,6 +152,10 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
+          reportEntity: "OnlinePaymentDetailReport",
+          fileName: "Online Payment Detail Report.xls",
+          contentType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
@@ -180,25 +176,18 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      // FromDate: moment("dd/MM/YYYY"),
-      // todate: moment("dd/MM/YYYY"),
+      defaultValue: moment().format("MM/DD/YYYY"),
       properties: {
         FromDate: {
           type: "date",
           title: "Date",
-          defaultValue: moment().format("MM/DD/YYYY"),
+          defaultValue: new Date(),
         },
-        // todate: {
-        //   type: "hidden",
-        //   defaultValue: moment().format("MM/DD/YYYY"),
-        //   // format: moment("dd/MM/YYYY"),
-        // },
         locationID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          questionClasses: "max-hide",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -207,22 +196,11 @@ export namespace FormReport {
             },
           },
         },
-        locationName: {
-          type: "hidden",
-          defaultValue: MaxHealthStorage.getCookie("Location"),
-          optionsModelConfig: {
-            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
-            fields: {
-              title: "name",
-              value: "name",
-            },
-          },
-        },
       },
     },
     form: {
       layout: {
-        locationID: "w-screen",
+        locationID: "w-full",
       },
       actionItems: [
         {
@@ -235,7 +213,10 @@ export namespace FormReport {
         },
         {
           label: "Excel",
-          type: "",
+          type: "export",
+          reportEntity: "DailyCollectionReport",
+          fileName: "Daily Collection Report.xls",
+          contentType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
@@ -292,6 +273,10 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
+          reportEntity: "ScrollSummaryReport",
+          fileName: "Scroll Summary Report.xls",
+          contentType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
@@ -319,7 +304,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---All Doctors---",
           title: "",
-          defaultValue: "0",
+          defaultValue: { title: "", value: 0 },
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -577,6 +562,7 @@ export namespace FormReport {
           title: "",
           required: false,
           questionClasses: "max-hide",
+
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -584,6 +570,7 @@ export namespace FormReport {
               value: "id",
             },
           },
+          defaultValue: "",
         },
 
         Location: {
@@ -618,7 +605,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "membershipno".trim(),
             },
           },
         },

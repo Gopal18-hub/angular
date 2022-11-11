@@ -24,7 +24,6 @@ import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/detai
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
-import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 
@@ -35,259 +34,10 @@ import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form
 })
 export class BillComponent implements OnInit, OnDestroy {
   locationexclude: any = [67, 69];
-  billDataForm = {
-    type: "object",
-    title: "",
-    properties: {
-      referralDoctor: {
-        type: "dropdown",
-        required: true,
-        title: "Referral Doctor",
-        placeholder: "--Select--",
-      },
-      interactionDetails: {
-        type: "dropdown",
-        required: false,
-        title: "Interaction Details",
-        placeholder: "--Select--",
-      },
-      billAmt: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      availDiscCheck: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "Avail Plan Disc ( - )" }],
-        disabled: false,
-      },
-      availDisc: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-        disabled: false,
-      },
-      discAmtCheck: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: " Discount  Amount  (  -  ) " }],
-        disabled: false,
-      },
-      discAmt: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-        disabled: false,
-      },
-      dipositAmtcheck: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "Deposit Amount ( - )" }],
-        disabled: false,
-      },
-      dipositAmt: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-        disabled: false,
-      },
-      patientDisc: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      compDisc: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      planAmt: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      coupon: {
-        type: "string",
-        required: false,
-      },
-      coPay: {
-        type: "number",
-        required: false,
-        defaultValue: "0",
-        readonly: true,
-      },
-      credLimit: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      gstTax: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      amtPayByPatient: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      amtPayByComp: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-      paymentMode: {
-        type: "radio",
-        required: true,
-        options: [
-          { title: "Cash", value: 1, disabled: false },
-          { title: "Credit", value: 3, disabled: false },
-          { title: "Gen. OPD", value: 4, disabled: false },
-        ],
-        defaultValue: 1,
-      },
-      self: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "Self" }],
-      },
-      dipositAmtEdit: {
-        type: "currency",
-        required: false,
-        defaultValue: "0.00",
-        readonly: true,
-      },
-    },
-  };
+  billDataForm = BillingStaticConstants.billTabFormConfig;
   @ViewChild("table") tableRows: any;
   data: any = [];
-  config: any = {
-    clickedRows: false,
-    actionItems: false,
-    dateformat: "dd/MM/yyyy",
-    selectBox: false,
-    removeRow: true,
-    displayedColumns: [
-      "sno",
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedureDoctor",
-      "qty",
-      "credit",
-      "cash",
-      "disc",
-      "discAmount",
-      "gst",
-      "gstValue",
-      "totalAmount",
-    ],
-    columnsInfo: {
-      sno: {
-        title: "S.No.",
-        type: "number",
-        style: {
-          width: "65px",
-        },
-      },
-      serviceName: {
-        title: "Services Name",
-        type: "string",
-        style: {
-          width: "150px",
-        },
-      },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-        style: {
-          width: "200px",
-        },
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string_link",
-        style: {
-          width: "80px",
-        },
-      },
-      procedureDoctor: {
-        title: "Procedure Doctor",
-        type: "string",
-        style: {
-          width: "150px",
-        },
-      },
-      qty: {
-        title: "Qty/Type",
-        type: "string",
-        style: {
-          width: "80px",
-        },
-      },
-      credit: {
-        title: "Credit",
-        type: "currency",
-        style: {
-          width: "100px",
-        },
-      },
-      cash: {
-        title: "Cash",
-        type: "currency",
-        style: {
-          width: "100px",
-        },
-      },
-      disc: {
-        title: "Disc %",
-        type: "string",
-        style: {
-          width: "60px",
-        },
-      },
-      discAmount: {
-        title: "Disc Amount",
-        type: "currency",
-        style: {
-          width: "100px",
-        },
-      },
-      totalAmount: {
-        title: "Total Amount",
-        type: "currency",
-        style: {
-          width: "130px",
-        },
-      },
-      gst: {
-        title: "GST%",
-        type: "number",
-        style: {
-          width: "60px",
-        },
-      },
-      gstValue: {
-        title: "GST Value",
-        type: "currency",
-        style: {
-          width: "130px",
-        },
-      },
-    },
-  };
+  config: any = BillingStaticConstants.billTabTableConfig;
 
   formGroup!: FormGroup;
   question: any;
@@ -539,7 +289,8 @@ export class BillComponent implements OnInit, OnDestroy {
   async billTypeChange(value: any) {
     if (value == 1) {
       this.data = this.data.map((dItem: any) => {
-        dItem.cash = dItem.price * dItem.qty;
+        let quantity = !isNaN(Number(dItem.qty)) ? dItem.qty : 1;
+        dItem.cash = dItem.price * quantity;
         dItem.credit = 0;
         return dItem;
       });
@@ -551,12 +302,13 @@ export class BillComponent implements OnInit, OnDestroy {
         (cnci: any) => cnci.itemId
       );
       this.data = this.data.map((dItem: any) => {
+        let quantity = !isNaN(Number(dItem.qty)) ? dItem.qty : 1;
         if (exceptions.includes(dItem.itemId)) {
-          dItem.cash = dItem.price * dItem.qty;
+          dItem.cash = dItem.price * quantity;
           dItem.credit = 0;
         } else {
           dItem.cash = 0;
-          dItem.credit = dItem.price * dItem.qty;
+          dItem.credit = dItem.price * quantity;
         }
 
         return dItem;
@@ -748,7 +500,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.billItems.forEach((item: any) => {
       item.disc = 0;
       item.discAmount = 0;
-      const price = item.price * item.qty;
+      let quantity = !isNaN(Number(item.qty)) ? item.qty : 1;
+      const price = item.price * quantity;
       item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
       item.totalAmount = price + item.gstValue;
       item.discountType = 0;
@@ -973,6 +726,12 @@ export class BillComponent implements OnInit, OnDestroy {
                 this.billingservice.selectedOtherPlan
                   ? this.billingservice.selectedOtherPlan.planId
                   : 0;
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId =
+                this.billingservice.patientDetailsInfo
+                  ? this.billingservice.patientDetailsInfo.peMail
+                    ? this.billingservice.patientDetailsInfo.peMail
+                    : "info@maxhealthcare.com"
+                  : "info@maxhealthcare.com";
 
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
@@ -1020,6 +779,13 @@ export class BillComponent implements OnInit, OnDestroy {
         ? this.billingservice.selectedOtherPlan.planId
         : 0;
 
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId =
+      this.billingservice.patientDetailsInfo
+        ? this.billingservice.patientDetailsInfo.peMail
+          ? this.billingservice.patientDetailsInfo.peMail
+          : "info@maxhealthcare.com"
+        : "info@maxhealthcare.com";
+
     //GAV-530 Paid Online Appointment
     let amount = 0;
     if (this.billingservice.PaidAppointments) {
@@ -1039,8 +805,8 @@ export class BillComponent implements OnInit, OnDestroy {
     // //GAV-530 Paid Online appointment
     if (ispaid) {
       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-        width: "70vw",
-        height: "99vh",
+        width: "80vw",
+        height: "96vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
@@ -1067,8 +833,8 @@ export class BillComponent implements OnInit, OnDestroy {
     } // //GAV-530 Paid Online appointment
     else {
       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-        width: "70vw",
-        height: "99vh",
+        width: "80vw",
+        height: "96vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
@@ -1280,6 +1046,25 @@ export class BillComponent implements OnInit, OnDestroy {
             }
           });
         }
+        //PHP Track Sheet -- Added by Abirami
+        if (this.billingservice.billItems[0].serviceName == "Health Checkups") {
+          const dialogref = this.messageDialogService.confirm(
+            "",
+            `Do you want Print Track sheet?`
+          );
+          dialogref.afterClosed().subscribe((res: any) => {
+            if (res.type == "yes") {
+              this.reportService.openWindow(
+                "PHP Track Sheet - " + this.billNo,
+                "PHPTracksheet",
+                {
+                  BillNo: this.billNo,
+                }
+              );
+            }
+          });
+        }
+        //Ends
 
         if ("type" in result) {
           if (result.type == "yes") {
@@ -1552,33 +1337,33 @@ export class BillComponent implements OnInit, OnDestroy {
               if (this.gstBreakupDetails.length <= 0) {
                 this.gstBreakupDetails.push({
                   service: "CGST",
-                  percentage: res[0].cgst,
-                  value: res[0].cgsT_Value,
+                  percentage: res[0].cgst.toFixed(2),
+                  value: res[0].cgsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "SGST",
-                  percentage: res[0].sgst,
-                  value: res[0].sgsT_Value,
+                  percentage: res[0].sgst.toFixed(2),
+                  value: res[0].sgsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "UTGST",
-                  percentage: res[0].utgst,
-                  value: res[0].utgsT_Value,
+                  percentage: res[0].utgst.toFixed(2),
+                  value: res[0].utgsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "IGST",
-                  percentage: res[0].igst,
-                  value: res[0].igsT_Value,
+                  percentage: res[0].igst.toFixed(2),
+                  value: res[0].igsT_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "CESS",
-                  percentage: res[0].cess,
-                  value: res[0].cesS_Value,
+                  percentage: res[0].cess.toFixed(2),
+                  value: res[0].cesS_Value.toFixed(2),
                 });
                 this.gstBreakupDetails.push({
                   service: "TotalTax",
-                  percentage: res[0].totaltaX_RATE,
-                  value: res[0].totaltaX_Value,
+                  percentage: res[0].totaltaX_RATE.toFixed(2),
+                  value: res[0].totaltaX_Value.toFixed(2),
                 });
                 this.formGroup.controls["gstTax"].setValue(
                   this.finalgstDetails.totaltaX_Value.toFixed(2)

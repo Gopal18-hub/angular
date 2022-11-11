@@ -1,107 +1,106 @@
-.payment-dialog{
-    .col-black{
-        color: #000;
+.payment-dialog {
+  //   ::ng-deep .mat-dialog-container {
+  // overflow: hidden !important;
+  // padding: 10px 24px 10px 24px;
+  // }
+  .col-black {
+    color: #000;
+  }
+  .col-white {
+    color: #fff;
+  }
+  .back-primary {
+    background-color: #004084;
+  }
+  .bold {
+    font-weight: bold;
+  }
+  .lighter {
+    font-weight: lighter;
+  }
+  .wt-nowrap {
+    white-space: nowrap;
+  }
+  .pointer {
+    cursor: pointer;
+  }
+  .secondary {
+    background-color: #45c0be;
+  }
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+  .bg-white {
+    background-color: #fff;
+    color: #000;
+  }
+  .clr-primary {
+    color: #004084;
+  }
+  .height {
+    height: 63vh;
+  }
+  .width {
+    width: 30% !important;
+  }
+  .bg-grey {
+    background: #f6f6f6;
+  }
+  .bg-lightgrey {
+    background-color: #d2d0d0;
+  }
+  .bg-btn {
+    background-color: #c8c8c8;
+  }
+  .mg-top-1 {
+    margin-top: 1px;
+  }
+  ::ng-deep mat-radio-group {
+    flex-direction: row !important;
+    gap: 15px;
+  }
+  ::ng-deep .mat-radio-button {
+    margin-left: 10px;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 10px;
+  }
+  .bottom {
+    ::ng-deep .mat-radio-button {
+      margin-left: 10px;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      padding-top: 0 !important;
+      margin-top: 8px;
     }
-    .col-white{
-        color: #fff;
-    }
-    .back-primary{
-        background-color: #004084;
-    }
-    .bold{
-        font-weight: bold;
-    }
-    .lighter{
-        font-weight: lighter;
-    }
-    .wt-nowrap{
-        white-space: nowrap;
-    }
-    .pointer{
-        cursor: pointer;
-    }
-    .secondary{
-        background-color: #45C0BE;
-    }
-    ::ng-deep .mat-form-field-wrapper{
-        padding-bottom: 0 !important;
-    }
-    .bg-white{
-        background-color: #fff;
-        color: #000;
-    }
-    .clr-primary{
-        color: #004084;
-    }
-    .height{
-        height: 66vh;//changing from 62 to 66
-    }
-    .width{
-        width: 30% !important;
-    }
-    .bg-grey{
-        background:#F6F6F6;
-    }
-    .bg-lightgrey{
-        background-color: #D2D0D0;
-    }
-    .bg-btn{
-        background-color: #C8C8C8;
-    }
-    .mg-top-1{
-        margin-top: 1px;
-    }
-    ::ng-deep mat-radio-group {
-        flex-direction: row !important;
-        gap: 15px;
-    }
-    ::ng-deep .mat-radio-button{
-        margin-left: 10px;
-        padding-bottom: 0 !important;
-        padding-top: 0 !important;
-        margin-bottom: 10px;
-    }
-    .bottom{
-        ::ng-deep .mat-radio-button{
-            margin-left: 10px;
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-            padding-top: 0 !important;
-            margin-top: 8px;
-        }
-    }
-    ::ng-deep .ta textarea{
-        min-height: 120px !important;
-    }
-    
-    .otptextcnt{
-        ::ng-deep .mat-form-field{
-            line-height: 2 !important;
-        }
-    }
-    
-    ::ng-deep .refundheight{
-        height: 4vh !important;
-    }
-      ::ng-deep .payment-breakup{
-        height: 24vh !important;
-        overflow-y: scroll !important;
-    }
-    .payabletextbox{
-    ::ng-deep .mat-form-field{
-    line-height: 1.25 !important;
-    }
-    }
-    .paymentdialogbutton{
-        .mat-raised-button{    
-            min-width: auto !important;
-            height: 1.875rem !important;
-            line-height: 1.875rem  !important;
-        }
-    }
-}
+  }
+  ::ng-deep .ta textarea {
+    min-height: 120px !important;
+  }
 
-::ng-deep .mat-dialog-container{
-    overflow: hidden !important;
-    padding: 10px 24px 10px 24px;
+  .otptextcnt {
+    ::ng-deep .mat-form-field {
+      line-height: 2 !important;
+    }
+  }
+
+  ::ng-deep .refundheight {
+    height: 4vh !important;
+  }
+  ::ng-deep .payment-breakup {
+    height: 24vh !important;
+    overflow-y: scroll !important;
+  }
+  .payabletextbox {
+    ::ng-deep .mat-form-field {
+      line-height: 1.25 !important;
+    }
+  }
+  .paymentdialogbutton {
+    .mat-raised-button {
+      min-width: auto !important;
+      height: 1.875rem !important;
+      line-height: 1.875rem !important;
+    }
+  }
 }

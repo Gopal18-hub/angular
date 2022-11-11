@@ -915,10 +915,13 @@ export class OprefundApprovalComponent implements OnInit {
       // if (activelink.id == 1) {
       if (this.pendingList.length == 0) {
         console.log("inside list null");
-        this.dialog.open(OprefundDialogComponent, {
-          width: "25vw",
-          height: "30vh",
-        });
+        // this.dialog.open(OprefundDialogComponent, {
+        //   width: "25vw",
+        //   height: "30vh",
+        // });
+        this.dialogservice.warning(
+          "Please select atleast one item from the list"
+        );
       } else {
         this.useridList.forEach((item: any) => {
           console.log(this.userId);

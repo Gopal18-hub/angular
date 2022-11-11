@@ -49,7 +49,7 @@ export namespace CrystalReport {
       "Location"
     )}&User=${MaxHealthStorage.getCookie("UserName")}&locationid=${
       params.locationID
-    }`;
+    }&exportflag=${params.exportflag}`;
     // &exportflag=${
     //   params.exportflag
     // }
@@ -61,7 +61,9 @@ export namespace CrystalReport {
       params.RepType
     }&FromDate=${params.fromdate}&ToDate=${params.todate}&locationid=${
       params.locationid
-    }&User=${MaxHealthStorage.getCookie("UserName")}`;
+    }&User=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
+      params.exportflag
+    }`;
   };
 
   export const CreateOPVisitSlipReport = (params: any) => {
@@ -199,7 +201,9 @@ export namespace CrystalReport {
       params.EquipFromDate
     }&EquipToDate=${params.EquipToDate}&Cmb_Equip=${
       params.Cmb_Equip
-    }&equipmentName=${params.equipmentName}&locationID=${MaxHealthStorage.getCookie(
+    }&equipmentName=${
+      params.equipmentName
+    }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
     )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };
@@ -231,7 +235,9 @@ export namespace CrystalReport {
       params.ValueFromDate
     }&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${
       params.SelectedLocationsId
-    }&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}`;
+    }&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&exportflag=${
+      params.exportflag
+    }`;
   };
 
   export const PrintOPPrescriptionReport = (params: any) => {
