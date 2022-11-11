@@ -8,73 +8,94 @@ export namespace BillingForm {
           cashamount: {
              type: "number",
              defaultValue: "0.00",
+             required: true,
            },
           chequeno: {
-            type: "number"
+            type: "number",
+            required: true,
           },
           chequeissuedate: {
             type: "date",
             maximum: new Date(),
             defaultValue: new Date(),
+            required: true,
           },
           chequebankname: {
             type: "autocomplete",
+            required: true,
           },
           chequebranchname: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           chequeamount: {
             type: "number",
-            defaultValue: "0.00"
+            defaultValue: "0.00",
+            required: true,
           },
           chequeauth: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           creditcardno: {
-            type: "number"
+            type: "number",
+            required: true,
           },
           creditholdername: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           creditbankname: {
             type: "autocomplete",
+            required: true,
           },
           creditbatchno:{
-            type: "string"
+            type: "string",
+            required: true,
           }, //10
           creditamount: {
             type: "number",
-            defaultValue: "0.00"
+            defaultValue: "0.00",
+            required: true,
           },
           creditapproval: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           creditterminal: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           creditacquiring: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           demandddno: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           demandissuedate: {
             type: "date",
             maximum: new Date(),
             defaultValue: new Date(),
+            required: true,
           },
           demandbankname: {
-            type: "autocomplete"
+            type: "autocomplete",
+            required: true,
           },
           demandbranchname: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           demandamount: {
             type: "number",
-            defaultValue: "0.00"
+            defaultValue: "0.00",
+            required: true,
           },
           demandauth: {
-            type: "string"
+            type: "string",
+            required: true,
           }, //20
           mobilesendermobile: {
             type: "number"
@@ -123,60 +144,78 @@ export namespace BillingForm {
           },
           paytmamount: {
             type: "number",
-            defaultValue: "0.00"
+            defaultValue: "0.00",
+            required: true,
           },
           paytmwallet: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           paytmsendermobile: {
-            type: "number"
+            type: "number",
+            required: true,
           },
           paytmsenername: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           paytmotp: {
-            type: "number"
+            type: "number",
+            required: true,
           },
           paytmtransacref: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           paytmorderid: {
-            type: "string"
+            type: "string",
+            required: true,
           }, ///40
           upicardno: {
-            type: "number"
+            type: "number",
+            required: true,
           },
           upitransactionid: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           upibankname: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           upiamount : {
             type: "number",
-            defaultValue: "0.00"
+            defaultValue: "0.00",
+            required: true,
           },
           upibatchno: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           upiapproval: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           upiterminal: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           upiacquiring: {
-            type: "string"
+            type: "string",
+            required: true,
           },
           internetmobile: {
               type: "tel",
+              required: true,
           },
           internetemail: {
-              type: "string"
+              type: "string",
+              required: true,
           }, //50
           internetamount: {
               type: "number",
-              defaultValue: "0.00"
+              defaultValue: "0.00",
+              required: true,
           },
 	        dueamount: {
               type: "string",
@@ -209,12 +248,15 @@ export namespace BillingForm {
           }, //60
           posimei:{
             type: "string",
+            required: true,
           },
           creditcardtransactionid:{
             type: "string",
+            required: true,
           },
           internetremarks: {
-            type: "textarea"
+            type: "textarea",
+            required: true,
         },
         },
     };
