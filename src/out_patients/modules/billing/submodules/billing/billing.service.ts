@@ -304,17 +304,19 @@ export class BillingService {
         subItems
       )
       .subscribe((res: any) => {
-        res.forEach((resItem: any, index: number) => {
-          //GAV-1070
-          let quanity = !isNaN(Number(this.billItems[index].qty))
-            ? this.billItems[index].qty
-            : 1;
-          this.billItems[index].price = resItem.returnOutPut;
-          this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
-          this.updateServiceItemPrice(this.billItems[index]);
-        });
-        this.calculateTotalAmount();
-        this.refreshBillTab.next(true);
+        if (this.billItems && this.billItems.length > 0) {
+          res.forEach((resItem: any, index: number) => {
+            //GAV-1070
+            let quanity = !isNaN(Number(this.billItems[index].qty))
+              ? this.billItems[index].qty
+              : 1;
+            this.billItems[index].price = resItem.returnOutPut;
+            this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
+            this.updateServiceItemPrice(this.billItems[index]);
+          });
+          this.calculateTotalAmount();
+          this.refreshBillTab.next(true);
+        }
       });
   }
 
@@ -1061,7 +1063,9 @@ export class BillingService {
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
-          "Do You Want To Save Less Amount ?"
+          "Do you want to pay less amount of Rs." +
+            (toBePaid - collectedAmount) +
+            "?"
         );
         const lessAmountWarningResult = await lessAmountWarningDialog
           .afterClosed()
