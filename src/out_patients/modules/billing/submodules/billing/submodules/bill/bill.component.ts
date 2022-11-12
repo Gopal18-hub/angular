@@ -37,7 +37,9 @@ export class BillComponent implements OnInit, OnDestroy {
   billDataForm = BillingStaticConstants.billTabFormConfig;
   @ViewChild("table") tableRows: any;
   data: any = [];
-  config: any = BillingStaticConstants.billTabTableConfig;
+  config: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.billTabTableConfig)
+  );
 
   formGroup!: FormGroup;
   question: any;
@@ -55,6 +57,7 @@ export class BillComponent implements OnInit, OnDestroy {
   private readonly _destroying$ = new Subject<void>();
 
   totalPlanDiscount = 0;
+  IsValidateCoupon: boolean = false;
 
   constructor(
     private formService: QuestionControlService,
@@ -960,11 +963,11 @@ export class BillComponent implements OnInit, OnDestroy {
               });
           } else {
             successInfo
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((res: any) => {
-            this.dialogopen();
-            });
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((res: any) => {
+                this.dialogopen();
+              });
           }
         });
     } else {
@@ -1282,6 +1285,7 @@ export class BillComponent implements OnInit, OnDestroy {
           );
           await CouponErrorRef.afterClosed().toPromise();
           this.formGroup.controls["coupon"].setValue("");
+          this.IsValidateCoupon = false;
           return;
         } else {
           if (this.formGroup.value.paymentMode == 1) {
@@ -1297,6 +1301,7 @@ export class BillComponent implements OnInit, OnDestroy {
             );
             await CouponErrorRef.afterClosed().toPromise();
             this.formGroup.controls["coupon"].setValue("");
+            this.IsValidateCoupon = false;
             return;
           }
         }
@@ -1305,6 +1310,7 @@ export class BillComponent implements OnInit, OnDestroy {
         const CouponErrorRef = this.messageDialogService.error(
           "Please Enter Proper Coupon"
         );
+        this.IsValidateCoupon = false;
         await CouponErrorRef.afterClosed().toPromise();
         return;
       }

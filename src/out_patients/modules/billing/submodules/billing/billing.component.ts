@@ -1105,6 +1105,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       doctorid: item.doctorid,
                       popuptext: item.popuptext,
                       precaution: item.precaution,
+                      specializationId: item.specializationId,
                     }
                   );
                 } else {
@@ -1118,6 +1119,8 @@ export class BillingComponent implements OnInit, OnDestroy {
                       originalTitle: item.testName,
                       docRequired: item.docRequired,
                       popuptext: item.popuptext,
+                      specializationId: item.specializationId,
+                      doctorid: item.doctorid,
                     }
                   );
                 }

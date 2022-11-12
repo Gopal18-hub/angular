@@ -53,7 +53,7 @@
         </div>
         <!-- -------------------------------------------grey billing block------------------------------------------------------------------------- -->
         <div
-          class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86"
+          class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86 relative"
         >
           <div class="ml-2 flex-column w-27 flex justify-between">
             <div>
@@ -149,18 +149,11 @@
                   [question]="question[8]"
                   [form]="formGroup"
                   [questions]="question[8]"
-                  class="w-23 mb-1 ml-3 mr-1"
+                  class="w-1/45 mb-1 ml-3 mr-1"
                   [index]="8"
                 >
                 </maxhealth-question>
-                <maxhealth-question
-                  [question]="question[20]"
-                  [form]="formGroup"
-                  [questions]="question[20]"
-                  class="w-21 mb-1"
-                  [index]="20"
-                >
-                </maxhealth-question>
+                <!-- deposit 2nd control -->
               </div>
             </div>
           </div>
@@ -193,6 +186,7 @@
                 </maxhealth-question>
               </div>
             </div>
+            
             <div>
               <div class="flex">
                 <mat-label class="wt-nowrap mr-24">Plan Amt.</mat-label>
@@ -207,32 +201,31 @@
                 </maxhealth-question>
               </div>
             </div>
-            <div>
-              <div class="flex">
-                <mat-label class="wt-nowrap mr-12"> Coupon</mat-label>
-
-                <maxhealth-question
-                  [question]="question[12]"
-                  [form]="formGroup"
-                  [questions]="question[12]"
-                  class="w-5/9"
-                  [index]="12"
-                >
-                </maxhealth-question>
-              </div>
+            <div class="flex justify-between">m
+              <mat-label class="wt-nowrap ml-12"> Coupon</mat-label>
             </div>
+            <!-- coupon -->
+            <maxhealth-question
+                  [question]="question[20]"
+                  [form]="formGroup"
+                  [questions]="question[20]"
+                  class="w-5/9 mb-1 couponcnt"
+                  [index]="20"
+                >
+            </maxhealth-question>
+            
           </div>
           <div
             class="ml-2 flex-column w-1/6 flex border-radius-lg justify-between"
           >
             <div>
               <div class="flex">
-                <mat-label class="wt-nowrap mr-2">Co-Payment %</mat-label>
+                <mat-label class="wht-nowrap mr-2">Co-Payment %</mat-label>
                 <maxhealth-question
                   [question]="question[13]"
                   [form]="formGroup"
                   [questions]="question[13]"
-                  class="w-1/45 copay"
+                  class="w-1/2 copay"
                   [index]="13"
                 >
                 </maxhealth-question>
@@ -240,31 +233,24 @@
             </div>
             <div>
               <div class="flex">
-                <mat-label class="wt-nowrap mr-7">Credit Limit</mat-label>
+                <mat-label class="wht-nowrap mr-7">Credit Limit</mat-label>
 
                 <maxhealth-question
                   [question]="question[14]"
                   [form]="formGroup"
                   [questions]="question[14]"
-                  class="w-1/45"
+                  class="w-1/2"
                   [index]="14"
                 >
                 </maxhealth-question>
               </div>
             </div>
             <div>
-              <div class="flex my-2">
-                <mat-label class="wt-nowrap mr-5">GST Tax</mat-label>
 
-                <div class="w-1/45 flex">
-                  <maxhealth-question
-                    [question]="question[15]"
-                    [form]="formGroup"
-                    [questions]="question[15]"
-                    class="w-7/10 ml-7"
-                    [index]="15"
-                  >
-                  </maxhealth-question>
+              <!-- gst -->
+              <div class="flex my-2">
+                <mat-label class="wt-nowrap flex">
+                  GST Tax
                   <div class="text-center ml-2">
                     <button
                       mat-raised-button
@@ -284,8 +270,40 @@
                       >
                     </button>
                   </div>
+                </mat-label>
+                
+                <div class="w-1/2 flex">
+                  <maxhealth-question
+                    [question]="question[15]"
+                    [form]="formGroup"
+                    [questions]="question[15]"
+                    class="w-full ml-4"
+                    [index]="15"
+                  >
+                  </maxhealth-question>
+                  
                 </div>
               </div>
+              <!-- coupon -->
+              <div>
+                <div class="flex relative">
+                  <!-- <mat-label class="wt-nowrap mr-12"> Coupon</mat-label> -->
+  
+                  <maxhealth-question
+                    [question]="question[12]"
+                    [form]="formGroup"
+                    [questions]="question[12]"
+                    class="w-full ml-2"
+                    [index]="12"
+                  >
+                  </maxhealth-question>
+                  <div class="ml-2 check absolute right-0">
+                    <mat-checkbox checked *ngIf="IsValidateCoupon"></mat-checkbox>
+                </div>
+                </div>
+              </div>
+              
+              
             </div>
           </div>
           <div class="bg-deposit flex-column ml-4 w-42 flex justify-between">
@@ -349,7 +367,7 @@
               </div>
             </div>
             <div
-              class="flex border-radius-lg bg-blue px-1 py-0 align-items-center mr-3 shadow-1"
+              class="flex border-radius-lg bg-blue px-1 py-0 align-items-center mr-3 ml-2 shadow-1"
             >
               <mat-label class="wt-nowrap mr-4 ml-2 inline"
                 >Bill Type</mat-label
@@ -371,3 +389,6 @@
     </form>
   </div>
 </div>
+
+
+
