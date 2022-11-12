@@ -37,7 +37,9 @@ export class BillComponent implements OnInit, OnDestroy {
   billDataForm = BillingStaticConstants.billTabFormConfig;
   @ViewChild("table") tableRows: any;
   data: any = [];
-  config: any = BillingStaticConstants.billTabTableConfig;
+  config: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.billTabTableConfig)
+  );
 
   formGroup!: FormGroup;
   question: any;
@@ -960,11 +962,11 @@ export class BillComponent implements OnInit, OnDestroy {
               });
           } else {
             successInfo
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((res: any) => {
-            this.dialogopen();
-            });
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((res: any) => {
+                this.dialogopen();
+              });
           }
         });
     } else {
