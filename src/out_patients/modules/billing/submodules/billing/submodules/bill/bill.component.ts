@@ -959,7 +959,12 @@ export class BillComponent implements OnInit, OnDestroy {
                   });
               });
           } else {
+            successInfo
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
             this.dialogopen();
+            });
           }
         });
     } else {
