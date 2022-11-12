@@ -57,6 +57,7 @@ export class BillComponent implements OnInit, OnDestroy {
   private readonly _destroying$ = new Subject<void>();
 
   totalPlanDiscount = 0;
+  IsValidateCoupon: boolean = false;
 
   constructor(
     private formService: QuestionControlService,
@@ -1284,6 +1285,7 @@ export class BillComponent implements OnInit, OnDestroy {
           );
           await CouponErrorRef.afterClosed().toPromise();
           this.formGroup.controls["coupon"].setValue("");
+          this.IsValidateCoupon = false;
           return;
         } else {
           if (this.formGroup.value.paymentMode == 1) {
@@ -1299,6 +1301,7 @@ export class BillComponent implements OnInit, OnDestroy {
             );
             await CouponErrorRef.afterClosed().toPromise();
             this.formGroup.controls["coupon"].setValue("");
+            this.IsValidateCoupon = false;
             return;
           }
         }
@@ -1307,6 +1310,7 @@ export class BillComponent implements OnInit, OnDestroy {
         const CouponErrorRef = this.messageDialogService.error(
           "Please Enter Proper Coupon"
         );
+        this.IsValidateCoupon = false;
         await CouponErrorRef.afterClosed().toPromise();
         return;
       }
