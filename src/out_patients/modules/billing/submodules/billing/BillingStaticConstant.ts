@@ -152,10 +152,6 @@ export namespace BillingStaticConstants {
       narration: {
         type: "buttonTextarea",
       },
-      b2bInvoice: {
-        type: "checkbox",
-        options: [{ title: "B2B Invoice" }],
-      },
     },
   };
 

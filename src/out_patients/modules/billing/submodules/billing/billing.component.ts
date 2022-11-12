@@ -256,15 +256,15 @@ export class BillingComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.formEvents();
 
-    this.formGroup.controls["b2bInvoice"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        if (res) {
-          this.billingService.makeBillPayload.invoiceType = "B2B";
-        } else {
-          this.billingService.makeBillPayload.invoiceType = "B2C";
-        }
-      });
+    // this.formGroup.controls["b2bInvoice"].valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((res: any) => {
+    //     if (res) {
+    //       this.billingService.makeBillPayload.invoiceType = "B2B";
+    //     } else {
+    //       this.billingService.makeBillPayload.invoiceType = "B2C";
+    //     }
+    //   });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {

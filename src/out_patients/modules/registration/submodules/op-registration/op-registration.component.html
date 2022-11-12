@@ -700,13 +700,21 @@
 </section>
 
 <div class="flex ml-4 mr-4 justify-between font-xs">
-  <p *ngIf="MaxIDExist && !LastupdateExist">Registered by: {{ lastUpdatedBy }} on {{lastupdatedDate}}</p>
+  <p *ngIf="MaxIDExist && !LastupdateExist">Registered by: {{ registeredBy }} on {{lastupdatedDate}}</p>
   <p *ngIf="MaxIDExist && LastupdateExist">Last updated by: {{ lastUpdatedBy }} on {{lastupdatedDate}} </p>
-  <p *ngIf="!MaxIDExist">Registered by: {{ lastUpdatedBy }} on 
+  <p *ngIf="!MaxIDExist">Registered by: {{ registeredBy }} on 
     {{ moment().format("DD-MM-YYYY") }} |  {{ moment().format("LT") }} </p>
 
-  <div class="right">
+  <div class="right" *ngIf="!MaxIDExist">
     Date: {{ moment().format("DD-MM-YYYY") }} | Time:
     {{ moment().format("LT") }}
+  </div>
+  <div class="right" *ngIf="MaxIDExist && !LastupdateExist">
+    Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+    {{ moment().format("LT") }}
+  </div>
+  <div class="right" *ngIf="MaxIDExist && LastupdateExist">
+    <p>Registered by:  {{ registeredBy }} on {{lastupdatedDate}} </p>
+  
   </div>
 </div>

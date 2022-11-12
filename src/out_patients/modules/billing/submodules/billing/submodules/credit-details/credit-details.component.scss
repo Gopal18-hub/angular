@@ -9,6 +9,12 @@
       }
     }
   }
+  .special-checkbox {
+    ::ng-deep .mat-checkbox-label {
+      color: #45c0be !important;
+      text-decoration: underline;
+    }
+  }
   .iom-button {
     padding: 0;
     min-width: 32px;
