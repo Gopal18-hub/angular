@@ -476,9 +476,8 @@ export class BillingComponent implements OnInit, OnDestroy {
           }
         },
         (error) => {
+          this.clear();
           this.snackbar.open("Invalid Max ID", "error");
-          this.apiProcessing = false;
-          this.patient = false;
         }
       );
   }
@@ -576,8 +575,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               }
             }
           } else {
-            this.apiProcessing = false;
-            this.patient = false;
+            this.clear();
             this.snackbar.open("Invalid Max ID", "error");
           }
 
@@ -585,7 +583,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         },
         (error) => {
           if (error.error == "Patient Not found") {
-            this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
+            this.clear();
+            // this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
             //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
             //this.questions[0].customErrorMessage = "Invalid Max ID";
             this.snackbar.open("Invalid Max ID", "error");
@@ -620,9 +619,8 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   setValuesToForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.clear();
       this.snackbar.open("Invalid Max ID", "error");
-      this.patient = false;
-      this.apiProcessing = false;
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -1107,6 +1105,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       doctorid: item.doctorid,
                       popuptext: item.popuptext,
                       precaution: item.precaution,
+                      specializationId: item.specializationId,
                     }
                   );
                 } else {
@@ -1120,6 +1119,8 @@ export class BillingComponent implements OnInit, OnDestroy {
                       originalTitle: item.testName,
                       docRequired: item.docRequired,
                       popuptext: item.popuptext,
+                      specializationId: item.specializationId,
+                      doctorid: item.doctorid,
                     }
                   );
                 }
@@ -1238,6 +1239,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         if (result && result.data) {
           let apppatientDetails = result.data.added[0];
           if (apppatientDetails.maxId.split(".")[1] == "") {
+            this.clear();
             this.snackbar.open("Invalid Max ID", "error");
           } else {
             let maxid = apppatientDetails.maxId;
