@@ -33,6 +33,7 @@ export namespace FormReport {
               title: "name",
 
               value: "id",
+              filter:"hsplocationid"
             },
           },
 

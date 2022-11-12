@@ -256,15 +256,15 @@ export class BillingComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.formEvents();
 
-    this.formGroup.controls["b2bInvoice"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        if (res) {
-          this.billingService.makeBillPayload.invoiceType = "B2B";
-        } else {
-          this.billingService.makeBillPayload.invoiceType = "B2C";
-        }
-      });
+    // this.formGroup.controls["b2bInvoice"].valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((res: any) => {
+    //     if (res) {
+    //       this.billingService.makeBillPayload.invoiceType = "B2B";
+    //     } else {
+    //       this.billingService.makeBillPayload.invoiceType = "B2C";
+    //     }
+    //   });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
@@ -476,9 +476,8 @@ export class BillingComponent implements OnInit, OnDestroy {
           }
         },
         (error) => {
+          this.clear();
           this.snackbar.open("Invalid Max ID", "error");
-          this.apiProcessing = false;
-          this.patient = false;
         }
       );
   }
@@ -576,8 +575,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               }
             }
           } else {
-            this.apiProcessing = false;
-            this.patient = false;
+            this.clear();
             this.snackbar.open("Invalid Max ID", "error");
           }
 
@@ -585,7 +583,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         },
         (error) => {
           if (error.error == "Patient Not found") {
-            this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
+            this.clear();
+            // this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
             //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
             //this.questions[0].customErrorMessage = "Invalid Max ID";
             this.snackbar.open("Invalid Max ID", "error");
@@ -620,9 +619,8 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   setValuesToForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.clear();
       this.snackbar.open("Invalid Max ID", "error");
-      this.patient = false;
-      this.apiProcessing = false;
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -1238,6 +1236,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         if (result && result.data) {
           let apppatientDetails = result.data.added[0];
           if (apppatientDetails.maxId.split(".")[1] == "") {
+            this.clear();
             this.snackbar.open("Invalid Max ID", "error");
           } else {
             let maxid = apppatientDetails.maxId;
