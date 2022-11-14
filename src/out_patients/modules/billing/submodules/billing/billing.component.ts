@@ -35,6 +35,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { SearchService } from "@shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
 import { getCorporatemasterdetail } from "@core/types/billdetails/getCorporatemasterdetail.Interface";
+import { BillingStaticConstants } from "./BillingStaticConstant";
 
 @Component({
   selector: "out-patients-billing",
@@ -42,54 +43,10 @@ import { getCorporatemasterdetail } from "@core/types/billdetails/getCorporatema
   styleUrls: ["./billing.component.scss"],
 })
 export class BillingComponent implements OnInit, OnDestroy {
-  links: any = [
-    {
-      title: "Services",
-      path: "services",
-    },
-    {
-      title: "Bill",
-      path: "bill",
-    },
-    {
-      title: "Credit Details",
-      path: "credit-details",
-    },
-  ];
+  links: any = BillingStaticConstants.billingPageTabs;
 
-  formData = {
-    title: "",
-    type: "object",
-    properties: {
-      maxid: {
-        type: "string",
-        defaultValue: this.cookie.get("LocationIACode") + ".",
-      },
-      mobile: {
-        type: "tel",
-      },
-      bookingId: {
-        type: "string",
-      },
-      company: {
-        type: "autocomplete",
-        options: [],
-        placeholder: "--Select--",
-      },
-      corporate: {
-        type: "autocomplete",
-        options: [],
-        placeholder: "--Select--",
-      },
-      narration: {
-        type: "buttonTextarea",
-      },
-      b2bInvoice: {
-        type: "checkbox",
-        options: [{ title: "B2B Invoice" }],
-      },
-    },
-  };
+  formData = BillingStaticConstants.billingHeaderForm;
+
   formGroup!: FormGroup;
   questions: any;
 
@@ -195,9 +152,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
-    this.searchService.searchTrigger.subscribe(async (formdata: any) => {
-      await this.loadGrid(formdata);
-    });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        await this.loadGrid(formdata);
+      });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
@@ -247,27 +206,24 @@ export class BillingComponent implements OnInit, OnDestroy {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res) => {
+      .subscribe(async (res) => {
         let referalDoctor: any = null;
         if (res.tempOrderBreakup.length > 0) {
-          res.tempOrderBreakup.forEach(async (item: any) => {
+          const tempBulkInvPayload: any = [];
+          res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
-              await this.billingService.processInvestigationAdd(
-                1,
-                item.serviceId,
-                {
-                  title: item.testName,
-                  value: item.testID,
-                  originalTitle: item.testName,
-                  docRequired: item.doctorid ? true : false,
-                  patient_Instructions: "",
-                  item_Instructions: "",
-                  serviceid: item.serviceId,
-                  doctorid: item.doctorid,
-                  specialization: item.specialization,
-                  specializationId: item.specializationId,
-                }
-              );
+              tempBulkInvPayload.push({
+                title: item.testName,
+                value: item.testID,
+                originalTitle: item.testName,
+                docRequired: item.doctorid ? true : false,
+                patient_Instructions: "",
+                item_Instructions: "",
+                serviceid: item.serviceId,
+                doctorid: item.doctorid,
+                specialization: item.specialization,
+                specializationId: item.specializationId,
+              });
               if (item.doctorid)
                 referalDoctor = {
                   id: item.refDocID,
@@ -276,15 +232,22 @@ export class BillingComponent implements OnInit, OnDestroy {
                 };
             }
           });
-          setTimeout((res: any) => {
-            this.billingService.servicesTabStatus.next({
-              goToTab: 1,
-            });
-          }, 500);
+          if (tempBulkInvPayload.length > 0) {
+            await this.billingService.processInvestigationBulk(
+              1,
+              tempBulkInvPayload
+            );
+            setTimeout((res: any) => {
+              this.billingService.servicesTabStatus.next({
+                goToTab: 1,
+              });
+            }, 10);
 
-          if (referalDoctor) {
-            this.billingService.setReferralDoctor(referalDoctor);
+            if (referalDoctor) {
+              this.billingService.setReferralDoctor(referalDoctor);
+            }
           }
+
           this.apiProcessing = false;
         }
       });
@@ -452,6 +415,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           Number(regNumber)
         )
       )
+      .pipe(takeUntil(this._destroying$))
       .toPromise()
       .catch((reason: any) => {
         return reason;
@@ -483,7 +447,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         const dialogRef = this.messageDialogService.warning(
           "This is an expired patient, no transaction is allowed"
         );
-        await dialogRef.afterClosed().toPromise();
+        await dialogRef
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .toPromise();
       }
       this.getSimilarSoundDetails(iacode, regNumber);
     } else {
@@ -535,7 +502,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
-                "It’s their birthday today"
+                "Today is Patient’s birthday"
               );
               await birthdayDialog.afterClosed().toPromise();
             }
@@ -879,7 +846,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           maxId: this.formGroup.value.maxid,
         },
       });
-      const resAction = await dialogRef.afterClosed().toPromise();
+      const resAction = await dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .toPromise();
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
@@ -1451,8 +1421,6 @@ export class BillingComponent implements OnInit, OnDestroy {
     } else {
       lookupdata = await this.lookupService.searchPatient(formdata);
     }
-
-    console.log(lookupdata);
     if (lookupdata.length == 1) {
       if (lookupdata[0] && "maxid" in lookupdata[0]) {
         this.formGroup.controls["maxid"].setValue(lookupdata[0]["maxid"]);
@@ -1495,6 +1463,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   templateUrl: "similarPatient-dialog.html",
 })
 export class SimilarPatientDialog {
+  config: any = BillingStaticConstants.similarPatientTableConfig;
   @ViewChild("patientDetail") tableRows: any;
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
@@ -1507,63 +1476,6 @@ export class SimilarPatientDialog {
     this.getMaxID();
   }
 
-  config: any = {
-    selectBox: false,
-    clickedRows: true,
-    clickSelection: "single",
-    displayedColumns: [
-      "maxid",
-      "firstName",
-      "lastName",
-      "phone",
-      "address",
-      "age",
-      "gender",
-    ],
-    columnsInfo: {
-      maxid: {
-        title: "Max ID",
-        type: "string",
-        style: {
-          width: "120px",
-        },
-      },
-      firstName: {
-        title: "First Name",
-        type: "string",
-      },
-      lastName: {
-        title: "Last Name",
-        type: "string",
-      },
-      phone: {
-        title: "Phone No. ",
-        type: "string",
-      },
-      address: {
-        title: "Address ",
-        type: "string",
-        style: {
-          width: "150px",
-        },
-        tooltipColumn: "address",
-      },
-      age: {
-        title: "Age ",
-        type: "string",
-        style: {
-          width: "90px",
-        },
-      },
-      gender: {
-        title: "Gender",
-        type: "string",
-        style: {
-          width: "70px",
-        },
-      },
-    },
-  };
   getMaxID() {
     this.tableRows.selection.changed.subscribe((res: any) => {
       this.dialogRef.close({ data: res });
