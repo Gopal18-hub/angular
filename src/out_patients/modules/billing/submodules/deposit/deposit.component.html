@@ -18,6 +18,12 @@
     </div>
   </nav>
   <mat-tab-nav-panel #tabPanel>
+    <div
+    *ngIf="apiProcessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
     <div class="h-full w-full">
       <form [formGroup]="depositForm" class="w-full h-full p-2">
         <!---------------------------------FIRST ROW----------------------------------------------------->

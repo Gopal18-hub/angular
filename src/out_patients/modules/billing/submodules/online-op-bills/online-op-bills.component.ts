@@ -36,6 +36,7 @@ export class OnlineOpBillsComponent implements OnInit {
   hspLocationid:any = Number(this.cookie.get("HSPLocationId"));
   onlineopbillList: any = [];
   moment = moment;
+  apiProcessing: boolean = false;
 
   onlineopbillsformdata = {
     type:"object",
@@ -62,7 +63,7 @@ export class OnlineOpBillsComponent implements OnInit {
   onlineopbillsconfig: any = {
     clickedRows: true,
     dateformat: "dd/MM/yyyy - hh:mm",
-    clickSelection: "multiple",
+    clickSelection: "single",
     selectBox: true,
     displayedColumns: [
       "billNo",
@@ -158,19 +159,20 @@ export class OnlineOpBillsComponent implements OnInit {
     });
   }
   displayallspecialisation(){
+    this.apiProcessing = true;
     let fromdate = this.datepipe.transform(this.onlineopbillsForm.value.fromdate, "YYYY-MM-dd");
     let todate = this.datepipe.transform(this.onlineopbillsForm.value.todate, "YYYY-MM-dd");
     let specialisationid = (this.onlineopbillsForm.value.specialisation == undefined || this.onlineopbillsForm.value.specialisation == "")  ? 0 : this.onlineopbillsForm.value.specialisation;
     this.http
     .get(ApiConstants.getselectedspecialisationonlineop(fromdate, todate,specialisationid, this.hspLocationid))
     .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {    
+    .subscribe((resultData: any) => {        
       this.onlineopbillList = resultData;
+      this.apiProcessing = false; 
       console.log(resultData);
       if(resultData.length > 0 ){
         this.MaxIDExist = true;
-      }
-   
+      }   
     });
   }
 
