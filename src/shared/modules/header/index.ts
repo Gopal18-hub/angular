@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { HeaderComponent } from "./header.component";
-import { SubComponent } from "./sub/sub.component";
+import { SubComponent, SubNestedComponent } from "./sub/sub.component";
 import { ChangelocationComponent } from "./changelocation/changelocation.component";
 import { CommonModule } from "@angular/common";
 import { MatMenuModule } from "@angular/material/menu";
@@ -18,7 +18,7 @@ import { RedirectComponent } from "./redirect/redirect.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
-import { SelectimeiComponent } from './selectIMEI/selectimei.component';
+import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
 
 @NgModule({
   declarations: [
@@ -28,6 +28,7 @@ import { SelectimeiComponent } from './selectIMEI/selectimei.component';
     ChangelocationComponent,
     ChangepaswordComponent,
     SelectimeiComponent,
+    SubNestedComponent,
   ],
   imports: [
     CommonModule,

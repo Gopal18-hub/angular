@@ -80,21 +80,14 @@
 
 ::ng-deep {
   .sub-header-menu {
-    width: 100%;
+    //width: 100%;
     //height: vh;
     overflow: hidden;
-    max-width: initial !important;
+    max-width: 50vw !important;
     .mat-menu-content {
       height: 100%;
-      .box {
-        height: 22vh;
-      }
-      .box > * {
-        flex: 1 1 calc(20vh / 4);
-        justify-content: flex-start;
-        text-align: left;
-      }
       button {
+        text-align: left;
         &:hover {
           font-weight: 600;
         }
