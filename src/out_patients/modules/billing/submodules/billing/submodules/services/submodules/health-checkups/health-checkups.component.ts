@@ -148,9 +148,15 @@ export class HealthCheckupsComponent implements OnInit {
             this.doctorsList.push(0);
           }
         });
+        ////GAV-882
+        this.billingService.changeBillTabStatus(false);
         this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
       } else {
         this.doctorsList = this.doctorsList.map((d: number) => d * 0);
+        ////GAV-882
+        if (this.doctorsList && this.doctorsList.length > 0) {
+          this.billingService.changeBillTabStatus(true);
+        }
       }
     });
   }

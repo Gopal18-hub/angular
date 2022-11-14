@@ -849,7 +849,7 @@ export class PatientHistoryComponent implements OnInit {
         event.row.billType == "OPD" ||
         event.row.billType == "OPD Bill"
       ) {
-        this.openReportModal("billingreport");
+        this.openReportModal("billdetailsreport");
       } else if (event.row.billType == "OP Refund") {
         this.openReportModal("refundReport");
       } else {
@@ -879,7 +879,7 @@ export class PatientHistoryComponent implements OnInit {
           locationID: this.hsplocationId,
         }
       );
-    } else if (btnname == "billingreport") {
+    } else if (btnname == "billdetailsreport") {
       this.reportService.openWindow("OPD Report - " + this.billno, btnname, {
         opbillid: this.billId,
         locationID: this.hsplocationId,
