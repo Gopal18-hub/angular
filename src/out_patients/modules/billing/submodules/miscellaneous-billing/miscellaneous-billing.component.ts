@@ -239,6 +239,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
+        this.apiProcessing = true;
         this.getPatientDetailsByMaxId();
       }
     });
@@ -361,6 +362,8 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.apiProcessing = false;
         }
       );
+
+    this.apiProcessing = false;
   }
   clearForm() {
     this._destroying$.next(undefined);
@@ -413,6 +416,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         const dialogRef = this.messageDialogService.error(
           "Patient is an Expired Patient!"
         );
+        this.apiProcessing = false;
         this.disableBtn = true;
         await dialogRef.afterClosed().toPromise();
         return;
@@ -439,8 +443,6 @@ export class MiscellaneousBillingComponent implements OnInit {
             ) {
               this.questions[0].readonly = true;
               this.questions[1].readonly = true;
-              // this.getAllCompany();
-              // this.getAllCorporate();
               this.miscForm.controls["company"].enable();
               this.miscForm.controls["corporate"].enable();
 
@@ -448,7 +450,6 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.MaxIDExist = true;
 
               this.setValuesToMiscForm(this.patientDetails);
-              // this.putCachePatientDetail(this.patientDetails);
 
               this.dsPersonalDetails = resultData.dsPersonalDetails;
               this.dtPatientPastDetails = resultData.dtPatientPastDetails;
@@ -463,6 +464,7 @@ export class MiscellaneousBillingComponent implements OnInit {
             if (error.error == "Patient Not found") {
               this.setMaxIdError(iacode, regNumber);
               this.MaxIDExist = false;
+              this.apiProcessing = false;
             }
             // this.snackbar.open("Invalid Max ID", "error");
             // this.disableBtn = false;
@@ -470,12 +472,15 @@ export class MiscellaneousBillingComponent implements OnInit {
         );
     } else if (regNumber === 0 || iacode === 0) {
       this.snackbar.open("Not a valid registration number", "error");
+      this.apiProcessing = false;
     } else {
       this.snackbar.open("Invalid Max ID", "error");
       this.disableBtn = false;
+      this.apiProcessing = false;
       this.questions[0].readonly = false;
       return;
     }
+    this.apiProcessing = false;
   }
   getSimilarSoundDetails(iacode: string, regNumber: number) {
     this.http
@@ -501,6 +506,7 @@ export class MiscellaneousBillingComponent implements OnInit {
           if (error.error == "Patient Not found") {
             this.setMaxIdError(iacode, regNumber);
             this.MaxIDExist = false;
+            this.apiProcessing = false;
           }
         }
       );
@@ -515,6 +521,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       )
       .toPromise()
       .catch((e) => {
+        this.apiProcessing = false;
         //this.snackbar.open(e.error.errors.regiNo, "error");
         this.snackbar.open("Invalid Max ID", "error");
         return false;
@@ -568,8 +575,6 @@ export class MiscellaneousBillingComponent implements OnInit {
         async (resultData: Registrationdetails) => {
           if (resultData) {
             this.patientDetails = resultData;
-            // this.getAllCompany();
-            // this.getAllCorporate();
             this.miscForm.controls["company"].enable();
             this.miscForm.controls["corporate"].enable();
             this.setValuesToMiscForm(this.patientDetails);
@@ -578,7 +583,6 @@ export class MiscellaneousBillingComponent implements OnInit {
               0
             ) {
               this.setValuesToMiscForm(this.patientDetails);
-              // this.putCachePatientDetail(this.patientDetails);
               if (
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
                   .pPagerNumber == "ews"
