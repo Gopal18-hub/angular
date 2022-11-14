@@ -500,9 +500,6 @@ export class InvestigationOrdersComponent implements OnInit {
     this.disableBtns();
     let maxId = event.row.maxid;
     let orderid = event.row.orderId;
-    if (orderid) {
-      this.EnableBill = true;
-    }
     this.maxid = maxId;
     this.orderid = orderid;
     this.patientInfo =
@@ -529,6 +526,11 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
+        res.tempOrderBreakup.filter((e: any) => {
+          if (e.isBilled == 0) {
+            this.EnableBill = true;
+          }
+        });
         this.invOrderDetails = res.tempOrderBreakup;
         setTimeout(() => {
           this.invOrderDetailsTable.selection.changed
