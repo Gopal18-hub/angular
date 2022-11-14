@@ -139,6 +139,7 @@ export class PatientDetails{
     registeredOn?:string;
     registeredOperatorName?:string;
     lastUpdatedOn?:string;
+    operatorName?:string;
       constructor(
           id: number,
     registrationno: number,
@@ -280,6 +281,7 @@ export class PatientDetails{
     registeredOn?:string,
     registeredOperatorName?:string,
     lastUpdatedOn ?:string,
+    operatorName?:string,
   )
   {
       this.id= id;
@@ -420,7 +422,8 @@ export class PatientDetails{
       this.hotlistreason = hotlistreason;
       this.image = image,
       this.registeredOn = registeredOn,
-      this.registeredOperatorName = registeredOperatorName  
-      this.lastUpdatedOn = lastUpdatedOn
+      this.registeredOperatorName = registeredOperatorName,  
+      this.lastUpdatedOn = lastUpdatedOn,
+      this.operatorName = operatorName
   }
   }

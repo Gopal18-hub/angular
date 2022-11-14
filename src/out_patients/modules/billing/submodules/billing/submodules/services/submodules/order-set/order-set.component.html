@@ -3,9 +3,9 @@
     <form
       [formGroup]="formGroup"
       autocomplete="off"
-      class="w-3/4 flex align-items-center"
+      class="w-full flex align-items-center"
     >
-      <div class="flex align-items-center">
+      <div class="flex align-items-center w-2/5">
         <mat-label class="max-health-primary-color mr-2 font-bold"
           >Order Set</mat-label
         >
@@ -14,12 +14,12 @@
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
-          class="w-3/5"
+          class="w-3/4"
         >
         </maxhealth-question>
       </div>
 
-      <div class="flex ml-4 w-1/2 align-items-center">
+      <div class="flex w-5/9 align-items-center">
         <mat-label class="max-health-primary-color mr-2 font-bold"
           >Items</mat-label
         >
@@ -28,12 +28,12 @@
           [form]="formGroup"
           [questions]="questions[1]"
           [index]="1"
-          class="w-3/5"
+          class="w-3/4"
         >
         </maxhealth-question>
       </div>
     </form>
-    <div class="flex w-36 align-items-center justify-end">
+    <div class="flex align-items-center justify-end">
       <!-- <div class="total-cost" *ngIf="billingService.totalCost > 0">
         <span>Total Estimation:</span>
         {{
