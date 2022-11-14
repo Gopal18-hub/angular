@@ -212,24 +212,26 @@ export class BillingComponent implements OnInit, OnDestroy {
           const tempBulkInvPayload: any = [];
           res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
-              tempBulkInvPayload.push({
-                title: item.testName,
-                value: item.testID,
-                originalTitle: item.testName,
-                docRequired: item.doctorid ? true : false,
-                patient_Instructions: "",
-                item_Instructions: "",
-                serviceid: item.serviceId,
-                doctorid: item.doctorid,
-                specialization: item.specialization,
-                specializationId: item.specializationId,
-              });
-              if (item.doctorid)
-                referalDoctor = {
-                  id: item.refDocID,
-                  name: item.refDocName,
-                  specialisation: "",
-                };
+              if (!item.isBilled) {
+                tempBulkInvPayload.push({
+                  title: item.testName,
+                  value: item.testID,
+                  originalTitle: item.testName,
+                  docRequired: item.doctorid ? true : false,
+                  patient_Instructions: "",
+                  item_Instructions: "",
+                  serviceid: item.serviceId,
+                  doctorid: item.doctorid,
+                  specialization: item.specialization,
+                  specializationId: item.specializationId,
+                });
+                if (item.doctorid)
+                  referalDoctor = {
+                    id: item.refDocID,
+                    name: item.refDocName,
+                    specialisation: "",
+                  };
+              }
             }
           });
           if (tempBulkInvPayload.length > 0) {
