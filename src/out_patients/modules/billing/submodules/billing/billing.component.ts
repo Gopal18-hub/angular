@@ -212,6 +212,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           const tempBulkInvPayload: any = [];
           res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
+              ////GAV-1227
               if (!item.isBilled) {
                 tempBulkInvPayload.push({
                   title: item.testName,
