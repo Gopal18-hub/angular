@@ -107,12 +107,15 @@ export class ConsumablesComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      let filteredItems = res.element.items.filter(
+        (i: any) => i.orderid === res.element.orderId
+      );
       const dialogConst = this.matDialog.open(ConsumableDetailsComponent, {
         width: "80%",
         height: "50%",
         data: {
           orderSet: res.element,
-          items: res.element.items,
+          items: filteredItems,
           procedureDataForConsumable: res.element.procedureDataForConsumable,
           consumablesUnselectedItems:
             this.calculateBillService.consumablesUnselectedItems,
@@ -165,6 +168,7 @@ export class ConsumablesComponent implements OnInit {
               doctorName: head.doctorName,
               taxAmount: head.totaltaX_Value,
               totalAmount: head.amount,
+              orderId: head.id,
               items: res.consumableServiceDetailsData,
               procedureDataForConsumable: res.procedureDataForConsumable,
               billItem: {

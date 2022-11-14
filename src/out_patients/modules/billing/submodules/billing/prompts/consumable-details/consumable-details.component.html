@@ -35,6 +35,7 @@
       color="primary"
       class="font-sm min-width-initial"
       type="button"
+      [disabled]="!tableRows?.tableForm?.valid"
       (click)="close()"
     >
       Ok
