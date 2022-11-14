@@ -96,7 +96,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
   deposittypeList: [{ title: string; value: string }] = [] as any;
   selectpatientLsit: any = [];
   expiredpatientexists:boolean = false;
-  
+  apiProcessing:boolean = false;
 
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("StationId"));
@@ -190,9 +190,9 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           this.iacode = this.initiatedepositForm.value.maxid.split(".")[0];
           this.regNumber = Number(this.initiatedepositForm.value.maxid.split(".")[1]);
           if ((this.iacode != "" && this.iacode != "0") && (this.regNumber != 0 && !Number.isNaN(Number(this.regNumber)))) {
-                this.getInitatedepositDetailsByMaxId();
-
-          } else {
+            this.getInitatedepositDetailsByMaxId();           
+          } 
+          else {
             this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
             this.questions[0].customErrorMessage = "Invalid Max ID";
           }
@@ -256,7 +256,8 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       this.messageDialogService.error("Please enter either MAX ID or Phone Number for search");
     }
     else
-    {   
+    {
+      this.apiProcessing = true;   
        let maxiddeposit = this.initiatedepositForm.value.maxid == undefined ? "" : this.initiatedepositForm.value.maxid;
        let phoneno =   this.initiatedepositForm.value.mobileno == undefined ? "" : this.initiatedepositForm.value.mobileno;
     this.http
@@ -267,12 +268,14 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
         if(resultData == null){
           this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
           this.questions[0].customErrorMessage = "Invalid Max ID";
-        }else  if(resultData.length > 0){
+        }
+        else  if(resultData.length > 0)
+        {
+          this.apiProcessing = false;
         this.selectpatientLsit = resultData;
         this.questions[2].options = this.selectpatientLsit.map((l: { maxID: any; }) => {
           return { title: l.maxID, value: l.maxID };
         });
-        
         if(resultData.length == 1 && maxiddeposit){
           this.initiatedepositForm.controls["maxid"].setValue(resultData[0].maxID);        
         }
@@ -286,7 +289,8 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
             resultData[0].maxID.split(".")[0],
             resultData[0].maxID.split(".")[1]
           );
-          if (expiredStatus) {
+          if (expiredStatus) {            
+           this.apiProcessing = false;
             const dialogRef = this.messageDialogService.error(
               "Patient is an Expired Patient!"
             );
@@ -298,7 +302,8 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
             this.expiredpatientexists = false;
           }
            
-      }else{
+      }else{        
+        this.apiProcessing = false;
         if(this.initiatedepositForm.value.mobileno){          
           this.initiatedepositForm.controls["mobileno"].setErrors({ incorrect: true });
           this.questions[1].customErrorMessage = "Invalid Phone Number";
@@ -311,7 +316,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
           this.questions[0].customErrorMessage = "Invalid Max ID";
           this.questions[0].elementRef.focus();
-            }
+        }
       }     
     },
       (error) => {
