@@ -46,7 +46,7 @@ export class OpRegApprovalComponent implements OnInit {
   approvePostobject: any;
   rejectPostobject: any;
   hsplocationId: any = this.cookie.get("HSPLocationId");
-  userId: number = Number(this.cookie.get("UserId"));
+  userId: number =  Number(this.cookie.get("UserId"));
   enableapprovebtn: boolean = false;
 
   showapprovalpending: boolean = false;
@@ -75,7 +75,7 @@ export class OpRegApprovalComponent implements OnInit {
     clickedRows: true,
     clickSelection: "multiple",
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -162,7 +162,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approveconfig: any = {
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -261,7 +261,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   rejectconfig: any = {
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: false,
     displayedColumns: [
       "maxid",
