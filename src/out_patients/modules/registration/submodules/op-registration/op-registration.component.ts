@@ -94,6 +94,7 @@ export class OpRegistrationComponent implements OnInit {
   lastUpdatedBy: string | undefined;
   registeredBy: string | undefined;
   lastupdatedDate: any;
+  lastregisteredDate: any;
   LastupdateExist: boolean = false;
   currentTime: any = this.datepipe.transform(new Date(), "dd/MM/yyyy hh:mm aa");
   localityList: LocalityModel[] = [];
@@ -2412,7 +2413,7 @@ export class OpRegistrationComponent implements OnInit {
                     );
               this.registeredBy = this.patientDetails.registeredOperatorName;
               this.lastUpdatedBy = this.patientDetails.operatorName;
-
+            
               if (
                 this.datepipe.transform(
                   this.patientDetails.lastUpdatedOn,
@@ -2422,6 +2423,10 @@ export class OpRegistrationComponent implements OnInit {
                 this.LastupdateExist = false;
               } else {
                 this.LastupdateExist = true;
+                this.lastregisteredDate =  this.datepipe.transform(
+                  this.patientDetails.registeredOn,
+                  "dd/MM/yyyy hh:mm aa"
+                );
               }
 
               this.categoryIcons =
