@@ -72,7 +72,8 @@ export class PaymentMethodsComponent implements OnInit {
       }
     });
   }
-
+ 
+  activeTab: any = "Cash";
   PaymentMethodcashdeposit: any = [];
 
   defaultamount: boolean = true;
@@ -80,6 +81,7 @@ export class PaymentMethodsComponent implements OnInit {
   PaymentType: number = 1; //default cash
 
   tabChanged(event: MatTabChangeEvent) {
+    this.activeTab = event.tab.textLabel;
     this.clearpaymentmethod();
   }
 
@@ -301,4 +303,78 @@ export class PaymentMethodsComponent implements OnInit {
     this._destroying$.complete();
   }
 
+  //add only required fields
+  chequemandatoryfields(){
+    if(this.refundform.value.chequeno == "" || this.refundform.value.chequeno == null
+    || this.refundform.value.chequebankname == "" || this.refundform.value.chequebankname == null
+    || this.refundform.value.chequebranchname == ""  || this.refundform.value.chequebranchname == null 
+    || this.refundform.value.chequeissuedate == "" || this.refundform.value.chequeissuedate == null
+    || this.refundform.value.chequeauth == "" || this.refundform.value.chequeauth == null
+   || Number(this.refundform.value.chequeamount) <= 0){
+    return false;
+   } else{
+     return true;
+   }
+  }
+
+//add only required fields
+  creditcardmandatoryfields(){
+    if(this.refundform.value.creditcardno == "" || this.refundform.value.creditcardno == null
+    || this.refundform.value.creditholdername == "" || this.refundform.value.creditholdername == null
+    || this.refundform.value.creditbankname == "" || this.refundform.value.creditbankname == null
+    || this.refundform.value.creditbatchno == "" || this.refundform.value.creditbatchno == null
+    || this.refundform.value.creditapproval == "" || this.refundform.value.creditapproval == null
+    || this.refundform.value.creditterminal == "" || this.refundform.value.creditterminal == null
+    || this.refundform.value.creditacquiring == "" || this.refundform.value.creditacquiring == null
+    || this.refundform.value.creditvaliditydate == "" || this.refundform.value.creditvaliditydate == null
+    || this.refundform.value.creditbanktid == "" || this.refundform.value.creditbanktid == null
+    || Number(this.refundform.value.creditamount) <= 0){
+      return false;
+     } else{
+       return true;
+     }
+  }
+
+  //add only required fields
+  demanddraftmandatoryfields(){
+    if(this.refundform.value.demandddno == "" || this.refundform.value.demandddno == null
+    || this.refundform.value.demandissuedate == "" || this.refundform.value.demandissuedate == null
+    || this.refundform.value.demandbankname == "" || this.refundform.value.demandbankname == null
+    || this.refundform.value.demandbranchname == "" || this.refundform.value.demandbranchname == null
+    || this.refundform.value.demandauth == "" || this.refundform.value.demandauth == null || Number(this.refundform.value.demandamount) <= 0){
+      return false;
+     } else{
+       return true;
+     }
+  }
+    //add only required fields
+    internetmandatoryfields(){
+      if( Number(this.refundform.value.internetamount) <= 0
+      || this.refundform.value.internetemail == "" || this.refundform.value.internetemail == null
+      || this.refundform.value.internetmobile == "" || this.refundform.value.internetmobile == null
+      || this.refundform.value.internetremarks == "" || this.refundform.value.internetremarks == null
+    ){
+        return false;
+       } else{
+         return true;
+       }
+    }
+  //add only required fields
+  upimandatoryfields(){
+    if( Number(this.refundform.value.upiamount) <= 0
+    || this.refundform.value.upiacquiring == "" || this.refundform.value.upiacquiring == null
+    || this.refundform.value.upiapproval == "" || this.refundform.value.upiapproval == null
+    || this.refundform.value.upibankname == "" || this.refundform.value.upibankname == null
+    || this.refundform.value.upibatchno == "" || this.refundform.value.upibatchno == null
+    || this.refundform.value.upicardholdername == "" || this.refundform.value.upicardholdername == null
+    || this.refundform.value.upicardno == "" || this.refundform.value.upicardno == null
+    || this.refundform.value.upivalidity == "" || this.refundform.value.upivalidity == null
+    || this.refundform.value.upiterminal == "" || this.refundform.value.upiterminal == null
+    || this.refundform.value.upitransactionid == "" || this.refundform.value.upitransactionid == null
+  ){
+      return false;
+     } else{
+       return true;
+     }
+  }
 }

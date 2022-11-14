@@ -443,8 +443,8 @@ export class DepositComponent implements OnInit {
         if ("type" in result) {
         if (result.type == "yes") {
         const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-          width: "70vw",
-          height: "98vh",
+          width: "80vw",
+          height: "96vh",
           data: {
             servicetype: this.patientservicetype,
             deposittype: this.patientdeposittype,
