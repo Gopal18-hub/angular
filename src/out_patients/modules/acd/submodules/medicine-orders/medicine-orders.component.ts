@@ -826,9 +826,7 @@ export class MedicineOrdersComponent implements OnInit {
     this.resetDate();
     this.resetRemarksDeny();
     this.disableBtns();
-    // this.isDisableCancel = false;
-    // this.isDisableSave = false;
-    // this.isDisableDeniel = false;
+    this.EnableBill = false;
     this.investigationForm.controls["maxid"].setValue("maxid");
     this.investigationForm.controls["status"].reset();
     this.investigationForm.controls["input"].setValue(
@@ -846,7 +844,6 @@ export class MedicineOrdersComponent implements OnInit {
     this.isDisableCancel = false;
     this.isDisableSave = false;
     this.isDisableDeniel = false;
-    this.EnableBill = false;
   }
   resetDate() {
     this.investigationForm.controls["fromdate"].disable();
