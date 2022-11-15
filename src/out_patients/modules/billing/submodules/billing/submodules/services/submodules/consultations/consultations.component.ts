@@ -636,10 +636,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       }
     }
     /////GAV-777
-    if (
-      consultType[0].strConsult.includes("Follow up") &&
-      Number(this.cookie.get("HSPLocationId")) == 69
-    ) {
+    if (Number(this.cookie.get("HSPLocationId")) == 69) {
       this.billingService.visitHistory();
     }
     this.http

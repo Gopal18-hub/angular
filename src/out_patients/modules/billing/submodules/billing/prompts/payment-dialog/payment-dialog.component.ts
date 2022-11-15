@@ -125,6 +125,7 @@ export class BillPaymentDialogComponent implements OnInit {
           this.billingService.patientDetailsInfo.registrationno == undefined
             ? this.miscService.patientDetail.registrationno
             : this.billingService.patientDetailsInfo.registrationno,
+        toPaidAmount: this.data.toPaidAmount,
       },
     };
   }
