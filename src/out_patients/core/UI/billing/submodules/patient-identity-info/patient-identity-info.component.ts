@@ -143,6 +143,12 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
         this.patientidentityform.controls["mainradio"].setValue("pancardno");
       }
     });
+
+    this.depositservice.formsixtytobefill.subscribe((fillform) => {
+      if (fillform) {
+        this.patientidentityform.controls["mainradio"].enable();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
