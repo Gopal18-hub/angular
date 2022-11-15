@@ -37,22 +37,19 @@
     </div>
 
     <!-----------------------------------------------FIFTH ROW------------------------------------------------------------------>
-   <div class="mt-4">
+   <div class="bottom">
     <patient-identity-info [data]="patientIdentityInfo"  (neweventform60ssave)="formsixtysuccess($event)">
                 
-    </patient-identity-info>
-
-   </div>
-       
-            
-   
+    </patient-identity-info> 
 
     <!--------------------------------------------------SIXTH ROW------------------------------------------------------------>
-    <div class="h-1/10 mt-2 float-right depositdialogbutton">
-        <button mat-raised-button color="primary" (click)="savedialogpayment()"  [disabled]="!proceedToDeposit()">Submit</button>
+    <div class="flex float-right depositdialogbutton absolute right-0 bottom-0">
+        <button mat-raised-button color="primary" (click)="savedialogpayment()"  [disabled]="!checkmandatoryDeposit()">Submit</button>
         <button mat-raised-button color="primary" (click)="cleardepositdialog()"  class="ml-3">Clear</button>
 
     </div>
+</div>   
+   
 </div>
 </section>
   
