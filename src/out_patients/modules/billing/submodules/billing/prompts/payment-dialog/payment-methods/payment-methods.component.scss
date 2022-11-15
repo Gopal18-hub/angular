@@ -33,7 +33,7 @@
     .mat-tab-group
     .mat-tab-body-wrapper
     .mat-tab-body-content {
-    height: 55vh !important;
+    height: 75vh !important;
   }
   ::ng-deep .mat-dialog-container {
     overflow: hidden !important;
@@ -64,12 +64,16 @@
   .width {
     width: 65% !important;
   }
+  ::ng-deep .mat-raised-button {
+    min-width: initial !important;
+    height: 1.875rem !important;
+    line-height: 1.875rem !important;
+  }
+  ::ng-deep .mat-error{
+    margin-top: 10px;
+  }
   .creditbuttonwidth {
-    .mat-raised-button {
-      min-width: initial !important;
-      height: 1.875rem !important;
-      line-height: 1.875rem !important;
-    }
+    
     // ::ng-deep .mat-raised-button {
     //     min-width: 120px !important;
     // }

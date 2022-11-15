@@ -971,7 +971,7 @@ export class DetailsComponent implements OnInit {
     });
     const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
       panelClass: "refund-bill-dialog",
-      width: "70vw",
+      width: "80vw",
       height: "98vh",
       data: {
         patientinfo: {
