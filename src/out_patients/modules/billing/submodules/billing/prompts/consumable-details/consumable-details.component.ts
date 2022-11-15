@@ -84,8 +84,10 @@ export class ConsumableDetailsComponent implements OnInit {
         amount: item.amount,
         include: "",
         procedure: "",
+        procedure_required: false,
         reason: "",
         itemid: item.itemid,
+        i: index,
       });
     });
   }
@@ -100,7 +102,18 @@ export class ConsumableDetailsComponent implements OnInit {
       }
     });
     this.tableRows.selection.changed.subscribe((ch: any) => {
-      console.log(ch);
+      if (ch.removed.length > 0) {
+        ch.removed.forEach((rItem: any) => {
+          this.itemsData[rItem.i].reason = "";
+          this.itemsData[rItem.i].procedure = "";
+          this.itemsData[rItem.i].procedure_required = false;
+        });
+        this.itemsData = [...this.itemsData];
+      } else if (ch.added.length > 0) {
+        ch.added.forEach((aItem: any) => {
+          this.itemsData[aItem.i].procedure_required = true;
+        });
+      }
     });
   }
 

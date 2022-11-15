@@ -1,12 +1,18 @@
-<section class="depositdialogwrapper">
+<section class="depositdialogwrapper relative">
 <div class="h-full w-full">
-    <!------------------------------------FIRST ROW----------------------------------------------------->
-    <div class="h-1/10 w-full flex justify-end">
-        <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
-    </div>
+    <!-- Cross Icon -->
+  <button
+  mat-icon-button
+  aria-label="close dialog"
+  mat-dialog-close
+  class="absolute max-dialog-close-icon"
+  type="button"
+>
+  <mat-icon>close</mat-icon>
+</button>
     <!--------------------------------------SECOND ROW------------------------------------------------------>
-    <div class="w-full pt-1  mt-1 flex align-items-center bg-lightblue border-radius-md">
-        <p class="font-lg mt-2 font-white  ml-2">Deposit Receipt</p>
+    <div class="w-full mt-1 flex align-items-center bg-lightblue border-radius-md">
+        <p class="font-lg font-white mt-3 ml-2">Deposit Receipt</p>
     </div>
     <!------------------------------------------THIRD ROW---------------------------------------------------->
     <max-service-deposit [data]="depositdialogtypeList">
@@ -31,22 +37,19 @@
     </div>
 
     <!-----------------------------------------------FIFTH ROW------------------------------------------------------------------>
-   <div class="mt-4">
+   <div class="bottom">
     <patient-identity-info [data]="patientIdentityInfo"  (neweventform60ssave)="formsixtysuccess($event)">
                 
-    </patient-identity-info>
-
-   </div>
-       
-            
-   
+    </patient-identity-info> 
 
     <!--------------------------------------------------SIXTH ROW------------------------------------------------------------>
-    <div class="h-1/10 mt-2 float-right depositdialogbutton">
-        <button mat-raised-button color="primary" (click)="savedialogpayment()">Submit</button>
+    <div class="flex float-right depositdialogbutton absolute right-0 bottom-0">
+        <button mat-raised-button color="primary" (click)="savedialogpayment()"  [disabled]="!checkmandatoryDeposit()">Submit</button>
         <button mat-raised-button color="primary" (click)="cleardepositdialog()"  class="ml-3">Clear</button>
 
     </div>
+</div>   
+   
 </div>
 </section>
   

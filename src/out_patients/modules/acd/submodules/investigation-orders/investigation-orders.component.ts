@@ -40,7 +40,7 @@ export class InvestigationOrdersComponent implements OnInit {
   isDisableSave: boolean = true;
   isDisableDeniel: boolean = true;
   isDisableBill: boolean = true;
-  EnableBill: boolean = true;
+  EnableBill: boolean = false;
   name: any;
   questions: any;
   statusvalue: any = "";
@@ -325,7 +325,6 @@ export class InvestigationOrdersComponent implements OnInit {
     }
     this.investigationForm.controls["maxid"].setValue("maxid");
     this.isDisableBill = false;
-    this.EnableBill = false;
     this.patientInfo = "";
     //Deny Order List
     this.http
@@ -501,9 +500,6 @@ export class InvestigationOrdersComponent implements OnInit {
     this.disableBtns();
     let maxId = event.row.maxid;
     let orderid = event.row.orderId;
-    if (orderid) {
-      this.EnableBill = true;
-    }
     this.maxid = maxId;
     this.orderid = orderid;
     this.patientInfo =
@@ -530,6 +526,11 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
+        res.tempOrderBreakup.filter((e: any) => {
+          if (e.isBilled == 0) {
+            this.EnableBill = true;
+          }
+        });
         this.invOrderDetails = res.tempOrderBreakup;
         setTimeout(() => {
           this.invOrderDetailsTable.selection.changed
@@ -809,6 +810,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.resetDate();
     this.resetRemarksDeny();
     this.disableBtns();
+    this.EnableBill = false;
     this.investigationForm.controls["maxid"].setValue("maxid");
     this.investigationForm.controls["status"].reset();
     this.investigationForm.controls["input"].setValue(
@@ -826,7 +828,6 @@ export class InvestigationOrdersComponent implements OnInit {
     this.isDisableCancel = false;
     this.isDisableSave = false;
     this.isDisableDeniel = false;
-    this.EnableBill = false;
   }
   resetDate() {
     this.investigationForm.controls["fromdate"].disable();

@@ -49,8 +49,9 @@ export class BillPaymentDialogComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  @ViewChild(BillingPaymentMethodsComponent) paymentmethod!: BillingPaymentMethodsComponent;
-  @ViewChild("billpatientIdentityInfo") billingpatientidentity:any;
+  @ViewChild(BillingPaymentMethodsComponent)
+  paymentmethod!: BillingPaymentMethodsComponent;
+  @ViewChild("billpatientIdentityInfo") billingpatientidentity: any;
 
   paymentmethods = [
     "cash",
@@ -79,8 +80,8 @@ export class BillPaymentDialogComponent implements OnInit {
   due: any = 0;
   totaldue: any = 0;
   finalamount: number = 0;
-  
-  billpatientIdentityInfo:any = [];
+
+  billpatientIdentityInfo: any = [];
 
   constructor(
     public matDialog: MatDialog,
@@ -119,11 +120,12 @@ export class BillPaymentDialogComponent implements OnInit {
         iacode:
           this.billingService.patientDetailsInfo.iacode == undefined
             ? this.miscService.patientDetail.iacode
-           : this.billingService.patientDetailsInfo.iacode,
-        registrationno: 
+            : this.billingService.patientDetailsInfo.iacode,
+        registrationno:
           this.billingService.patientDetailsInfo.registrationno == undefined
             ? this.miscService.patientDetail.registrationno
             : this.billingService.patientDetailsInfo.registrationno,
+        toPaidAmount: this.data.toPaidAmount,
       },
     };
   }
@@ -140,21 +142,30 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
-   //pan card and form 60
-   this.billpatientIdentityInfo = this.billingpatientidentity.patientidentityform.value;
-   if(Number(this.data.toPaidAmount >= 200000) &&  (this.billpatientIdentityInfo.length == 0 || 
-     this.billpatientIdentityInfo.mainradio == "pancardno" && (this.billpatientIdentityInfo.panno == undefined || this.billpatientIdentityInfo.panno == ""))){
-    const pannovalidate =  this.messageDialogService.info('Please Enter a valid PAN Number');
-    await pannovalidate.afterClosed().toPromise();
-    this.billingService.setpaymenthodpancardfocus();
-     return;
-   }
+    //pan card and form 60
+    this.billpatientIdentityInfo =
+      this.billingpatientidentity.patientidentityform.value;
+    if (
+      Number(this.data.toPaidAmount >= 200000) &&
+      (this.billpatientIdentityInfo.length == 0 ||
+        (this.billpatientIdentityInfo.mainradio == "pancardno" &&
+          (this.billpatientIdentityInfo.panno == undefined ||
+            this.billpatientIdentityInfo.panno == "")))
+    ) {
+      const pannovalidate = this.messageDialogService.info(
+        "Please Enter a valid PAN Number"
+      );
+      await pannovalidate.afterClosed().toPromise();
+      this.billingService.setpaymenthodpancardfocus();
+      return;
+    } else if (
+      this.billpatientIdentityInfo.mainradio == "form60" &&
+      this.formsixtysubmit == false
+    ) {
+      this.messageDialogService.error("Please fill the form60 ");
+      return;
+    }
 
-    else if(this.billpatientIdentityInfo.mainradio == "form60" && this.formsixtysubmit == false){
-     this.messageDialogService.error("Please fill the form60 ");   
-     return;
-    } 
-   
     if (this.data.name == "Misc Billing") {
       this.miscService.makeBill(this.paymentmethod);
       this.dialogRef.close("MakeBill");
@@ -182,6 +193,23 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   checkToProceed() {
+    let tabForms = true;
+    if (this.paymentmethod) {
+      this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+        console.log(this.paymentmethod.paymentForm[tab.key]);
+        if (
+          this.paymentmethod.tabPrices[index] > 0 &&
+          this.paymentmethod.paymentForm[tab.key].valid == false
+        ) {
+          tabForms = false;
+        }
+      });
+
+      if (!tabForms) {
+        return false;
+      }
+    }
+
     const collectedAmount = this.breakupTotal();
     if (this.data.name == "Misc Billing") {
       if (Number(this.data.toPaidAmount) < collectedAmount) {
@@ -196,8 +224,8 @@ export class BillPaymentDialogComponent implements OnInit {
     return false;
   }
 
-  formsixtysubmit:boolean = false;
-  billingformsixtysuccess(event:any){
+  formsixtysubmit: boolean = false;
+  billingformsixtysuccess(event: any) {
     console.log(event);
     this.formsixtysubmit = event;
   }

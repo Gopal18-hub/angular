@@ -12,11 +12,17 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel> 
-        <mat-progress-spinner mode="indeterminate" value="25" diameter="60"  *ngIf="defaultUI && showhotlistingspinner" 
+        <!-- <mat-progress-spinner mode="indeterminate" value="25" diameter="60"  *ngIf="defaultUI && showhotlistingspinner" 
          class="spinner">
-        </mat-progress-spinner>
+        </mat-progress-spinner> -->
+        <div
+        *ngIf="defaultUI && showhotlistingspinner"
+        class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+        >
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
     <div  class="w-full h-full" *ngIf="defaultUI && !showhotlistingspinner" >
-        <div class="flex px-3 pt-3 pb-1 w-full h-4/5 display-block">
+        <div class="flex px-3 pt-3 pb-1 w-full h-84 display-block">
             <ng-container *ngIf="showapprovalpending">
                 <maxhealth-table class="w-full h-full op-approval-table-wrapper" [config]="hotlistingconfig" [data]="opApprovalHotList" #hotlistingtable></maxhealth-table>
             </ng-container>

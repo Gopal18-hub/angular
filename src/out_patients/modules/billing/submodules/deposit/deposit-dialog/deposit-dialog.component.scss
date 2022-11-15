@@ -38,13 +38,13 @@
     background-color:#D2D0D0;
 }
 .h-60{
-    height:60vh;
+    height:45vh;
 }
 .h-90{
     height:90%;
 }
 .h-97{
-    height:97%;
+    height:133%;
 }
 ::ng-deep .mat-dialog-container{
     overflow:hidden !important;
@@ -57,10 +57,10 @@
 }
 .bg-lightblue{
     background-color:#45C0BE;
-    height: 5vh !important;
+    height: 4vh !important;
 }
 .width{
-    width: 33% !important;
+    width: 30% !important;
 }
 .font-white{
     color:white;
@@ -68,7 +68,7 @@
 .textarea-length{
 ::ng-deep textarea{
 
-    min-height: 308px !important;
+    min-height: 319px !important;
 }
 }
 .depositdialogbutton{
@@ -78,4 +78,13 @@
         line-height: 1.875rem  !important;
     }
 }
+.bottom {
+    ::ng-deep .mat-radio-button {
+      margin-left: 10px;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      padding-top: 0 !important;
+      margin-top: 8px;
+    }
+  }
 }

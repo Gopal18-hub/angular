@@ -134,7 +134,7 @@ export class DisountReasonComponent implements OnInit {
         title: "Dis. Amount",
         type: "currency",
         style: {
-          width: "8rem",
+          width: "5.5rem",
         },
       },
       totalAmt: {

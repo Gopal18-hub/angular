@@ -1,3 +1,5 @@
+import { MaxHealthStorage } from "@shared/services/storage";
+
 export namespace BillingStaticConstants {
   export const makeBillPayload: any = {
     ds_insert_bill: {
@@ -106,6 +108,362 @@ export namespace BillingStaticConstants {
     hspLocationId: 0,
     userId: 0,
     stationId: 0,
+  };
+
+  export const billingPageTabs: any = [
+    {
+      title: "Services",
+      path: "services",
+    },
+    {
+      title: "Bill",
+      path: "bill",
+    },
+    {
+      title: "Credit Details",
+      path: "credit-details",
+    },
+  ];
+
+  export const billingHeaderForm: any = {
+    title: "",
+    type: "object",
+    properties: {
+      maxid: {
+        type: "string",
+        defaultValue: MaxHealthStorage.getCookie("LocationIACode") + ".",
+      },
+      mobile: {
+        type: "tel",
+      },
+      bookingId: {
+        type: "string",
+      },
+      company: {
+        type: "autocomplete",
+        options: [],
+        placeholder: "--Select--",
+      },
+      corporate: {
+        type: "autocomplete",
+        options: [],
+        placeholder: "--Select--",
+      },
+      narration: {
+        type: "buttonTextarea",
+      },
+    },
+  };
+
+  export const similarPatientTableConfig: any = {
+    selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
+    displayedColumns: [
+      "maxid",
+      "firstName",
+      "lastName",
+      "phone",
+      "address",
+      "age",
+      "gender",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      firstName: {
+        title: "First Name",
+        type: "string",
+      },
+      lastName: {
+        title: "Last Name",
+        type: "string",
+      },
+      phone: {
+        title: "Phone No. ",
+        type: "string",
+      },
+      address: {
+        title: "Address ",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+        tooltipColumn: "address",
+      },
+      age: {
+        title: "Age ",
+        type: "string",
+        style: {
+          width: "90px",
+        },
+      },
+      gender: {
+        title: "Gender",
+        type: "string",
+        style: {
+          width: "70px",
+        },
+      },
+    },
+  };
+
+  export const billTabFormConfig = {
+    type: "object",
+    title: "",
+    properties: {
+      referralDoctor: {
+        type: "dropdown",
+        required: true,
+        title: "Referral Doctor",
+        placeholder: "--Select--",
+      },
+      interactionDetails: {
+        type: "dropdown",
+        required: false,
+        title: "Interaction Details",
+        placeholder: "--Select--",
+      },
+      billAmt: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      availDiscCheck: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Avail Plan Disc ( - )" }],
+        disabled: false,
+      },
+      availDisc: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+        disabled: false,
+      },
+      discAmtCheck: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: " Discount  Amount  (  -  ) " }],
+        disabled: false,
+      },
+      discAmt: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+        disabled: false,
+      },
+      dipositAmtcheck: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Deposit Amount ( - )" }],
+        disabled: false,
+      },
+      dipositAmt: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+        disabled: false,
+      },
+      patientDisc: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      compDisc: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      planAmt: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      coupon: {
+        type: "string",
+        required: false,
+      },
+      coPay: {
+        type: "number",
+        required: false,
+        defaultValue: "0",
+        readonly: true,
+      },
+      credLimit: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      gstTax: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      amtPayByPatient: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      amtPayByComp: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+      paymentMode: {
+        type: "radio",
+        required: true,
+        options: [
+          { title: "Cash", value: 1, disabled: false },
+          { title: "Credit", value: 3, disabled: false },
+          { title: "Gen. OPD", value: 4, disabled: false },
+        ],
+        defaultValue: 1,
+      },
+      self: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Self" }],
+      },
+      dipositAmtEdit: {
+        type: "currency",
+        required: false,
+        defaultValue: "0.00",
+        readonly: true,
+      },
+    },
+  };
+
+  export const billTabTableConfig = {
+    clickedRows: false,
+    actionItems: false,
+    dateformat: "dd/MM/yyyy",
+    selectBox: false,
+    removeRow: true,
+    displayedColumns: [
+      "sno",
+      "serviceName",
+      "itemName",
+      "precaution",
+      "procedureDoctor",
+      "qty",
+      "credit",
+      "cash",
+      "disc",
+      "discAmount",
+      "gst",
+      "gstValue",
+      "totalAmount",
+    ],
+    columnsInfo: {
+      sno: {
+        title: "S.No.",
+        type: "number",
+        style: {
+          width: "65px",
+        },
+      },
+      serviceName: {
+        title: "Services Name",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      itemName: {
+        title: "Item Name / Doctor Name",
+        type: "string",
+        style: {
+          width: "200px",
+        },
+      },
+      precaution: {
+        title: "Precaution",
+        type: "string_link",
+        style: {
+          width: "80px",
+        },
+      },
+      procedureDoctor: {
+        title: "Procedure Doctor",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      qty: {
+        title: "Qty/Type",
+        type: "string",
+        style: {
+          width: "80px",
+        },
+      },
+      credit: {
+        title: "Credit",
+        type: "currency",
+        style: {
+          width: "100px",
+        },
+      },
+      cash: {
+        title: "Cash",
+        type: "currency",
+        style: {
+          width: "100px",
+        },
+      },
+      disc: {
+        title: "Disc %",
+        type: "string",
+        style: {
+          width: "60px",
+        },
+      },
+      discAmount: {
+        title: "Disc Amount",
+        type: "currency",
+        style: {
+          width: "100px",
+        },
+      },
+      totalAmount: {
+        title: "Total Amount",
+        type: "currency",
+        style: {
+          width: "130px",
+        },
+      },
+      gst: {
+        title: "GST%",
+        type: "number",
+        style: {
+          width: "60px",
+        },
+      },
+      gstValue: {
+        title: "GST Value",
+        type: "currency",
+        style: {
+          width: "130px",
+        },
+      },
+    },
   };
 
   export const investigationItemBasedInstructions: any = {

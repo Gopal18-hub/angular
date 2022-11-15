@@ -445,8 +445,10 @@ export class CalculateBillService {
         formGroup.controls["coupon"].setValue("", {
           emitEvent: false,
         });
+        componentRef.IsValidateCoupon =false;
         return;
       } else {
+        componentRef.IsValidateCoupon = true;
         const CouponConfirmationRef = this.messageDialogService.confirm(
           "",
           "Coupon Accepted, Do you want to proceed with MECP discount ?"
@@ -470,6 +472,7 @@ export class CalculateBillService {
                     formGroup.controls["coupon"].setValue("", {
                       emitEvent: false,
                     });
+                    componentRef.IsValidateCoupon =false;
                     return;
                   }
                 } else {
@@ -480,6 +483,7 @@ export class CalculateBillService {
                   formGroup.controls["coupon"].setValue("", {
                     emitEvent: false,
                   });
+                  componentRef.IsValidateCoupon =false;
                   return;
                 }
               } else {

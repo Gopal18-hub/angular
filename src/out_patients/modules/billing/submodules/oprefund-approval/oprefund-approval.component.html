@@ -11,14 +11,20 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel>
-        <mat-progress-spinner
+        <!-- <mat-progress-spinner
         mode="indeterminate"
         value="25"
         diameter="60"
         *ngIf="showapprovalspinner"
         class="spinner"
       >
-      </mat-progress-spinner>
+      </mat-progress-spinner> -->
+      <div
+        *ngIf="showapprovalspinner"
+        class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+        >
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
         <div class=" h-full w-full p-3 " *ngIf="defaultUI" >
            <div class="h-4/5" >
             <ng-container *ngIf="isPendingList"  >

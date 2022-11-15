@@ -304,14 +304,19 @@ export class BillingService {
         subItems
       )
       .subscribe((res: any) => {
-        res.forEach((resItem: any, index: number) => {
-          this.billItems[index].price = resItem.returnOutPut;
-          this.billItems[index].totalAmount =
-            this.billItems[index].qty * resItem.returnOutPut;
-          this.updateServiceItemPrice(this.billItems[index]);
-        });
-        this.calculateTotalAmount();
-        this.refreshBillTab.next(true);
+        if (this.billItems && this.billItems.length > 0) {
+          res.forEach((resItem: any, index: number) => {
+            //GAV-1070
+            let quanity = !isNaN(Number(this.billItems[index].qty))
+              ? this.billItems[index].qty
+              : 1;
+            this.billItems[index].price = resItem.returnOutPut;
+            this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
+            this.updateServiceItemPrice(this.billItems[index]);
+          });
+          this.calculateTotalAmount();
+          this.refreshBillTab.next(true);
+        }
       });
   }
 
@@ -1031,6 +1036,8 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.narrationOnBill =
+        this.billingFormGroup.form.value.narration || "";
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
         opbillid: 0,
         billNo: "",
@@ -1058,7 +1065,9 @@ export class BillingService {
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
-          "Do You Want To Save Less Amount ?"
+          "Do you want to pay less amount of Rs." +
+            (toBePaid - collectedAmount) +
+            "?"
         );
         const lessAmountWarningResult = await lessAmountWarningDialog
           .afterClosed()
@@ -1128,8 +1137,8 @@ export class BillingService {
         sno: this.ProcedureItems.length + 1,
         procedures: procedure.originalTitle,
         qty: 1,
-        specialisation: "",
-        doctorName: "",
+        specialisation: procedure.specializationId || "",
+        doctorName: procedure.doctorid || "",
         doctorName_required: procedure.docRequired ? true : false,
         specialisation_required: procedure.docRequired ? true : false,
         price: res[0].returnOutPut,
@@ -1253,6 +1262,114 @@ export class BillingService {
     });
   }
 
+  async processInvestigationBulk(priorityId: number, investigations: any = []) {
+    const investigationItems: any = [];
+    investigations.forEach((inv: any) => {
+      investigationItems.push({
+        serviceID: inv.serviceid,
+        itemId: inv.value,
+        bundleId: 0,
+        priority: priorityId,
+      });
+    });
+    const res: any = await this.http
+      .post(
+        BillingApiConstants.getPriceBulk(
+          this.cookie.get("HSPLocationId"),
+          this.company
+        ),
+        investigationItems
+      )
+      .toPromise();
+
+    if (res.length > 0) {
+      res.forEach((rItem: any, index: number) => {
+        const investigation = investigations[index];
+        this.addToInvestigations({
+          sno: this.InvestigationItems.length + 1,
+          investigations: investigation.title,
+          precaution:
+            investigation.precaution == "P"
+              ? '<span class="max-health-red-color">P</span>'
+              : investigation.precaution,
+          priority: priorityId,
+          priority_required: false,
+          // specialisation: investigation.specializationId || "",
+          doctorName: investigation.doctorid || "",
+          specialisation_required: investigation.docRequired ? true : false,
+          doctorName_required: investigation.docRequired ? true : false,
+          price: rItem.returnOutPut,
+          billItem: {
+            popuptext: investigation.popuptext,
+            itemId: investigation.value,
+            priority: priorityId,
+            serviceId: investigation.serviceid,
+            price: rItem.returnOutPut,
+            serviceName: "Investigations",
+            itemName: investigation.title,
+            qty: 1,
+            precaution:
+              investigation.precaution == "P"
+                ? '<span class="max-health-red-color">P</span>'
+                : investigation.precaution,
+            procedureDoctor: investigation.docName || "",
+            credit: 0,
+            cash: 0,
+            disc: 0,
+            discAmount: 0,
+            totalAmount: rItem.returnOutPut + rItem.totaltaX_Value,
+            gst: rItem.totaltaX_RATE,
+            gstValue: rItem.totaltaX_Value,
+            specialisationID: investigation.specializationId || 0,
+            doctorID: investigation.doctorid || 0,
+            patient_Instructions: investigation.patient_Instructions,
+          },
+          gstDetail: {
+            gsT_value: rItem.totaltaX_Value,
+            gsT_percent: rItem.totaltaX_RATE,
+            cgsT_Value: rItem.cgsT_Value,
+            cgsT_Percent: rItem.cgst,
+            sgsT_value: rItem.sgsT_Value,
+            sgsT_percent: rItem.sgst,
+            utgsT_value: rItem.utgsT_Value,
+            utgsT_percent: rItem.utgst,
+            igsT_Value: rItem.igsT_Value,
+            igsT_percent: rItem.igst,
+            cesS_value: rItem.cesS_Value,
+            cesS_percent: rItem.cess,
+            taxratE1_Value: rItem.taxratE1_Value,
+            taxratE1_Percent: rItem.taxratE1,
+            taxratE2_Value: rItem.taxratE2_Value,
+            taxratE2_Percent: rItem.taxratE2,
+            taxratE3_Value: rItem.taxratE3_Value,
+            taxratE3_Percent: rItem.taxratE3,
+            taxratE4_Value: rItem.taxratE4_Value,
+            taxratE4_Percent: rItem.taxratE4,
+            taxratE5_Value: rItem.taxratE5_Value,
+            taxratE5_Percent: rItem.taxratE5,
+            totaltaX_RATE: rItem.totaltaX_RATE,
+            totaltaX_RATE_VALUE: rItem.totaltaX_Value,
+            saccode: rItem.saccode,
+            taxgrpid: rItem.taxgrpid,
+            codeId: rItem.codeId,
+          },
+          gstCode: {
+            tax: rItem.tax,
+            taxType: rItem.taxType,
+            codeId: rItem.codeId,
+            code: rItem.code,
+          },
+        });
+        this.makeBillPayload.tab_o_opItemBasePrice.push({
+          itemID: investigation.value,
+          serviceID: investigation.serviceid,
+          price: rItem.returnOutPut + rItem.totaltaX_Value,
+          willModify: rItem.ret_value == 1 ? true : false,
+        });
+      });
+    }
+  }
+
   async processInvestigationAdd(
     priorityId: number,
     serviceType: string,
@@ -1280,7 +1397,7 @@ export class BillingService {
             : investigation.precaution,
         priority: priorityId,
         priority_required: false,
-        // specialisation: investigation.specializationId || "",
+        specialisation: investigation.specializationId || "",
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,
         doctorName_required: investigation.docRequired ? true : false,
@@ -1369,7 +1486,7 @@ export class BillingService {
           : investigation.precaution,
       priority: priorityId,
       priority_required: false,
-      specialisation: "",
+      specialisation: investigation.specializationId || "",
       doctorName: investigation.doctorid || "",
       specialisation_required: investigation.docRequired ? true : false,
       doctorName_required: investigation.docRequired ? true : false,

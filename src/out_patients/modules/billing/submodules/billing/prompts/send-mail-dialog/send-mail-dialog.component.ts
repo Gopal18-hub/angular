@@ -21,7 +21,7 @@ export class SendMailDialogComponent implements OnInit {
         required: true
       },
       remarks: {
-        title: "Remarks",
+        // title: "Remarks",
         type: "textarea",
         required: true
       },
@@ -58,7 +58,7 @@ export class SendMailDialogComponent implements OnInit {
     );
     this.sendMailForm = formResult.form;
     this.question = formResult.questions;
-    if(this.data.mail = 'info@maxhealthcare.com')
+    if(this.data.mail == 'info@maxhealthcare.com')
     {
       this.sendMailForm.controls['mailid'].setValue('');
     }
@@ -85,5 +85,9 @@ export class SendMailDialogComponent implements OnInit {
   cancelbtn()
   {
     this.dialogRef.close('close');
+  }
+  remarksclick()
+  {
+    this.sendMailForm.controls['remarks'].setValue('As per patient’s request');
   }
 }

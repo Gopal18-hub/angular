@@ -52,6 +52,7 @@ export class DepositDialogComponent implements OnInit {
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
+  proceedToDeposit:boolean = true;
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -115,11 +116,11 @@ export class DepositDialogComponent implements OnInit {
     
     //Service and Deposit Type
     if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead == 0 && this.isNSSHLocation)){
-      this.messageDialogService.error("Please Select Deposit Head");
+      this.messageDialogService.info("Please Select Deposit Head");
       this.validationexists = true;
     }
     else  if(this.selecteddepositservicetype.servicetype == null){
-      this.messageDialogService.error("Please Select Service Type");
+      this.messageDialogService.info("Please Select Service Type");
       this.validationexists = true;
     }
     //deposit - payment method
@@ -132,24 +133,16 @@ export class DepositDialogComponent implements OnInit {
           this.PaymentType = 2;
           this.PaymentTypedepositamount =  Number(this.DepositcashMode.chequeamount);
 
-          if(this.DepositcashMode.chequeno == "" || this.DepositcashMode.chequeno == null
-           || this.DepositcashMode.chequebankname == "" || this.DepositcashMode.chequebankname == null
-           || this.DepositcashMode.chequebranchname == ""  || this.DepositcashMode.chequebranchname == null 
-           || this.DepositcashMode.chequeissuedate == "" || this.DepositcashMode.chequeissuedate == null
-           || this.DepositcashMode.chequeauth == "" || this.DepositcashMode.chequeauth == null){
-            this.messageDialogService.error("Please Fill All Cheque Mandatory Fields ");
+          if(!this.paymentdepositcashMode.chequemandatoryfields()){
+            this.messageDialogService.info("Please Fill All Cheque Mandatory Fields ");
             this.validationexists = true;
           }         
        }
        else if(this.DepositcashMode.creditamount > 0){
           this.PaymentType = 4;
           this.PaymentTypedepositamount =  Number(this.DepositcashMode.creditamount);
-          if(this.DepositcashMode.creditcardno == "" || this.DepositcashMode.creditcardno == null
-           || this.DepositcashMode.creditholdername == "" || this.DepositcashMode.creditholdername == null
-           || this.DepositcashMode.creditbankname == "" || this.DepositcashMode.creditbankname == null
-           || this.DepositcashMode.creditbatchno == "" || this.DepositcashMode.creditbatchno == null
-           ){
-            this.messageDialogService.error("Please Fill All Credit Card Mandatory Fields ");
+          if(!this.paymentdepositcashMode.creditcardmandatoryfields()){
+            this.messageDialogService.info("Please Fill All Credit Card Mandatory Fields ");
             this.validationexists = true;
           }
       }
@@ -157,13 +150,9 @@ export class DepositDialogComponent implements OnInit {
         this.PaymentType = 3;
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.demandamount);
 
-        if(this.DepositcashMode.demandddno == "" || this.DepositcashMode.demandddno == null
-        || this.DepositcashMode.demandissuedate == "" || this.DepositcashMode.demandissuedate == null
-        || this.DepositcashMode.demandbankname == "" || this.DepositcashMode.demandbankname == null
-        || this.DepositcashMode.demandbranchname == "" || this.DepositcashMode.demandbranchname == null
-        || this.DepositcashMode.demandauth == "" || this.DepositcashMode.demandauth == null)
+        if(!this.paymentdepositcashMode.demanddraftmandatoryfields())
         {
-         this.messageDialogService.error("Please Fill All Demand Draft Mandatory Fields ");
+         this.messageDialogService.info("Please Fill All Demand Draft Mandatory Fields ");
          this.validationexists = true;
        }  
 
@@ -173,19 +162,19 @@ export class DepositDialogComponent implements OnInit {
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.upiamount);
       }
       else if(this.DepositcashMode.internetamount > 0){
-        this.PaymentType = 5;
+        this.PaymentType = 9;
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.internetamount);
         if(this.DepositcashMode.internetemail.trim().toUpperCase() == "INFO@MAXHEALTHCARE.COM"){
-          this.messageDialogService.error("Please fill valid Email Id " + this.DepositcashMode.internetemail + " Not allowed to save internet payment request!!");
+          this.messageDialogService.info("Please fill valid Email Id " + this.DepositcashMode.internetemail + " Not allowed to save internet payment request!!");
           this.validationexists = true;
         }
         else if(this.DepositcashMode.internetremarks == "" || this.DepositcashMode.internetremarks == null ){
-          this.messageDialogService.error("Please fill Internet Payment Remarks !!");
+          this.messageDialogService.info("Please fill Internet Payment Remarks !!");
           this.validationexists = true;
         }
       }
       else if(this.PaymentTypedepositamount <= 0){
-        this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
+        this.messageDialogService.info("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
       }      
     }
@@ -201,7 +190,7 @@ export class DepositDialogComponent implements OnInit {
         this.validationexists = true;
      }
      else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false && !this.validationexists){
-      this.messageDialogService.error("Please fill the form60 ");   
+      this.messageDialogService.info("Please fill the form60 ");   
       this.validationexists = true;
      }    
   }
@@ -220,16 +209,9 @@ export class DepositDialogComponent implements OnInit {
             if(resultData[0].returnFlag == 0){
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
-              let savedepositdialog = this.matDialog.open(
-                DepositSuccessComponent,
-                {
-                  width: "30vw",          
-                  data: {
-                    message: "Deposit Has Been Successfully Saved"                 
-                    },
-                }
-              );
-                       
+              const successInfo = this.messageDialogService.success(
+                `Deposit Has Been Successfully Saved`
+              );                  
             }else
            {
              const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
@@ -309,5 +291,35 @@ export class DepositDialogComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+  checkmandatoryDeposit() {
+    let tabForms = true;
+    if(this.paymentdepositcashMode){
+     if(this.paymentdepositcashMode.activeTab == "Cash" && this.paymentdepositcashMode.refundform.value.cashamount <= 0){
+      tabForms = false;
+     }
+     else if(this.paymentdepositcashMode.activeTab == "Cheque" && !this.paymentdepositcashMode.chequemandatoryfields()){
+      tabForms = false;
+     }
+     else if(this.paymentdepositcashMode.activeTab == "Credit / Debit Card" && !this.paymentdepositcashMode.creditcardmandatoryfields()){
+      tabForms = false;
+     }
+     else if(this.paymentdepositcashMode.activeTab == "Demand Draft" &&  !this.paymentdepositcashMode.demanddraftmandatoryfields()){
+      tabForms = false;
+     } 
+     else if(this.paymentdepositcashMode.activeTab == "Internet Payment" &&  !this.paymentdepositcashMode.internetmandatoryfields()){
+      tabForms = false;
+     } 
+     else if(this.paymentdepositcashMode.activeTab == "UPI" &&  !this.paymentdepositcashMode.upimandatoryfields()){
+      tabForms = false;
+     } 
+    }
+    if(!tabForms){
+      this.proceedToDeposit = false;
+      return false;
+    }else{
+      this.proceedToDeposit = true;
+      return true;
+    }
   }
 }

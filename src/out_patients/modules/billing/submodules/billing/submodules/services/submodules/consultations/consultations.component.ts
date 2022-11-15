@@ -123,6 +123,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   excludeClinicsLocations = [67, 69];
   userSelectedDMG = 0;
+  //GAV_1193
+  autoVisitHistoryPopupLocations = [69, 8];
+  //GAV_1193
+  visitHistoryConsultTypeLocations: any = { 69: "", 8: "Follow up" };
 
   constructor(
     private formService: QuestionControlService,
@@ -347,6 +351,21 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           );
           this.billingService.consultationItems[index].price = res.amount;
           this.billingService.consultationItems[index].type = priorityId;
+          //#region GAV-1054
+          this.billingService.consultationItems[index].billItem.price =
+            res.amount;
+          this.billingService.consultationItems[index].billItem.totalAmount =
+            res.amount +
+            this.billingService.consultationItems[index].billItem.gstValue;
+
+          let consultType: any = this.consultationTypes.filter(
+            (c: any) => c.id === priorityId
+          );
+          if (consultType && consultType.length > 0) {
+            this.billingService.consultationItems[index].billItem.qty =
+              consultType[0].name;
+          }
+          //#endregion GAV-1054
           this.data = [...this.billingService.consultationItems];
         }
 
@@ -620,13 +639,25 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         consultationtype = consultType[0].strConsult;
       }
     }
-    /////GAV-777
+    /////GAV-1193
     if (
-      consultType[0].strConsult.includes("Follow up") &&
-      Number(this.cookie.get("HSPLocationId")) == 69
+      this.autoVisitHistoryPopupLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
     ) {
-      this.billingService.visitHistory();
+      if (
+        consultType[0].strConsult.includes(
+          this.visitHistoryConsultTypeLocations[
+            Number(this.cookie.get("HSPLocationId"))
+          ]
+        ) ||
+        (Number(this.cookie.get("HSPLocationId")) == 69 &&
+          !this.visitHistoryConsultTypeLocations[69])
+      ) {
+        this.billingService.visitHistory();
+      }
     }
+
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,

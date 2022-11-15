@@ -87,6 +87,7 @@
                 [form]="formGroup"
                 [questions]="questions[3]"
                 [index]="3"
+                matTooltip="{{formGroup.value.company.title}}"
               >
               </maxhealth-question>
             </div>
@@ -110,7 +111,7 @@
               <mat-label class="max-health-primary-color mr-1"
                 >Narration</mat-label
               >
-              <div class="width-8 bg-white mr-2">
+              <div class="width-11 bg-white mr-2">
                 <maxhealth-question
                   [question]="questions[5]"
                   [form]="formGroup"
@@ -121,7 +122,7 @@
               </div>
             </ng-container>
 
-            <div class="ml-2 special-checkbox">
+            <!-- <div class="ml-2 special-checkbox">
               <maxhealth-question
                 [question]="questions[6]"
                 [form]="formGroup"
@@ -129,7 +130,7 @@
                 [index]="6"
               >
               </maxhealth-question>
-            </div>
+            </div> -->
           </form>
         </div>
 

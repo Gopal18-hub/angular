@@ -73,6 +73,7 @@ export class DepositComponent implements OnInit {
     console.log(lookupdata);
     if (lookupdata.length == 1) {
       if (lookupdata[0] && "maxid" in lookupdata[0]) {
+        this.apiProcessing = true;
         this.depositForm.value.maxid = lookupdata[0]["maxid"];
         this.iacode = this.depositForm.value.maxid.split(".")[0];
         this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
@@ -81,6 +82,7 @@ export class DepositComponent implements OnInit {
           this.regNumber
         );
         if (expiredStatus) {
+          this.apiProcessing = false;
           const dialogRef = this.messageDialogService.error(
             "Patient is an Expired Patient!"
           );
@@ -90,6 +92,7 @@ export class DepositComponent implements OnInit {
           this.questions[0].elementRef.focus();
         }
         this.getPatientDetailsForDeposit();
+        this.apiProcessing = false;
       }
     } else if (lookupdata.length > 1) {
       const similarSoundDialogref = this.matDialog.open(SimilarPatientDialog, {
@@ -105,6 +108,7 @@ export class DepositComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(async (result: any) => {
           if (result) {
+            this.apiProcessing = true;
             console.log(result.data["added"][0].maxid);
             let maxID = result.data["added"][0].maxid;
             this.depositForm.controls["maxid"].setValue(maxID);
@@ -116,6 +120,7 @@ export class DepositComponent implements OnInit {
               this.regNumber
             );
             if (expiredStatus) {
+              this.apiProcessing = false;
               const dialogRef = this.messageDialogService.error(
                 "Patient is an Expired Patient!"
               );
@@ -125,6 +130,7 @@ export class DepositComponent implements OnInit {
               this.questions[0].elementRef.focus();
             }
             this.getPatientDetailsForDeposit();
+            this.apiProcessing = false;
           }
         });
     }
@@ -346,6 +352,7 @@ export class DepositComponent implements OnInit {
   tableselectionexists: boolean = false;
   expiredpatientexists: boolean = false;
   moment = moment;
+  apiProcessing:boolean = false;
 
   depositForm!: FormGroup;
   questions: any;
@@ -432,51 +439,45 @@ export class DepositComponent implements OnInit {
   }
 
   openDepositdialog() {
-    const MakeDepositDialogref = this.matDialog.open(
-      MakedepositDialogComponent,
-      {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to make Deposits?",
-        },
-      }
+    const availDepositsPopup = this.messageDialogService.confirm(
+      "",
+      `Do you want to make Deposits?`
     );
-
-    MakeDepositDialogref.afterClosed()
+    availDepositsPopup
+      .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        if (result == "Success") {
-          const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-            width: "70vw",
-            height: "98vh",
-            data: {
-              servicetype: this.patientservicetype,
-              deposittype: this.patientdeposittype,
-              patientinfo: {
-                emailId: this.patientpersonaldetails[0]?.pEMail,
-                mobileno: this.patientpersonaldetails[0]?.pcellno,
-                panno: this.patientpersonaldetails[0]?.paNno,
-                registrationno: this.regNumber,
-                iacode: this.iacode,
-              },
+        if ("type" in result) {
+        if (result.type == "yes") {
+        const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
+          width: "80vw",
+          height: "96vh",
+          data: {
+            servicetype: this.patientservicetype,
+            deposittype: this.patientdeposittype,
+            patientinfo: {
+              emailId: this.patientpersonaldetails[0]?.pEMail,
+              mobileno: this.patientpersonaldetails[0]?.pcellno,
+              panno: this.patientpersonaldetails[0]?.paNno,
+              registrationno: this.regNumber,
+              iacode: this.iacode,
             },
+          },
+        });
+
+        DepositDialogref.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            this.MaxIDdepositExist = false;
+            this.tableselectionexists = false;
+            this.deposittable.selection.clear();
+            if (result == "Success") {
+              this.getPatientPreviousDepositDetails();
+            }
           });
-
-          DepositDialogref.afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
-              this.MaxIDdepositExist = false;
-              this.tableselectionexists = false;
-              this.deposittable.selection.clear();
-              if (result == "Success") {
-                this.getPatientPreviousDepositDetails();
-
-                console.log("Deposit Dialog closed");
-              }
-            });
-        }
-      });
+      }
+    }
+  });
   }
 
   openinitiatedeposit() {
@@ -506,7 +507,8 @@ export class DepositComponent implements OnInit {
               this.iacode != "0" &&
               this.regNumber != 0 &&
               !Number.isNaN(Number(this.regNumber))
-            ) {
+            ) {              
+              this.apiProcessing = true;
               const expiredStatus = await this.checkPatientExpired(
                 this.iacode,
                 this.regNumber
@@ -522,7 +524,8 @@ export class DepositComponent implements OnInit {
                 this.expiredpatientexists = true;
               }
               this.getDepositType();
-              this.getPatientDetailsForDeposit();
+              this.getPatientDetailsForDeposit();              
+              this.apiProcessing = false;
             } else {
               this.depositForm.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
@@ -680,11 +683,18 @@ export class DepositComponent implements OnInit {
             .filter((dp) => dp.depositRefund == "Deposit")
             .map((t) => t.deposit)
             .reduce((acc, value) => acc + value, 0);
+
           this.totalrefund = resultData
             .filter((dp) => dp.depositRefund == "Refund")
             .map((t) => t.refund)
+            .reduce((acc, value) => acc + value, 0);            
+
+            this.avalaibleamount = resultData
+            .filter((dp) => dp.depositRefund == "Deposit")
+            .map((t) => t.balance)
             .reduce((acc, value) => acc + value, 0);
-          this.avalaibleamount = this.totaldeposit - this.totalrefund;
+
+          //this.avalaibleamount = this.totaldeposit - this.totalrefund;
           this.depositForm.controls["totaldeposit"].setValue(
             this.totaldeposit.toFixed(2)
           );
@@ -826,6 +836,7 @@ export class DepositComponent implements OnInit {
                 .pipe(takeUntil(this._destroying$))
                 .subscribe(async (result) => {
                   if (result) {
+                    this.apiProcessing = true;
                     console.log(result.data["added"][0].maxid);
                     let maxID = result.data["added"][0].maxid;
                     this.iacode = maxID.split(".")[0];
@@ -836,6 +847,7 @@ export class DepositComponent implements OnInit {
                       this.regNumber
                     );
                     if (expiredStatus) {
+                      this.apiProcessing = false;
                       const dialogRef = this.messageDialogService.error(
                         "Patient is an Expired Patient!"
                       );
@@ -845,6 +857,7 @@ export class DepositComponent implements OnInit {
                       this.questions[0].elementRef.focus();
                     }
                     this.getPatientDetailsForDeposit();
+                    this.apiProcessing = false;
                   }
                   this.similarContactPatientList = [];
                 });

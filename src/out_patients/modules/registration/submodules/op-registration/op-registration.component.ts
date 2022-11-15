@@ -92,7 +92,9 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   lastUpdatedBy: string | undefined;
+  registeredBy: string | undefined;
   lastupdatedDate: any;
+  lastregisteredDate: any;
   LastupdateExist: boolean = false;
   currentTime: any = this.datepipe.transform(new Date(), "dd/MM/yyyy hh:mm aa");
   localityList: LocalityModel[] = [];
@@ -474,7 +476,7 @@ export class OpRegistrationComponent implements OnInit {
   bool: boolean | undefined;
   ngOnInit(): void {
     this.bool = true;
-    this.lastUpdatedBy =
+    this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.formInit();
     this.route.queryParams
@@ -1261,6 +1263,7 @@ export class OpRegistrationComponent implements OnInit {
 
     //this.checkForMaxID();
     this.clearClicked = false;
+    this.registeredBy = this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
   }
 
   flushAllObjects() {
@@ -2408,8 +2411,9 @@ export class OpRegistrationComponent implements OnInit {
                       this.patientDetails.lastUpdatedOn,
                       "dd/MM/yyyy hh:mm aa"
                     );
-              this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
-
+              this.registeredBy = this.patientDetails.registeredOperatorName;
+              this.lastUpdatedBy = this.patientDetails.operatorName;
+            
               if (
                 this.datepipe.transform(
                   this.patientDetails.lastUpdatedOn,
@@ -2419,6 +2423,10 @@ export class OpRegistrationComponent implements OnInit {
                 this.LastupdateExist = false;
               } else {
                 this.LastupdateExist = true;
+                this.lastregisteredDate =  this.datepipe.transform(
+                  this.patientDetails.registeredOn,
+                  "dd/MM/yyyy hh:mm aa"
+                );
               }
 
               this.categoryIcons =
@@ -2576,9 +2584,9 @@ export class OpRegistrationComponent implements OnInit {
               this.getPatientDetailsByMaxId();
             })
           }
-          else{
-            this.getPatientDetailsByMaxId();
-          }
+          // else{
+          //   this.getPatientDetailsByMaxId();
+          // }
           this.maxIDChangeCall = false;
           console.log(resultData);
         },
@@ -2623,7 +2631,7 @@ export class OpRegistrationComponent implements OnInit {
                   this.patientDetails.lastUpdatedOn,
                   "dd/MM/yyyy hh:mm aa"
                 );
-          this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
+          this.registeredBy = this.patientDetails.registeredOperatorName;
 
           if (
             this.datepipe.transform(
@@ -2783,7 +2791,7 @@ export class OpRegistrationComponent implements OnInit {
     console.log("firstname changed");
     if (!this.maxIDChangeCall) {
       if (this.checkForModifiedPatientDetail()) {
-        this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstname;
+        this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
       }
     }
   }
@@ -3420,7 +3428,7 @@ export class OpRegistrationComponent implements OnInit {
 
     if (!validationerror) {
       if (this.OPRegForm.controls["fatherSpouse"].value) {
-        if (this.OPRegForm.value.fatherSpouseName.trim() == "") {
+        if (this.OPRegForm.value.fatherSpouseName == null || this.OPRegForm.value.fatherSpouseName.trim() == "") {
           validationerror = true;
           this.messageDialogService.error("Please enter Father/Spouse Name");
         } else {
