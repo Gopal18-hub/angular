@@ -21,7 +21,26 @@
   <div class="w-full height">
     <!-- payment Methods left  -->
     <billing-payment-methods [config]="config"></billing-payment-methods>
-
+    <div class="flex absolute mt-2 left-10-rem">
+      <div>
+        <maxhealth-question
+          [question]="questions[0]"
+          [form]="dueform"
+          [questions]="questions[0]"
+          [index]="0"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="mg-top-1 ml-2">
+        <maxhealth-question
+          [question]="questions[1]"
+          [form]="dueform"
+          [questions]="questions[1]"
+          [index]="1"
+        >
+        </maxhealth-question>
+      </div>
+    </div>
     <!-- payment Methods right -->
     <div class="width h-full mt-2 float-right">
       <div class="back-primary col-white p-3 border-radius-md">
@@ -103,59 +122,41 @@
     </div>
   </div>
   <!-- Checkbox -->
-  <div class="flex absolute mt-2">
-    <div>
-      <maxhealth-question
-        [question]="questions[0]"
-        [form]="dueform"
-        [questions]="questions[0]"
-        [index]="0"
-      >
-      </maxhealth-question>
-    </div>
-    <div class="mg-top-1 ml-2">
-      <maxhealth-question
-        [question]="questions[1]"
-        [form]="dueform"
-        [questions]="questions[1]"
-        [index]="1"
-      >
-      </maxhealth-question>
-    </div>
-  </div>
+  
 
   <!-- Footer Part -->
-  <div class="mt-12 bottom">
+  <div class="bottom">
     <patient-identity-info [data]="patientInfo" [form60payment]="paymentmethod" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
 
     </patient-identity-info>
+    <div class="flex float-right paymentdialogbutton absolute right-0 bottom-0">
+      <div class="mr-3">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="mt-1 btn"
+          (click)="makeBill()"
+          [disabled]="!checkToProceed()"
+        >
+          Submit
+        </button>
+      </div>
+  
+      <div class="">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          (click)="clear()"
+          class="mt-1 btn"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- button -->
-  <div class="flex float-right paymentdialogbutton">
-    <div class="mr-3">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        class="mt-1 btn"
-        (click)="makeBill()"
-        [disabled]="!checkToProceed()"
-      >
-        Submit
-      </button>
-    </div>
-
-    <div class="">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        (click)="clear()"
-        class="mt-1 btn"
-      >
-        Clear
-      </button>
-    </div>
-  </div>
+  
 </section>

@@ -40,7 +40,7 @@
                 *ngFor="let question of questions[tab.key]; let i = index"
               >
                 <div
-                  class="flex flex-column w-1/45 mt-2"
+                  class="flex flex-column w-1/45 mt-2 mb-2"
                   [ngClass]="{ 'max-hide': question.type == 'hidden' }"
                 >
                   <div class="w-full">
@@ -66,14 +66,14 @@
 
             <!-- [disabled]="!activeTab.form.valid" -->
             <div
-              class="max-health-primary-color mx-6 flex justify-between"
+              class="max-health-primary-color mx-6 flex "
               *ngIf="activeTab.form?.actionItems"
             >
               <ng-container *ngFor="let button of activeTab.form?.actionItems">
                 <button
                   mat-raised-button
                   color="primary"
-                  class="w-5/2 mt-2"
+                  class="w-5/2 mt-2 ml-2"
                   type="button"
                 >
                   {{ button.label }}
