@@ -100,7 +100,7 @@ export class HotListingApprovalComponent implements OnInit {
       },
     ],
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -229,7 +229,7 @@ export class HotListingApprovalComponent implements OnInit {
       },
     ],
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -363,7 +363,7 @@ export class HotListingApprovalComponent implements OnInit {
       },
     ],
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: false,
     displayedColumns: [
       "maxid",
