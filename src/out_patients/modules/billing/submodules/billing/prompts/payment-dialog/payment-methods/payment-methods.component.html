@@ -66,14 +66,14 @@
 
             <!-- [disabled]="!activeTab.form.valid" -->
             <div
-              class="max-health-primary-color mx-6 flex justify-between"
+              class="flex mx-6 justify-between creditbuttonwidth"
               *ngIf="activeTab.form?.actionItems"
             >
               <ng-container *ngFor="let button of activeTab.form?.actionItems">
                 <button
                   mat-raised-button
                   color="primary"
-                  class="w-5/2 mt-2"
+                  class="mt-2 btn"
                   type="button"
                 >
                   {{ button.label }}
