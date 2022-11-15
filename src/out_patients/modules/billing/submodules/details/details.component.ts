@@ -979,6 +979,7 @@ export class DetailsComponent implements OnInit {
             this.patientbilldetaillist.billDetialsForRefund_Table0[0].emailId,
           mobileno:
             this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
+          screename: "Bill Details",
         },
         refundamount: this.BServiceForm.value.refundAmt,
         authby: this.BServiceForm.controls["authBy"].value,

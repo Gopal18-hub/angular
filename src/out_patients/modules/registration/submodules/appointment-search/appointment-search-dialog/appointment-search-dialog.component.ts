@@ -81,7 +81,8 @@ export class AppointmentSearchDialogComponent implements OnInit {
         title: "Phone",
         required: false,
         //  pattern: "^[1-9]{1}[0-9]{9}",
-        maximum: 10,
+        minimum: 1000000000,
+        maximum: 9999999999,
         defaultValue: "",
       },
       datevalidation: {
@@ -484,7 +485,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
   getAppointmentSearch() {
     return this.http.get(
       ApiConstants.appointmentPatientDetail(
-        this.OPAppointmentForm.value.phoneNo || "",
+        this.OPAppointmentForm.value.phone || "",
         this.OPAppointmentForm.value.name || "",
         this.OPAppointmentForm.value.lastname || "",
         this.OPAppointmentForm.value.datevalidation == false ? 0 : 1,

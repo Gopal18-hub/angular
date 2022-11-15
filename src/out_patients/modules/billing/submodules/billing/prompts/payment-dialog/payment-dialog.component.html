@@ -1,6 +1,8 @@
+
 <section class="payment-dialog relative">
-  <!-- Cross Icon -->
-  <button
+  <!-- Cross Icon --> 
+  <div class="height-2">
+    <button
     mat-icon-button
     aria-label="close dialog"
     mat-dialog-close
@@ -9,7 +11,7 @@
   >
     <mat-icon>close</mat-icon>
   </button>
-
+  </div>
   <!-- Blue Banner -->
   <div
     class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight"
@@ -21,7 +23,7 @@
   <div class="w-full height">
     <!-- payment Methods left  -->
     <billing-payment-methods [config]="config"></billing-payment-methods>
-    <div class="flex absolute mt-2 left-10-rem">
+    <div class="flex absolute mt-2 left-13">
       <div>
         <maxhealth-question
           [question]="questions[0]"
