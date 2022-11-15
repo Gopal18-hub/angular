@@ -36,8 +36,11 @@
     .clr-primary{
         color: #004084;
     }
-    .height-62{
-        height: 62vh;
+    .height-47{
+        height: 47vh;
+    }
+    .height-56{
+        height: 56vh;
     }
     .width-34{
         width: 34% !important;
@@ -97,7 +100,7 @@
     }
     }
     .w-64{
-        width: 54%;
+        width: 60%;
     }
     ::ng-deep .mat-dialog-container{
         overflow: hidden !important;
@@ -169,6 +172,17 @@
     // ::ng-deep .mat-raised-button {
     //     min-width: 120px !important;
     // }
+    }
+    .input-label{
+        ::ng-deep {
+            mat-label{
+                color: #004084;
+            }
+            .mat-error{
+                margin-top: 10px;
+            }
+        }
+        
     }
 }
 

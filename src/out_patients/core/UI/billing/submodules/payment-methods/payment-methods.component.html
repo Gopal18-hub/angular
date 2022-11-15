@@ -10,7 +10,7 @@
             <mat-tab label="Cash" *ngIf="config.paymentmethod.cash">
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Cash Details</mat-label>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <div class="w-full ml-0 input1">
                             <maxhealth-question
                             [question]="questions[0]"
@@ -26,7 +26,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Credit Card Details</mat-label>
                     <div class="flex flex-wrap justify-between">
-                        <div class="flex flex-column w-1/45 mt-2">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div> -->
@@ -39,7 +39,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">POS IMEI</mat-label>
                         </div> -->
@@ -52,7 +52,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
                         </div> -->
@@ -66,7 +66,7 @@
                         </div>
                     </div>
                    
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
                         </div> -->
@@ -79,7 +79,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Card Holder Name</mat-label>
                         </div> -->
@@ -92,7 +92,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div> -->
@@ -105,7 +105,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div> -->
@@ -118,7 +118,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
                         </div> -->
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                  
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Approval Code</mat-label>
                         </div> -->
@@ -145,7 +145,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Terminal ID</mat-label>
                         </div> -->
@@ -158,7 +158,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Acquiring Bank</mat-label>
                         </div> -->
@@ -171,7 +171,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>                   
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div> -->
@@ -184,14 +184,14 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 align-items-center creditbuttonwidth">
-                        <div class="">
+                    <div class="flex mx-6 justify-between mt-3 ml-4 creditbuttonwidth">
+                        <div class="ml-6">
                             <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="Enablecreditfields()">Manual</button>
                         </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1">Ok</button>
+                        <div class="ml-6">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1">Get Approval</button>
                         </div>
-                        <div class="ml-3">
+                        <div class="ml-6">
                             <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetcreditcard()">Retry</button>
                         </div>
                     </div>
@@ -202,7 +202,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Cheque Details</mat-label>
                    <div class="flex flex-wrap justify-between">
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div> -->
@@ -217,7 +217,7 @@
                      
                     </div>
                    
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Cheque No.</mat-label>
                         </div> -->
@@ -230,7 +230,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Issue Date</mat-label>
                         </div> -->
@@ -256,7 +256,7 @@
                             ></maxhealth-question>
                         </div>
                     </div> -->
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div> -->
@@ -269,7 +269,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">  
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">  
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
                         </div> -->
@@ -282,7 +282,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-semi-bold">Authorised By</mat-label>
                         </div> -->
@@ -302,7 +302,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Demand Draft Details</mat-label>
                  <div class="flex flex-wrap justify-between">
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Amount</mat-label>
                         </div> -->
@@ -315,7 +315,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">DD No.</mat-label>
                         </div> -->
@@ -328,7 +328,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Issue Date</mat-label>
                         </div> -->
@@ -354,7 +354,7 @@
                             ></maxhealth-question>
                         </div>
                     </div> -->
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Bank Name</mat-label>
                         </div> -->
@@ -367,7 +367,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Branch Name</mat-label>
                         </div> -->
@@ -380,7 +380,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>                   
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-semi-bold">Authorised By</mat-label>
                         </div> -->
@@ -400,7 +400,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Mobile Payment Details</mat-label>
                     <div class="flex flex-wrap justify-between">
-                        <div class="flex flex-column w-1/45 mt-2">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender Mobile</mat-label>
                         </div> -->
@@ -413,7 +413,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender MMID No.</mat-label>
                         </div> -->
@@ -426,7 +426,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender Name</mat-label>
                         </div> -->
@@ -439,7 +439,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div> -->
@@ -452,7 +452,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
                         </div> -->
@@ -465,7 +465,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Beneficiary Mob No.</mat-label>
                         </div> -->
@@ -478,7 +478,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color">Transaction Amount</mat-label>
                         </div> -->
@@ -491,7 +491,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-5/9">
                             <mat-label class="max-health-primary-color">Transaction Reference</mat-label>
                         </div> -->
@@ -511,7 +511,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Online Payment Details</mat-label>
                     <div class="flex flex-wrap justify-between">
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div> -->
@@ -524,7 +524,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
                         </div> -->
@@ -537,7 +537,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Booking ID</mat-label>
                         </div> -->
@@ -550,7 +550,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <div class="w-3/5">
                             <mat-label class="max-health-primary-color  font-medium">Card Validation</mat-label>
                         </div>
@@ -563,7 +563,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Contact No.</mat-label>
                         </div> -->
@@ -583,7 +583,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">PayTM Details</mat-label>
                     <div class="flex flex-wrap justify-between">
-                        <div class="flex flex-column w-1/45 mt-2">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div> -->
@@ -596,7 +596,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Wallet</mat-label>
                         </div> -->
@@ -609,7 +609,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender Mobile No.</mat-label>
                         </div> -->
@@ -622,7 +622,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
                         </div> -->
@@ -635,7 +635,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">OTP</mat-label>
                         </div> -->
@@ -648,7 +648,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Transaction Reference</mat-label>
                         </div> -->
@@ -661,7 +661,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Order ID</mat-label>
                         </div> -->
@@ -692,7 +692,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Internet Payment Details</mat-label>
                     <div class="flex flex-wrap justify-between">
-                        <div class="flex flex-column w-1/45 mt-2">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div> -->
@@ -705,7 +705,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Mobile No.</mat-label>
                         </div> -->
@@ -718,7 +718,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Email id</mat-label>
                         </div> -->
@@ -731,7 +731,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Remarks</mat-label>
                         </div> -->
@@ -751,7 +751,7 @@
                 <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">UPI Payment Details</mat-label>
                     <div class="flex flex-wrap justify-between">
-                        <div class="flex flex-column w-1/45 mt-2">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div> -->
@@ -764,7 +764,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
                         </div> -->
@@ -777,7 +777,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <div class="w-full">
                             <maxhealth-question
                             [question]="questions[63]"
@@ -787,7 +787,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                          <div class="w-full">
                             <maxhealth-question
                             [question]="questions[64]"
@@ -797,7 +797,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
                         </div> -->
@@ -810,7 +810,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div> -->
@@ -824,7 +824,7 @@
                         </div>
                     </div>
                    
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
                         </div> -->
@@ -837,7 +837,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Approval Code</mat-label>
                         </div> -->
@@ -850,7 +850,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Terminal ID</mat-label>
                         </div> -->
@@ -863,7 +863,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex flex-column w-1/45 mt-2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Acquiring Bank</mat-label>
                         </div> -->

@@ -50,10 +50,11 @@
         ::ng-deep mat-radio-group {
             flex-direction: row !important;
             justify-content: space-between;
-            gap:10px;
+            gap:5px;
         }
         ::ng-deep .mat-radio-button{
-            margin-left: 10px;
+            margin: 0 !important;
+            margin-left: 0 !important;
             padding-bottom: 0 !important;
         }
         ::ng-deep textarea{
@@ -79,5 +80,7 @@
             }
     }
 }
-
+.height-box{
+    height: 34vh;
+}
 
