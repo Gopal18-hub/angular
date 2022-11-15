@@ -210,7 +210,7 @@ export class RefundDialogComponent implements OnInit {
   
   MoreRefunddialog()
   { 
-    const successInfo = this.messageDialogService.info(
+    const successInfo = this.messageDialogService.success(
       `Refund has been done Successfully!`
     );     
     successInfo
@@ -255,7 +255,7 @@ export class RefundDialogComponent implements OnInit {
               this.clear();
               this.dialogRef.close();
               this.matDialog.closeAll();
-              this.messageDialogService.info(
+              this.messageDialogService.success(
                 `Refund has been done Successfully!`
               );  
             }else{
@@ -375,7 +375,7 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          this.messageDialogService.success("OTP Sent Successfully");
+          this.messageDialogService.info("OTP Sent Successfully");
           setTimeout(()=>{                           
             this.otpsenttomobile = false;
             this.otpresenttomobile = true;

@@ -52,6 +52,8 @@ export class DepositDialogComponent implements OnInit {
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
+  proceedToDeposit:boolean = true;
+
   private readonly _destroying$ = new Subject<void>();
 
   onDepositpage: boolean = true;
@@ -207,7 +209,7 @@ export class DepositDialogComponent implements OnInit {
             if(resultData[0].returnFlag == 0){
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
-              const successInfo = this.messageDialogService.info(
+              const successInfo = this.messageDialogService.success(
                 `Deposit Has Been Successfully Saved`
               );                  
             }else
@@ -290,7 +292,7 @@ export class DepositDialogComponent implements OnInit {
     this._destroying$.next(undefined);
     this._destroying$.complete();
   }
-  proceedToDeposit() {
+  checkmandatoryDeposit() {
     let tabForms = true;
     if(this.paymentdepositcashMode){
      if(this.paymentdepositcashMode.activeTab == "Cash" && this.paymentdepositcashMode.refundform.value.cashamount <= 0){
@@ -313,8 +315,10 @@ export class DepositDialogComponent implements OnInit {
      } 
     }
     if(!tabForms){
+      this.proceedToDeposit = false;
       return false;
     }else{
+      this.proceedToDeposit = true;
       return true;
     }
   }
