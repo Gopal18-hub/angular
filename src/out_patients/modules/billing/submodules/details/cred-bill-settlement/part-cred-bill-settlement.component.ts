@@ -209,7 +209,7 @@ export class PartialCredBillComponent implements OnInit {
   receiptno: any;
   makereceipt() {
     const RefundDialog = this.matDialog.open(PaymentDialogComponent, {
-        width: "70vw",
+        width: "80vw",
         height: "98vh",
         data: {   
           flag: this.flagfordue,    

@@ -1,4 +1,4 @@
-<section class="refund-bill-dialog">
+<section class="refund-bill-dialog relative">
     <!-- Cross Icon -->
     <div class="flex justify-content-end">
         <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
@@ -10,7 +10,7 @@
     </div>
 
     <!-- Payment Methods -->
-    <div class="w-full height-62"> 
+    <div class="w-full height-47"> 
 
         <!-- payment Methods left  -->
         <!-- <payment-methods [config]="config"></payment-methods> -->
@@ -318,7 +318,7 @@
         </section>
         
         <!-- payment Methods right -->
-        <div class="back-primary col-white width-34 h-full mt-2 float-right">
+        <div class="back-primary col-white width-34 height-56 mt-2 float-right">
             <div class="p-3 border-radius-md">
                 <mat-label class="font-base">Refund Summary</mat-label>
                 <div class="mt-2 w-full flex justify-between">
@@ -384,18 +384,19 @@
     </div>
     <!-- Checkbox -->
     <!-- Footer Part -->
-    <div class="mt-9 bottom">
+    <div class="bottom">
         <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
+        <div class="flex float-right creditbuttonwidth absolute right-0 bottom-0">
+            <div class="mr-3">
+                <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="submitbtn()">Submit</button>
+            </div>
+           
+            <div class="">
+                <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
+            </div>
+        </div>
     </div>
 
     <!-- button -->
-    <div class="flex float-right">
-        <div class="mr-3">
-            <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="submitbtn()">Submit</button>
-        </div>
-       
-        <div class="">
-            <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
-        </div>
-    </div>
+    
 </section>

@@ -1,4 +1,4 @@
-<section class="payment-dialog">
+<section class="payment-dialog relative">
     <!-- Cross Icon -->
     <div class="flex justify-content-end">
         <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
@@ -16,13 +16,34 @@
         <!-- <payment-methods [config]="config"></payment-methods> -->
         <section class="paymentmethod-wrapper"> 
             <div class="width h-full float-left maxhealth-vertical-tab">
-                <div class="flex h-1/10">
-                        <div class="w-1/4">
-                            <mat-label class="max-health-primary-color font-medium font-base absolute mt-3">Payment Methods</mat-label>
+                <div class="flex">
+                        <!-- <div class="w-1/4">
+                            
+                        </div> -->
+                        <mat-label class="max-health-primary-color font-medium font-base mt-3">Payment Methods</mat-label>
+                        <div class="flex mt-2 ml-8">
+                            <div>
+                                <maxhealth-question
+                                [question]="questions[0]"
+                                [form]="dueform"
+                                [questions]="questions[0]"
+                                [index]="0"
+                                >
+                                </maxhealth-question>
+                            </div>
+                            <div class="mg-top-1 ml-2">
+                                <maxhealth-question
+                                [question]="questions[1]"
+                                [form]="dueform"
+                                [questions]="questions[1]"
+                                [index]="1"
+                                >
+                                </maxhealth-question>
+                            </div>
                         </div>
                 </div>
                 
-                <mat-tab-group class="mt-12" animationDuration="0ms" (selectedTabChange)="tabchange($event)" #mattab [(selectedIndex)]="selected">
+                <mat-tab-group class="mt-4" animationDuration="0ms" (selectedTabChange)="tabchange($event)" #mattab [(selectedIndex)]="selected">
                     <mat-tab label="Cash">
                         <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">Cash Details</mat-label>
@@ -229,7 +250,7 @@
                                     ></maxhealth-question>
                                 </div>
                             </div>
-                            <div class="flex mt-4 btn">
+                            <div class="flex mt-4 btn w-9/10 justify-center">
                                 <button mat-raised-button color="primary" (click)="getmanual()" [disabled]="!manualbtn">Manual</button>
                                 <button mat-raised-button color="primary" class="ml-2" [disabled]="!approvalbtn">Get Approval</button>
                                 <button mat-raised-button color="primary" class="ml-2" (click)="retry()" [disabled]="retrybtn">Retry</button>
@@ -457,42 +478,24 @@
         </div>
     </div>
     <!-- Checkbox -->
-    <div class="flex absolute">
-        <div>
-            <maxhealth-question
-            [question]="questions[0]"
-            [form]="dueform"
-            [questions]="questions[0]"
-            [index]="0"
-            >
-            </maxhealth-question>
-        </div>
-        <div class="mg-top-1 ml-2">
-            <maxhealth-question
-            [question]="questions[1]"
-            [form]="dueform"
-            [questions]="questions[1]"
-            [index]="1"
-            >
-            </maxhealth-question>
-        </div>
-    </div>
+    
 
     <!-- Footer Part -->
-    <div class="mt-7 bottom">
+    <div class="bottom">
         <patient-identity-info [data]="patientIdentityInfo" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
 
         </patient-identity-info>
+        <div class="flex float-right creditbuttonwidth absolute right-0 bottom-0">
+            <div class="mr-3">
+                <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="submitbtn()">Submit</button>
+            </div>
+           
+            <div class="">
+                <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
+            </div>
+        </div>
     </div>
 
     <!-- button -->
-    <div class="flex float-right">
-        <div class="mr-3">
-            <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="submitbtn()">Submit</button>
-        </div>
-       
-        <div class="">
-            <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
-        </div>
-    </div>
+    
 </section>
