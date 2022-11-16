@@ -913,7 +913,8 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe( (value: any) => {
-        
+        this.questions[25].options = [];
+        this.questions[22].options = [];
         this.clearAddressOnCountryChange();
         if (
           this.OPRegForm.value.country.value != undefined &&
@@ -923,6 +924,8 @@ export class OpRegistrationComponent implements OnInit {
           this.getStatesByCountry(value);
           this.getCitiesByCountry(value);
           if (this.OPRegForm.value.country.value != 1) {
+            this.disttList = [];
+            this.localityList = [];
             this.OPRegForm.controls["pincode"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
@@ -959,17 +962,21 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         // this.clearAddressOnStateChange();
-        if (
-          this.OPRegForm.value.state.value != undefined &&
-          this.OPRegForm.value.state.value != null &&
-          this.OPRegForm.value.state.value != ""
-        ) {
-          this.getDistricyListByState(value);
-          this.getCityListByState(value);
-          if (!this.OPRegForm.controls["locality"].value) {
-            this.countrybasedflow = true;
+        if(this.OPRegForm.value.state)
+        {
+          if (
+            this.OPRegForm.value.state.value != undefined &&
+            this.OPRegForm.value.state.value != null &&
+            this.OPRegForm.value.state.value != ""
+          ) {
+            this.getDistricyListByState(value);
+            this.getCityListByState(value);
+            if (!this.OPRegForm.controls["locality"].value) {
+              this.countrybasedflow = true;
+            }
           }
         }
+        
         if(this.OPRegForm.value.country.value != 1)
     {
       this.OPRegForm.controls["pincode"].setErrors(null);
@@ -1838,6 +1845,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //MASTER LIST FOR Distt
   getAllDisttList() {
+    this.disttList = [];
     this.http
       .get(ApiConstants.disttMasterData)
       .pipe(takeUntil(this._destroying$))
@@ -2239,7 +2247,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //DISTRICT LIST BY STATE
   getDistricyListByState(state: any) {
-
+    this.disttList = [];
     if (state.value != undefined && state.value != null && state.value != "") {
       this.http
         .get(ApiConstants.districtBystateID(state.value))
