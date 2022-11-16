@@ -255,7 +255,7 @@ export class OpOrderRequestComponent implements OnInit {
                 SimilarPatientDialog,
                 {
                   width: "60vw",
-                  height: "62vh",
+                  height: "65vh",
                   data: {
                     searchResults: res,
                   },
