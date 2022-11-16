@@ -21,6 +21,7 @@ export class OpOrderRequestService {
   procedureFormGroup: any = { form: "", questions: [] };
   serviceTab = new Subject<boolean>();
   totalCost: any;
+  spinner = new Subject<boolean>();
   addToInvestigations(data: any) {
     this.investigationItems.push(data);
   }

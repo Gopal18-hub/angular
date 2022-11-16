@@ -502,26 +502,33 @@ export class OrderProcedureOtherComponent implements OnInit {
       this.opOrderrequestService.procedureItems.length > 0 ||
       this.opOrderrequestService.investigationItems.length > 0
     ) {
+      this.opOrderrequestService.spinner.next(true);
       this.http
         .post(
           BillingApiConstants.SaveDeleteOpOrderRequest,
           this.getSaveDeleteObject(1)
         )
         .pipe(takeUntil(this._destroying$))
-        .subscribe((data) => {
-          console.log(data);
-          this.saveResponsedata = data;
-          console.log(this.saveResponsedata.success);
-          if (this.saveResponsedata.success == true) {
-            this.messageDialogService.success("Saved Successfully");
-            this.data = [];
-            this.opOrderrequestService.procedureItems = [];
-            this.opOrderrequestService.investigationItems = [];
-            this.opOrderrequestService.calculateTotalAmount();
-            this.formGroup.reset();
-            this.config.columnsInfo.doctorName.moreOptions = {};
+        .subscribe(
+          (data) => {
+            console.log(data);
+            this.saveResponsedata = data;
+            console.log(this.saveResponsedata.success);
+            if (this.saveResponsedata.success == true) {
+              this.messageDialogService.success("Saved Successfully");
+              this.opOrderrequestService.spinner.next(false);
+              this.data = [];
+              this.opOrderrequestService.procedureItems = [];
+              this.opOrderrequestService.investigationItems = [];
+              this.opOrderrequestService.calculateTotalAmount();
+              this.formGroup.reset();
+              this.config.columnsInfo.doctorName.moreOptions = {};
+            }
+          },
+          (error) => {
+            this.opOrderrequestService.spinner.next(false);
           }
-        });
+        );
     }
   }
 

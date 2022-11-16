@@ -413,8 +413,8 @@ export class DepositComponent implements OnInit {
 
   openrefunddialog() {
     const RefundDialog = this.matDialog.open(RefundDialogComponent, {
-      width: "70vw",
-      height: "98vh",
+      width: "80vw",
+      height: "96vh",
       data: {
         patientinfo: {
           emailId: this.patientpersonaldetails[0]?.pEMail,
