@@ -264,8 +264,8 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["demandamount"].setValue("0.00");
     this.refundform.controls["upiamount"].setValue("0.00");
     this.refundform.controls["internetamount"].setValue("0.00");
-    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo.patientinfo.mobileno);
-    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo.patientinfo.emailId);
+    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.mobileno);
+    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.emailId);
   }
 
   resetcreditcard() {

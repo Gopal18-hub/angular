@@ -1,8 +1,18 @@
-<section class="refunddialogwrapper">
-    <!-- Cross Icon -->
-    <div class="flex justify-content-end">
-        <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
-    </div>
+<section class="refunddialogwrapper relative">
+    <div class="h-full w-full">
+      <!-- Cross Icon -->
+      <div class="close-height">
+        <button
+        mat-icon-button
+        aria-label="close dialog"
+        mat-dialog-close
+        class="absolute max-dialog-close-icon"
+        type="button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      </div>
+ 
 
     <!-- Blue Banner -->
     <div class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight">
@@ -22,7 +32,7 @@
         <payment-methods [config]="config" [Refundavalaiblemaount]="Refundavalaiblemaount"></payment-methods>
 
         <!-- payment Methods right -->
-        <div class="width mt-2 h-full float-right border-radius-md">
+        <div class="width mt-2 remarksheight float-right border-radius-md">
             <div class="w-full h-full back-primary p-3 col-white">
                 <mat-label class="font-base">Refund Summary</mat-label>
                 <div class="mt-1">
@@ -88,18 +98,17 @@
     </div>
 
     <!-- Footer Part -->
-    <div class="">
+    <div class="bottom">
         <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
-    </div>
+   
 
     <!-- button -->
-    <div class="flex float-right mb-5 refunddepositbutton">
-        <div class="mr-3">
-            <button mat-raised-button color="primary" type="submit" (click)="saverefunddialog()" class="mt-1 btn">Submit</button>
-        </div>
-       
-        <div class="">
-            <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
-        </div>
+    <div class="flex float-right refunddepositbutton right-0 absolute">       
+            <button mat-raised-button color="primary" type="submit" (click)="saverefunddialog()">Submit</button>
+     
+            <button mat-raised-button color="primary" type="submit" class="ml-3" (click)="clear()">Clear</button>
+      
     </div>
+</div>
+</div>
 </section>
