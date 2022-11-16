@@ -138,6 +138,13 @@ export class OpOrderRequestComponent implements OnInit {
         this.enableTotalestimate = false;
       }
     });
+    this.opOrderRequestService.spinner.subscribe((data: boolean) => {
+      if (data == true) {
+        this.apiProcessing = true;
+      } else {
+        this.apiProcessing = false;
+      }
+    });
     this.router
       .navigate(["out-patient-billing/op-order-request/services"])
       .then(() => {
@@ -248,7 +255,7 @@ export class OpOrderRequestComponent implements OnInit {
                 SimilarPatientDialog,
                 {
                   width: "60vw",
-                  height: "62vh",
+                  height: "65vh",
                   data: {
                     searchResults: res,
                   },
@@ -291,9 +298,12 @@ export class OpOrderRequestComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .toPromise()
+      .catch((error: any) => {
+        return error;
+      });
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
@@ -358,9 +368,12 @@ export class OpOrderRequestComponent implements OnInit {
               this.formGroup.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
+              this.apiProcessing = false;
+              this.snackbar.open("Invalid Max ID", "error");
+            } else {
+              this.apiProcessing = false;
               this.snackbar.open("Invalid Max ID", "error");
             }
-            this.apiProcessing = false;
           }
         );
     } else {
