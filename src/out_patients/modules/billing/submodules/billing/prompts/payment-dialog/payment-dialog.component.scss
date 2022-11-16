@@ -24,6 +24,9 @@
   .pointer {
     cursor: pointer;
   }
+  .height-2{
+    height: 2vh;
+  }
   .secondary {
     background-color: #45c0be;
   }
@@ -38,7 +41,7 @@
     color: #004084;
   }
   .height {
-    height: 50vh;
+    height: 48vh;
   }
   .width {
     width: 30% !important;
@@ -102,5 +105,8 @@
       height: 1.875rem !important;
       line-height: 1.875rem !important;
     }
+  }
+  .left-13{
+    left: 13rem;
   }
 }

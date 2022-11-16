@@ -352,7 +352,7 @@ export class SearchDialogComponent implements OnInit {
         if(this.formdata.frombill == 1)
         {
           this.getsearchopbillslist = this.getsearchopbillslist.filter(i => {
-            return i.balance > 0;
+            return i.balance > 0 && i.billStatus != 'cancelled';
           })
         }
         for(var i = 0 ; i < this.getsearchopbillslist.length; i++)
