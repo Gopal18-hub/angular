@@ -174,7 +174,7 @@ export class PaymentMethodsComponent implements OnInit {
     }
     else if(Number(this.depositamount >= 200000) && this.PaymentType == 1){
       this.messageDialogService.info("Cash amount cannot exceed Rs.199999");   
-      this.questions[0].elementRef.focus();     
+      //this.questions[0].elementRef.focus();     
     } 
     else {
       this.depositservice.setFormList(this.refundform.value);      

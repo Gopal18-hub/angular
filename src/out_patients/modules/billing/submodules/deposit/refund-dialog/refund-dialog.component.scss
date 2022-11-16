@@ -103,4 +103,7 @@ line-height: 1.25 !important;
           margin-top: 8px;
         }
       }
+      ::ng-deep .paymentmethod-wrapper .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+        width: 23%!important;
+      }
 }
