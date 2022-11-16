@@ -184,7 +184,10 @@
             <button mat-raised-button color="primary" class="ml-3 button-style" (click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
         </div> -->
     </div>
-        
+    <div *ngIf="apiprocessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div> 
     </div>
       
     

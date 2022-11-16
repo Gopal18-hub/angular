@@ -268,26 +268,32 @@ export class OPOrderViewRequest implements OnInit {
   delete() {
     console.log(this.tableRows.selection.selected);
     console.log(this.getSaveDeleteObject(2));
-
+    this.apiprocessing = true;
     this.http
       .post(
         BillingApiConstants.SaveDeleteOpOrderRequest,
         this.getSaveDeleteObject(2)
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
-        console.log(data);
-        this.deleteResponsedata = data;
-        if (this.deleteResponsedata.success == true) {
-          this.messagedialogservice.success("Deleted Successfully");
-          this.data = [];
-          this.tableRows.selection.clear();
-          // this.showtable = false;
-          // setTimeout(() => {
-          //   this.showtable = true;
-          // }, 1000);
-          this.getViewgridDetails();
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.deleteResponsedata = data;
+          if (this.deleteResponsedata.success == true) {
+            this.messagedialogservice.success("Deleted Successfully");
+            this.apiprocessing = false;
+            this.data = [];
+            this.tableRows.selection.clear();
+            // this.showtable = false;
+            // setTimeout(() => {
+            //   this.showtable = true;
+            // }, 1000);
+            this.getViewgridDetails();
+          }
+        },
+        (error) => {
+          this.apiprocessing = false;
         }
-      });
+      );
   }
 }
