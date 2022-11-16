@@ -615,26 +615,6 @@ export class OprefundApprovalComponent implements OnInit {
     this.showmain(this.link1[2]);
   }
   ngAfterViewInit(): void {}
-  // loadIp() {
-  //   this.httpclient
-  //     .get("https://jsonip.com")
-  //     .pipe(
-  //       switchMap((value: any) => {
-  //         //this.userIP = value.ip;
-  //         let url = `http://api.ipstack.com/${value.ip}?access_key=Your_API_Key`;
-  //         return this.httpclient.get(url);
-  //       })
-  //     )
-  //     .subscribe(
-  //       (value: any) => {
-  //         console.log(value);
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
-
   searchOpRefundapproval(formdata: any) {
     console.log("inside searchopreu=fundapproval method");
     // this.defaultUI = true;
@@ -891,9 +871,6 @@ export class OprefundApprovalComponent implements OnInit {
         } else {
           this.flag = 1;
         }
-        // var list = this.risReasonList.filter((i: any) => {
-        //   return i.value == a.risReason;
-        // });
         this.pendingList.push({
           recordId: a.id,
           flag: this.flag,
@@ -938,6 +915,7 @@ export class OprefundApprovalComponent implements OnInit {
           }
         });
         if (this.pendingList.length != 0) {
+          this.showapprovalspinner = true;
           this.http
             .post(
               ApiConstants.oprefundapprovereject,
@@ -949,6 +927,7 @@ export class OprefundApprovalComponent implements OnInit {
                 console.log(data);
                 if (data == "Records Successfully Done!") {
                   this.getoprefundPending();
+                  this.showapprovalspinner = false;
                   this.useridList = [];
                   this.requesteduser = false;
                   this.pendingList = [];
@@ -969,6 +948,7 @@ export class OprefundApprovalComponent implements OnInit {
                   this.useridList = [];
                   this.requesteduser = false;
                   this.getoprefundPending();
+                  this.showapprovalspinner = false;
                   if (value == 0) {
                     this.dialogservice.success("Update Request Approved");
                   } else if (value == 1) {
@@ -981,6 +961,7 @@ export class OprefundApprovalComponent implements OnInit {
                   this.useridList = [];
                   this.requesteduser = false;
                   this.getoprefundPending();
+                  this.showapprovalspinner = false;
                   this.dialogservice.error(
                     "There is an error occured while processing your transaction, check with administrator"
                   );

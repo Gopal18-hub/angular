@@ -658,10 +658,12 @@ export class OderInvestigationsComponent implements OnInit {
     console.log(this.data);
     this.reqItemDetail = "";
     console.log("inside save");
+
     if (
       this.opOrderRequestService.procedureItems.length > 0 ||
       this.opOrderRequestService.investigationItems.length > 0
     ) {
+      this.opOrderRequestService.spinner.next(true);
       // if (this.opOrderRequestService.investigationItems.length > 0)
       this.http
         .post(
@@ -669,22 +671,28 @@ export class OderInvestigationsComponent implements OnInit {
           this.getSaveDeleteObject(1)
         )
         .pipe(takeUntil(this._destroying$))
-        .subscribe((data) => {
-          console.log(data);
-          this.saveResponsedata = data;
-          console.log(this.saveResponsedata.success);
-          if (this.saveResponsedata.success == true) {
-            this.messageDialogService.success("Saved Successfully");
-            this.data = [];
+        .subscribe(
+          (data) => {
+            console.log(data);
+            this.saveResponsedata = data;
+            console.log(this.saveResponsedata.success);
+            if (this.saveResponsedata.success == true) {
+              this.messageDialogService.success("Saved Successfully");
+              this.opOrderRequestService.spinner.next(false);
+              this.data = [];
 
-            this.opOrderRequestService.investigationItems = [];
-            this.opOrderRequestService.calculateTotalAmount();
-            this.formGroup.reset();
-            this.opOrderRequestService.procedureItems = [];
-            this.config.columnsInfo.doctorName.moreOptions = {};
-            this.defaultPriorityId = 1;
+              this.opOrderRequestService.investigationItems = [];
+              this.opOrderRequestService.calculateTotalAmount();
+              this.formGroup.reset();
+              this.opOrderRequestService.procedureItems = [];
+              this.config.columnsInfo.doctorName.moreOptions = {};
+              this.defaultPriorityId = 1;
+            }
+          },
+          (error) => {
+            this.opOrderRequestService.spinner.next(false);
           }
-        });
+        );
     }
   }
   view() {

@@ -81,6 +81,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   activeflaglength: number = 0;
   onDelete: boolean = false;
   count: number = 0;
+  apiprocessing: boolean = false;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("empdependanttable") employeeDependanttable: any;
@@ -614,6 +615,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.activeflaglength = 0;
     let iacode = maxid.split(".")[0];
     let regno = maxid.split(".")[1];
+    this.apiprocessing = true;
     this.http
       .get(
         ApiConstants.getpatientsponsordataonmaxid(
@@ -631,6 +633,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             if (data.objPatientDemographicData.length > 0) {
               this.cleardata();
               this.validmaxid = true;
+              this.apiprocessing = false;
               //this.disableClear = false;
               this.patientSponsorData = data as GetPatientSponsorDataInterface;
               console.log(this.patientSponsorData);
@@ -748,6 +751,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               });
             } else {
               this.validmaxid = false;
+              this.apiprocessing = false;
               //this.disableClear = true;
               this.questions[1].elementRef.focus();
               this.employeesponsorForm.controls["maxId"].setErrors({
@@ -758,6 +762,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             }
           } else {
             //this.validmaxid=true;
+            this.apiprocessing = false;
             console.log("else part of data != null");
             this.questions[1].elementRef.focus();
             this.employeesponsorForm.controls["maxId"].setErrors({
@@ -768,16 +773,21 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         },
         (error) => {
           console.log(error);
+          this.apiprocessing = false;
           if (
             error.status == 404 ||
             (error.error == null && error.statusText == "Not Found")
           ) {
+            this.questions[1].elementRef.focus();
             this.employeesponsorForm.controls["maxId"].setErrors({
               incorrect: true,
             });
             this.questions[0].customErrorMessage = "Invalid Maxid";
             //this.dialogService.info("Please enter  valid max ID");
-          } else if (error.title == "One or more validation errors occurred.") {
+          } else if (
+            error.error.title == "One or more validation errors occurred."
+          ) {
+            this.questions[1].elementRef.focus();
             this.employeesponsorForm.controls["maxId"].setErrors({
               incorrect: true,
             });
@@ -850,6 +860,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   onEmployeecodeEnter() {
     this.empid = null;
     this.activeflaglength = 0;
+    this.apiprocessing = true;
     this.http
       .get(
         ApiConstants.getEmployeeStaffDependantDetails(
@@ -859,11 +870,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
-        if (data != null) {
+        if (data != null || data.length != 0) {
           if (data.length > 0) {
             console.log(data);
             this.employeesponsorForm.controls["employeeCode"].disable();
             this.validEmployeecode = true;
+            this.apiprocessing = false;
             console.log(data);
             this.employeeDependantDetailList =
               data as EmployeeDependantDetails[];
@@ -888,6 +900,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             console.log("employee data list length =0");
             this.questions[1].elementRef.focus();
             this.validEmployeecode = false;
+            this.apiprocessing = false;
             this.employeesponsorForm.controls["employeeCode"].setErrors({
               incorrect: true,
             });
@@ -902,6 +915,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           });
           this.questions[2].customErrorMessage = "Invalid Employee code";
           this.validEmployeecode = false;
+          this.apiprocessing = false;
           this.questions[2].elementRef.focus();
         }
       });
@@ -932,6 +946,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         } else if (this.companyId == 0) {
           this.dialogService.info("Please select company");
         } else {
+          this.apiprocessing = true;
           this.http
             .post(
               ApiConstants.saveEmployeeSponsorData,
@@ -940,6 +955,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             .subscribe(
               (data) => {
                 console.log(data);
+                this.apiprocessing = false;
                 this.onMaxidEnter(
                   this.employeesponsorForm.controls["maxId"].value
                 );
@@ -953,6 +969,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               },
               (error) => {
                 console.log(error);
+                this.apiprocessing = false;
                 if (error.error == "Please select Maxid!") {
                   this.dialogService.info("Please enter Maxid");
                 } else if (error.error == "Please select company!") {
@@ -1023,6 +1040,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               this.count = 0;
             }
           } else {
+            this.apiprocessing = true;
             this.http
               .post(
                 ApiConstants.saveEmployeeSponsorData,
@@ -1031,6 +1049,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               .subscribe(
                 (data) => {
                   console.log(data);
+                  this.apiprocessing = false;
                   this.updatedTableList =
                     data as SaveDeleteEmployeeSponsorResponse[];
                   for (let i = 0; i < this.updatedTableList.length; i++) {
@@ -1059,6 +1078,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                   this.dialogService.success("Deleted Successfully");
                 },
                 (error) => {
+                  this.apiprocessing = false;
                   console.log(error);
                   // if (error.error.errors.($.compid).length > 0) {
                   //   this.dialogService.info("Please select company");
