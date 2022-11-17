@@ -22,7 +22,7 @@ import { CommonModule } from "@angular/common";
       <!-- Info -->
       <div *ngIf="data.type == 'info'" class="notification">
         <div class="icon">
-          <mat-icon>info</mat-icon>
+          <mat-icon class="material-icons-round">info</mat-icon>
         </div>
         <div class="content">
           <div class="message">{{ data.message }}</div>
@@ -32,7 +32,7 @@ import { CommonModule } from "@angular/common";
       <!-- Error -->
       <div *ngIf="data.type == 'error'" class="notification">
         <div class="icon">
-          <mat-icon>error</mat-icon>
+          <mat-icon class="material-icons-round">warning</mat-icon>
         </div>
         <div class="content">
           <div class="message">{{ data.message }}</div>
@@ -42,7 +42,7 @@ import { CommonModule } from "@angular/common";
       <!-- Success -->
       <div *ngIf="data.type == 'success'" class="notification">
         <div class="icon">
-          <mat-icon>check_circle</mat-icon>
+          <mat-icon class="material-icons-round">check_circle</mat-icon>
         </div>
         <div class="content">
           <div class="message">{{ data.message }}</div>

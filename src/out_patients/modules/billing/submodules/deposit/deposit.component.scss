@@ -73,7 +73,10 @@
 }
 .deposittable {
     ::ng-deep .max-table-wrapper {
-        width: 61.3% !important;
+        table {
+           width: 120% !important;
+        }
+     
         border: 1px solid #707070 !important;
         tbody tr td:nth-child(5),
         tbody tr td:nth-child(7),
@@ -149,14 +152,16 @@
  
   ::ng-deep .child-element-detail {
     position: relative;
-    width: 163.7%;
+    width: 100.4%;
     ::ng-deep .mat-sort-header-content{
         white-space: nowrap;
     }
-    .max-table-wrapper{
+    ::ng-deep .max-table-wrapper {
         border-radius: 0px !important; 
         border:none !important;
-       
+        table {
+           width: 100% !important;
+        }
     }
     .mat-row {
      .mat-cell {
@@ -224,12 +229,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.deposittablewidth{
-    height: 83% !important;
+.deposittableheight{
+    height: 86% !important;
 }
-//    ::ng-deep .relative.table-height {
-//     height: 50vh !important;
-// }
+
+.h-82{
+    height: 82% !important;
+}
 
 .second-row-depositbutton{
     .mat-raised-button{

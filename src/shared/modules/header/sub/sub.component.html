@@ -238,7 +238,6 @@
               disabled: module.disabled
             }"
             (mouseover)="subMenuTrigger.openMenu()"
-            (click)="activeSubModule = module"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
@@ -277,24 +276,26 @@
         let-module="module"
         let-subMenuTrigger="subMenuTrigger"
       >
-        <div class="flex flex-wrap">
+        <div
+          class="flex flex-wrap max-width"
+          [ngClass]="{ 'min-width': module?.childrens?.length <= 4 }"
+        >
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <ng-container *ngIf="menuItem.childrens?.length > 0">
               <button
                 [disabled]="menuItem.disabled"
-                class="max-health-primary-color"
                 mat-menu-item
+                class="w-full"
               >
-                {{ menuItem.title }}
+                <maxhealth-sub-nested-menu
+                  #nestedMenu
+                  [module]="module"
+                  [menu]="menuItem"
+                  [subMenuTrigger]="subMenuTrigger"
+                  [baseHref]="baseHref"
+                  [onPageRouterLinkActive]="onPageRouterLinkActive"
+                ></maxhealth-sub-nested-menu>
               </button>
-              <maxhealth-sub-nested-menu
-                #nestedMenu
-                [module]="module"
-                [menu]="menuItem"
-                [subMenuTrigger]="subMenuTrigger"
-                [baseHref]="baseHref"
-                [onPageRouterLinkActive]="onPageRouterLinkActive"
-              ></maxhealth-sub-nested-menu>
             </ng-container>
             <ng-container
               *ngIf="menuItem.childrens?.length == 0 || !menuItem.childrens"
@@ -303,6 +304,11 @@
                 [disabled]="menuItem.disabled"
                 mat-button
                 class="max-health-primary-color w-1/3"
+                [ngClass]="{
+                  'w-1/3': aliasMenuItems.length > 8,
+                  'w-1/2': aliasMenuItems.length <= 8,
+                  'w-full': aliasMenuItems.length <= 4
+                }"
                 (click)="activeSubModule = module"
                 [routerLink]="
                   baseHref == tenentPath
