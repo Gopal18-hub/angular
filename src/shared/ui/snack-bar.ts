@@ -95,7 +95,7 @@ export class MaxHealthSnackBarService {
 
   open(message: string, type: string = "info", duration?: number) {
     this.snackBar.openFromComponent(MaxHealthSnackBar, {
-      duration: duration || 40000000000000,
+      duration: duration || 4000,
       data: {
         message: message,
         type: type,
