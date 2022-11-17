@@ -280,21 +280,16 @@
         <div class="flex flex-wrap">
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <ng-container *ngIf="menuItem.childrens?.length > 0">
-              <button
-                [disabled]="menuItem.disabled"
-                class="max-health-primary-color"
-                mat-menu-item
-              >
-                {{ menuItem.title }}
+              <button [disabled]="menuItem.disabled" mat-menu-item>
+                <maxhealth-sub-nested-menu
+                  #nestedMenu
+                  [module]="module"
+                  [menu]="menuItem"
+                  [subMenuTrigger]="subMenuTrigger"
+                  [baseHref]="baseHref"
+                  [onPageRouterLinkActive]="onPageRouterLinkActive"
+                ></maxhealth-sub-nested-menu>
               </button>
-              <maxhealth-sub-nested-menu
-                #nestedMenu
-                [module]="module"
-                [menu]="menuItem"
-                [subMenuTrigger]="subMenuTrigger"
-                [baseHref]="baseHref"
-                [onPageRouterLinkActive]="onPageRouterLinkActive"
-              ></maxhealth-sub-nested-menu>
             </ng-container>
             <ng-container
               *ngIf="menuItem.childrens?.length == 0 || !menuItem.childrens"
