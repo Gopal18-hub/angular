@@ -8,13 +8,10 @@
         
         <mat-tab-group class="mt-12" animationDuration="0ms" (selectedTabChange)="config.combopayment?false:tabChanged($event)">
             <mat-tab label="Cash" *ngIf="config.paymentmethod.cash">
-                <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-base font-medium"  [ngClass]="{
-                        'mat-form-field-required-marker': questions.required
-                      }">Cash Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <mat-label class="max-health-primary-color font-medium">Amount:</mat-label>
-                        <div class="w-5/9 ml-3 input1">
+                <div class="ml-4 w-4/5">
+                    <mat-label class="max-health-primary-color font-base font-medium">Cash Details</mat-label>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <div class="w-full ml-0 input1">
                             <maxhealth-question
                             [question]="questions[0]"
                             [form]="refundform"
@@ -24,15 +21,192 @@
                         </div>
                     </div>
                 </div> 
+            </mat-tab>           
+            <mat-tab label="Credit / Debit Card" *ngIf="config.paymentmethod.credit">
+                <div class="ml-4 w-4/5">
+                    <mat-label class="max-health-primary-color font-base font-medium">Credit Card Details</mat-label>
+                    <div class="flex flex-wrap justify-between">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                        </div> -->
+                        <div class="w-full input1">
+                            <maxhealth-question
+                            [question]="questions[11]"
+                            [form]="refundform"
+                            [questions]="questions[11]"
+                            [index]="7"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">POS IMEI</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[60]"
+                            [form]="refundform"
+                            [questions]="questions[60]"
+                            [index]="15"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[61]"
+                            [form]="refundform"
+                            [questions]="questions[61]"
+                            [index]="16"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                   
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[7]"
+                            [form]="refundform"
+                            [questions]="questions[7]"
+                            [index]="8"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Card Holder Name</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[8]"
+                            [form]="refundform"
+                            [questions]="questions[8]"
+                            [index]="9"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[65]"
+                            [form]="refundform"
+                            [questions]="questions[65]"
+                            [index]="10"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[9]"
+                            [form]="refundform"
+                            [questions]="questions[9]"
+                            [index]="10"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[10]"
+                            [form]="refundform"
+                            [questions]="questions[10]"
+                            [index]="11"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                 
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Approval Code</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[12]"
+                            [form]="refundform"
+                            [questions]="questions[12]"
+                            [index]="12"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Terminal ID</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[13]"
+                            [form]="refundform"
+                            [questions]="questions[13]"
+                            [index]="13"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Acquiring Bank</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[14]"
+                            [form]="refundform"
+                            [questions]="questions[14]"
+                            [index]="14"
+                            ></maxhealth-question>
+                        </div>
+                    </div>                   
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
+                        </div> -->
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[66]"
+                            [form]="refundform"
+                            [questions]="questions[66]"
+                            [index]="10"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex mx-6 justify-between mt-3 ml-4 creditbuttonwidth">
+                        <div class="ml-6">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="Enablecreditfields()">Manual</button>
+                        </div>
+                        <div class="ml-6">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1">Get Approval</button>
+                        </div>
+                        <div class="ml-6">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetcreditcard()">Retry</button>
+                        </div>
+                    </div>
+                </div>                
+            </div>
             </mat-tab>
             <mat-tab label="Cheque" *ngIf="config.paymentmethod.cheque">
-                <div class="ml-10 ">
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Cheque Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-3/10">
+                   <div class="flex flex-wrap justify-between">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full input1">
                             <maxhealth-question
                             [question]="questions[5]"
                             [form]="refundform"
@@ -40,12 +214,14 @@
                             [index]="1"
                             ></maxhealth-question>
                         </div>
+                     
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                   
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Cheque No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[1]"
                             [form]="refundform"
@@ -54,11 +230,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Issue Date</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[2]"
                             [form]="refundform"
@@ -67,7 +243,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
+                    <!-- <div class="flex w-3/4 mt-1">
                         <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Validity</mat-label>
                         </div>
@@ -79,12 +255,12 @@
                             [index]="3"
                             ></maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    </div> -->
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[3]"
                             [form]="refundform"
@@ -93,11 +269,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">  
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[4]"
                             [form]="refundform"
@@ -106,11 +282,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                  <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-semi-bold">Authorised By</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[6]"
                             [form]="refundform"
@@ -118,166 +294,19 @@
                             [index]="6"
                             ></maxhealth-question>
                         </div>
-                    </div>                 
-                </div>
-            </mat-tab>
-            <mat-tab label="Credit Card" *ngIf="config.paymentmethod.credit">
-                <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-base font-medium">Credit Card Details</mat-label>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
-                            <maxhealth-question
-                            [question]="questions[11]"
-                            [form]="refundform"
-                            [questions]="questions[11]"
-                            [index]="7"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">POS IMEI</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[60]"
-                            [form]="refundform"
-                            [questions]="questions[60]"
-                            [index]="15"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[61]"
-                            [form]="refundform"
-                            [questions]="questions[61]"
-                            [index]="16"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                   
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[7]"
-                            [form]="refundform"
-                            [questions]="questions[7]"
-                            [index]="8"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Card Holder Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[8]"
-                            [form]="refundform"
-                            [questions]="questions[8]"
-                            [index]="9"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[9]"
-                            [form]="refundform"
-                            [questions]="questions[9]"
-                            [index]="10"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[10]"
-                            [form]="refundform"
-                            [questions]="questions[10]"
-                            [index]="11"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                 
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Approval Code</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[12]"
-                            [form]="refundform"
-                            [questions]="questions[12]"
-                            [index]="12"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Terminal ID</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[13]"
-                            [form]="refundform"
-                            [questions]="questions[13]"
-                            [index]="13"
-                            ></maxhealth-question>
-                        </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-2/5">
-                            <mat-label class="max-health-primary-color  font-medium">Acquiring Bank</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
-                            <maxhealth-question
-                            [question]="questions[14]"
-                            [form]="refundform"
-                            [questions]="questions[14]"
-                            [index]="14"
-                            ></maxhealth-question>
-                        </div>
-                    </div>                   
-               
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
-                        <div class="">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="Enablecreditfields()">Manual</button>
-                        </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1">Ok</button>
-                        </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetcreditcard()">Retry</button>
-                        </div>
-                    </div>
-                </div>
+                    </div>    
+                </div>                                
+             </div>
             </mat-tab>
             <mat-tab label="Demand Draft" *ngIf="config.paymentmethod.demand">
-                <div class="ml-10">
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Demand Draft Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-3/10">
+                 <div class="flex flex-wrap justify-between">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full input1">
                             <maxhealth-question
                             [question]="questions[19]"
                             [form]="refundform"
@@ -286,11 +315,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">DD No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[15]"
                             [form]="refundform"
@@ -299,11 +328,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Issue Date</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[16]"
                             [form]="refundform"
@@ -312,11 +341,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
+                    <!-- <div class="flex flex-column w-1/45 mt-2">
                         <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Validity</mat-label>
                         </div>
-                        <div class="w-5/9 ml-3">
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[56]"
                             [form]="refundform"
@@ -324,12 +353,12 @@
                             [index]="17"
                             ></maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    </div> -->
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Bank Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[17]"
                             [form]="refundform"
@@ -338,11 +367,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Branch Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[18]"
                             [form]="refundform"
@@ -350,13 +379,12 @@
                             [index]="19"
                             ></maxhealth-question>
                         </div>
-                    </div>
-                   
-                     <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    </div>                   
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-semi-bold">Authorised By</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[20]"
                             [form]="refundform"
@@ -365,17 +393,18 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                  
+                  </div>
                 </div>
             </mat-tab>
             <mat-tab label="Mobile Payment" *ngIf="config.paymentmethod.mobilepayment">
-                <div class="ml-10">
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Mobile Payment Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-1/2">
+                    <div class="flex flex-wrap justify-between">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender Mobile</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[21]"
                             [form]="refundform"
@@ -384,11 +413,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender MMID No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[22]"
                             [form]="refundform"
@@ -397,11 +426,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[23]"
                             [form]="refundform"
@@ -410,11 +439,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[24]"
                             [form]="refundform"
@@ -423,11 +452,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[25]"
                             [form]="refundform"
@@ -436,11 +465,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Beneficiary Mob No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[26]"
                             [form]="refundform"
@@ -449,11 +478,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color">Transaction Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[27]"
                             [form]="refundform"
@@ -462,11 +491,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-5/9">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-5/9">
                             <mat-label class="max-health-primary-color">Transaction Reference</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[28]"
                             [form]="refundform"
@@ -475,16 +504,18 @@
                             ></maxhealth-question>
                         </div>
                     </div>
+                    </div>                    
                 </div>
             </mat-tab>
             <mat-tab label="Online Payment" *ngIf="config.paymentmethod.onlinepayment">
-                <div class="ml-10">
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Online Payment Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-3/10">
+                    <div class="flex flex-wrap justify-between">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full input1">
                             <maxhealth-question
                             [question]="questions[33]"
                             [form]="refundform"
@@ -493,11 +524,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[29]"
                             [form]="refundform"
@@ -506,11 +537,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Booking ID</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[30]"
                             [form]="refundform"
@@ -519,11 +550,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-2">
-                        <div class="w-3/10">
-                            <mat-label class="max-health-primary-color  font-medium">Card Validate</mat-label>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <div class="w-3/5">
+                            <mat-label class="max-health-primary-color  font-medium">Card Validation</mat-label>
                         </div>
-                        <div class="w-5/9 ml-3">
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[31]"
                             [form]="refundform"
@@ -532,11 +563,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4">
-                        <div class="w-3/10">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Contact No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[32]"
                             [form]="refundform"
@@ -545,17 +576,18 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                   
+                   </div>
                 </div>
             </mat-tab>
-            <mat-tab label="PayTM" *ngIf="config.paymentmethod.paytm">
-                <div class="ml-10">
+            <mat-tab label="PayTM" *ngIf="config.paymentmethod.paytm" >
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">PayTM Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-1/2">
+                    <div class="flex flex-wrap justify-between">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full input1">
                             <maxhealth-question
                             [question]="questions[34]"
                             [form]="refundform"
@@ -564,11 +596,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Wallet</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[35]"
                             [form]="refundform"
@@ -577,11 +609,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Sender Mobile No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[36]"
                             [form]="refundform"
@@ -590,11 +622,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[37]"
                             [form]="refundform"
@@ -603,11 +635,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">OTP</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[38]"
                             [form]="refundform"
@@ -616,11 +648,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Transaction Reference</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[39]"
                             [form]="refundform"
@@ -629,11 +661,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/2">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/2">
                             <mat-label class="max-health-primary-color  font-medium">Order ID</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[40]"
                             [form]="refundform"
@@ -654,15 +686,17 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </mat-tab>            
             <mat-tab label="Internet Payment" *ngIf="config.paymentmethod.internetpayment">
-                <div class="ml-10">
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">Internet Payment Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-1/3">
+                    <div class="flex flex-wrap justify-between">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full input1">
                             <maxhealth-question
                             [question]="questions[51]"
                             [form]="refundform"
@@ -671,11 +705,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Mobile No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[49]"
                             [form]="refundform"
@@ -684,11 +718,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Email id</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[50]"
                             [form]="refundform"
@@ -697,11 +731,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Remarks</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[62]"
                             [form]="refundform"
@@ -711,15 +745,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </mat-tab>
             <mat-tab label="UPI" *ngIf="config.paymentmethod.upi">
-                <div class="ml-10">
+                <div class="ml-4 w-4/5">
                     <mat-label class="max-health-primary-color font-base font-medium">UPI Payment Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
-                        <div class="w-1/3">
+                    <div class="flex flex-wrap justify-between">
+                        <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3 input1">
+                        </div> -->
+                        <div class="w-full input1">
                             <maxhealth-question
                             [question]="questions[44]"
                             [form]="refundform"
@@ -728,11 +764,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[41]"
                             [form]="refundform"
@@ -741,11 +777,31 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
-                            <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[63]"
+                            [form]="refundform"
+                            [questions]="questions[63]"
+                            [index]="43"
+                            ></maxhealth-question>
                         </div>
-                        <div class="w-5/9 ml-3">
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                         <div class="w-full">
+                            <maxhealth-question
+                            [question]="questions[64]"
+                            [form]="refundform"
+                            [questions]="questions[64]"
+                            [index]="43"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
+                            <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[42]"
                             [form]="refundform"
@@ -754,11 +810,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[43]"
                             [form]="refundform"
@@ -768,11 +824,11 @@
                         </div>
                     </div>
                    
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[45]"
                             [form]="refundform"
@@ -781,11 +837,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Approval Code</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[46]"
                             [form]="refundform"
@@ -794,11 +850,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Terminal ID</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[47]"
                             [form]="refundform"
@@ -807,11 +863,11 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-3/4 mt-1">
-                        <div class="w-1/3">
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Acquiring Bank</mat-label>
-                        </div>
-                        <div class="w-5/9 ml-3">
+                        </div> -->
+                        <div class="w-full">
                             <maxhealth-question
                             [question]="questions[48]"
                             [form]="refundform"
@@ -820,18 +876,19 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 ml-5 align-items-center creditbuttonwidth">
-                        <div class="">
+                    <div class="flex mx-6 justify-between mt-3 align-items-center creditbuttonwidth">
+                        <div class="ml-6">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Get Status</button>
                         </div>
-                        <div class="ml-3">
+                        <div class="ml-6">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Ok</button>
                         </div>
-                        <div class="ml-3">
+                        <div class="ml-6">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Retry</button>
                         </div>
                     </div>
                 </div>
+            </div>
         </mat-tab>            
           </mat-tab-group>
     </div>

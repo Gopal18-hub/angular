@@ -24,7 +24,7 @@ import { CompanydialogComponent } from "./companydialog/companydialog.component"
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatTooltipModule } from "@angular/material/tooltip";
 //import { CommonModule } from '@angular/common';
-
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 @NgModule({
   declarations: [
     EmployeeSponsorTaggingComponent,
@@ -54,6 +54,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     DynamicFormsModule,
     MatDialogModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
   ],
   exports: [],
   providers: [],

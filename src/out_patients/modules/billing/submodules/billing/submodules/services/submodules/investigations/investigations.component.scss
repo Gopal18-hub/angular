@@ -8,3 +8,14 @@
     }
   }
 }
+.service-type{
+  ::ng-deep{
+    .mat-select{
+      padding: 2px !important;
+    }
+    // .mat-select-arrow{
+    //   color: #000;
+    // }
+  }
+}
+

@@ -123,6 +123,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   excludeClinicsLocations = [67, 69];
   userSelectedDMG = 0;
+  //GAV_1193
+  autoVisitHistoryPopupLocations = [69, 8];
+  //GAV_1193
+  visitHistoryConsultTypeLocations: any = { 69: "", 8: "Follow up" };
 
   constructor(
     private formService: QuestionControlService,
@@ -635,13 +639,25 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         consultationtype = consultType[0].strConsult;
       }
     }
-    /////GAV-777
+    /////GAV-1193
     if (
-      consultType[0].strConsult.includes("Follow up") &&
-      Number(this.cookie.get("HSPLocationId")) == 69
+      this.autoVisitHistoryPopupLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
     ) {
-      this.billingService.visitHistory();
+      if (
+        consultType[0].strConsult.includes(
+          this.visitHistoryConsultTypeLocations[
+            Number(this.cookie.get("HSPLocationId"))
+          ]
+        ) ||
+        (Number(this.cookie.get("HSPLocationId")) == 69 &&
+          !this.visitHistoryConsultTypeLocations[69])
+      ) {
+        this.billingService.visitHistory();
+      }
     }
+
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,

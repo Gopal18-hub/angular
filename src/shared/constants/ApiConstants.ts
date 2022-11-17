@@ -30,4 +30,11 @@ export namespace ApiConstants {
     );
   };
   // export const getPermissions = `${environment.IdentityServerUrl}api/MaxPermission/getpermissionmatrixrolewise`;
+
+  export const getPOSMachineMaster = (
+    locationId: number,
+    stationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/GetPosMachineMaster/${stationId}/${locationId}`;
+  };
 }

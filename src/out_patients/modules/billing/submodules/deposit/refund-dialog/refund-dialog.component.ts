@@ -178,25 +178,25 @@ export class RefundDialogComponent implements OnInit {
           || this.RefundcashMode.chequebranchname == "" || this.RefundcashMode.chequebranchname == null
           || this.RefundcashMode.chequeissuedate == ""  || this.RefundcashMode.chequeissuedate == null
           || this.RefundcashMode.chequeauth == "" || this.RefundcashMode.chequeauth == null){
-            this.messageDialogService.error("Please Fill All Cheque Mandatory Fields ");
+            this.messageDialogService.info("Please Fill All Cheque Mandatory Fields ");
             this.validationexists = true;
           }         
        }
       if(this.PaymentTypedepositamount == 0){
-        this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
+        this.messageDialogService.info("Refund Amount must not be Zero or Negative number");
         this.validationexists = true;
       }
       else if(Number(this.PaymentTypedepositamount) > Number(this.avalaiblemaount)){
-        this.messageDialogService.error("Refund Amount must be less then available amount");
+        this.messageDialogService.info("Refund Amount must be less then available amount");
         this.validationexists = true;
       }
       else if((Number(this.PaymentTypedepositamount) > Number(this.depositcashlimitationdetails[0].cashLimit)) && this.PaymentType == 1){
-        this.messageDialogService.error("Refund through Cash Cannot be more then Rs 10000");
+        this.messageDialogService.info("Refund through Cash Cannot be more then Rs 10000");
         this.validationexists = true;
       }
       if((this.refundform.value.otp == "" || this.refundform.value.otp == null) && !this.validationexists){ 
         this.questions[4].elementRef.focus();       
-        this.messageDialogService.error("Enter OTP");
+        this.messageDialogService.info("Enter OTP");
        
         this.validationexists = true;
       }
@@ -210,7 +210,7 @@ export class RefundDialogComponent implements OnInit {
   
   MoreRefunddialog()
   { 
-    const successInfo = this.messageDialogService.info(
+    const successInfo = this.messageDialogService.success(
       `Refund has been done Successfully!`
     );     
     successInfo
@@ -255,7 +255,7 @@ export class RefundDialogComponent implements OnInit {
               this.clear();
               this.dialogRef.close();
               this.matDialog.closeAll();
-              this.messageDialogService.info(
+              this.messageDialogService.success(
                 `Refund has been done Successfully!`
               );  
             }else{
@@ -318,11 +318,11 @@ export class RefundDialogComponent implements OnInit {
     this.RefundcashMode = this.paymentdepositcashMode.refundform.value;    
     if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
     {
-       this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
+       this.messageDialogService.info("Refund Amount must not be Zero or Negative number");
        this.validationexists = true;
     }
     else if(Number(this.RefundcashMode.cashamount) > Number(this.avalaiblemaount)){
-      this.messageDialogService.error("Refund Amount must be less then available amount");
+      this.messageDialogService.info("Refund Amount must be less then available amount");
       this.validationexists = true;
     }
     
@@ -358,11 +358,11 @@ export class RefundDialogComponent implements OnInit {
     this.validationexists = false;
     if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
     {
-       this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
+       this.messageDialogService.info("Refund Amount must not be Zero or Negative number");
        this.validationexists = true;
     }
     else if(Number(this.RefundcashMode.cashamount) > Number(this.avalaiblemaount)){
-      this.messageDialogService.error("Refund Amount must be less then available amount");
+      this.messageDialogService.info("Refund Amount must be less then available amount");
       this.validationexists = true;
     }
 
@@ -375,7 +375,7 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          this.messageDialogService.success("OTP Sent Successfully");
+          this.messageDialogService.info("OTP Sent Successfully");
           setTimeout(()=>{                           
             this.otpsenttomobile = false;
             this.otpresenttomobile = true;
