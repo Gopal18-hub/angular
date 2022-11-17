@@ -199,8 +199,7 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  openIMEIDialog()
-  {
+  openIMEIDialog() {
     const changePasswordDialoref = this.matDialog.open(SelectimeiComponent, {
       width: "25vw",
       height: "33vh",
