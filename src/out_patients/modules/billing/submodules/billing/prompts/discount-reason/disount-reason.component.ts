@@ -204,6 +204,14 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
     }
     this.selectedItems = this.calculateBillService.discountSelectedItems;
+    if ("removeRow" in this.data) {
+      if (!this.data.removeRow) {
+        this.selectedItems.forEach((sItem: any) => {
+          sItem.reason_disabled = true;
+          sItem.head_disabled = true;
+        });
+      }
+    }
 
     let formResult: any = this.formService.createForm(
       this.discAmtFormData.properties,
