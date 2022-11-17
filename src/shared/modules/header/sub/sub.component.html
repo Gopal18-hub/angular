@@ -277,10 +277,17 @@
         let-module="module"
         let-subMenuTrigger="subMenuTrigger"
       >
-        <div class="flex flex-wrap">
+        <div
+          class="flex flex-wrap max-width"
+          [ngClass]="{ 'min-width': module?.childrens?.length <= 4 }"
+        >
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <ng-container *ngIf="menuItem.childrens?.length > 0">
-              <button [disabled]="menuItem.disabled" mat-menu-item>
+              <button
+                [disabled]="menuItem.disabled"
+                mat-menu-item
+                class="w-full"
+              >
                 <maxhealth-sub-nested-menu
                   #nestedMenu
                   [module]="module"
@@ -298,6 +305,11 @@
                 [disabled]="menuItem.disabled"
                 mat-button
                 class="max-health-primary-color w-1/3"
+                [ngClass]="{
+                  'w-1/3': aliasMenuItems.length > 8,
+                  'w-1/2': aliasMenuItems.length <= 8,
+                  'w-full': aliasMenuItems.length <= 4
+                }"
                 (click)="activeSubModule = module"
                 [routerLink]="
                   baseHref == tenentPath
