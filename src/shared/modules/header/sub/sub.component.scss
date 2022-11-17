@@ -83,7 +83,14 @@
     //width: 100%;
     //height: vh;
     overflow: hidden;
-    max-width: 50vw !important;
+    max-width: initial;
+    .max-width {
+      max-width: 50vw !important;
+      &.min-width {
+        width: min-content;
+      }
+    }
+
     .mat-menu-content {
       height: 100%;
       button {

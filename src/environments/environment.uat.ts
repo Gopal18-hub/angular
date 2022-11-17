@@ -3,6 +3,7 @@ export const environment = {
   clientId: "hispwa",
   ApiUrl: "",
   cookieUrl: "",
+  passwordResetUrl: "https://selfheal.maxhealthcare.com/resetaccount",
   ReportsApiUrl: "https://MaxHIS-Reports-UAT.maxhealthcare.in/",
   IdentityServerUrl: "https://MaxHIS-Idsrv-UAT.maxhealthcare.in/",
   IentityServerRedirectUrl: "https://MaxHIS-uat.maxhealthcare.in/",
