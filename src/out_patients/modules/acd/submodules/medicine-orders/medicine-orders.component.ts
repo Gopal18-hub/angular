@@ -379,6 +379,7 @@ export class MedicineOrdersComponent implements OnInit {
         this.medOrderDetails = [];
         this.idValue = value;
         this.patientInfo = "";
+        this.EnableBill = false;
       }
     );
     this.investigationForm.controls["denyorder"].valueChanges.subscribe(
@@ -412,6 +413,7 @@ export class MedicineOrdersComponent implements OnInit {
         this.medOrderList = [];
         this.medOrderDetails = [];
         this.patientInfo = "";
+        this.EnableBill = false;
       }
     );
     // this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
@@ -446,6 +448,7 @@ export class MedicineOrdersComponent implements OnInit {
     this.medOrderList = [];
     this.medOrderDetails = [];
     this.patientInfo = "";
+    this.EnableBill = false;
 
     this.http
       .get(

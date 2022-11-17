@@ -387,6 +387,7 @@ export class InvestigationOrdersComponent implements OnInit {
         this.idValue = value;
         this.investigationForm.controls["status"].reset();
         this.patientInfo = "";
+        this.EnableBill = false;
       }
     );
 
@@ -394,6 +395,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.investigationForm.controls["status"].valueChanges.subscribe(
       (value: any) => {
         this.patientInfo = "";
+        this.EnableBill = false;
         this.invOrderList = [];
         this.invOrderDetails = [];
         this.statusvalue = value;
@@ -427,6 +429,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.invOrderList = [];
     this.invOrderDetails = [];
     this.patientInfo = "";
+    this.EnableBill = false;
 
     this.http
       .get(
