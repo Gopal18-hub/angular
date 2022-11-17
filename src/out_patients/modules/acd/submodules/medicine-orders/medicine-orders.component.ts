@@ -411,6 +411,7 @@ export class MedicineOrdersComponent implements OnInit {
         this.statusvalue = value;
         this.medOrderList = [];
         this.medOrderDetails = [];
+        this.patientInfo = "";
       }
     );
     // this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
@@ -470,7 +471,9 @@ export class MedicineOrdersComponent implements OnInit {
       });
   }
   searchFilter() {
-    let maxid = String(this.investigationForm.value.input.trim()).toUpperCase();
+    let maxid = this.investigationForm.value.input
+      ? String(this.investigationForm.value.input.trim()).toUpperCase()
+      : "";
     if (!this.statusvalue && !maxid && this.medOrderListMain !== undefined) {
       this.medOrderList = this.medOrderListMain;
     } else if (this.statusvalue === "All") {

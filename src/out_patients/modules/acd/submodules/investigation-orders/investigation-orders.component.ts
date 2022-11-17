@@ -393,6 +393,7 @@ export class InvestigationOrdersComponent implements OnInit {
     //Filter
     this.investigationForm.controls["status"].valueChanges.subscribe(
       (value: any) => {
+        this.patientInfo = "";
         this.invOrderList = [];
         this.invOrderDetails = [];
         this.statusvalue = value;
@@ -457,7 +458,9 @@ export class InvestigationOrdersComponent implements OnInit {
       });
   }
   searchFilter() {
-    let maxid = String(this.investigationForm.value.input.trim()).toUpperCase();
+    let maxid = this.investigationForm.value.input
+      ? String(this.investigationForm.value.input.trim()).toUpperCase()
+      : "";
     if (!this.statusvalue && !maxid && this.invOrderListMain !== undefined) {
       this.invOrderList = this.invOrderListMain;
     } else if (this.statusvalue === "All") {
