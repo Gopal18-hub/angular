@@ -238,7 +238,6 @@
               disabled: module.disabled
             }"
             (mouseover)="subMenuTrigger.openMenu()"
-            (click)="activeSubModule = module"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
