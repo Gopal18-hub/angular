@@ -246,7 +246,16 @@ export class InvestigationsComponent implements OnInit {
               "Investigations can not have different priorities"
             );
             await errorDialog.afterClosed().toPromise();
-            this.differentPriorityExist = true;
+            ////GAV-907
+            for (var i = 0; i < this.data.length; i++) {
+              if (this.data[i].priority != res.$event.value) {
+                this.differentPriorityExist = true;
+                break;
+              } else {
+                this.defaultPriorityId = res.$event.value;
+                this.differentPriorityExist = false;
+              }
+            }
           } else {
             this.differentPriorityExist = false;
             this.checkTableValidation();

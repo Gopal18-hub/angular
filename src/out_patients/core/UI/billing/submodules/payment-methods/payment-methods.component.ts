@@ -174,7 +174,7 @@ export class PaymentMethodsComponent implements OnInit {
     }
     else if(Number(this.depositamount >= 200000) && this.PaymentType == 1){
       this.messageDialogService.info("Cash amount cannot exceed Rs.199999");   
-      this.questions[0].elementRef.focus();     
+      //this.questions[0].elementRef.focus();     
     } 
     else {
       this.depositservice.setFormList(this.refundform.value);      
@@ -264,8 +264,8 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["demandamount"].setValue("0.00");
     this.refundform.controls["upiamount"].setValue("0.00");
     this.refundform.controls["internetamount"].setValue("0.00");
-    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo.patientinfo.mobileno);
-    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo.patientinfo.emailId);
+    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.mobileno);
+    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.emailId);
   }
 
   resetcreditcard() {
