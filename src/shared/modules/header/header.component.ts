@@ -152,52 +152,55 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  openChangePasswordDialog() {
-    const changePasswordDialoref = this.matDialog.open(ChangepaswordComponent, {
-      width: "25vw",
-      height: "88vh",
-      data: {
-        title: "Change Password",
-        form: {
-          title: "",
-          type: "object",
-          properties: {
-            username: {
-              type: "string",
-              title: "User Name",
-              required: true,
-            },
-            oldpassword: {
-              type: "password",
-              title: "Old Password",
-              required: true,
-            },
-            newpassword: {
-              type: "password",
-              title: "New Password",
-              required: true,
-            },
-            confirmpasword: {
-              type: "password",
-              title: "Confirm New Password",
-              required: true,
-            },
-          },
-        },
-        layout: "single",
-        buttonLabel: "Save",
-      },
-    });
-
-    changePasswordDialoref
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result) {
-          window.location.reload();
-        }
-      });
+  redirectToResetPassword() {
+    window.open(environment.passwordResetUrl);
   }
+  // openChangePasswordDialog() {
+  //   const changePasswordDialoref = this.matDialog.open(ChangepaswordComponent, {
+  //     width: "25vw",
+  //     height: "88vh",
+  //     data: {
+  //       title: "Change Password",
+  //       form: {
+  //         title: "",
+  //         type: "object",
+  //         properties: {
+  //           username: {
+  //             type: "string",
+  //             title: "User Name",
+  //             required: true,
+  //           },
+  //           oldpassword: {
+  //             type: "password",
+  //             title: "Old Password",
+  //             required: true,
+  //           },
+  //           newpassword: {
+  //             type: "password",
+  //             title: "New Password",
+  //             required: true,
+  //           },
+  //           confirmpasword: {
+  //             type: "password",
+  //             title: "Confirm New Password",
+  //             required: true,
+  //           },
+  //         },
+  //       },
+  //       layout: "single",
+  //       buttonLabel: "Save",
+  //     },
+  //   });
+
+  //   changePasswordDialoref
+  //     .afterClosed()
+  //     .pipe(takeUntil(this._destroying$))
+  //     .subscribe((result) => {
+  //       if (result) {
+  //         window.location.reload();
+  //       }
+  //     });
+  // }
 
   openIMEIDialog() {
     const changePasswordDialoref = this.matDialog.open(SelectimeiComponent, {
