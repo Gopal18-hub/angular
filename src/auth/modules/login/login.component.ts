@@ -163,6 +163,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.questions[0].elementRef.focus();
     }, 1);
   }
+
+  redirectToResetPassword() {
+    window.open(environment.passwordResetUrl);
+  }
+
   validateUserName() {
     this.username = this.loginForm.value.username;
     this.adauth

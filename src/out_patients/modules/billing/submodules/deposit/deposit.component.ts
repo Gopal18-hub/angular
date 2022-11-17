@@ -889,6 +889,10 @@ export class DepositComponent implements OnInit {
 
     if (this.deposittable.selection.selected[0]) {
       let billno = this.deposittable.selection.selected[0].receiptno;
+      if(this.containsSpecialChars(billno)){
+        billno = billno.replaceAll("/", "-");
+      }
+     
       this.http
         .get(ApiConstants.getform60(this.hspLocationid, billno, iacode, regno))
         .pipe(takeUntil(this._destroying$))
@@ -919,11 +923,17 @@ export class DepositComponent implements OnInit {
           }
         );
     } else {
+      let refundreceiptno;
       this.deposittable.childTable.map((r: any) => {
-        r.selection.selected.map((res: any) => {
+        r.selection.selected.map((res: any) => {         
           if (res) {
+            if(this.containsSpecialChars(res.receiptno)){
+              refundreceiptno = res.receiptno.replaceAll("/","-");
+           }else{
+            refundreceiptno = res.receiptno;
+           } 
             this.reportService.openWindow("rptRefund", "rptRefund", {
-              receiptno: res.receiptno,
+              receiptno: refundreceiptno,
               locationID: this.hspLocationid,
             });
           }
@@ -934,9 +944,15 @@ export class DepositComponent implements OnInit {
     console.log(this.deposittable.selection.selected);
   }
   depositreport() {
+    let receiptno;
     this.deposittable.selection.selected.map((s: any) => {
+      if(this.containsSpecialChars(s.receiptno)){
+         receiptno = s.receiptno.replaceAll("/","-");
+      }else{
+        receiptno = s.receiptno;
+      }     
       this.reportService.openWindow("DepositReport", "DepositReport", {
-        receiptnumber: s.receiptno,
+        receiptnumber: receiptno,
         locationID: this.hspLocationid,
       });
     });
@@ -945,6 +961,9 @@ export class DepositComponent implements OnInit {
     let regno = Number(this.depositForm.value.maxid.split(".")[1]);
     let iacode = this.depositForm.value.maxid.split(".")[0];
     let billno = this.deposittable.selection.selected[0].receiptno;
+    if(this.containsSpecialChars(billno)){
+      billno = billno.replaceAll("/","-");
+   } 
     this.reportService.openWindow(
       "FormSixty",
       "FormSixty",
@@ -1015,6 +1034,11 @@ export class DepositComponent implements OnInit {
       }
     }
     return false;
+  }
+   containsSpecialChars(str:any) {
+    const specialChars =
+      /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
   }
 }
 
