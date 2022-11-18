@@ -776,10 +776,12 @@ export class DetailsComponent implements OnInit {
             }
           }
         }
-      }),
+      },
       (error: any) => {
+        console.log(error);
         this.apiProcessing = false;
-      };
+        this.msgdialog.error(error.error);
+      })
   }
   getpatientandbilldetailsforrefund() {
     this.http
