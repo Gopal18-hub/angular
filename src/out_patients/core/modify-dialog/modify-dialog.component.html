@@ -208,7 +208,7 @@
     </div>
     <div class="flex w-full flex-wrap flex-column right-2 pt-3">
       <div class="flex">
-        <div *ngIf="data.submitButton">
+        <div *ngIf="data.submitButton && !data.submitButtononApproved">
           <button
             mat-raised-button
             color="primary"
@@ -219,7 +219,7 @@
             Approve
           </button>
         </div>
-        <div *ngIf="data.submitButton" class="ml-5">
+        <div *ngIf="data.submitButton && !data.submitButtononApproved" class="ml-5">
           <button
             mat-raised-button
             color="primary"

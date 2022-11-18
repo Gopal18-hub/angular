@@ -143,6 +143,8 @@ export class BillPaymentDialogComponent implements OnInit {
 
   async makeBill() {
     //pan card and form 60
+    this.billingService.makeBillPayload.panNo = 
+      this.billingpatientidentity.patientidentityform.value.panno || '';
     this.billpatientIdentityInfo =
       this.billingpatientidentity.patientidentityform.value;
     if (
