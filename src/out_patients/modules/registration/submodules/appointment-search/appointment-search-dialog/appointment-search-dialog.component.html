@@ -107,13 +107,13 @@
       </form>
     </div>
     <div class="mt-3 h-62">
-      <ng-container *ngIf="defaultUI">
+      <!-- <ng-container *ngIf="defaultUI">
         <empty-placeholder
           [icon]="findpatientimage"
           [message]="findpatientmessage"
         >
         </empty-placeholder>
-      </ng-container>
+      </ng-container> -->
       <!-- <ng-container class="w-screen" *ngIf="searchAppPatient"> -->
       <maxhealth-table
         #patientDetail
@@ -123,5 +123,11 @@
       <!-- </ng-container> -->
     </div>
     <div></div>
+    <div
+        *ngIf="apiProcessing"
+        class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+      >
+        <mat-spinner strokeWidth="3"></mat-spinner>
+      </div>
   </section>
 </div>

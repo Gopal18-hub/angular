@@ -387,12 +387,15 @@ export class InvestigationOrdersComponent implements OnInit {
         this.idValue = value;
         this.investigationForm.controls["status"].reset();
         this.patientInfo = "";
+        this.EnableBill = false;
       }
     );
 
     //Filter
     this.investigationForm.controls["status"].valueChanges.subscribe(
       (value: any) => {
+        this.patientInfo = "";
+        this.EnableBill = false;
         this.invOrderList = [];
         this.invOrderDetails = [];
         this.statusvalue = value;
@@ -426,6 +429,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.invOrderList = [];
     this.invOrderDetails = [];
     this.patientInfo = "";
+    this.EnableBill = false;
 
     this.http
       .get(
@@ -457,7 +461,9 @@ export class InvestigationOrdersComponent implements OnInit {
       });
   }
   searchFilter() {
-    let maxid = String(this.investigationForm.value.input.trim()).toUpperCase();
+    let maxid = this.investigationForm.value.input
+      ? String(this.investigationForm.value.input.trim()).toUpperCase()
+      : "";
     if (!this.statusvalue && !maxid && this.invOrderListMain !== undefined) {
       this.invOrderList = this.invOrderListMain;
     } else if (this.statusvalue === "All") {
@@ -500,9 +506,6 @@ export class InvestigationOrdersComponent implements OnInit {
     this.disableBtns();
     let maxId = event.row.maxid;
     let orderid = event.row.orderId;
-    if (orderid) {
-      this.EnableBill = true;
-    }
     this.maxid = maxId;
     this.orderid = orderid;
     this.patientInfo =
@@ -529,6 +532,11 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
+        res.tempOrderBreakup.filter((e: any) => {
+          if (e.isBilled == 0) {
+            this.EnableBill = true;
+          }
+        });
         this.invOrderDetails = res.tempOrderBreakup;
         setTimeout(() => {
           this.invOrderDetailsTable.selection.changed

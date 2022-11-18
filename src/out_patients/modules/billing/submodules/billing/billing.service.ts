@@ -1036,6 +1036,8 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.narrationOnBill =
+        this.billingFormGroup.form.value.narration || "";
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
         opbillid: 0,
         billNo: "",

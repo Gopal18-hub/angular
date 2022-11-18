@@ -611,6 +611,11 @@ export namespace PaymentMethods {
           label: "Amount",
           required: true,
         },
+        posimei: {
+          type: "dropdown",
+          label: "POS IMEI",
+          required: true,
+        },
         ccNumber_UPI: {
           type: "number",
           label: "Card No.",
@@ -654,6 +659,11 @@ export namespace PaymentMethods {
         acquirer_UPI: {
           type: "string",
           label: "Acquiring Bank",
+          required: true,
+        },
+        banktid: {
+          type: "string",
+          label: "Bank TID",
           required: true,
         },
       },

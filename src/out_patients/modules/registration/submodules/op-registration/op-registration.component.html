@@ -350,6 +350,7 @@
                       [questions]="questions[29]"
                       [index]="29"
                       (click)="foreignCLick($event)"
+                      [ngClass]="{'foreignernone': disableforeigner}"
                     ></maxhealth-question>
                   </div>
                   <div class="w-1/45">
@@ -714,7 +715,7 @@
     {{ moment().format("LT") }}
   </div>
   <div class="right" *ngIf="MaxIDExist && LastupdateExist">
-    <p>Registered by:  {{ registeredBy }} on {{lastupdatedDate}} </p>
+    <p>Registered by:  {{ registeredBy }} on {{lastregisteredDate}} </p>
   
   </div>
 </div>

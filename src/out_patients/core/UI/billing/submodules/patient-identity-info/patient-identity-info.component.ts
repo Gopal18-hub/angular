@@ -53,8 +53,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
         type: "radio",
         required: false,
         options: [
-          { title: "Form 60", value: "form60" },
-          { title: "Pan card No.", value: "pancardno" },
+          { title: "Form 60", value: "form60", disabled: true },
+          { title: "Pan card No.", value: "pancardno", disabled: false },
         ],
         defaultValue: "pancardno",
       },
@@ -77,12 +77,26 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
 
   private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
+    if (this.data.patientinfo && this.data.patientinfo.toPaidAmount) {
+      if (this.data.patientinfo.toPaidAmount <= 200000) {
+        this.patientidentityformData.properties.mainradio.options = [
+          { title: "Form 60", value: "form60", disabled: true },
+          { title: "Pan card No.", value: "pancardno", disabled: false },
+        ];
+      } else {
+        this.patientidentityformData.properties.mainradio.options = [
+          { title: "Form 60", value: "form60", disabled: false },
+          { title: "Pan card No.", value: "pancardno", disabled: false },
+        ];
+      }
+    }
     let formResult: any = this.formService.createForm(
       this.patientidentityformData.properties,
       {}
     );
     this.patientidentityform = formResult.form;
     this.questions = formResult.questions;
+
     if (this.data.type == "Deposit") {
       this.patientidentityform.controls["mainradio"].enable();
       this.patientidentityform.controls["panno"].enable();
@@ -129,6 +143,12 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
         this.patientidentityform.controls["mainradio"].setValue("pancardno");
       }
     });
+
+    this.depositservice.formsixtytobefill.subscribe((fillform) => {
+      if (fillform) {
+        this.patientidentityform.controls["mainradio"].enable();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -170,29 +190,31 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
           } else {
           }
 
-          const form60dialog = this.matdialog.open(FormSixtyComponent, {
-            width: "50vw",
-            height: "94vh",
-            data: {
-              from60data: this.form60PatientInfo,
-              paymentamount: this.PaymentMethod[0],
-              OPIP: this.OPIP,
-            },
-          });
-
-          form60dialog
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
-              if (result == "Success") {
-                this.Form60success = true;
-                this.neweventform60ssave.emit(this.Form60success);
-              } else {
-                this.patientidentityform.controls["mainradio"].setValue(
-                  "pancardno"
-                );
-              }
+          if (this.PaymentMethod[0].transactionamount >= 200000) {
+            const form60dialog = this.matdialog.open(FormSixtyComponent, {
+              width: "50vw",
+              height: "94vh",
+              data: {
+                from60data: this.form60PatientInfo,
+                paymentamount: this.PaymentMethod[0],
+                OPIP: this.OPIP,
+              },
             });
+
+            form60dialog
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result == "Success") {
+                  this.Form60success = true;
+                  this.neweventform60ssave.emit(this.Form60success);
+                } else {
+                  this.patientidentityform.controls["mainradio"].setValue(
+                    "pancardno"
+                  );
+                }
+              });
+          }
 
           this.patientidentityform.controls["panno"].disable();
           this.patientidentityform.controls["panno"].setValue("");

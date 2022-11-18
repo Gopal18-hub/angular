@@ -1182,7 +1182,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     console.log("Amount Pay by Patinet: ", temp);
 
-    return temp > 0 ? temp.toFixed(2) : 0;
+    return temp > 0 ? temp.toFixed(2) : '0.00';
   }
 
   depositdetails() {

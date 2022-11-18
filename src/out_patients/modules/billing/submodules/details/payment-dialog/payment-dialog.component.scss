@@ -107,7 +107,7 @@
     }
 
     .height{
-        height: 63vh;
+        height: 47vh;
     }
     ::ng-deep .mat-tab-label{
         height: 30px !important;
@@ -171,6 +171,23 @@
     // ::ng-deep .mat-raised-button {
     //     min-width: 120px !important;
     // }
+    }
+    .input-label{
+        ::ng-deep {
+            mat-label{
+                color: #004084;
+            }
+            .mat-error{
+                margin-top: 10px;
+            }
+        }
+        
+    }
+    .radio-label{
+        ::ng-deep label{
+            font-weight: 600;
+            color: #004084;
+        }
     }
 }
 

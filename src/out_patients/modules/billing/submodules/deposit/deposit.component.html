@@ -18,6 +18,12 @@
     </div>
   </nav>
   <mat-tab-nav-panel #tabPanel>
+    <div
+    *ngIf="apiProcessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
     <div class="h-full w-full">
       <form [formGroup]="depositForm" class="w-full h-full p-2">
         <!---------------------------------FIRST ROW----------------------------------------------------->
@@ -75,7 +81,7 @@
 
 
         <!---------------------------------SECOND ROW----------------------------------------------------->
-        <div [class.isDisabled]="expiredpatientexists" class="p-2  mt-2  border-radius-lg bg-deposit deposittablewidth">
+        <div [class.isDisabled]="expiredpatientexists" class="p-2  mt-2  border-radius-lg bg-deposit deposittableheight">
           <div class="w-full">
 
             <div class="mt-2 float-left font-base font-semi-bold">
@@ -108,12 +114,11 @@
 
           </div>
           <!---------------------------------THIRD ROW----------------------------------------------------->
-          <div class="flex w-full h-4/5">
-            <div class="mt-2">
-              <div class="h-full">
-                <!-- (columnClick)="depositColumnClick($event)" -->
+          <div class="flex w-full h-82">
+            <div class="mt-2  w-full deposittable">
+              <div class="h-full deposittable-table">
                 <ng-container>
-                  <maxhealth-table class="w-full deposittable" [config]="depositconfig" [data]="depoistList" #deposittable>
+                  <maxhealth-table [config]="depositconfig" [data]="depoistList" #deposittable>
                   </maxhealth-table>
                 </ng-container>
               </div>

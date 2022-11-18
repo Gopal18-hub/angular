@@ -60,10 +60,14 @@ mat-label {
   color: #5a5a5a;
   padding: 0;
   height: 24px !important;
+  ::ng-deep .mat-button-focus-overlay {
+    display: none;
+  }
   ::ng-deep .mat-button-wrapper {
     display: flex;
     align-items: center;
     height: 24px !important;
+
     .box-input {
       border-color: #ababab;
       background-color: #fff;
