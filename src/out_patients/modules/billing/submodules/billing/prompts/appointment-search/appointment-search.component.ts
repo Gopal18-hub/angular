@@ -81,6 +81,7 @@ export class AppointmentSearchComponent implements OnInit {
       phone: {
         type: "tel",
         title: "Phone",
+        minimum: 1000000000,
         maximum: 9999999999,
         // pattern: "^[0-9]{10}",
         // maximum: 10,
@@ -626,11 +627,14 @@ export class AppointmentSearchComponent implements OnInit {
   clear() {
     this.OPAppointmentForm.reset();
     this.searchResults = [];
+    this.OPAppointmentForm.controls['fromDate'].setValue(this.todayDate);
+    this.OPAppointmentForm.controls['toDate'].setValue(this.todayDate);
   }
   getAppointmentSearch() {
+    console.log(this.OPAppointmentForm.value.phone);
     return this.http.get(
       BillingApiConstants.getbillingappointmentsearch(
-        this.OPAppointmentForm.value.phoneNo || this.data.phoneNumber? this.OPAppointmentForm.value.phoneNo || this.data.phoneNumber:'',
+        this.data.phoneNumber? this.data.phoneNumber:  this.OPAppointmentForm.value.phone? this.OPAppointmentForm.value.phone: '' ,
         this.OPAppointmentForm.value.name || "",
         this.OPAppointmentForm.value.lastname || "",
         this.OPAppointmentForm.value.datevalidation == true ?true : false,

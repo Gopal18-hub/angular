@@ -39,81 +39,121 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     },
     //cash
     cashamount: {
+      title:"Amount",
       type: "number",
       defaultValue: "0.00",
+      required: true,
     },
     //cheque
     chequemount: {
+      title:"Amount",
       type: "number",
       defaultValue: "0.00",
+      required: true,
     },
     chequeno: {
-      type: "number"
+      title:"Cheque/NEFT No.",
+      type: "number",
+      required: true,
     },
     chequeissuedate: {
+      title:"Issue Date",
       type: "date",
       maximum: new Date(),
       defaultValue: new Date(),
+      required: true,
     },
     chequevalidity: {
+      title:"Validity",
       type: "date",
       defaultValue: new Date(),
+      required: true,
     },
     chequebankname: {
+      title:"Bank Name",
       type: "dropdown",
-      options: this.bankname
+      options: this.bankname,
+      required: true,
     },
     chequebranchname: {
-      type: "string"
+      title:"Branch Name",
+      type: "string",
+      required: true,
     },
      //credit
     creditamount: {
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     },
     creditcardtype:{
+      title:"Card Type",
       type: "dropdown",
-      options: this.creditcard
+      options: this.creditcard,
+      required: true,
     }, 
     creditcardno: {
-      type: "number"
+      title:"Card No.",
+      type: "number",
+      required: true,
     },
     creditbatchno:{
-       type: "string"
+      title:"Batch No.",
+      type: "string",
+      required: true,
     }, 
      //online
     onlineamount: {
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     },
     onlinetransacid: {
-      type: "string"
+      title:"Transaction ID",
+      type: "string",
+      required: true,
     },
     onlinebookingid: {
-      type: "string"
+      title:"Booking ID",
+      type: "string",
+      required: true,
     }, 
     //mobile
     mobileamount:{
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     },
     mobiletransactionid: {
-      type: "string"
+      title:"Transaction ID",
+      type: "string",
+      required: true,
     },
     mobilemerchantid: {
-      type: "string"
+      title:"Merchant ID",
+      type: "string",
+      required: true,
     },
      
     //upi
     upiamount : {
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     }, 
     upino: {
-      type: "number"
+      title:"UPI No.",
+      type: "number",
+      required: true,
     },
     upibatchno: {
-      type: "string"
+      title:"Batch No.",
+      type: "string",
+      required: true,
     }
     },
   };
@@ -241,8 +281,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this.depositamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2);
     this.discountamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2);
     // this.due = this.due.toFixed(2);
-    this.totaldue = this.due.toFixed(2);
-    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
+    this.totaldue = this.data.refundamount;
+    this.patientIdentityInfo = { patientinfo: this.data.patientinfo };
     this.getpaymentmode();
     this.getbankname();
     this.getcreditcard();

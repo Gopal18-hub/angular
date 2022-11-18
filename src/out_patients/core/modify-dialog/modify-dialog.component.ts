@@ -28,6 +28,7 @@ export class ModifyDialogComponent implements OnInit {
       modifiedDetails: any;
       rejectButton: boolean;
       submitButton: boolean;
+      submitButtononApproved: boolean;
     },
     private dialogRef: MatDialogRef<ModifyDialogComponent>,
     private formService: QuestionControlService,

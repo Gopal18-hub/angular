@@ -167,6 +167,9 @@
             <button mat-raised-button color="primary"class="ml-4 mr-2 button-height2" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()"><span class="text-position2">Clear</span></button>
             </div>
         </div>
+        <div  *ngIf="apiprocessing"  class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+            <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
         </div> 
     </mat-tab-nav-panel>
 </section>

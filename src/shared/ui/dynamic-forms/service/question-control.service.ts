@@ -24,11 +24,12 @@ import { AuthService } from "../../../services/auth.service";
 import { TelQuestion } from "../types/question-tel";
 import { DateTimeQuestion } from "../types/question-datetime";
 import { CurrencyQuestion } from "../types/question-currency";
+import { CookieService } from "@shared/services/cookie.service";
 @Injectable()
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
 
-  constructor(private http: HttpService, private auth: AuthService) {}
+  constructor(private http: HttpService, private auth: AuthService, private cookie:CookieService) {}
 
   processJson(
     questions: QuestionBase<any>[],
@@ -71,7 +72,7 @@ export class QuestionControlService {
       else if (question.type == "password")
         data.push(new PasswordQuestion(question));
       else if (question.type == "autocomplete")
-        data.push(new AutoCompleteQuestion(question, this.http));
+        data.push(new AutoCompleteQuestion(question, this.http,this.cookie));
       else if (question.type == "date") data.push(new DateQuestion(question));
       else if (question.type == "datetime")
         data.push(new DateTimeQuestion(question));

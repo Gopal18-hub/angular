@@ -92,7 +92,9 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   lastUpdatedBy: string | undefined;
+  registeredBy: string | undefined;
   lastupdatedDate: any;
+  lastregisteredDate: any;
   LastupdateExist: boolean = false;
   currentTime: any = this.datepipe.transform(new Date(), "dd/MM/yyyy hh:mm aa");
   localityList: LocalityModel[] = [];
@@ -472,9 +474,10 @@ export class OpRegistrationComponent implements OnInit {
   ) {}
 
   bool: boolean | undefined;
+  disableforeigner: boolean = false;
   ngOnInit(): void {
     this.bool = true;
-    this.lastUpdatedBy =
+    this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.formInit();
     this.route.queryParams
@@ -730,6 +733,13 @@ export class OpRegistrationComponent implements OnInit {
   formProcessing() {
     this.checkForMaxID();
 
+    //unfreeze foreigner checkbox
+    this.OPRegForm.controls['nationality'].valueChanges
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(() => {
+      this.disableforeigner = false;
+    })
+
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
     this.OPRegForm.controls["paymentMethod"].valueChanges
@@ -911,7 +921,8 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe( (value: any) => {
-        
+        this.questions[25].options = [];
+        this.questions[22].options = [];
         this.clearAddressOnCountryChange();
         if (
           this.OPRegForm.value.country.value != undefined &&
@@ -921,6 +932,8 @@ export class OpRegistrationComponent implements OnInit {
           this.getStatesByCountry(value);
           this.getCitiesByCountry(value);
           if (this.OPRegForm.value.country.value != 1) {
+            this.disttList = [];
+            this.localityList = [];
             this.OPRegForm.controls["pincode"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
@@ -957,17 +970,21 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         // this.clearAddressOnStateChange();
-        if (
-          this.OPRegForm.value.state.value != undefined &&
-          this.OPRegForm.value.state.value != null &&
-          this.OPRegForm.value.state.value != ""
-        ) {
-          this.getDistricyListByState(value);
-          this.getCityListByState(value);
-          if (!this.OPRegForm.controls["locality"].value) {
-            this.countrybasedflow = true;
+        if(this.OPRegForm.value.state)
+        {
+          if (
+            this.OPRegForm.value.state.value != undefined &&
+            this.OPRegForm.value.state.value != null &&
+            this.OPRegForm.value.state.value != ""
+          ) {
+            this.getDistricyListByState(value);
+            this.getCityListByState(value);
+            if (!this.OPRegForm.controls["locality"].value) {
+              this.countrybasedflow = true;
+            }
           }
         }
+        
         if(this.OPRegForm.value.country.value != 1)
     {
       this.OPRegForm.controls["pincode"].setErrors(null);
@@ -1261,6 +1278,8 @@ export class OpRegistrationComponent implements OnInit {
 
     //this.checkForMaxID();
     this.clearClicked = false;
+    this.registeredBy = this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
+    this.disableforeigner = false;
   }
 
   flushAllObjects() {
@@ -1835,6 +1854,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //MASTER LIST FOR Distt
   getAllDisttList() {
+    this.disttList = [];
     this.http
       .get(ApiConstants.disttMasterData)
       .pipe(takeUntil(this._destroying$))
@@ -2236,7 +2256,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //DISTRICT LIST BY STATE
   getDistricyListByState(state: any) {
-
+    this.disttList = [];
     if (state.value != undefined && state.value != null && state.value != "") {
       this.http
         .get(ApiConstants.districtBystateID(state.value))
@@ -2408,8 +2428,9 @@ export class OpRegistrationComponent implements OnInit {
                       this.patientDetails.lastUpdatedOn,
                       "dd/MM/yyyy hh:mm aa"
                     );
-              this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
-
+              this.registeredBy = this.patientDetails.registeredOperatorName;
+              this.lastUpdatedBy = this.patientDetails.operatorName;
+            
               if (
                 this.datepipe.transform(
                   this.patientDetails.lastUpdatedOn,
@@ -2419,6 +2440,10 @@ export class OpRegistrationComponent implements OnInit {
                 this.LastupdateExist = false;
               } else {
                 this.LastupdateExist = true;
+                this.lastregisteredDate =  this.datepipe.transform(
+                  this.patientDetails.registeredOn,
+                  "dd/MM/yyyy hh:mm aa"
+                );
               }
 
               this.categoryIcons =
@@ -2576,9 +2601,9 @@ export class OpRegistrationComponent implements OnInit {
               this.getPatientDetailsByMaxId();
             })
           }
-          else{
-            this.getPatientDetailsByMaxId();
-          }
+          // else{
+          //   this.getPatientDetailsByMaxId();
+          // }
           this.maxIDChangeCall = false;
           console.log(resultData);
         },
@@ -2623,7 +2648,7 @@ export class OpRegistrationComponent implements OnInit {
                   this.patientDetails.lastUpdatedOn,
                   "dd/MM/yyyy hh:mm aa"
                 );
-          this.lastUpdatedBy = this.patientDetails.registeredOperatorName;
+          this.registeredBy = this.patientDetails.registeredOperatorName;
 
           if (
             this.datepipe.transform(
@@ -2783,7 +2808,7 @@ export class OpRegistrationComponent implements OnInit {
     console.log("firstname changed");
     if (!this.maxIDChangeCall) {
       if (this.checkForModifiedPatientDetail()) {
-        this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstname;
+        this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
       }
     }
   }
@@ -3420,7 +3445,7 @@ export class OpRegistrationComponent implements OnInit {
 
     if (!validationerror) {
       if (this.OPRegForm.controls["fatherSpouse"].value) {
-        if (this.OPRegForm.value.fatherSpouseName.trim() == "") {
+        if (this.OPRegForm.value.fatherSpouseName == null || this.OPRegForm.value.fatherSpouseName.trim() == "") {
           validationerror = true;
           this.messageDialogService.error("Please enter Father/Spouse Name");
         } else {
@@ -4511,6 +4536,7 @@ export class OpRegistrationComponent implements OnInit {
         console.log("passport dialog was closed ");
         if (this.passportDetails.passportNo != "") {
           this.OPRegForm.controls["foreigner"].setValue(true);
+          this.disableforeigner = true;
           this.passportDetails = {
             Expirydate:
               this.datepipe.transform(
@@ -4531,6 +4557,7 @@ export class OpRegistrationComponent implements OnInit {
         } else {
           if (result == undefined || result.data == undefined) {
             this.OPRegForm.controls["foreigner"].setValue(false);
+            this.disableforeigner = false;
             if (this.OPRegForm.value.nationality.value != 149) {
               this.OPRegForm.controls["nationality"].setErrors({
                 incorrect: true,
@@ -4556,6 +4583,7 @@ export class OpRegistrationComponent implements OnInit {
               HCF: result.data.hcf,
             };
             this.isPatientdetailModified = true;
+            this.disableforeigner = true;
             console.log(this.passportDetails);
             this.OPRegForm.controls["nationality"].setErrors(null);
             this.questions[28].customErrorMessage = "";

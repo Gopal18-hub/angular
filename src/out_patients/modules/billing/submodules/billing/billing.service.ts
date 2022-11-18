@@ -304,17 +304,19 @@ export class BillingService {
         subItems
       )
       .subscribe((res: any) => {
-        res.forEach((resItem: any, index: number) => {
-          //GAV-1070
-          let quanity = !isNaN(Number(this.billItems[index].qty))
-            ? this.billItems[index].qty
-            : 1;
-          this.billItems[index].price = resItem.returnOutPut;
-          this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
-          this.updateServiceItemPrice(this.billItems[index]);
-        });
-        this.calculateTotalAmount();
-        this.refreshBillTab.next(true);
+        if (this.billItems && this.billItems.length > 0) {
+          res.forEach((resItem: any, index: number) => {
+            //GAV-1070
+            let quanity = !isNaN(Number(this.billItems[index].qty))
+              ? this.billItems[index].qty
+              : 1;
+            this.billItems[index].price = resItem.returnOutPut;
+            this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
+            this.updateServiceItemPrice(this.billItems[index]);
+          });
+          this.calculateTotalAmount();
+          this.refreshBillTab.next(true);
+        }
       });
   }
 
@@ -1034,6 +1036,8 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.narrationOnBill =
+        this.billingFormGroup.form.value.narration || "";
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
         opbillid: 0,
         billNo: "",
@@ -1061,7 +1065,9 @@ export class BillingService {
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
-          "Do You Want To Save Less Amount ?"
+          "Do you want to pay less amount of Rs." +
+            (toBePaid - collectedAmount) +
+            "?"
         );
         const lessAmountWarningResult = await lessAmountWarningDialog
           .afterClosed()
@@ -1131,8 +1137,8 @@ export class BillingService {
         sno: this.ProcedureItems.length + 1,
         procedures: procedure.originalTitle,
         qty: 1,
-        specialisation: "",
-        doctorName: "",
+        specialisation: procedure.specializationId || "",
+        doctorName: procedure.doctorid || "",
         doctorName_required: procedure.docRequired ? true : false,
         specialisation_required: procedure.docRequired ? true : false,
         price: res[0].returnOutPut,
@@ -1391,7 +1397,7 @@ export class BillingService {
             : investigation.precaution,
         priority: priorityId,
         priority_required: false,
-        // specialisation: investigation.specializationId || "",
+        specialisation: investigation.specializationId || "",
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,
         doctorName_required: investigation.docRequired ? true : false,
@@ -1480,7 +1486,7 @@ export class BillingService {
           : investigation.precaution,
       priority: priorityId,
       priority_required: false,
-      specialisation: "",
+      specialisation: investigation.specializationId || "",
       doctorName: investigation.doctorid || "",
       specialisation_required: investigation.docRequired ? true : false,
       doctorName_required: investigation.docRequired ? true : false,

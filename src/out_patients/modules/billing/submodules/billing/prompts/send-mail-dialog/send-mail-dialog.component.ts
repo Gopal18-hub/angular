@@ -58,7 +58,7 @@ export class SendMailDialogComponent implements OnInit {
     );
     this.sendMailForm = formResult.form;
     this.question = formResult.questions;
-    if(this.data.mail = 'info@maxhealthcare.com')
+    if(this.data.mail == 'info@maxhealthcare.com')
     {
       this.sendMailForm.controls['mailid'].setValue('');
     }

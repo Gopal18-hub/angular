@@ -38,6 +38,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   OPAppointmentForm!: FormGroup;
   questions: any;
+  apiProcessing: boolean = false;
   constructor(
     private http: HttpService,
     private datepipe: DatePipe,
@@ -81,14 +82,15 @@ export class AppointmentSearchDialogComponent implements OnInit {
         title: "Phone",
         required: false,
         //  pattern: "^[1-9]{1}[0-9]{9}",
-        maximum: 10,
+        minimum: 1000000000,
+        maximum: 9999999999,
         defaultValue: "",
       },
       datevalidation: {
         type: "checkbox",
         required: false,
         options: [{ title: "" }],
-        defaultValue: 0,
+        defaultValue: 1,
       },
       fromDate: {
         type: "date",
@@ -279,7 +281,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
         },
       },
       mobileno: {
-        title: "Mobiel No.",
+        title: "Mobile No.",
         type: "tel",
         style: {
           width: "120px",
@@ -445,12 +447,14 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   searchAppointment() {
     this.searchResults = [];
+    this.apiProcessing = true;
     console.log("app search called");
     //this.http.getExternal(ApiConstants.getAppointmentPatientSearch(this.appointmentSearchForm.value.phone,this.appointmentSearchForm.value.name,'',this.appointmentSearchForm.value.isDateRange,this.appointmentSearchForm.value.startdate,this.appointmentSearchForm.value.enddate,'',this.appointmentSearchForm.value.booknumber)).subscribe((response)=>{
     this.getAppointmentSearch().subscribe(
       (response) => {
         this.searchResults = response;
         console.log(this.searchResults);
+        this.apiProcessing = false;
         if (this.searchResults.length == 0) {
           this.searchAppPatient = false;
           this.defaultUI = true;
@@ -465,6 +469,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
       },
       (error: any) => {
         console.log(error);
+        this.apiProcessing = false;
         this.searchResults = [];
         this.defaultUI = true;
         this.searchAppPatient = false;
@@ -474,20 +479,22 @@ export class AppointmentSearchDialogComponent implements OnInit {
     );
   }
 
-  // get patternError() {
-  //   return this.appointmentSearchForm.controls["phoneNo"].errors?.["pattern"];
-  // }
-
   clear() {
     this.OPAppointmentForm.reset();
+    this.OPAppointmentForm.controls['fromDate'].setValue(this.todayDate);
+    this.OPAppointmentForm.controls['toDate'].setValue(this.todayDate);
+    this.OPAppointmentForm.controls['datevalidation'].setValue(0);
+    this.OPAppointmentForm.controls['bookingNo'].setValue('');
+    this.searchResults = [];
+    this.apiProcessing = false;
   }
   getAppointmentSearch() {
     return this.http.get(
       ApiConstants.appointmentPatientDetail(
-        this.OPAppointmentForm.value.phoneNo || "",
-        this.OPAppointmentForm.value.name || "",
-        this.OPAppointmentForm.value.lastname || "",
-        this.OPAppointmentForm.value.datevalidation == false ? 0 : 1,
+        this.OPAppointmentForm.value.phone || "",
+        this.OPAppointmentForm.value.name ?this.OPAppointmentForm.value.name.split(" ")[0]:'',
+        this.OPAppointmentForm.value.name ?this.OPAppointmentForm.value.name.split(" ")[1]:'',
+        this.OPAppointmentForm.value.datevalidation == true ? 0 : 1,
         this.datepipe.transform(
           this.OPAppointmentForm.value.fromDate,
           "yyyy-MM-dd"

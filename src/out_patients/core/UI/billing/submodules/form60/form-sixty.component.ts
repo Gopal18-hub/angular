@@ -130,6 +130,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
   form60validation() {
     console.log(this.form60form.value.iddocidentityno);
     this.DocumentIDNumber = this.form60form.value.iddocidentityno;
+    this.validationerrorexists = true;
     if (
       this.form60form.value.appliedforpan &&
       this.form60form.value.applicationno == ""
@@ -137,12 +138,12 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
       this.messageDialogService.error("Please enter PAN Application Number");
     } else if (
       !this.form60form.value.appliedforpan &&
-      this.form60form.value.agriculturalincome == ""
+     ( this.form60form.value.agriculturalincome == "" || Number(this.form60form.value.agriculturalincome) <= 0)
     ) {
       this.messageDialogService.error("Please enter agriculturer income");
     } else if (
       !this.form60form.value.appliedforpan &&
-      this.form60form.value.otherthanagriculturalincome == ""
+      (this.form60form.value.otherthanagriculturalincome == "" || Number(this.form60form.value.otherthanagriculturalincome) <= 0)
     ) {
       this.messageDialogService.error(
         "Please enter other than agriculturer income"

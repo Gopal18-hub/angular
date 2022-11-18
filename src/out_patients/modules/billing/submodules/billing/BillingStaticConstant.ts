@@ -108,6 +108,7 @@ export namespace BillingStaticConstants {
     hspLocationId: 0,
     userId: 0,
     stationId: 0,
+    panNo: "",
   };
 
   export const billingPageTabs: any = [
@@ -151,10 +152,6 @@ export namespace BillingStaticConstants {
       },
       narration: {
         type: "buttonTextarea",
-      },
-      b2bInvoice: {
-        type: "checkbox",
-        options: [{ title: "B2B Invoice" }],
       },
     },
   };

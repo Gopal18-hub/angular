@@ -118,7 +118,7 @@ export class InvestigationsComponent implements OnInit {
   defaultPriorityId = 1;
 
   zeroPriceExist: boolean = false;
-
+  differentPriorityExist: boolean = false;
   childItems: any = [];
 
   constructor(
@@ -186,6 +186,10 @@ export class InvestigationsComponent implements OnInit {
       this.defaultPriorityId = 1;
       this.zeroPriceExist = false;
       this.billingService.changeBillTabStatus(false);
+    } else if (this.data.length == 1) {
+      this.defaultPriorityId = this.data[0].priority;
+      this.differentPriorityExist = false;
+      this.billingService.changeBillTabStatus(false);
     }
     this.billingService.calculateTotalAmount();
     this.checkTableValidation();
@@ -242,7 +246,18 @@ export class InvestigationsComponent implements OnInit {
               "Investigations can not have different priorities"
             );
             await errorDialog.afterClosed().toPromise();
+            ////GAV-907
+            for (var i = 0; i < this.data.length; i++) {
+              if (this.data[i].priority != res.$event.value) {
+                this.differentPriorityExist = true;
+                break;
+              } else {
+                this.defaultPriorityId = res.$event.value;
+                this.differentPriorityExist = false;
+              }
+            }
           } else {
+            this.differentPriorityExist = false;
             this.checkTableValidation();
           }
         }
@@ -308,6 +323,7 @@ export class InvestigationsComponent implements OnInit {
 
   checkTableValidation() {
     this.zeroPriceExist = false;
+
     console.log(this.data);
     this.data.forEach((item: any) => {
       if (item.price == 0) {
@@ -315,6 +331,8 @@ export class InvestigationsComponent implements OnInit {
       }
     });
     if (this.zeroPriceExist) {
+      this.billingService.changeBillTabStatus(true);
+    } else if (this.differentPriorityExist) {
       this.billingService.changeBillTabStatus(true);
     } else {
       setTimeout(() => {

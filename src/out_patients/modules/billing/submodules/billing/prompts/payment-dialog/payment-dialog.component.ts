@@ -125,6 +125,7 @@ export class BillPaymentDialogComponent implements OnInit {
           this.billingService.patientDetailsInfo.registrationno == undefined
             ? this.miscService.patientDetail.registrationno
             : this.billingService.patientDetailsInfo.registrationno,
+        toPaidAmount: this.data.toPaidAmount,
       },
     };
   }
@@ -142,6 +143,8 @@ export class BillPaymentDialogComponent implements OnInit {
 
   async makeBill() {
     //pan card and form 60
+    this.billingService.makeBillPayload.panNo = 
+      this.billingpatientidentity.patientidentityform.value.panno || '';
     this.billpatientIdentityInfo =
       this.billingpatientidentity.patientidentityform.value;
     if (

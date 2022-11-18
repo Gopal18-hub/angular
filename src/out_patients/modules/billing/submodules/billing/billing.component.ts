@@ -212,24 +212,27 @@ export class BillingComponent implements OnInit, OnDestroy {
           const tempBulkInvPayload: any = [];
           res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
-              tempBulkInvPayload.push({
-                title: item.testName,
-                value: item.testID,
-                originalTitle: item.testName,
-                docRequired: item.doctorid ? true : false,
-                patient_Instructions: "",
-                item_Instructions: "",
-                serviceid: item.serviceId,
-                doctorid: item.doctorid,
-                specialization: item.specialization,
-                specializationId: item.specializationId,
-              });
-              if (item.doctorid)
-                referalDoctor = {
-                  id: item.refDocID,
-                  name: item.refDocName,
-                  specialisation: "",
-                };
+              ////GAV-1227
+              if (!item.isBilled) {
+                tempBulkInvPayload.push({
+                  title: item.testName,
+                  value: item.testID,
+                  originalTitle: item.testName,
+                  docRequired: item.doctorid ? true : false,
+                  patient_Instructions: "",
+                  item_Instructions: "",
+                  serviceid: item.serviceId,
+                  doctorid: item.doctorid,
+                  specialization: item.specialization,
+                  specializationId: item.specializationId,
+                });
+                if (item.doctorid)
+                  referalDoctor = {
+                    id: item.refDocID,
+                    name: item.refDocName,
+                    specialisation: "",
+                  };
+              }
             }
           });
           if (tempBulkInvPayload.length > 0) {
@@ -256,15 +259,15 @@ export class BillingComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.formEvents();
 
-    this.formGroup.controls["b2bInvoice"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        if (res) {
-          this.billingService.makeBillPayload.invoiceType = "B2B";
-        } else {
-          this.billingService.makeBillPayload.invoiceType = "B2C";
-        }
-      });
+    // this.formGroup.controls["b2bInvoice"].valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((res: any) => {
+    //     if (res) {
+    //       this.billingService.makeBillPayload.invoiceType = "B2B";
+    //     } else {
+    //       this.billingService.makeBillPayload.invoiceType = "B2C";
+    //     }
+    //   });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
@@ -476,9 +479,8 @@ export class BillingComponent implements OnInit, OnDestroy {
           }
         },
         (error) => {
+          this.clear();
           this.snackbar.open("Invalid Max ID", "error");
-          this.apiProcessing = false;
-          this.patient = false;
         }
       );
   }
@@ -576,8 +578,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               }
             }
           } else {
-            this.apiProcessing = false;
-            this.patient = false;
+            this.clear();
             this.snackbar.open("Invalid Max ID", "error");
           }
 
@@ -585,7 +586,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         },
         (error) => {
           if (error.error == "Patient Not found") {
-            this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
+            this.clear();
+            // this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
             //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
             //this.questions[0].customErrorMessage = "Invalid Max ID";
             this.snackbar.open("Invalid Max ID", "error");
@@ -620,9 +622,8 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   setValuesToForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.clear();
       this.snackbar.open("Invalid Max ID", "error");
-      this.patient = false;
-      this.apiProcessing = false;
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -1107,6 +1108,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       doctorid: item.doctorid,
                       popuptext: item.popuptext,
                       precaution: item.precaution,
+                      specializationId: item.specializationId,
                     }
                   );
                 } else {
@@ -1120,6 +1122,8 @@ export class BillingComponent implements OnInit, OnDestroy {
                       originalTitle: item.testName,
                       docRequired: item.docRequired,
                       popuptext: item.popuptext,
+                      specializationId: item.specializationId,
+                      doctorid: item.doctorid,
                     }
                   );
                 }
@@ -1238,6 +1242,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         if (result && result.data) {
           let apppatientDetails = result.data.added[0];
           if (apppatientDetails.maxId.split(".")[1] == "") {
+            this.clear();
             this.snackbar.open("Invalid Max ID", "error");
           } else {
             let maxid = apppatientDetails.maxId;

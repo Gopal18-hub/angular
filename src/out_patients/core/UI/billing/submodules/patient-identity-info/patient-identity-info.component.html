@@ -1,12 +1,8 @@
-<section class="pat-iden">
-  <div class="flex p-2 pr-4 h-full w-full bg-grey font-medium">
-    <div class="flex w-3/5 h-full bg-lightgrey border-radius-md items-center">
-      <div class="mt-4 ml-2">
-        <p class="max-health-primary-color wt-nowrap">Mobile No.</p>
-      </div>
-      <div
-        class="w-3/10 mt-1 border-radius-lg h-full ml-2 bg-white align-items-center clr-primary textboxfontbold"
-      >
+<section class="pat-iden w-2/10 relative height-box z-10">
+  <div class="flex flex-column w-full bg-grey p-2 absolute mt-5">
+    <div class="flex flex-column justify-between">
+      <mat-label class="max-health-primary-color">Mobile No.</mat-label>
+      <div class="w-full border-radius-lg h-full bg-white align-items-center clr-primary textboxfontbold">
         <maxhealth-question
           [question]="questions[0]"
           [form]="patientidentityform"
@@ -14,12 +10,10 @@
           [index]="0"
         ></maxhealth-question>
       </div>
-      <div class="mt-4 ml-2">
-        <p class="max-health-primary-color wt-nowrap">Email ID</p>
-      </div>
-      <div
-        class="w-2/5 mt-1 border-radius-lg h-full ml-2 bg-white align-items-center clr-primary textboxfontbold"
-      >
+    </div>
+    <div class="flex flex-column justify-between mt-2">
+      <mat-label class="max-health-primary-color">Email ID</mat-label>
+      <div class="w-full border-radius-lg h-full bg-white align-items-center clr-primary textboxfontbold">
         <maxhealth-question
           [question]="questions[1]"
           [form]="patientidentityform"
@@ -28,27 +22,23 @@
         ></maxhealth-question>
       </div>
     </div>
+    <div class="mt-2 clr-primary patientidentityradiobutton">
+      <maxhealth-question
+        [question]="questions[3]"
+        [form]="patientidentityform"
+        [questions]="questions[3]"
+        [index]="2"
+      ></maxhealth-question>
+    </div>
     <div
-      class="flex h-full w-2/5 ml-2 pb-3 pr-1 border-radius-md align-items-center bg-lightgrey patientidentityradiobutton"
+      class="w-full h-full border-radius-lg mt-2 bg-white pancardtext"
     >
-      <div class="mt-1 clr-primary">
-        <maxhealth-question
-          [question]="questions[3]"
-          [form]="patientidentityform"
-          [questions]="questions[3]"
-          [index]="2"
-        ></maxhealth-question>
-      </div>
-      <div
-        class="w-7/20 h-full border-radius-lg mt-3 ml-1 bg-white pancardtext"
-      >
-        <maxhealth-question
-          [question]="questions[2]"
-          [form]="patientidentityform"
-          [questions]="questions[2]"
-          [index]="3"
-        ></maxhealth-question>
-      </div>
+      <maxhealth-question
+        [question]="questions[2]"
+        [form]="patientidentityform"
+        [questions]="questions[2]"
+        [index]="3"
+      ></maxhealth-question>
     </div>
   </div>
 </section>
