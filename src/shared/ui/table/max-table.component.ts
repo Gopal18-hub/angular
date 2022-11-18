@@ -198,8 +198,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("maxRemoveRow");
     }
-    this.initiateTable = true;
-    this.tableForm.markAllAsTouched();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -285,6 +283,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     this.tableForm.markAllAsTouched();
+  }
+
+  ngAfterContentInit() {
+    setTimeout(() => {
+      this.initiateTable = true;
+      this.tableForm.markAllAsTouched();
+    }, -1);
   }
 
   ngAfterViewInit() {
