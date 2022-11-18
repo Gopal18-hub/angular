@@ -165,17 +165,14 @@
   }
 }
 
-.searchbtn {
-  //min-width: initial !important;
-  line-height: 1.675rem;
-  height: 1.9rem !important;
-  width : 5vw!important
-
-  //line-height: 1.875rem  !important;
+.searchbtn {    
+  line-height: 1.675rem;    
+  height: 1.7rem !important;
+  width: 5vw !important;
 }
 .clr {
+  height: 1.7rem !important;
   line-height: 1.675rem;
-  height: 1.9rem !important;
 }
 .serachcss{
   
@@ -212,9 +209,9 @@
 }
 
 .bg-darkgray {
-
   background: #d8d8d8;
-  width: 31%
+  width: 32%;
+  height: 31px;
 }
 
 .bg-white {
