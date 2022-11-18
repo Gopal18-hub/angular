@@ -58,6 +58,7 @@
             class="w-full h-full op-approval-table-wrapper"
             [config]="approveconfig"
             [data]="opApprovalacceptList"
+            (columnClick)="approvedRequestColumnClick($event)"
           ></maxhealth-table>
         </ng-container>
         <ng-container *ngIf="showapprovalreject">

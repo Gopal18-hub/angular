@@ -40,6 +40,7 @@ export class DmgMappingComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   userId: any;
   hsplocationId: any;
+  apiprocessing: boolean = false;
 
   dmgPatientDetails!: PatientDetailsDmgInterface;
   dmgMappingformData = {
@@ -170,71 +171,82 @@ export class DmgMappingComponent implements OnInit {
     //let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
     let iacode = maxid.split(".")[0];
     let regno = maxid.split(".")[1];
+    this.apiprocessing = true;
     this.http
       .get(ApiConstants.getpatientdetailsdmg(regno, iacode, this.hsplocationId))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
-        console.log(data);
-        if (data != null) {
-          if (data.dmgPatientDetailDT.length != 0) {
-            this.showCheckboxgrid = true;
-            this.disableClear = false;
-            this.disablebutton = false;
-            this.clearPatientdata();
-            this.dmgPatientDetails = data as PatientDetailsDmgInterface;
-            console.log(this.dmgPatientDetails);
-            this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
-              if (item.isChecked == 1) {
-                this.isdmgselected = index;
-                this.isDmgmapped = true;
-                this.docId =
-                  this.dmgPatientDetails.dmgMappingDataDT[index].docId;
-                //this.disablebutton = false;
-                console.log(this.docId);
-              } else {
-                this.isdmgselected = -1;
+      .subscribe(
+        (data) => {
+          console.log(data);
+          if (data != null) {
+            if (data.dmgPatientDetailDT.length != 0) {
+              this.showCheckboxgrid = true;
+              this.disableClear = false;
+              this.disablebutton = false;
+              this.apiprocessing = false;
+              this.clearPatientdata();
+              this.dmgPatientDetails = data as PatientDetailsDmgInterface;
+              console.log(this.dmgPatientDetails);
+              this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
+                if (item.isChecked == 1) {
+                  this.isdmgselected = index;
+                  this.isDmgmapped = true;
+                  this.docId =
+                    this.dmgPatientDetails.dmgMappingDataDT[index].docId;
+                  //this.disablebutton = false;
+                  console.log(this.docId);
+                } else {
+                  this.isdmgselected = -1;
+                }
+                //  this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
+                this.dmgPatientDetails.dmgMappingDataDT[index].docName =
+                  item.docName.split(".")[1];
+                //});
+                console.log(
+                  this.dmgPatientDetails.dmgMappingDataDT[index].docName
+                );
+              });
+              if (this.dmgPatientDetails.dmgPatientDetailDT.length != 0) {
+                this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
+                this.name =
+                  this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
+                this.age = this.dmgPatientDetails.dmgPatientDetailDT[0].age;
+                this.gender =
+                  this.dmgPatientDetails.dmgPatientDetailDT[0].gender;
+                this.nationality =
+                  this.dmgPatientDetails.dmgPatientDetailDT[0].nationality;
+                this.dob = this.datepipe.transform(
+                  this.dmgPatientDetails.dmgPatientDetailDT[0].dob,
+                  "dd/MM/yyyy"
+                );
+                this.dmgMappingForm.controls["maxid"].setValue(
+                  this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
+                );
+                this.dmgMappingForm.controls["mobileno"].setValue(
+                  this.dmgPatientDetails.dmgPatientDetailDT[0].mobileNo
+                );
+                // this.categoryIcons = this.patientService.getCategoryIcons(
+                //   this.dmgPatientDetails.dmgPatientDetailDT[0]
+                // );
+                this.getPatientIcon();
+                console.log(this.categoryIcons);
               }
-              //  this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
-              this.dmgPatientDetails.dmgMappingDataDT[index].docName =
-                item.docName.split(".")[1];
-              //});
-              console.log(
-                this.dmgPatientDetails.dmgMappingDataDT[index].docName
-              );
-            });
-            if (this.dmgPatientDetails.dmgPatientDetailDT.length != 0) {
-              this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
-              this.name =
-                this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
-              this.age = this.dmgPatientDetails.dmgPatientDetailDT[0].age;
-              this.gender = this.dmgPatientDetails.dmgPatientDetailDT[0].gender;
-              this.nationality =
-                this.dmgPatientDetails.dmgPatientDetailDT[0].nationality;
-              this.dob = this.datepipe.transform(
-                this.dmgPatientDetails.dmgPatientDetailDT[0].dob,
-                "dd/MM/yyyy"
-              );
-              this.dmgMappingForm.controls["maxid"].setValue(
-                this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
-              );
-              this.dmgMappingForm.controls["mobileno"].setValue(
-                this.dmgPatientDetails.dmgPatientDetailDT[0].mobileNo
-              );
-              // this.categoryIcons = this.patientService.getCategoryIcons(
-              //   this.dmgPatientDetails.dmgPatientDetailDT[0]
-              // );
-              this.getPatientIcon();
-              console.log(this.categoryIcons);
-            }
 
-            // Assign checkbox grid here
+              // Assign checkbox grid here
+            } else {
+              this.apiprocessing = false;
+              this.setErroronMaxid();
+            }
           } else {
+            this.apiprocessing = false;
             this.setErroronMaxid();
           }
-        } else {
+        },
+        (error) => {
+          this.apiprocessing = false;
           this.setErroronMaxid();
         }
-      });
+      );
     // this.questions[0].elementRef.focus();
   }
   patientDetailsforicon!: PatientDetails;
@@ -275,8 +287,9 @@ export class DmgMappingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultdata) => {
         console.log(resultdata);
-        if (resultdata != null) {
+        if (resultdata != null || resultdata.length != 0) {
           if (resultdata.length > 1) {
+            this.apiprocessing = false;
             const similarpatientDialog = this.dialog.open(
               SimilarPatientDialog,
               {
@@ -292,8 +305,13 @@ export class DmgMappingComponent implements OnInit {
               this.onMaxidEnter(resultdata.data.added[0].maxid);
             });
           } else if (resultdata.length == 1) {
+            this.apiprocessing = false;
             this.onMaxidEnter(resultdata[0].maxid);
+          } else {
+            this.apiprocessing = false;
           }
+        } else {
+          this.apiprocessing = false;
         }
       });
   }
@@ -314,6 +332,7 @@ export class DmgMappingComponent implements OnInit {
     //   this.dialog.open(DmgDialogComponent, { width: "25vw", height: "30vh" });
     // } else {
     if (this.isDmgmapped) {
+      this.apiprocessing = true;
       this.http
         .post(ApiConstants.savepatientdmg, this.getSaveDmgObject())
         .pipe(takeUntil(this._destroying$))
@@ -324,9 +343,12 @@ export class DmgMappingComponent implements OnInit {
           (httperrorResponse) => {
             if (httperrorResponse.error.text == "Saved Successfully") {
               this.messagedialogservice.success("DMG mapped to this patient");
+              this.apiprocessing = false;
               //this.showCheckboxgrid = false;
               this.categoryIcons = [];
               this.onMaxidEnter(this.dmgMappingForm.controls["maxid"].value);
+            } else {
+              this.apiprocessing = false;
             }
           }
         );

@@ -117,6 +117,7 @@ export class DepositService {
       };
       
  clearAllItems = new Subject<boolean>();
+ formsixtytobefill = new Subject<boolean>();
 
  transactionamount:any = 0.00;
  MOP:string = "Cash";
@@ -219,5 +220,9 @@ export class DepositService {
     refundcashlimit:any=[];
     setcashlimitation(cashlimitlist:any){
        this.refundcashlimit = cashlimitlist;
+    }
+
+  depositformsixtytobefill(fillform:boolean){
+      this.formsixtytobefill.next(fillform);
     }
 }

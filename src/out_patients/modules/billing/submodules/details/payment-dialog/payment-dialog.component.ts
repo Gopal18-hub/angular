@@ -43,100 +43,149 @@ export class PaymentDialogComponent implements OnInit {
         placeholder: "Online Payment Type"
       },
       cashamount: {
+        title:'Amount',
         type: "number",
         defaultValue: "0.00",
+        required: true,
       },
       //cheque
       chequeamount: {
+        title:'Amount',
         type: "number",
         defaultValue: "0.00",
+        required: true,
       },
       chequeno: {
-        type: "number"
+        title:'Cheque/NEFT No.',
+        type: "number",
+        required: true,
       },
       chequeissuedate: {
+        title:'Issue Date',
         type: "date",
         maximum: new Date(),
         defaultValue: new Date(),
+        required: true,
       },
       chequevalidity: {
+        title:'Validity',
         type: "date",
         defaultValue: new Date(),
-        minimum: new Date()
+        minimum: new Date(),
+        required: true,
       },
       chequebankname: {
+        title:'Bank Name',
         type: "autocomplete",
-        options: this.bankname
+        options: this.bankname,
+        required: true,
       },
       chequebranchname: {
-        type: "string"
+        title:'Branch Name',
+        type: "string",
+        required: true,
       },
        //credit
       creditamount: {
+        title:'Amount',
         type: "number",
-        defaultValue: "0.00"
+        defaultValue: "0.00",
+        required: true,
       },
       creditcardno: {
-        type: "number"
+        title:'Card No.',
+        type: "number",
+        required: true,
       },
       creditcardholdername:{
-        type: "string"
+        title:'Card Holder Name',
+        type: "string",
+        required: true,
       },
       creditbankname: {
+        title:'Bank Name',
         type: 'autocomplete',
-        options: this.creditcard
+        options: this.creditcard,
+        required: true,
       },
       creditbatchno:{
-        type: "string"
+        title:'Batch no.',
+        type: "string",
+        required: true,
       },
       creditapprovalno: {
-        type: 'string'
+        title:'Approval Code',
+        type: 'string',
+        required: true,
       },
       creditterminalid: {
-        type: "string"
+        title:'Terminal ID',
+        type: "string",
+        required: true,
       },
       creditacquiringbank: {
-        type: "string"
+        title:'Acquiring Bank',
+        type: "string",
+        required: true,
       },
       //demand
       demandamount: {
+        title:'Amount',
         type: 'number',
-        defaultValue: "0.00"
+        defaultValue: "0.00",
+        required: true,
       },
       demandddno: {
-        type: 'string'
+        title:'DD No.',
+        type: 'string',
+        required: true,
       },
       demandissuedate: {
+        title:'Issue Date',
         type: "date",
         maximum: new Date(),
         defaultValue: new Date(),
+        required: true,
       },
       demandvalidity: {
+        title:'Validity',
         type: "date",
         defaultValue: new Date(),
-        minimum: new Date()
+        minimum: new Date(),
+        required: true,
       },
       demandbankname: {
+        title:'Bank Name',
         type: "autocomplete",
-        options: this.bankname
+        options: this.bankname,
+        required: true,
       },
       demandbranchname: {
-        type: "string"
+        title:'Branch Name',
+        type: "string",
+        required: true,
       },
        //online
       onlineamount: {
+        title:'Amount',
         type: "number",
-        defaultValue: "0.00"
+        defaultValue: "0.00",
+        required: true,
       },
       onlinetransacid: {
-        type: "string"
+        title:'Transaction ID',
+        type: "string",
+        required: true,
       },
       onlinebookingid: {
-        type: "string"
+        title:'Booking ID',
+        type: "string",
+        required: true,
       }, 
       onlinecardvalidate: {
+        title:'Card Validation',
         type: "radio",
-        required: false,
+        required: true,
         defaultValue: 'yes',
         options: [
           { title: "Yes", value: "yes" },
@@ -144,10 +193,14 @@ export class PaymentDialogComponent implements OnInit {
         ]
       },
       onlinecontact: {
-        type: 'string'
+        title:'Contact No.',
+        type: 'string',
+        required: true,
       },
       onlinepaidamount: {
-        type: 'string'
+        title:'Amount',
+        type: 'string',
+        required: true,
       }
     },
   };
@@ -225,7 +278,7 @@ export class PaymentDialogComponent implements OnInit {
     this.dueform = formResult.form;
     this.questions = formResult.questions;
     this.getdepositcashlimit();
-    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
+    
     this.billamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(2);
     this.prepaidamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount.toFixed(2);
     this.depositamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2);
@@ -233,6 +286,8 @@ export class PaymentDialogComponent implements OnInit {
     this.totaldue = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(2);
     this.dueform.controls['cashamount'].setValue(this.totaldue);
     this.finalamount += Number(this.dueform.controls['cashamount'].value);
+    this.data.patientinfo.toPaidAmount = this.finalamount;
+    this.patientIdentityInfo = { patientinfo: this.data.patientinfo };
     this.amountcheck();
     this.getbankname();
     this.getcreditcard();

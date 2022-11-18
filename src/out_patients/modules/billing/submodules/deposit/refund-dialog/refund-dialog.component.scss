@@ -5,6 +5,9 @@
 .col-white{
     color: #fff;
 }
+.close-height{
+    height: 2vh;
+  }
 .back-primary{
     background-color: #004084;
 }
@@ -34,10 +37,13 @@
     color: #004084;
 }
 .height{
-    height: 61vh;
+    height: 39vh;
+}
+.remarksheight{
+    height: 62vh !important;
 }
 .width{
-    width: 35% !important;
+    width: 31% !important;
 }
 .bg-grey{
     background:#F6F6F6;
@@ -73,7 +79,7 @@
     }
 }
 ::ng-deep .refundheight{
-    height: 5vh !important;
+    height: 4vh !important;
 }
 .payabletextbox{
 ::ng-deep .mat-form-field{
@@ -88,4 +94,16 @@ line-height: 1.25 !important;
         background-color:rgb(200, 200, 200) !important;
         color: rgba(0, 0, 0, 0.26) !important;    
     }
+    .bottom {
+        ::ng-deep .mat-radio-button {
+          margin-left: 10px;
+          margin-bottom: 0 !important;
+          padding-bottom: 0 !important;
+          padding-top: 0 !important;
+          margin-top: 8px;
+        }
+      }
+      ::ng-deep .paymentmethod-wrapper .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+        width: 23%!important;
+      }
 }

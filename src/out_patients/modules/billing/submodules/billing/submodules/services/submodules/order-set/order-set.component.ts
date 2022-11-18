@@ -50,11 +50,12 @@ export class OrderSetComponent implements OnInit {
       "orderSetName",
       "serviceType",
       "serviceItemName",
-      "precaution",
-      "priority",
       "specialization",
       "doctorName",
       "price",
+      "precaution",
+      "priority",    
+      
     ],
     columnsInfo: {
       sno: {
@@ -68,7 +69,7 @@ export class OrderSetComponent implements OnInit {
         title: "Order Set Name",
         type: "string_link",
         style: {
-          width: "20%",
+          width: "15%",
         },
       },
       serviceType: {
@@ -85,6 +86,30 @@ export class OrderSetComponent implements OnInit {
           width: "180px",
         },
       },
+      specialization: {
+        title: "Specialisation",
+        type: "dropdown",
+        options: [],
+        style: {
+          width: "10%",
+        },
+      },
+      doctorName: {
+        title: "Doctor Name",
+        type: "dropdown",
+        options: [],
+        style: {
+          width: "10%",
+        },
+        moreOptions: {},
+      },
+      price: {
+        title: "Price",
+        type: "currency",
+        style: {
+          width: "100px",
+        },
+      },
       precaution: {
         title: "Precaution",
         type: "string_link",
@@ -97,33 +122,10 @@ export class OrderSetComponent implements OnInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "100px",
+          width: "130px",
         },
       },
-      specialization: {
-        title: "Specialisation",
-        type: "dropdown",
-        options: [],
-        style: {
-          width: "17%",
-        },
-      },
-      doctorName: {
-        title: "Doctor Name",
-        type: "dropdown",
-        options: [],
-        style: {
-          width: "17%",
-        },
-        moreOptions: {},
-      },
-      price: {
-        title: "Price",
-        type: "currency",
-        style: {
-          width: "150px",
-        },
-      },
+      
     },
   };
 
