@@ -474,6 +474,7 @@ export class OpRegistrationComponent implements OnInit {
   ) {}
 
   bool: boolean | undefined;
+  disableforeigner: boolean = false;
   ngOnInit(): void {
     this.bool = true;
     this.registeredBy =
@@ -731,6 +732,13 @@ export class OpRegistrationComponent implements OnInit {
   pincodebasedflow: boolean = false;
   formProcessing() {
     this.checkForMaxID();
+
+    //unfreeze foreigner checkbox
+    this.OPRegForm.controls['nationality'].valueChanges
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(() => {
+      this.disableforeigner = false;
+    })
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
@@ -1271,6 +1279,7 @@ export class OpRegistrationComponent implements OnInit {
     //this.checkForMaxID();
     this.clearClicked = false;
     this.registeredBy = this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
+    this.disableforeigner = false;
   }
 
   flushAllObjects() {
@@ -4527,6 +4536,7 @@ export class OpRegistrationComponent implements OnInit {
         console.log("passport dialog was closed ");
         if (this.passportDetails.passportNo != "") {
           this.OPRegForm.controls["foreigner"].setValue(true);
+          this.disableforeigner = true;
           this.passportDetails = {
             Expirydate:
               this.datepipe.transform(
@@ -4547,6 +4557,7 @@ export class OpRegistrationComponent implements OnInit {
         } else {
           if (result == undefined || result.data == undefined) {
             this.OPRegForm.controls["foreigner"].setValue(false);
+            this.disableforeigner = false;
             if (this.OPRegForm.value.nationality.value != 149) {
               this.OPRegForm.controls["nationality"].setErrors({
                 incorrect: true,
@@ -4572,6 +4583,7 @@ export class OpRegistrationComponent implements OnInit {
               HCF: result.data.hcf,
             };
             this.isPatientdetailModified = true;
+            this.disableforeigner = true;
             console.log(this.passportDetails);
             this.OPRegForm.controls["nationality"].setErrors(null);
             this.questions[28].customErrorMessage = "";
