@@ -108,6 +108,7 @@ export namespace BillingStaticConstants {
     hspLocationId: 0,
     userId: 0,
     stationId: 0,
+    panNo: "",
   };
 
   export const billingPageTabs: any = [
