@@ -33,7 +33,7 @@ export namespace FormReport {
               title: "name",
 
               value: "id",
-              filter:"hsplocationid"
+              filter: "hsplocationid",
             },
           },
 
@@ -740,7 +740,6 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
       properties: {
         LocationName: {
           type: "hidden",
@@ -749,13 +748,27 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtptodate",
+              type: "dateMin",
+            },
+          ],
         },
         dtptodate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          minimum: new Date("From Date"),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpfromdate",
+              type: "dateMax",
+            },
+          ],
         },
         locationid: {
           type: "autocomplete",
