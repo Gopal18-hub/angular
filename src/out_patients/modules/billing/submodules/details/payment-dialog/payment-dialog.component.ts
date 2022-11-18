@@ -278,7 +278,7 @@ export class PaymentDialogComponent implements OnInit {
     this.dueform = formResult.form;
     this.questions = formResult.questions;
     this.getdepositcashlimit();
-    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
+    
     this.billamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(2);
     this.prepaidamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount.toFixed(2);
     this.depositamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2);
@@ -286,6 +286,8 @@ export class PaymentDialogComponent implements OnInit {
     this.totaldue = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(2);
     this.dueform.controls['cashamount'].setValue(this.totaldue);
     this.finalamount += Number(this.dueform.controls['cashamount'].value);
+    this.data.patientinfo.toPaidAmount = this.finalamount;
+    this.patientIdentityInfo = { patientinfo: this.data.patientinfo };
     this.amountcheck();
     this.getbankname();
     this.getcreditcard();

@@ -282,7 +282,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this.discountamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2);
     // this.due = this.due.toFixed(2);
     this.totaldue = this.data.refundamount;
-    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
+    this.patientIdentityInfo = { patientinfo: this.data.patientinfo };
     this.getpaymentmode();
     this.getbankname();
     this.getcreditcard();

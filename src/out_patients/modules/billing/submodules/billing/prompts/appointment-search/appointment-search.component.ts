@@ -627,6 +627,8 @@ export class AppointmentSearchComponent implements OnInit {
   clear() {
     this.OPAppointmentForm.reset();
     this.searchResults = [];
+    this.OPAppointmentForm.controls['fromDate'].setValue(this.todayDate);
+    this.OPAppointmentForm.controls['toDate'].setValue(this.todayDate);
   }
   getAppointmentSearch() {
     console.log(this.OPAppointmentForm.value.phone);
