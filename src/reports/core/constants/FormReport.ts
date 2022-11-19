@@ -51,13 +51,41 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
           required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "EquipToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "EquipToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
+          maximum: new Date(),
           required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "EquipFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "EquipFromDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
