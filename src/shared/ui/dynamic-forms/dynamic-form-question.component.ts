@@ -19,6 +19,7 @@ import "../../utilities/String-Extentions";
 import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
+import * as moment from "moment";
 
 @Component({
   selector: "maxhealth-question",
@@ -140,7 +141,7 @@ export class DynamicFormQuestionComponent
           }
           break;
         case "required":
-          let questionIndex = this.questions.findIndex(
+          let questionIndex: number = this.questions.findIndex(
             (it) => it.key == conditionParam.controlKey
           );
           const exprRequiredEvaluate = eval(conditionParam.expression);
@@ -149,6 +150,49 @@ export class DynamicFormQuestionComponent
           } else {
             this.questions[questionIndex].required = false;
           }
+          break;
+        case "dateMin":
+          let dateTempValue: any = eval(conditionParam.expression);
+          let datequestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[datequestionIndex].minimum = dateTempValue;
+          break;
+        case "dateMax":
+          let dateMaxTempValue: any = eval(conditionParam.expression);
+          let dateMaxquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateMaxquestionIndex].maximum = dateMaxTempValue;
+          break;
+        case "dateMaxWithDays":
+          let dateWithDaysTempValue: any = eval(conditionParam.expression);
+          let dateWithDaysquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateWithDaysquestionIndex].maximum = moment
+            .min(
+              moment(),
+              moment(dateWithDaysTempValue).add(conditionParam.days, "days")
+            )
+            .toDate();
+
+          break;
+        case "dateMinWithDays":
+          let dateWithMinDaysTempValue: any = eval(conditionParam.expression);
+          let dateWithMinDaysquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateWithMinDaysquestionIndex].minimum = moment
+            .min(
+              moment(),
+              moment(dateWithMinDaysTempValue).subtract(
+                conditionParam.days,
+                "days"
+              )
+            )
+            .toDate();
+
           break;
         default:
           console.log(`NA`);

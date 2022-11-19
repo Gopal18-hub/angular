@@ -14,6 +14,9 @@
       &:not(:last-child) {
         border-bottom: 1px solid #707070;
       }
+      &:hover {
+        background-color: #bfe8e7 !important;
+      }
     }
   }
   .referral-internal-doctor-wrapper {
