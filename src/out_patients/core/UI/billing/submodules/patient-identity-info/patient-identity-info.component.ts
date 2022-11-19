@@ -133,6 +133,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     this.billingservice.pancardpaymentmethod.subscribe((setfocus) => {
       if (setfocus) {
         this.questions[2].elementRef.focus();
+        this.patientidentityform.controls["panno"].setErrors({ incorrect: true });   
+        this.questions[2].customErrorMessage = "Pan card No is required";
       }
     });
 
@@ -141,12 +143,6 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
         this.data = [];
         this.patientidentityform.controls["panno"].setValue("");
         this.patientidentityform.controls["mainradio"].setValue("pancardno");
-      }
-    });
-
-    this.depositservice.formsixtytobefill.subscribe((fillform) => {
-      if (fillform) {
-        this.patientidentityform.controls["mainradio"].enable();
       }
     });
   }

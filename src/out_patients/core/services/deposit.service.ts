@@ -221,8 +221,4 @@ export class DepositService {
     setcashlimitation(cashlimitlist:any){
        this.refundcashlimit = cashlimitlist;
     }
-
-  depositformsixtytobefill(fillform:boolean){
-      this.formsixtytobefill.next(fillform);
-    }
 }
