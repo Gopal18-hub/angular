@@ -1,3 +1,4 @@
+import { MaxHealthStorage } from "@shared/services/storage";
 export namespace PaymentMethods {
   export const wallets: any = ["PayTM"];
   export const methods: any = {
@@ -211,9 +212,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "dropdown",
+          type: "string",
           label: "POS IMEI",
           required: true,
+          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+          readonly: true,
         },
         transactionid: {
           type: "string",
@@ -275,6 +278,7 @@ export namespace PaymentMethods {
         },
         {
           label: "Get Approval",
+          type: "",
         },
         {
           label: "Retry",
@@ -612,9 +616,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "dropdown",
+          type: "string",
           label: "POS IMEI",
           required: true,
+          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+          readonly: true,
         },
         ccNumber_UPI: {
           type: "number",
