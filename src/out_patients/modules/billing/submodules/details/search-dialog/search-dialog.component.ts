@@ -370,6 +370,11 @@ export class SearchDialogComponent implements OnInit {
     },
     (error) => {
       console.log(error);
+      this.apiProcessing = false;
+      if(error.error.errors.registrationno)
+      {
+        this.snackbar.open(error.error.errors.registrationno[0]);
+      }
     })
   }
   clear()

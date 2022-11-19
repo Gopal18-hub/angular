@@ -29,6 +29,7 @@ import { DiscountAmtDialogComponent } from "../../prompts/discount-amt-dialog/di
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { GstTaxComponent } from "@modules/billing/submodules/billing/prompts/gst-tax-popup/gst-tax.component";
+import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -2405,11 +2406,26 @@ export class BillDetailComponent implements OnInit {
   print() {
     this.openReportModal("billingreport");
   }
+
+  duplicateflag: boolean = true;
   openReportModal(btnname: string) {
     this.reportService.openWindow(btnname, btnname, {
       opbillid: this.generatedBillNo,
       locationID: this.location,
     });
+
+    setTimeout(() => {
+      if(this.duplicateflag == true)
+      {
+        this.http.post(BillingApiConstants.updateopprintbillduplicate(Number(this.generatedBillNo)), '')
+        .subscribe(res => {
+          if(res.success == true)
+          {
+            this.duplicateflag = false;
+          }
+        });
+      }
+    }, 2000);
   }
 
   //USING FOR TESTING PURPOSE
