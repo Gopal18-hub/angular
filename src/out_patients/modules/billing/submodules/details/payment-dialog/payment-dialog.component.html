@@ -509,7 +509,7 @@
         </patient-identity-info>
         <div class="flex float-right creditbuttonwidth absolute right-0 bottom-0">
             <div class="mr-3">
-                <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="submitbtn()">Submit</button>
+                <button mat-raised-button color="primary" type="submit" class="mt-1 btn" [disabled]="submitbtnflag" (click)="submitbtn()">Submit</button>
             </div>
            
             <div class="">
