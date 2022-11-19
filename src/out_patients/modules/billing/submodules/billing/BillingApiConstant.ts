@@ -375,4 +375,10 @@ export namespace BillingApiConstants {
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/checkcghsbeneficiary/${iacode}/${regNumber}/${companyId}/${adhaarId}`;
   };
+
+  export const updateopprintbillduplicate = (
+    OPBillID: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/updateopprintbillduplicate/${OPBillID}`
+  }
 }
