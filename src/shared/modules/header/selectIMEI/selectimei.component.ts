@@ -122,6 +122,22 @@ export class SelectimeiComponent implements OnInit, AfterViewInit {
               path: "/",
             }
           );
+          this.cookieService.delete("PineLabApiUrl", "/");
+          this.cookieService.set(
+            "PineLabApiUrl",
+            this.POSMachineDetal.apiUrlPineLab,
+            {
+              path: "/",
+            }
+          );
+          this.cookieService.delete("UPIAllowedPaymentMode", "/");
+          this.cookieService.set(
+            "UPIAllowedPaymentMode",
+            this.POSMachineDetal.upI_AllowedPaymentMode,
+            {
+              path: "/",
+            }
+          );
         }
       }
       this.dialogRef.close({ data: this.form.value });
