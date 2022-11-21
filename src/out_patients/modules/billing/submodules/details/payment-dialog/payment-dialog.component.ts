@@ -247,6 +247,8 @@ export class PaymentDialogComponent implements OnInit {
   manualbtn: boolean = true;
   retrybtn: boolean = true;
   approvalbtn: boolean = true;
+
+  submitbtnflag: boolean = false;
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -304,6 +306,101 @@ export class PaymentDialogComponent implements OnInit {
     this.questions[17].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[23].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.disablecc();
+    this.billingpatientidentity.patientidentityform.controls['panno'].valueChanges.subscribe(() => {
+      if(this.billingpatientidentity.patientidentityform.controls['panno'].status == "VALID")
+      {
+        this.submitbtnflag = false;
+      }
+      else{
+        this.submitbtnflag = true;
+      }
+    })
+    //call for submit btn disable
+    // this.formvalidation();
+
+  }
+
+  formvalidation()
+  {
+    this.dueform.controls['chequeamount'].valueChanges.subscribe((res) => {
+      if(Number(res) > 0)
+      {
+        this.questions[4].required = true;
+        this.questions[5].required = true;
+        this.questions[6].required = true;
+        this.questions[7].required = true;
+        this.questions[8].required = true;
+      }
+      else
+      {
+        this.questions[4].required = false;
+        this.questions[5].required = false;
+        this.questions[6].required = false;
+        this.questions[7].required = false;
+        this.questions[8].required = false;
+      }
+    });
+
+    this.dueform.controls['creditamount'].valueChanges.subscribe((res) => {
+      if(Number(res) > 0)
+      {
+        this.questions[10].required = true;
+        this.questions[11].required = true;
+        this.questions[12].required = true;
+        this.questions[13].required = true;
+        this.questions[14].required = true;
+        this.questions[15].required = true;
+        this.questions[16].required = true;
+      }
+      else
+      {
+        this.questions[10].required = false;
+        this.questions[11].required = false;
+        this.questions[12].required = false;
+        this.questions[13].required = false;
+        this.questions[14].required = false;
+        this.questions[15].required = false;
+        this.questions[16].required = false;
+      }
+    });
+
+    this.dueform.controls['demandamount'].valueChanges.subscribe((res) => {
+      if(Number(res) > 0)
+      {
+        this.questions[18].required = true;
+        this.questions[19].required = true;
+        this.questions[20].required = true;
+        this.questions[21].required = true;
+        this.questions[22].required = true;
+      }
+      else
+      {
+        this.questions[18].required = false;
+        this.questions[19].required = false;
+        this.questions[20].required = false;
+        this.questions[21].required = false;
+        this.questions[22].required = false;
+      }
+    });
+
+    this.dueform.controls['onlineamount'].valueChanges.subscribe((res) => {
+      if(Number(res) > 0)
+      {
+        this.questions[24].required = true;
+        this.questions[25].required = true;
+        this.questions[26].required = true;
+        this.questions[27].required = true;
+        this.questions[28].required = true;
+      }
+      else
+      {
+        this.questions[24].required = false;
+        this.questions[25].required = false;
+        this.questions[26].required = false;
+        this.questions[27].required = false;
+        this.questions[28].required = false;
+      }
+    });
   }
   disablecc()
   {

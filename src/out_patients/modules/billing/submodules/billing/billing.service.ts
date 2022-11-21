@@ -1074,7 +1074,7 @@ export class BillingService {
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
-          "Do you want to pay less amount of Rs." +
+          "Do you want to pay with due amount of Rs." +
             (toBePaid - collectedAmount) +
             "?"
         );
