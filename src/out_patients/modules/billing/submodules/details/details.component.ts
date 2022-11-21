@@ -403,7 +403,7 @@ export class DetailsComponent implements OnInit {
       this.BServiceForm.controls["paymentMode"].value != "" &&
       this.BServiceForm.controls["refundAmt"].value > 0
     ) {
-      // this.approvalsend = false;
+      this.approvalsend = false;
       this.billdetailservice.authorisedby =
         this.BServiceForm.controls["authBy"].value;
       this.billdetailservice.reason =
@@ -411,7 +411,7 @@ export class DetailsComponent implements OnInit {
       this.billdetailservice.mop =
         this.BServiceForm.controls["paymentMode"].value;
     } else {
-      // this.approvalsend = true;
+      this.approvalsend = true;
     }
   }
   sendforapproval() {
