@@ -92,7 +92,7 @@
       }
     }
   }
-  ::ng-deep .mat-raised-button{
+  ::ng-deep .mat-raised-button {
     min-width: 100px !important;
     height: 1.875rem;
     line-height: 1.875rem;
@@ -157,6 +157,9 @@
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  &:focus {
+    outline-color: var(--primary-color);
+  }
 }
 
 tr.child-detail-row {
