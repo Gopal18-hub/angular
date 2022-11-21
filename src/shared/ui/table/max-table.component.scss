@@ -52,6 +52,9 @@
         -webkit-hyphens: auto;
         hyphens: auto;
         padding-right: 8px;
+        &:last-of-type {
+          padding-right: 24px;
+        }
         ::ng-deep mat-form-field {
           .mat-form-field-wrapper {
             padding-bottom: 0 !important;
@@ -70,6 +73,7 @@
         .currency-data {
           display: flex;
           justify-content: flex-end;
+          margin-right: 12px;
         }
       }
     }
