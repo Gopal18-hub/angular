@@ -2,8 +2,7 @@ import { environment } from "@environments/environment";
 
 export namespace ApiConstants {
   export const validate_username = (UserName: String) => {
-    return `${environment.IdentityServerUrl}
-    api/authenticate/validateusernamebyad?UserName=${UserName}`;
+    return `${environment.IdentityServerUrl}api/authenticate/validateusernamebyad?UserName=${UserName}`;
   };
 
   export const validateADCredentials = (UserName: string, Password: string) => {
