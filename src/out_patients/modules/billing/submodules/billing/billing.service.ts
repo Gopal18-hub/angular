@@ -1033,6 +1033,15 @@ export class BillingService {
           }
         }
       });
+
+      let cashlimit = this.makeBillPayload.ds_paymode.tab_paymentList.filter((mode:any ) => mode.modeOfPayment == "Cash" && mode.amount > 200000);       
+      if(cashlimit.length > 0){
+        const modeconfirm =  this.messageDialogService.info("Total cash amount cannot exceed Rs.199999");       
+        modeconfirm.afterClosed().toPromise(); 
+        return;
+         }
+        
+
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
@@ -1065,7 +1074,7 @@ export class BillingService {
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
-          "Do you want to pay less amount of Rs." +
+          "Do you want to pay with due amount of Rs." +
             (toBePaid - collectedAmount) +
             "?"
         );

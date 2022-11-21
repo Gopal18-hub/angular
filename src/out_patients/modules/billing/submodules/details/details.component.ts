@@ -403,7 +403,7 @@ export class DetailsComponent implements OnInit {
       this.BServiceForm.controls["paymentMode"].value != "" &&
       this.BServiceForm.controls["refundAmt"].value > 0
     ) {
-      this.approvalsend = false;
+      // this.approvalsend = false;
       this.billdetailservice.authorisedby =
         this.BServiceForm.controls["authBy"].value;
       this.billdetailservice.reason =
@@ -411,7 +411,7 @@ export class DetailsComponent implements OnInit {
       this.billdetailservice.mop =
         this.BServiceForm.controls["paymentMode"].value;
     } else {
-      this.approvalsend = true;
+      // this.approvalsend = true;
     }
   }
   sendforapproval() {
@@ -1259,29 +1259,64 @@ export class DetailsComponent implements OnInit {
           this.paymentmode[0].title
         );
       }
-      var forenablerefundbill: any;
+      var forenablerefundbill: any = [];
+      var temp: any;
       if (this.billdetailservice.sendforapproval.length > 0) {
         this.billdetailservice.sendforapproval.forEach((j: any) => {
-          forenablerefundbill =
+          temp =
             this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(
               (k) => {
                 return k.itemId == j.itemid;
               }
             );
+            if(temp.length > 0)
+            {
+              forenablerefundbill.push(temp[0]);
+            }
+            
         });
 
+        console.log('enable refund bill', forenablerefundbill);
+        console.log('approval list', this.billdetailservice.sendforapproval);
+        // if(forenablerefundbill.length == this.billdetailservice.sendforapproval.length)
+        // {
+        //   this.refundbill = false;
+        //   this.approvalsend = true;
+        // }
+        // else
+        // {
+        //   this.refundbill = true;
+        //   this.approvalsend = false;
+        // }
+
+        //newly added
+        if(forenablerefundbill.length == 0 && this.billdetailservice.sendforapproval.length > 0)
+        {
+          this.refundbill = true;
+          this.approvalsend = false;
+        }
+        else if(forenablerefundbill.length != this.billdetailservice.sendforapproval.length)
+        {
+          this.refundbill = true;
+          this.approvalsend = true;
+        }
+        //end
+
+      
         forenablerefundbill.forEach((k: any) => {
           if (
             k.notApproved == 1 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0
+              .cancelled == 0 &&
+              this.billdetailservice.sendforapproval.length == forenablerefundbill.length
           ) {
             this.refundbill = false;
             this.approvalsend = true;
           } else if (
             k.notApproved == 0 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0
+              .cancelled == 0 &&
+              this.billdetailservice.sendforapproval.length == forenablerefundbill.length
           ) {
             this.refundbill = true;
             this.approvalsend = false;
@@ -1289,6 +1324,7 @@ export class DetailsComponent implements OnInit {
         });
       } else {
         this.refundbill = true;
+        this.approvalsend = true;
       }
 
       this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach(
