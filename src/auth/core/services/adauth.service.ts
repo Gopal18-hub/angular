@@ -11,7 +11,14 @@ export class ADAuthService {
   constructor(public http: HttpService) {}
 
   public authenticateUserName(username: string): any {
-    return this.http.getExternal(ApiConstants.validate_username + username);
+    return this.http.getExternal(ApiConstants.validate_username(username));
+  }
+
+  public authenticateAD(username: string, password: string): any {
+    password = encodeURIComponent(password);
+    return this.http.get(
+      ApiConstants.validateADCredentials(username, password)
+    );
   }
 
   public authenticate(username: string, password: string) {
