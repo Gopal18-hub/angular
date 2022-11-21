@@ -368,7 +368,7 @@
                         mat-raised-button
                         type="submit" 
                         class="btn secondary col-white" 
-                        (click)="sendotpclick()" [disabled]="otpsenttomobile">
+                        (click)="sendotpclick()" [disabled]="otpsenttomobile || submitbtnflag">
                       {{ SendOTP }}
                     </button>
                     
@@ -399,10 +399,10 @@
     <!-- Checkbox -->
     <!-- Footer Part -->
     <div class="bottom">
-        <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
+        <patient-identity-info [data]="patientIdentityInfo" #patientidentity></patient-identity-info>
         <div class="flex float-right creditbuttonwidth absolute right-0 bottom-0">
             <div class="mr-3">
-                <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="submitbtn()">Submit</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="submitbtnflag" class="mt-1 btn" (click)="submitbtn()">Submit</button>
             </div>
            
             <div class="">
