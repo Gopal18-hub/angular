@@ -23,7 +23,7 @@ export namespace FormReport {
           placeholder: "---Equipment---",
 
           title: "Equipment Name",
-
+          required: true,
           // defaultValue: "0",
 
           optionsModelConfig: {
