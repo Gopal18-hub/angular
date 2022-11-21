@@ -12,6 +12,11 @@ export class InitiateDepositModel{
     remark: string;
     depositHeadID: number;
     isDonation: number;
+    IPID:number;
+    InternetPaymentTypeId: number;
+    intWaitingListNo: number;
+    chvBillNo: string;
+
 
     constructor(
         flag: string,
@@ -27,6 +32,10 @@ export class InitiateDepositModel{
         remark: string,
         depositHeadID: number,
         isDonation: number,
+        IPID:number,
+        InternetPaymentTypeId: number,
+        intWaitingListNo: number,
+        chvBillNo: string,
     )
     {
        this.flag = flag,
@@ -41,6 +50,10 @@ export class InitiateDepositModel{
        this.hspLocationId = hspLocationId,
        this.remark = remark,
        this.depositHeadID = depositHeadID,
-       this.isDonation = isDonation
+       this.isDonation = isDonation,
+       this.IPID = IPID,
+       this.InternetPaymentTypeId = InternetPaymentTypeId,
+       this.intWaitingListNo = intWaitingListNo,
+       this.chvBillNo = chvBillNo
     }
 }
