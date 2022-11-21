@@ -267,16 +267,20 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          required: true,
+          defaultValue: new Date(),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          required: true,
+          defaultValue: new Date(),
         },
         SelectedLocationsId: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Select Organization---",
           title: "Organization",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
