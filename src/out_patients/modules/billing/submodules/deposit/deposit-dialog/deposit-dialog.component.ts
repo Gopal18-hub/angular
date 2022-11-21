@@ -183,11 +183,12 @@ export class DepositDialogComponent implements OnInit {
      if((this.PaymentTypedepositamount >= 200000) && !this.validationexists &&  (this.depositpatientidentityinfo.length == 0 || 
       this.depositpatientidentityinfo.mainradio == "pancardno" && (this.depositpatientidentityinfo.panno == undefined || this.depositpatientidentityinfo.panno == "")))
       {
+        
+        this.validationexists = true;
         const pannovalidate =  this.messageDialogService.info('Please Enter a valid PAN Number');
-        await pannovalidate.afterClosed().toPromise();
+        await pannovalidate.afterClosed().toPromise();        
         this.billingservice.setpaymenthodpancardfocus();
          return;  
-        this.validationexists = true;
      }
      else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false && !this.validationexists){
       this.messageDialogService.info("Please fill the form60 ");   

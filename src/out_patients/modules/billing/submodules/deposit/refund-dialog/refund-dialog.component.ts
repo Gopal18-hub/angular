@@ -334,7 +334,7 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          const otpsuccessInfo = this.messageDialogService.info(
+          const otpsuccessInfo = this.messageDialogService.success(
             `OTP Sent Successfully`
           ); 
           setTimeout(()=>{                           
@@ -375,7 +375,7 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          this.messageDialogService.info("OTP Sent Successfully");
+          this.messageDialogService.success("OTP Sent Successfully");
           setTimeout(()=>{                           
             this.otpsenttomobile = false;
             this.otpresenttomobile = true;

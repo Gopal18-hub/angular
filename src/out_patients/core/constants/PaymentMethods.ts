@@ -236,7 +236,7 @@ export namespace PaymentMethods {
         cCvalidity: {
           type: "date",
           label: "Validity",
-          required: true,
+          required: false,
         },
         bankName: {
           type: "autocomplete",
@@ -272,17 +272,20 @@ export namespace PaymentMethods {
         },
       },
       actionItems: [
-        {
-          label: "Manual",
-          type: "",
-        },
+        // {
+        //   label: "Manual",
+        //   type: "manualEntry",
+        //   paymentKey: "credit",
+        // },
         {
           label: "Get Approval",
-          type: "",
+          type: "uploadBillTransaction",
+          paymentKey: "credit",
         },
         {
           label: "Retry",
-          type: "",
+          type: "getBillTransactionStatus",
+          paymentKey: "credit",
         },
       ],
     };
@@ -635,7 +638,7 @@ export namespace PaymentMethods {
         cCvalidity_UPI: {
           type: "date",
           label: "Validity",
-          required: true,
+          required: false,
         },
         approvalno_UPI: {
           type: "string",
@@ -676,10 +679,13 @@ export namespace PaymentMethods {
       actionItems: [
         {
           label: "Get Status",
-          type: "",
+          type: "getBillTransactionStatus",
+          paymentKey: "upi",
         },
         {
           label: "OK",
+          type: "uploadBillTransaction",
+          paymentKey: "upi",
         },
       ],
     };
