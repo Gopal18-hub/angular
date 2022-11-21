@@ -51,7 +51,7 @@ export class ConsumablesComponent implements OnInit {
         title: "Priority",
         type: "string",
         style: {
-          width: "100px",
+          width: "80px",
         },
       },
       credit: {
@@ -82,6 +82,9 @@ export class ConsumablesComponent implements OnInit {
       totalAmount: {
         title: "Total Amount",
         type: "currency",
+        style: {
+          width: "200px",
+        },
       },
     },
   };
