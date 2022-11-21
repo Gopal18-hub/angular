@@ -75,10 +75,12 @@ export class SingleComponent implements OnInit, OnChanges {
       let url = "";
       let tempValues: any = {};
       Object.keys(this.formGroup.value).forEach((va: any) => {
+        let fValue = this.formGroup.value[va];
+        if (this.reportConfig.filterForm.properties[va].type == "date") {
+          fValue = moment(fValue).format("YYYY-MM-DD");
+        }
         tempValues[va] =
-          typeof this.formGroup.value[va] == "string"
-            ? this.formGroup.value[va]
-            : this.formGroup.value[va].value;
+          typeof fValue == "string" ? fValue : fValue ? fValue.value : "";
       });
       tempValues["exportflag"] = 1;
       if (

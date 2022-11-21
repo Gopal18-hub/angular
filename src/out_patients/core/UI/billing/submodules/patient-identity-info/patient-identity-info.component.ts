@@ -90,6 +90,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
         ];
       }
     }
+    //for deposit screen
+    if (this.data.type == "Deposit") {
+      this.patientidentityformData.properties.mainradio.options = [
+        { title: "Form 60", value: "form60", disabled: false },
+        { title: "Pan card No.", value: "pancardno", disabled: false },
+      ];
+    }
     let formResult: any = this.formService.createForm(
       this.patientidentityformData.properties,
       {}
@@ -133,6 +140,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     this.billingservice.pancardpaymentmethod.subscribe((setfocus) => {
       if (setfocus) {
         this.questions[2].elementRef.focus();
+        this.patientidentityform.controls["panno"].setErrors({ incorrect: true });   
+        this.questions[2].customErrorMessage = "Pan card No is required";
       }
     });
 
@@ -141,12 +150,6 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
         this.data = [];
         this.patientidentityform.controls["panno"].setValue("");
         this.patientidentityform.controls["mainradio"].setValue("pancardno");
-      }
-    });
-
-    this.depositservice.formsixtytobefill.subscribe((fillform) => {
-      if (fillform) {
-        this.patientidentityform.controls["mainradio"].enable();
       }
     });
   }
@@ -185,7 +188,7 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
             ];
             this.OPIP = 2;
           } else if (this.data.type == "Deposit") {
-            this.PaymentMethod = this.depositservice.data;
+            this.PaymentMethod = this.depositservice.data;            
             this.OPIP = 3;
           } else {
           }
