@@ -903,10 +903,11 @@ export class OpRegistrationComponent implements OnInit {
         }
         if(this.OPRegForm.value.country.value != 1)
     {
+      this.OPRegForm.controls["locality"].setErrors(null);
       this.OPRegForm.controls["city"].setErrors(null);
       this.OPRegForm.controls["state"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
-      
+      this.OPRegForm.controls["pincode"].setErrors(null);
       this.questions[21].required = false;
       this.questions[22].required = false;
             this.questions[23].required = false;
@@ -1911,6 +1912,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       } else {
         if (
+          this.OPRegForm.value.pincode.length == 6 ||
           this.OPRegForm.value.pincode.length == 5 ||
           this.OPRegForm.value.pincode.length == 4
         ) {
