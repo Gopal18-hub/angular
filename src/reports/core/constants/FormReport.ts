@@ -51,13 +51,41 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
           required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "EquipToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "EquipToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
+          maximum: new Date(),
           required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "EquipFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "EquipFromDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
@@ -329,16 +357,40 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
-          //minimum: Reportconstants.minimumDate["oneMonth"],
-          //maximum: new Date(),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
-          // minimum: Reportconstants.minimumDate["oneMonth"],
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
@@ -372,7 +424,6 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "YYYY/MM/dd",
       properties: {
         specilizationName: {
           type: "hidden",
@@ -410,13 +461,40 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
@@ -465,11 +543,39 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
