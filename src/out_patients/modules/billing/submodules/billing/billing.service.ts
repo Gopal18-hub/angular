@@ -1034,7 +1034,7 @@ export class BillingService {
         }
       });
 
-      let cashlimit = this.makeBillPayload.ds_paymode.tab_paymentList.filter((mode:any ) => mode.modeOfPayment == "Cash" && mode.amount > 200000);       
+      let cashlimit = this.makeBillPayload.ds_paymode.tab_paymentList.filter((mode:any ) => mode.modeOfPayment == "Cash" && mode.amount >= 200000);       
       if(cashlimit.length > 0){
         const modeconfirm =  this.messageDialogService.info("Total cash amount cannot exceed Rs.199999");       
         modeconfirm.afterClosed().toPromise(); 

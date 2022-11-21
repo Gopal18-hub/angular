@@ -6,7 +6,25 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 
 const routes: Routes = [
   {
-    path: "",
+    path: "op-ip",
+    component: ReportsComponent,
+    canActivate: [AuthGuardService],
+    loadChildren: () =>
+      import("../../../reports/modules/prompt-report").then(
+        (m) => m.PromptReportModule
+      ),
+  },
+  {
+    path: "marketing",
+    component: ReportsComponent,
+    canActivate: [AuthGuardService],
+    loadChildren: () =>
+      import("../../../reports/modules/prompt-report").then(
+        (m) => m.PromptReportModule
+      ),
+  },
+  {
+    path: "mms",
     component: ReportsComponent,
     canActivate: [AuthGuardService],
     loadChildren: () =>

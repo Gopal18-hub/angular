@@ -842,6 +842,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     ) {
       const dialogRef = this.matDialog.open(PaydueComponent, {
         width: "30vw",
+        disableClose: true,
         data: {
           dueAmount: dtPatientPastDetails[4].data,
           maxId: this.formGroup.value.maxid,
