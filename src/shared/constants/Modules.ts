@@ -445,7 +445,7 @@ export namespace MaxModules {
         {
           id: 34,
           title: "OP/IP",
-          defaultPath: "",
+          defaultPath: "/op-ip",
           moreOptions: true,
           tenentPath: "/mis-reports",
           childrens: [
@@ -455,6 +455,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -462,6 +463,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -536,6 +538,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -659,6 +662,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -771,6 +775,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -801,6 +806,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -831,6 +837,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -856,6 +863,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -863,6 +871,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -900,6 +909,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -937,6 +947,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1017,6 +1028,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1068,6 +1080,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1091,6 +1104,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1186,6 +1200,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -1193,6 +1208,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1306,7 +1322,7 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "Daily Collection Report",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/DailyCollectionReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
@@ -1325,6 +1341,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -1340,16 +1357,16 @@ export namespace MaxModules {
         {
           id: 38,
           title: "Marketing",
-          defaultPath: "",
-          moreOptions: true,
+          defaultPath: "/marketing",
+          moreOptions: false,
           tenentPath: "/mis-reports",
           childrens: [],
         },
         {
           id: 35,
           title: "MMS",
-          defaultPath: "",
-          moreOptions: true,
+          defaultPath: "/mms",
+          moreOptions: false,
           tenentPath: "/mis-reports",
           childrens: [],
         },

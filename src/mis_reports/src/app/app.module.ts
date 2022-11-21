@@ -6,9 +6,11 @@ import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
+import { HeaderModule } from "@shared/modules/header";
 
 import { ReportsModule } from "../../modules/reports";
-import { CommonModule } from "@angular/common";
+import { CommonModule, APP_BASE_HREF, DatePipe } from "@angular/common";
+import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,8 +22,17 @@ import { CommonModule } from "@angular/common";
     ReportsModule,
     CommonModule,
     MaxHealthMessageDialogModule,
+    HeaderModule,
   ],
-  providers: [],
+  providers: [
+    DatePipe,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    { provide: APP_BASE_HREF, useValue: "/mis-reports" },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
