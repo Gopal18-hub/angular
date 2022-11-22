@@ -167,6 +167,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   @ViewChild(PaymentMethodsComponent) paymentmethod! : PaymentMethodsComponent;
+  @ViewChild('patientidentity') panform: any;
 
   selected: any = 0;
   forcash: boolean = false;
@@ -296,6 +297,20 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.otpcheck.bind(this)
     )
     this.mopcheck();
+
+    this.dueform.valueChanges.subscribe(() => {
+      debugger;
+      this.validationcheck();
+    })
+    this.panform.patientidentityform.controls['panno'].valueChanges.subscribe(() => {
+      if(this.panform.patientidentityform.controls['panno'].status == "VALID")
+      {
+        this.submitbtnflag = false;
+      }
+      else{
+        this.submitbtnflag = true;
+      }
+    })
   }
   getbankname()
   {
@@ -323,6 +338,101 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     })
     this.questions[9] = {...this.questions[9]};
   }
+  submitbtnflag: boolean = true;
+  validationcheck()
+  {
+    console.log(this.panform);
+    //cash
+    if(this.selected == 0)
+    {
+      this.submitbtnflag = false;
+    }
+    //cheque
+    else if(this.selected == 1)
+    {
+      if(
+        (this.dueform.value.chequemount != '' &&  this.dueform.value.chequemount != undefined && this.dueform.value.chequemount != null) &&
+        (this.dueform.value.chequeno  != '' &&  this.dueform.value.chequeno  != undefined && this.dueform.value.chequeno != null) &&
+        (this.dueform.value.chequeissuedate != '' &&  this.dueform.value.chequeissuedate != undefined && this.dueform.value.chequeissuedate != null) &&
+        (this.dueform.value.chequevalidity != '' &&  this.dueform.value.chequevalidity != undefined && this.dueform.value.chequevalidity != null) &&
+        (this.dueform.value.chequebankname != '' &&  this.dueform.value.chequebankname != undefined && this.dueform.value.chequebankname != null) &&
+        (this.dueform.value.chequebranchname != '' &&  this.dueform.value.chequebranchname != undefined && this.dueform.value.chequebranchname != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+     
+    }
+    //credit
+    else if(this.selected == 2)
+    {
+      if(
+        (this.dueform.value.creditamount != '' &&  this.dueform.value.creditamount != undefined && this.dueform.value.creditamount != null) &&
+        (this.dueform.value.creditcardtype  != '' &&  this.dueform.value.creditcardtype  != undefined && this.dueform.value.creditcardtype != null) &&
+        (this.dueform.value.creditcardno != '' &&  this.dueform.value.creditcardno != undefined && this.dueform.value.creditcardno != null) &&
+        (this.dueform.value.creditbatchno != '' &&  this.dueform.value.creditbatchno != undefined && this.dueform.value.creditbatchno != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+    //online
+    else if(this.selected == 3)
+    {
+      if(
+        (this.dueform.value.onlineamount != '' &&  this.dueform.value.onlineamount != undefined && this.dueform.value.onlineamount != null) &&
+        (this.dueform.value.onlinetransacid  != '' &&  this.dueform.value.onlinetransacid  != undefined && this.dueform.value.onlinetransacid != null) &&
+        (this.dueform.value.onlinebookingid != '' &&  this.dueform.value.onlinebookingid != undefined && this.dueform.value.onlinebookingid != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+    //mobile
+    else if(this.selected == 4)
+    {
+      if(
+        (this.dueform.value.mobileamount != '' &&  this.dueform.value.mobileamount != undefined && this.dueform.value.mobileamount != null) &&
+        (this.dueform.value.mobiletransactionid  != '' &&  this.dueform.value.mobiletransactionid  != undefined && this.dueform.value.mobiletransactionid != null) &&
+        (this.dueform.value.mobilemerchantid != '' &&  this.dueform.value.mobilemerchantid != undefined && this.dueform.value.mobilemerchantid != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+    //upi
+    else if(this.selected == 5)
+    {
+      if(
+        (this.dueform.value.upiamount != '' &&  this.dueform.value.upiamount != undefined && this.dueform.value.upiamount != null) &&
+        (this.dueform.value.upino  != '' &&  this.dueform.value.upino  != undefined && this.dueform.value.upino != null) &&
+        (this.dueform.value.upibatchno != '' &&  this.dueform.value.upibatchno != undefined && this.dueform.value.upibatchno != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+  }
   mopcheck()
   {
     if(this.data.mop == 'Cash')
@@ -338,6 +448,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.formobile = true;
       this.forupi = true;
       this.mop = 1;
+      this.submitbtnflag = false;
     }
     else if(this.data.mop == 'Cheque')
     {

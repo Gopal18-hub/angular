@@ -322,7 +322,7 @@ export class SearchDialogComponent implements OnInit {
       this.searchform.value.billno?this.searchform.value.billno:'',
       this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[1]:'',
       this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[0]:'',
-      this.searchform.value.mobileno?this.searchform.value.mobileno: '',
+      this.searchform.value.mobile?this.searchform.value.mobile: '',
       this.searchform.value.checkbox==true?true:false,
       this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.fromdate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),
       this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.todate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),
@@ -370,6 +370,11 @@ export class SearchDialogComponent implements OnInit {
     },
     (error) => {
       console.log(error);
+      this.apiProcessing = false;
+      if(error.error.errors.registrationno)
+      {
+        this.snackbar.open(error.error.errors.registrationno[0]);
+      }
     })
   }
   clear()

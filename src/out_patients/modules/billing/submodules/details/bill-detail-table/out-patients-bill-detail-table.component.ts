@@ -288,33 +288,33 @@ export class BillDetailTableComponent implements OnInit {
     if(this.billDetailservice.patientbilldetaillist.length > 0)
     {
       if(this.billDetailservice.serviceList.length == 1 && this.billDetailservice.serviceList[0].cancelled == 'cancelledrefund')
-    {
-      this.headercheck = true;
-    }
-    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
-    {
-      this.headercheck = true;
-    }
-    else if(this.billDetailservice.serviceList.length > 1)
-    {
-      this.headercheck = false;
-    }
-    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 0)
-    {
-      this.headercheck = true;
-    }
-    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
-    {
-      this.headercheck = false;
-    }
-    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
-    {
-      this.headercheck = true;
-    }
-    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
-    {
-      this.headercheck = false;
-    }
+      {
+        this.headercheck = true;
+      }
+      else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+      {
+        this.headercheck = true;
+      }
+      else if(this.billDetailservice.serviceList.length > 1)
+      {
+        this.headercheck = false;
+      }
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 0)
+      {
+        this.headercheck = true;
+      }
+      else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
+      {
+        this.headercheck = false;
+      }
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+      {
+        this.headercheck = true;
+      }
+      else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
+      {
+        this.headercheck = false;
+      }
     }
     this.data = [...this.billDetailservice.serviceList];
     console.log(this.data);
@@ -375,7 +375,46 @@ export class BillDetailTableComponent implements OnInit {
       {
         this.tableRows.selection.select(item);
       }
-    })    
+    })  
+
+    //for checked the checkbox after approval
+    // this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {
+
+    //   if(i.notApproved == 1)
+    //   {
+    //     console.log(i)
+    //     this.data.forEach((k: any) => {
+    //       console.log(k)
+    //       if(k.itemid == i.itemId)
+    //       {
+    //         this.tableRows.selection.select(k);
+    //         if(k.cancelled == 'notcancelledrefund')
+    //         {
+    //           this.billDetailservice.addForApproval({
+    //           ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+    //           maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+    //           ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+    //           billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+    //           operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+    //           authorisedby: '',
+    //           reason: '',
+    //           refundAmt: (Number(k.amount) - Number(k.discountamount)).toFixed(2),
+    //           mop: '',
+    //           serviceId: k.serviceid,
+    //           itemid: k.itemid,
+    //           serviceName: k.servicename,
+    //           itemName: k.itemname,
+    //           refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+    //           itemOrderId: k.orderid,
+    //         })
+    //         console.log(this.billDetailservice.sendforapproval);
+    //         this.billDetailservice.calculateTotalRefund();
+    //         console.log(this.billDetailservice.sendforapproval);
+    //         }
+    //       }
+    //     })
+    //   }
+    // })  
     console.log(this.tableRows);
     this.tableRows.selection.changed.subscribe((s: any) => {
       console.log(s);

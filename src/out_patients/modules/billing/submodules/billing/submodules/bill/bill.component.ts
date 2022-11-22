@@ -1035,7 +1035,9 @@ export class BillComponent implements OnInit, OnDestroy {
         if (
           this.locationexclude.includes(
             Number(this.cookie.get("HSPLocationId"))
-          )
+          ) &&
+          this.billingservice.consultationItems &&
+          this.billingservice.consultationItems.length > 0
         ) {
           const dialogref = this.messageDialogService.confirm(
             "",
@@ -1114,6 +1116,7 @@ export class BillComponent implements OnInit, OnDestroy {
         }
       });
   }
+  duplicateflag: boolean = true;
   makePrint() {
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
@@ -1124,6 +1127,21 @@ export class BillComponent implements OnInit, OnDestroy {
         locationID: this.cookie.get("HSPLocationId"),
       }
     );
+
+    setTimeout(() => {
+      if (this.duplicateflag == true) {
+        this.http
+          .post(
+            BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
+            ""
+          )
+          .subscribe((res) => {
+            if (res.success == true) {
+              this.duplicateflag = false;
+            }
+          });
+      }
+    }, 2000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1182,7 +1200,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     console.log("Amount Pay by Patinet: ", temp);
 
-    return temp > 0 ? temp.toFixed(2) : '0.00';
+    return temp > 0 ? temp.toFixed(2) : "0.00";
   }
 
   depositdetails() {

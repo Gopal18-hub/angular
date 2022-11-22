@@ -27,6 +27,7 @@ import { MaxDateAdapter } from "./service/date-adapter";
 import { OverlayModule } from "@angular/cdk/overlay";
 
 import { A11yModule } from "@angular/cdk/a11y";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
 import {
   NgxMatDatetimePickerModule,
@@ -67,6 +68,10 @@ import {
     {
       provide: MAT_SELECT_CONFIG,
       useValue: { overlayPanelClass: "max-select-overlay-panel" },
+    },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { floatLabel: "never" },
     },
   ],
 })
