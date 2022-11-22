@@ -85,26 +85,7 @@
   // ::ng-deep mat-option#mat-option-5 {
   //   background-color: #9FF1AC !important;
   // }
-  ::ng-deep mat-option[maxvalue="Billed"] {
-    background-color: #9ff1ac !important;
-  }
-  ::ng-deep mat-option[maxvalue="Partially Billed"] {
-    background-color: #f9fca6 !important;
-  }
-  ::ng-deep mat-option[maxvalue="Denied"] {
-    background-color: #ffcaa7 !important;
-  }
-  ::ng-deep mat-option[maxvalue="Billed"]:hover {
-    background-color: #219935 !important;
-  }
 
-  ::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
-    background-color: #b8a52f !important;
-  }
-
-  ::ng-deep mat-option[maxvalue="Denied"]:hover {
-    background-color: #ff7777 !important;
-  }
   ::ng-deep tr.isBilled1 {
     background-color: #9ff1ac !important;
   }
@@ -188,3 +169,24 @@
     }
   }
 }
+
+  ::ng-deep mat-option[maxvalue="Billed"] {
+    background-color: #9ff1ac !important;
+  }
+  ::ng-deep mat-option[maxvalue="Partially Billed"] {
+    background-color: #f9fca6 !important;
+  }
+  ::ng-deep mat-option[maxvalue="Denied"] {
+    background-color: #ffcaa7 !important;
+  }
+  ::ng-deep mat-option[maxvalue="Billed"]:hover {
+    background-color: #219935 !important;
+  }
+
+  ::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
+    background-color: #b8a52f !important;
+  }
+
+  ::ng-deep mat-option[maxvalue="Denied"]:hover {
+    background-color: #ff7777 !important;
+  }
