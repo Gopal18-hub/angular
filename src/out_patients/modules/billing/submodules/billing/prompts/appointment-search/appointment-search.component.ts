@@ -8,7 +8,8 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
-import { billingAppointmentSearch } from '../../../../../../core/types/billingAppointmentSearch.Interface';
+import { billingAppointmentSearch } from "../../../../../../core/types/billingAppointmentSearch.Interface";
+import { Router } from "@angular/router";
 @Component({
   selector: "out-patients-billing-appointment-search",
   templateUrl: "./appointment-search.component.html",
@@ -44,6 +45,7 @@ export class AppointmentSearchComponent implements OnInit {
   constructor(
     private http: HttpService,
     private datepipe: DatePipe,
+    private router: Router,
     private formService: QuestionControlService,
     public dialogRef: MatDialogRef<AppointmentSearchComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -86,7 +88,7 @@ export class AppointmentSearchComponent implements OnInit {
         // pattern: "^[0-9]{10}",
         // maximum: 10,
         defaultValue: this.data.phoneNumber,
-    },
+      },
       datevalidation: {
         type: "checkbox",
         required: false,
@@ -561,7 +563,7 @@ export class AppointmentSearchComponent implements OnInit {
         style: {
           width: "10rem",
         },
-      }
+      },
     },
   };
   // dateRangeSelected(event: any) {
@@ -593,7 +595,7 @@ export class AppointmentSearchComponent implements OnInit {
         } else {
           let temp: billingAppointmentSearch[] = [];
           response.forEach((item: any) => {
-            if (item.maxId) {
+            if (item) {
               temp.push(item);
             }
           });
@@ -601,7 +603,7 @@ export class AppointmentSearchComponent implements OnInit {
           this.apiProcessing = false;
           // this.searchAppPatient = true;
           // this.defaultUI = false;
-          console.log(this.searchResults)
+          console.log(this.searchResults);
           this.searchResults = this.searchResults.map((item: any) => {
             return {
               maxid: item.iAcode ? item.iAcode + "." + item.registrationno : "",
@@ -627,17 +629,21 @@ export class AppointmentSearchComponent implements OnInit {
   clear() {
     this.OPAppointmentForm.reset();
     this.searchResults = [];
-    this.OPAppointmentForm.controls['fromDate'].setValue(this.todayDate);
-    this.OPAppointmentForm.controls['toDate'].setValue(this.todayDate);
+    this.OPAppointmentForm.controls["fromDate"].setValue(this.todayDate);
+    this.OPAppointmentForm.controls["toDate"].setValue(this.todayDate);
   }
   getAppointmentSearch() {
     console.log(this.OPAppointmentForm.value.phone);
     return this.http.get(
       BillingApiConstants.getbillingappointmentsearch(
-        this.data.phoneNumber? this.data.phoneNumber:  this.OPAppointmentForm.value.phone? this.OPAppointmentForm.value.phone: '' ,
+        this.data.phoneNumber
+          ? this.data.phoneNumber
+          : this.OPAppointmentForm.value.phone
+          ? this.OPAppointmentForm.value.phone
+          : "",
         this.OPAppointmentForm.value.name || "",
         this.OPAppointmentForm.value.lastname || "",
-        this.OPAppointmentForm.value.datevalidation == true ?true : false,
+        this.OPAppointmentForm.value.datevalidation == true ? true : false,
         this.datepipe.transform(
           this.OPAppointmentForm.value.fromDate,
           "yyyy-MM-dd"
@@ -646,7 +652,9 @@ export class AppointmentSearchComponent implements OnInit {
           this.OPAppointmentForm.value.toDate,
           "yyyy-MM-dd"
         ) || "",
-        this.OPAppointmentForm.value.bookingNo?this.OPAppointmentForm.value.bookingNo:'',
+        this.OPAppointmentForm.value.bookingNo
+          ? this.OPAppointmentForm.value.bookingNo
+          : "",
         this.cookie.get("HSPLocationId")
       )
     );
@@ -660,7 +668,14 @@ export class AppointmentSearchComponent implements OnInit {
     console.log("getmaxid called", this.tableRows.selection);
     setTimeout(() => {
       this.tableRows.selection.changed.subscribe((res: any) => {
-        this.dialogRef.close({ data: res });
+        if (res.added[0].maxId == "") {
+          this.dialogRef.close();
+          this.router.navigate(["registration"], {
+            queryParams: {},
+          });
+        } else if (res.added[0].maxId != "") {
+          this.dialogRef.close({ data: res });
+        }
       });
     });
   }
