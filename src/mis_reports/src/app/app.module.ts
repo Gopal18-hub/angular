@@ -11,6 +11,7 @@ import { HeaderModule } from "@shared/modules/header";
 import { ReportsModule } from "../../modules/reports";
 import { CommonModule, APP_BASE_HREF, DatePipe } from "@angular/common";
 import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +26,7 @@ import { TokenInterceptor } from "@shared/services/interceptors/token.intercepto
     HeaderModule,
   ],
   providers: [
+    AuthGuardService,
     DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
