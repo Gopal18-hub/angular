@@ -468,14 +468,14 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Discount Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/opDiscountReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
                     {
                       id: 34,
                       title: "Refund Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/opRefundReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -876,7 +876,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Scroll Summary Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/ScrollSummaryReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -897,7 +897,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Free Out Patient Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/freeOutPatientReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -1167,28 +1167,29 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "Miscellaneous Bill Report",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/MiscellaneousReportMIS",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "Miscellaneous Bill Report New",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/miscellaneousBillReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "OP Bill Register",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/opBillRegisterReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "Price Modification Report",
-                  defaultPath: "",
+                  defaultPath:
+                    "/op-ip/prompt-report/CROPItemPriceModifiedReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
@@ -1285,7 +1286,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Open Scroll Amount",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/openScrollReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -1299,7 +1300,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Service Tax Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/ServiceTaxReportData",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -1329,7 +1330,7 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "Online Payment Detail Report",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/OnlinePaymentDetailReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
