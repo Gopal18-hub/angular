@@ -28,7 +28,6 @@ import { ConfigureModule } from "@modules/configure";
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     HeaderModule,
     BillingModule,
@@ -43,6 +42,7 @@ import { ConfigureModule } from "@modules/configure";
     StaffDeptModule,
     ReportsModule,
     ConfigureModule,
+    AppRoutingModule,
   ],
   providers: [
     DatePipe,
