@@ -82,8 +82,8 @@ export namespace FormReport {
             {
               expression: "self",
               controlKey: "EquipFromDate",
-              type: "dateMinWithDays",
-              days: 30,
+              // type: "dateMinWithDays",
+              // days: 30,
             },
           ],
         },
@@ -572,8 +572,8 @@ export namespace FormReport {
             {
               expression: "self",
               controlKey: "ValueFromDate",
-              type: "dateMinWithDays",
-              days: 30,
+              // type: "dateMinWithDays",
+              // days: 30,
             },
           ],
         },
