@@ -144,6 +144,9 @@ export class ConsumableDetailsComponent implements OnInit {
     }
   }
   close() {
-    this.dialogRef.close({ data: this.tableRows.selection.selected });
+    this.dialogRef.close({
+      data: this.tableRows.selection.selected,
+      orderSet: this.data.orderSet,
+    });
   }
 }
