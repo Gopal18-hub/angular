@@ -556,8 +556,8 @@ else
   }
   openReportModal(btnname: string) {
       this.reportService.openWindow(btnname, btnname, {
-        Fromdate: this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value, 'YYYY-MM-dd') ,
-        Todate:  this.datepipe.transform(this.cashscrollnewForm.controls["todate"].value, 'YYYY-MM-dd') ,
+        Fromdate: this.cashscrollnewForm.controls["fromdate"].value ,
+        Todate: this.cashscrollnewForm.controls["todate"].value ,
         Operatorid: this.operatorID,
         LocationID: this.hsplocationId,
         EmployeeName: this.lastUpdatedBy,
