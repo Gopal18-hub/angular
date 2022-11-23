@@ -109,6 +109,14 @@ export namespace BillingStaticConstants {
     userId: 0,
     stationId: 0,
     panNo: "",
+    creditletterdate: "",
+    issuedBy:"",
+    companyAddress: "",
+    tokenNo:"",
+    companyName:"",
+    employeeNo:"",
+    reasonForAllowingCredit:"",
+    notes:""
   };
 
   export const billingPageTabs: any = [
