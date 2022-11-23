@@ -468,14 +468,14 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Discount Report",
-                      defaultPath: "/op-ip/prompt-report/opDiscountReport",
+                      defaultPath: "",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
                     {
                       id: 34,
                       title: "Refund Report",
-                      defaultPath: "/op-ip/prompt-report/opRefundReport",
+                      defaultPath: "",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -883,14 +883,14 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Refund Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/opRefundReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
                     {
                       id: 34,
                       title: "Discount Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/discountReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -1167,14 +1167,15 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "Miscellaneous Bill Report",
-                  defaultPath: "/op-ip/prompt-report/MiscellaneousReportMIS",
+                  defaultPath: "/op-ip/prompt-report/MiscellaneousMISReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "Miscellaneous Bill Report New",
-                  defaultPath: "/op-ip/prompt-report/miscellaneousBillReport",
+                  defaultPath:
+                    "/op-ip/prompt-report/miscellaneousBillingReportNew",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
