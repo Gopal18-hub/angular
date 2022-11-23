@@ -121,7 +121,12 @@ export class ConsumablesComponent implements OnInit {
           items: filteredItems,
           procedureDataForConsumable: res.element.procedureDataForConsumable,
           consumablesUnselectedItems:
-            this.calculateBillService.consumablesUnselectedItems,
+            res.element.orderId.toString() in
+            this.calculateBillService.consumablesUnselectedItems
+              ? this.calculateBillService.consumablesUnselectedItems[
+                  res.element.orderId.toString()
+                ]
+              : [],
         },
       });
       dialogConst.afterClosed().subscribe((result: any) => {
@@ -130,16 +135,16 @@ export class ConsumablesComponent implements OnInit {
           result.data.forEach((selectedItem: any) => {
             tempAmount += selectedItem.amount;
           });
-          this.calculateBillService.consumablesUnselectedItems = result.data;
+          this.calculateBillService.consumablesUnselectedItems[
+            result.orderSet.orderId.toString()
+          ] = result.data;
           this.billingService.ConsumableItems[res.index].totalAmount =
-            this.billingService.ConsumableItems[res.index].totalAmount -
+            this.billingService.ConsumableItems[res.index].originalAmount -
             tempAmount;
           this.billingService.ConsumableItems[res.index].billItem.totalAmount =
-            this.billingService.ConsumableItems[res.index].billItem
-              .totalAmount - tempAmount;
+            this.billingService.ConsumableItems[res.index].totalAmount;
           this.billingService.ConsumableItems[res.index].billItem.price =
-            this.billingService.ConsumableItems[res.index].billItem.price -
-            tempAmount;
+            this.billingService.ConsumableItems[res.index].totalAmount;
           this.data = [...this.billingService.ConsumableItems];
           this.billingService.calculateTotalAmount();
         }
@@ -162,6 +167,18 @@ export class ConsumablesComponent implements OnInit {
         (res: any) => {
           let data: any = [];
           res.consumableServiceHeadData.forEach((head: any, index: number) => {
+            let tempTotalAmount = head.amount;
+            if (
+              head.id in this.calculateBillService.consumablesUnselectedItems
+            ) {
+              let tempAmount = 0;
+              this.calculateBillService.consumablesUnselectedItems[
+                head.id
+              ].forEach((selectedItem: any) => {
+                tempAmount += selectedItem.amount;
+              });
+              tempTotalAmount = head.amount - tempAmount;
+            }
             this.billingService.addToConsumables({
               sno: index + 1,
               surgeryName: head.itemName,
@@ -170,7 +187,8 @@ export class ConsumablesComponent implements OnInit {
               cash: 0,
               doctorName: head.doctorName,
               taxAmount: head.totaltaX_Value,
-              totalAmount: head.amount,
+              totalAmount: tempTotalAmount,
+              originalAmount: head.amount,
               orderId: head.id,
               items: res.consumableServiceDetailsData,
               procedureDataForConsumable: res.procedureDataForConsumable,
@@ -188,7 +206,7 @@ export class ConsumablesComponent implements OnInit {
                 cash: 0,
                 disc: 0,
                 discAmount: 0,
-                totalAmount: head.amount,
+                totalAmount: tempTotalAmount,
                 gst: head.totaltaX_RATE,
                 gstValue: head.totaltaX_Value,
                 specialisationID: 0,
