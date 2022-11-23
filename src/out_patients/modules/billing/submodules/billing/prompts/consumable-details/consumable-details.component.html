@@ -26,6 +26,7 @@
       class="font-sm min-width-initial mr-6"
       type="button"
       (click)="ConsumableBill()"
+      [disabled]="!billingservice.billNo"
     >
       Consumable Entry Details
     </button>
