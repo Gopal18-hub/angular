@@ -299,7 +299,6 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this.mopcheck();
 
     this.dueform.valueChanges.subscribe(() => {
-      debugger;
       this.validationcheck();
     })
     this.panform.patientidentityform.controls['panno'].valueChanges.subscribe(() => {
@@ -725,8 +724,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0
+              )
             {
+
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
               .subscribe(value => {
@@ -759,7 +761,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0)
             {
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
@@ -803,7 +806,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0)
             {
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
@@ -837,7 +841,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0)
             {
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
@@ -989,28 +994,36 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   }
   cancelvisitrequestbody()
   {
-    var dtlist;
+    var dtlist: any = [];
     this.billDetailService.sendforapproval.forEach((item: any) => {
       console.log(item);
       dtlist = this.billDetailService.serviceList.filter((i: any) => {
-        return i.itemid == item.itemid;
+        return i.itemid == item.itemid && item.serviceId == 25;
       }) 
     });
+    console.log(dtlist);
     this.cancelVisitNumberinRefundList.objVisitDataTable = [] as Array<objVisitDataTable>;
-    this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.forEach((item: any) => {
-      this.cancelVisitNumberinRefundList.cancelReasonID = Number(this.data.reasonid);
-      this.cancelVisitNumberinRefundList.operatorID = Number(this.cookie.get('UserId'));
-      this.cancelVisitNumberinRefundList.locationId = Number(this.cookie.get('HSPLocationId'));
-      this.cancelVisitNumberinRefundList.objVisitDataTable.push({
-        id: item.id,
-        visitId: 0,
-        visitno: item.visitNo,
-        deleted: 1,
-        ssn: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
-        uhid: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
-        registrationno : this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid.split('.')[1]
+    if(dtlist.length > 0)
+    {
+      this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.forEach((item: any) => {
+        this.cancelVisitNumberinRefundList.cancelReasonID = Number(this.data.reasonid);
+        this.cancelVisitNumberinRefundList.operatorID = Number(this.cookie.get('UserId'));
+        this.cancelVisitNumberinRefundList.locationId = Number(this.cookie.get('HSPLocationId'));
+        this.cancelVisitNumberinRefundList.objVisitDataTable.push({
+          id: item.id,
+          visitId: 0,
+          visitno: item.visitNo,
+          deleted: 1,
+          ssn: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+          uhid: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+          registrationno : this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid.split('.')[1]
+        })
       })
-    })
+    }
+    else
+    {
+      this.cancelVisitNumberinRefundList.objVisitDataTable = [] as Array<objVisitDataTable>;
+    }
     console.log(this.cancelVisitNumberinRefundList);
     return this.cancelVisitNumberinRefundList;
   }
