@@ -179,6 +179,20 @@ export class CreditDetailsComponent implements OnInit {
         this.generalFormGroup.reset();
       }
     });
+
+    if(this.billingservice.makeBillPayload){
+      this.comapnyFormGroup.controls["issuedBy"].setValue(this.billingservice.makeBillPayload.issuedBy);
+      this.comapnyFormGroup.controls["employeeNo"].setValue(this.billingservice.makeBillPayload.employeeNo);
+      this.comapnyFormGroup.controls["companyName"].setValue(this.billingservice.makeBillPayload.companyName);
+      this.comapnyFormGroup.controls["tokenNo"].setValue(this.billingservice.makeBillPayload.tokenNo);
+      this.comapnyFormGroup.controls["companyAddress"].setValue(this.billingservice.makeBillPayload.companyAddress);
+      this.generalFormGroup.controls["reasonForAllowingCredit"].setValue(this.billingservice.makeBillPayload.reasonForAllowingCredit);
+      this.generalFormGroup.controls["notes"].setValue(this.billingservice.makeBillPayload.notes);
+    }
+    if(this.billingservice.makeBillPayload.creditletterdate){
+      this.comapnyFormGroup.controls["letterDate"].setValue(this.billingservice.makeBillPayload.creditletterdate);
+    }
+   
   }
 
   getAllCompany() {
@@ -289,6 +303,57 @@ export class CreditDetailsComponent implements OnInit {
         } else {
           this.billingservice.makeBillPayload.invoiceType = "B2C";
         }
+      });
+    this.comapnyFormGroup.controls["letterDate"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        if (res) {
+          this.billingservice.makeBillPayload.creditletterdate = res;
+        }else{
+          this.billingservice.makeBillPayload.creditletterdate = this.today;
+        } 
+      });
+
+    this.comapnyFormGroup.controls["issuedBy"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {        
+          this.billingservice.makeBillPayload.issuedBy = res;         
+      });
+
+    this.comapnyFormGroup.controls["employeeNo"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {       
+          this.billingservice.makeBillPayload.employeeNo = res;      
+      });
+
+    this.comapnyFormGroup.controls["companyName"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {       
+          this.billingservice.makeBillPayload.companyName = res;         
+      });
+
+    this.comapnyFormGroup.controls["tokenNo"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {       
+          this.billingservice.makeBillPayload.tokenNo = res;        
+      });
+
+    this.comapnyFormGroup.controls["companyAddress"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {      
+          this.billingservice.makeBillPayload.companyAddress = res;        
+      });
+    
+      this.generalFormGroup.controls["reasonForAllowingCredit"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {      
+          this.billingservice.makeBillPayload.reasonForAllowingCredit = res;        
+      });
+
+      this.generalFormGroup.controls["notes"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {      
+          this.billingservice.makeBillPayload.notes = res;        
       });
   }
 
