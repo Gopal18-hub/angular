@@ -49,7 +49,7 @@ export class CalculateBillService {
 
   otherPlanSelectedItems: any = [];
 
-  consumablesUnselectedItems = [];
+  consumablesUnselectedItems: any = {};
 
   constructor(
     public matDialog: MatDialog,
@@ -445,7 +445,7 @@ export class CalculateBillService {
         formGroup.controls["coupon"].setValue("", {
           emitEvent: false,
         });
-        componentRef.IsValidateCoupon =false;
+        componentRef.IsValidateCoupon = false;
         return;
       } else {
         componentRef.IsValidateCoupon = true;
@@ -472,7 +472,7 @@ export class CalculateBillService {
                     formGroup.controls["coupon"].setValue("", {
                       emitEvent: false,
                     });
-                    componentRef.IsValidateCoupon =false;
+                    componentRef.IsValidateCoupon = false;
                     return;
                   }
                 } else {
@@ -483,7 +483,7 @@ export class CalculateBillService {
                   formGroup.controls["coupon"].setValue("", {
                     emitEvent: false,
                   });
-                  componentRef.IsValidateCoupon =false;
+                  componentRef.IsValidateCoupon = false;
                   return;
                 }
               } else {
