@@ -132,14 +132,12 @@ export class ConsumablesComponent implements OnInit {
           });
           this.calculateBillService.consumablesUnselectedItems = result.data;
           this.billingService.ConsumableItems[res.index].totalAmount =
-            this.billingService.ConsumableItems[res.index].totalAmount -
+            this.billingService.ConsumableItems[res.index].originalAmount -
             tempAmount;
           this.billingService.ConsumableItems[res.index].billItem.totalAmount =
-            this.billingService.ConsumableItems[res.index].billItem
-              .totalAmount - tempAmount;
+            this.billingService.ConsumableItems[res.index].totalAmount;
           this.billingService.ConsumableItems[res.index].billItem.price =
-            this.billingService.ConsumableItems[res.index].billItem.price -
-            tempAmount;
+            this.billingService.ConsumableItems[res.index].totalAmount;
           this.data = [...this.billingService.ConsumableItems];
           this.billingService.calculateTotalAmount();
         }
@@ -171,6 +169,7 @@ export class ConsumablesComponent implements OnInit {
               doctorName: head.doctorName,
               taxAmount: head.totaltaX_Value,
               totalAmount: head.amount,
+              originalAmount: head.amount,
               orderId: head.id,
               items: res.consumableServiceDetailsData,
               procedureDataForConsumable: res.procedureDataForConsumable,
