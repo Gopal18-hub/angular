@@ -1215,7 +1215,7 @@ export namespace FormReport {
         },
 
         locationID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           required: true,
@@ -1322,7 +1322,7 @@ export namespace FormReport {
         },
 
         locationID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           required: true,
