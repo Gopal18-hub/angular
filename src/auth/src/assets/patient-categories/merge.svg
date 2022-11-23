@@ -1,25 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="66" height="66" viewBox="0 0 66 66">
+<svg id="Merge" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="41" height="18.135" viewBox="0 0 41 18.135">
   <defs>
     <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
       <stop offset="0" stop-color="#45c0be"/>
       <stop offset="0.519" stop-color="#07b3ab"/>
       <stop offset="1" stop-color="#00b2a9"/>
     </linearGradient>
-    <filter id="Rectangle_164" x="0" y="0" width="66" height="66" filterUnits="userSpaceOnUse">
-      <feOffset dy="3" input="SourceAlpha"/>
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feFlood flood-opacity="0.161"/>
-      <feComposite operator="in" in2="blur"/>
-      <feComposite in="SourceGraphic"/>
-    </filter>
   </defs>
-  <g id="Component_86_14" data-name="Component 86 – 14" transform="translate(9 6)">
-    <g transform="matrix(1, 0, 0, 1, -9, -6)" filter="url(#Rectangle_164)">
-      <g id="Rectangle_164-2" data-name="Rectangle 164" transform="translate(9 6)" stroke="#fff" stroke-width="2" fill="url(#linear-gradient)">
-        <rect width="48" height="48" rx="24" stroke="none"/>
-        <rect x="1" y="1" width="46" height="46" rx="23" fill="none"/>
-      </g>
-    </g>
-    <text id="M" transform="translate(24 30.5)" fill="#fff" font-size="18" font-family="ProximaNova-Bold, Proxima Nova" font-weight="700"><tspan x="-7.695" y="0">M</tspan></text>
+  <g id="Group_419" data-name="Group 419">
+    <rect id="Rectangle_164" data-name="Rectangle 164" width="41" height="18.135" rx="9.067" fill="url(#linear-gradient)"/>
+    <path id="Rectangle_164_-_Outline" data-name="Rectangle 164 - Outline" d="M9.067,1a8.067,8.067,0,0,0,0,16.135H31.933A8.067,8.067,0,0,0,31.933,1H9.067m0-1H31.933a9.067,9.067,0,0,1,0,18.135H9.067A9.067,9.067,0,0,1,9.067,0Z" fill="#fff"/>
   </g>
+  <path id="Path_777" data-name="Path 777" d="M4.7,0V-8.671H2.1L-.006-3.263-2.112-8.671H-4.7V0h1.846V-6.24L-.409,0H.4L2.841-6.24V0Z" transform="translate(21 14)" fill="#fff"/>
 </svg>

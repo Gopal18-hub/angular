@@ -20,7 +20,7 @@
     .mobileno{
       .mat-error{
         margin-top: 9px;
-        white-space: normal;
+        white-space: break-spaces;
       }
     }
   }
@@ -39,6 +39,9 @@
   }
   .h-62 {
     height: 62vh;
+  }
+  .w-31{
+    width: 31%;
   }
   .api-loader {
     background: rgba(0, 0, 0, 0.15);

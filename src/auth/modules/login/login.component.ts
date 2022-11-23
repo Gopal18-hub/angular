@@ -188,6 +188,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.loginForm.controls["station"].disable();
             }
           } else if (data && data.success) {
+            this.loginForm.controls["username"].setErrors(null);
+            this.questions[0].customErrorMessage = "";
             this.userlocationandstation = data as UserLocationStationdataModel;
             this.locationList = this.userlocationandstation.locations;
             this.stationList = this.userlocationandstation.stations;
@@ -300,44 +302,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
             } else if (status == "UserValidationError") {
               if (data.userData) {
                 if (data.userData["error"]) {
-                  this.loginForm.reset();
                   console.log(data.userData["error"]);
-                  // if (
-                  //   data.userData["error"].includes(
-                  //     "Your password is locked due to invalid attempts"
-                  //   )
-                  // ) {
-                  //   this.messageDialogService.warning(data.userData["error"]);
-                  // } else
-                  if (
-                    data.userData["error"].includes(
-                      "User Already Logged in to the system"
-                    )
-                  ) {
+                  if ((data.userData.user.logged = "Y")) {
                     const errorDialogRef = this.messageDialogService.warning(
                       data.userData["error"]
                     );
                     await errorDialogRef.afterClosed().toPromise();
                     //Delete ActiveSession
-                  }
-                  // else if (
-                  //   data.userData["error"].includes(
-                  //     "Do you want to change your Password?"
-                  //   )
-                  // ) {
-                  //   const errorDialogRef = this.messageDialogService.confirm(
-                  //     "",
-                  //     data.userData["error"]
-                  //   );
-                  //   errorDialogRef.afterClosed().subscribe((res: any) => {
-                  //     if (res && "type" in res && res.type == "yes") {
-                  //       this.redirectToResetPassword();
-                  //     } else {
-                  //       return;
-                  //     }
-                  //   });
-                  // }
-                  else {
+                  } else {
                     this.messageDialogService.warning(data.userData["error"]);
                     // this.Authentication = false;
                     // this.authStatus = false;
@@ -345,6 +317,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
                   }
                 }
               }
+              this.loginForm.reset();
             } else {
               this.authStatus = false;
               this.Authentication = false;
