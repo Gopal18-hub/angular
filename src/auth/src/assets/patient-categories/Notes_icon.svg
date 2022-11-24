@@ -1,27 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="66" height="66" viewBox="0 0 66 66">
+<svg id="n" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="41" height="18.135" viewBox="0 0 41 18.135">
   <defs>
     <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
       <stop offset="0" stop-color="#45c0be"/>
       <stop offset="0.519" stop-color="#07b3ab"/>
       <stop offset="1" stop-color="#00b2a9"/>
     </linearGradient>
-    <filter id="Rectangle_164" x="0" y="0" width="66" height="66" filterUnits="userSpaceOnUse">
-      <feOffset dy="3" input="SourceAlpha"/>
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feFlood flood-opacity="0.161"/>
-      <feComposite operator="in" in2="blur"/>
-      <feComposite in="SourceGraphic"/>
-    </filter>
   </defs>
-  <g id="Notes icon" data-name="Notes icon" transform="translate(9 6)">
-    <g id="Group_419" data-name="Group 419">
-      <g transform="matrix(1, 0, 0, 1, -9, -6)" filter="url(#Rectangle_164)">
-        <g id="Rectangle_164-2" data-name="Rectangle 164" transform="translate(9 6)" stroke="#fff" stroke-width="2" fill="url(#linear-gradient)">
-          <rect width="48" height="48" rx="24" stroke="none"/>
-          <rect x="1" y="1" width="46" height="46" rx="23" fill="none"/>
-        </g>
-      </g>
-    </g>
-    <path id="Path_713" data-name="Path 713" d="M5.373,0V-12.006H2.817V-4.23l-5.562-7.776H-5.373V0h2.556V-8.064L2.907,0Z" transform="translate(24 31)" fill="#fff"/>
+  <g id="Group_419" data-name="Group 419">
+    <rect id="Rectangle_164" data-name="Rectangle 164" width="41" height="18.135" rx="9.067" fill="url(#linear-gradient)"/>
+    <path id="Rectangle_164_-_Outline" data-name="Rectangle 164 - Outline" d="M9.067,1a8.067,8.067,0,0,0,0,16.135H31.933A8.067,8.067,0,0,0,31.933,1H9.067m0-1H31.933a9.067,9.067,0,0,1,0,18.135H9.067A9.067,9.067,0,0,1,9.067,0Z" fill="#fff"/>
   </g>
+  <path id="Path_713" data-name="Path 713" d="M2.272-3.936v-8.07H.454v5.227L-3.5-12.006h-1.87v8.07h1.818v-5.42L.518-3.936Z" transform="translate(22.05 17.317)" fill="#fff"/>
 </svg>

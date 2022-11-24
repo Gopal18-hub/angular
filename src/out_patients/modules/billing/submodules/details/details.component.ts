@@ -506,7 +506,11 @@ export class DetailsComponent implements OnInit {
           this.snackbar.open("Invalid Max ID");
         } else if (this.BServiceForm.value.maxid == "") {
           this.snackbar.open("Invalid Max ID");
-        } else {
+        } else if(!this.BServiceForm.value.maxid.split('.')[0] || !this.BServiceForm.value.maxid.split('.')[1])
+        {
+          this.snackbar.open("Invalid Max ID");
+        }
+        else {
           this.search();
         }
       }

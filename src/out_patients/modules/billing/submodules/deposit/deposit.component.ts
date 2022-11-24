@@ -791,8 +791,10 @@ export class DepositComponent implements OnInit {
     this.dob = "";
     this.nationality = "";
     this.ssn = "";
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
+    this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
     this.deposittable.selection.clear();
     this.patientpersonaldetails = [];
     this.depoistList = [];
