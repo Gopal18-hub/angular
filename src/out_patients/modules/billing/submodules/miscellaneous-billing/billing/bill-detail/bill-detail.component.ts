@@ -533,7 +533,12 @@ export class BillDetailComponent implements OnInit {
       });
     //interaction master
     this.question[9].options = await this.miscPatient.getinteraction();
-
+    //sEt cache interaction details
+    if (this.miscPatient.cacheBillTabdata.interactionDetails) {
+      this.miscServBillForm.controls["interactionDetails"].setValue(
+        this.miscPatient.cacheBillTabdata.interactionDetails
+      );
+    }
     //Set Payment mode
     if (Number(this.miscPatient.cacheBillTabdata.billType) === 3) {
       this.miscServBillForm.controls["paymentMode"].setValue("3");
@@ -614,7 +619,13 @@ export class BillDetailComponent implements OnInit {
         this.miscPatient.setBillType(value);
         this.miscPatient.cacheBillTabdata.billType = value;
       });
-
+    this.miscServBillForm.controls["interactionDetails"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.miscPatient.cacheBillTabdata.interactionDetails = value;
+        }
+      });
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
