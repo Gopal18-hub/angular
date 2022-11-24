@@ -2095,7 +2095,7 @@ export namespace FormReport {
 
         ChkAllLocation: {
           type: "checkbox",
-          options: [{ title: "Location", value: 1 }],
+          options: [{ title: "Location", value: "1" }],
         },
       },
     },
