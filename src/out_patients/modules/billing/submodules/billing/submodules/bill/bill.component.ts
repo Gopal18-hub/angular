@@ -26,6 +26,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
 import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
+import { timeStamp } from "console";
 
 @Component({
   selector: "out-patients-bill",
@@ -276,15 +277,21 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   async refreshForm() {
-    this.calculateBillService.refreshDiscount(this.formGroup);
-    this.calculateBillService.calculateDiscount();
+    //resetting discount on removing all items from Bill tab
+    if (this.billingservice.billItems.length == 0) {
+      this.resetDiscount();
+      this.formGroup.controls["discAmtCheck"].setValue(false);
+    } else {
+      this.calculateBillService.refreshDiscount(this.formGroup);
+      this.calculateBillService.calculateDiscount();
 
-    this.formGroup.controls["billAmt"].setValue(
-      this.billingservice.totalCostWithOutGst.toFixed(2)
-    );
-    this.formGroup.controls["discAmt"].setValue(
-      this.calculateBillService.totalDiscountAmt.toFixed(2)
-    );
+      this.formGroup.controls["billAmt"].setValue(
+        this.billingservice.totalCostWithOutGst.toFixed(2)
+      );
+      this.formGroup.controls["discAmt"].setValue(
+        this.calculateBillService.totalDiscountAmt.toFixed(2)
+      );
+    }
 
     this.billTypeChange(this.formGroup.value.paymentMode);
   }
