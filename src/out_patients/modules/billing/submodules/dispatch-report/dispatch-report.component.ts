@@ -206,8 +206,10 @@ export class DispatchReportComponent implements OnInit {
     this.userId = Number(this.cookie.get("UserId"));
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
-    this.questions[3].minimum = this.dispatchhistoryform.controls["fromdate"].value;
-    this.questions[2].maximum = this.dispatchhistoryform.controls["todate"].value;
+    this.questions[3].minimum =
+      this.dispatchhistoryform.controls["fromdate"].value;
+    this.questions[2].maximum =
+      this.dispatchhistoryform.controls["todate"].value;
     this.getBilledLocation();
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
@@ -281,7 +283,8 @@ export class DispatchReportComponent implements OnInit {
       var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
       var dif_in_time = tdate.getTime() - fdate.getTime();
       var dif_in_days = dif_in_time / (1000 * 3600 * 24);
-      if (dif_in_days > 31) {
+      ////changes for performance impact
+      if (dif_in_days > 3) {
         this.matdialog.open(MoreThanMonthComponent, {
           width: "30vw",
           height: "30vh",
@@ -340,7 +343,7 @@ export class DispatchReportComponent implements OnInit {
             this.config.columnsInfo.r_collection_location.options =
               this.billedlocation.map((l) => {
                 return { title: l.address3, value: l.hspLocationId };
-              });  
+              });
             if (this.pendingreport == true && this.show == false) {
               this.dispatchreport.dispatchlist =
                 this.dispatchreport.dispatchlist.filter((e: any) => {
@@ -414,27 +417,21 @@ export class DispatchReportComponent implements OnInit {
           (e.receive_date == null || e.receive_date == undefined)
         ) {
           // this.msgdialog.error("You have Not Selected Proper Data");
-          console.log('all null');
+          console.log("all null");
           flag++;
           return;
-        } else if (
-          e.r_dispatchdate == null ||
-          e.r_dispatchdate == undefined
-        ) {
+        } else if (e.r_dispatchdate == null || e.r_dispatchdate == undefined) {
           console.log(e.r_dispatchdate);
-          console.log('rec dis null');
+          console.log("rec dis null");
           // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
           return;
         } else if (e.receive_date == null || e.receive_date == undefined) {
           console.log("receive date null");
           var loc;
-          if(e.r_collection_location == null)
-          {
+          if (e.r_collection_location == null) {
             loc = null;
-          }
-          else
-          {
+          } else {
             loc = e.r_collection_location.toString();
           }
           this.dispatchreportsave.objDtSaveReport.push({
@@ -471,12 +468,9 @@ export class DispatchReportComponent implements OnInit {
           // })
         } else {
           var loc;
-          if(e.r_collection_location == null)
-          {
+          if (e.r_collection_location == null) {
             loc = null;
-          }
-          else
-          {
+          } else {
             loc = e.r_collection_location.toString();
           }
           this.dispatchreportsave.objDtSaveReport.push({
@@ -507,7 +501,11 @@ export class DispatchReportComponent implements OnInit {
       });
     }
     console.log(flag);
-    if (this.dispatchreportsave.objDtSaveReport.length > 0 && flag == 0 && this.tableRows.selection.selected.length > 0) {
+    if (
+      this.dispatchreportsave.objDtSaveReport.length > 0 &&
+      flag == 0 &&
+      this.tableRows.selection.selected.length > 0
+    ) {
       console.log(this.dispatchreportsave.objDtSaveReport.length);
       this.http
         .post(ApiConstants.dispatchreportsave, this.dispatchreportsave)
@@ -521,27 +519,30 @@ export class DispatchReportComponent implements OnInit {
           },
           (error) => {
             console.log(error);
-            this.msgdialog.error("You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory.");
+            this.msgdialog.error(
+              "You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory."
+            );
           }
         );
-    }
-    else if(flag > 0){
-      this.msgdialog.error("You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory.");
+    } else if (flag > 0) {
+      this.msgdialog.error(
+        "You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory."
+      );
     }
     console.log(this.dispatchreportsave.objDtSaveReport);
   }
-  printrow(event: any)
-  {
-    if(event.column == "r_dispatchdate" && event.row.r_dispatchdate == null)
-    {
+  printrow(event: any) {
+    if (event.column == "r_dispatchdate" && event.row.r_dispatchdate == null) {
       event.row.r_dispatchdate = new Date();
-    }
-    else if(event.column == "receive_date" && event.row.receive_date == null) 
-    {
+    } else if (
+      event.column == "receive_date" &&
+      event.row.receive_date == null
+    ) {
       event.row.receive_date = new Date();
-    }
-    else if(event.column == "r_collection_location" && event.r_collection_location == null) 
-    {
+    } else if (
+      event.column == "r_collection_location" &&
+      event.r_collection_location == null
+    ) {
       event.row.r_collection_location = this.billedlocation[0].hspLocationId;
     }
   }
@@ -550,21 +551,27 @@ export class DispatchReportComponent implements OnInit {
     this.tableRows.exportAsExcel();
   }
   print() {
-    if(this.dispatchreport.dispatchlist.length == 0)
-    {
-      this.msgdialog.info('No Data Available');
-    }
-    else
-    {
+    if (this.dispatchreport.dispatchlist.length == 0) {
+      this.msgdialog.info("No Data Available");
+    } else {
       this.openReportModal("DispatchReport");
     }
   }
   openReportModal(btnname: string) {
-    console.log(this.dispatchhistoryform.controls["billedlocation"].value.value);
-    this.reportService.openWindow('Dispatch Report', btnname, {
-      fromdate: this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "YYYY-MM-dd"),
-      todate: this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"),
-      locationid: this.dispatchhistoryform.controls["billedlocation"].value.value,
+    console.log(
+      this.dispatchhistoryform.controls["billedlocation"].value.value
+    );
+    this.reportService.openWindow("Dispatch Report", btnname, {
+      fromdate: this.datepipe.transform(
+        this.dispatchhistoryform.controls["fromdate"].value,
+        "YYYY-MM-dd"
+      ),
+      todate: this.datepipe.transform(
+        this.dispatchhistoryform.controls["todate"].value,
+        "YYYY-MM-dd"
+      ),
+      locationid:
+        this.dispatchhistoryform.controls["billedlocation"].value.value,
       RepType: this.dispatchhistoryform.controls["radio"].value,
     });
   }

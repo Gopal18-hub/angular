@@ -19,6 +19,7 @@ import { LookupService } from "@core/services/lookup.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { MatDialog } from "@angular/material/dialog";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-investigation-orders",
@@ -302,7 +303,8 @@ export class InvestigationOrdersComponent implements OnInit {
     private lookupService: LookupService,
     public matdialog: MatDialog,
     private cookie: CookieService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -431,34 +433,47 @@ export class InvestigationOrdersComponent implements OnInit {
     this.patientInfo = "";
     this.EnableBill = false;
 
-    this.http
-      .get(
-        ApiConstants.getediganosticacdoninvestigation(
-          this.datepipe.transform(
-            this.investigationForm.controls["fromdate"].value,
-            "yyyy-MM-dd"
-          ),
-          this.datepipe.transform(
-            this.investigationForm.controls["todate"].value,
-            "yyyy-MM-dd"
-          ),
-          this.hsplocationId
+    ////changes for performance impact
+    var fdate = new Date(this.investigationForm.controls["fromdate"].value);
+    var tdate = new Date(this.investigationForm.controls["todate"].value);
+    var dif_in_time = tdate.getTime() - fdate.getTime();
+    var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+    if (dif_in_days < 3) {
+      this.http
+        .get(
+          ApiConstants.getediganosticacdoninvestigation(
+            this.datepipe.transform(
+              this.investigationForm.controls["fromdate"].value,
+              "yyyy-MM-dd"
+            ),
+            this.datepipe.transform(
+              this.investigationForm.controls["todate"].value,
+              "yyyy-MM-dd"
+            ),
+            this.hsplocationId
+          )
         )
-      )
-      // this.http
-      //   .get(
-      //     ApiConstants.getediganosticacdoninvestigation(
-      //       "2021-01-01",
-      //       "2021-01-05",
-      //       7
-      //     )
-      //   )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.invOrderListMain = res.objTempOrderHeader; // Main Grid;
-        this.invOrderList = res.objTempOrderHeader;
-        this.searchFilter();
-      });
+        // this.http
+        //   .get(
+        //     ApiConstants.getediganosticacdoninvestigation(
+        //       "2021-01-01",
+        //       "2021-01-05",
+        //       7
+        //     )
+        //   )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.invOrderListMain = res.objTempOrderHeader; // Main Grid;
+          this.invOrderList = res.objTempOrderHeader;
+          this.searchFilter();
+        });
+    } else {
+      ////changes for performance impact
+      this.apiProcessing = false;
+      this.messageDialogService.info(
+        "Can not process requests for more than 3 Days, Please select the dates accordingly."
+      );
+    }
   }
   searchFilter() {
     let maxid = this.investigationForm.value.input
