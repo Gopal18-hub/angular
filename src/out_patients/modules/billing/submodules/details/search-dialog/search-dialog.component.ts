@@ -264,6 +264,10 @@ export class SearchDialogComponent implements OnInit {
         {
           this.snackbar.open('Invalid Max ID');
         }
+        else if(!this.searchform.value.maxid.split('.')[0] || !this.searchform.value.maxid.split('.')[1])
+        {
+          this.snackbar.open('Invalid Max ID');
+        }
         else
         {
           this.search();
