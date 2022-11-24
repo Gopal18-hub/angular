@@ -326,9 +326,12 @@ export class CalculateBillService {
         this.processDiscountLogics(formGroup, componentRef, from);
       } else if (this.totalDiscountAmt == 0) {
         this.processDiscountLogics(formGroup, componentRef, from);
-        formGroup.controls["discAmtCheck"].setValue(false, {
-          emitEvent: false,
-        });
+        ////GAV-1144 - coupon discount
+        if (from != "coupon") {
+          formGroup.controls["discAmtCheck"].setValue(false, {
+            emitEvent: false,
+          });
+        }
       }
     });
   }
@@ -349,6 +352,11 @@ export class CalculateBillService {
       });
     } else {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
+    }
+
+    ////GAV-1144 - coupon discount
+    if (from == "coupon") {
+      this.calculateDiscount();
     }
 
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
