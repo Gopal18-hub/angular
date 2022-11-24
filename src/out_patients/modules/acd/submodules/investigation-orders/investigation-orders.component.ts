@@ -18,7 +18,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { LookupService } from "@core/services/lookup.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { MatDialog } from "@angular/material/dialog";
-import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
@@ -303,7 +302,6 @@ export class InvestigationOrdersComponent implements OnInit {
     private lookupService: LookupService,
     public matdialog: MatDialog,
     private cookie: CookieService,
-    private snackbar: MaxHealthSnackBarService,
     private messageDialogService: MessageDialogService
   ) {}
 
@@ -470,7 +468,7 @@ export class InvestigationOrdersComponent implements OnInit {
     } else {
       ////changes for performance impact
       this.apiProcessing = false;
-      this.messageDialogService.info(
+      this.messageDialogService.error(
         "Can not process requests for more than 3 Days, Please select the dates accordingly."
       );
     }
@@ -581,11 +579,11 @@ export class InvestigationOrdersComponent implements OnInit {
     billedRow = this.tableSelectedRows.filter((e: any) => e.isBilled === 1);
 
     if (deniedRow.length > 0) {
-      this.snackbar.open("Order is already Denied", "error");
+      this.messageDialogService.error("Order is already Denied");
       this.resetRemarksDeny();
       this.isDisableSave = false;
     } else if (billedRow.length > 0) {
-      this.snackbar.open("Order is already Billed", "error");
+      this.messageDialogService.error("Order is already Billed");
       this.resetRemarksDeny();
       this.isDisableSave = false;
     } else if (this.tableSelectedRows.length > 0 && nondeniedRow.length > 0) {
@@ -620,7 +618,7 @@ export class InvestigationOrdersComponent implements OnInit {
         this.unselectRow();
       } else {
         //console.log(this.selectedRow, "Bill")
-        this.snackbar.open("Billed order cannot be denied", "error");
+        this.messageDialogService.error("Billed order cannot be denied");
         event.row.sno = true;
         // this.isDisableCancel = false;
         // this.isDisableSave = false;
@@ -661,14 +659,13 @@ export class InvestigationOrdersComponent implements OnInit {
       billedRow = this.tableSelectedRows.filter((e: any) => e.isBilled === 1);
 
       if (deniedRow.length > 0) {
-        this.snackbar.open("Order is already Denied", "error");
+        this.messageDialogService.error("Order is already Denied");
       } else if (billedRow.length > 0) {
-        this.snackbar.open("Order is already Billed", "error");
+        this.messageDialogService.error("Order is already Billed");
       } else if (nondeniedRow.length > 0 && this.tableSelectedRows.length > 0) {
         if (this.investigationForm.value.denyorder === "Select") {
-          this.snackbar.open(
-            "Please select denial reason for open order before Save!",
-            "error"
+          this.messageDialogService.error(
+            "Please select denial reason for open order before Save!"
           );
         }
         if (this.investigationForm.value.denyorder !== "Select") {
@@ -676,9 +673,8 @@ export class InvestigationOrdersComponent implements OnInit {
             this.denyOthers == true &&
             !this.investigationForm.value.remarks
           ) {
-            this.snackbar.open(
-              "Please enter denial reason remark for order!",
-              "error"
+            this.messageDialogService.error(
+              "Please enter denial reason remark for order!"
             );
           } else {
             let dialogRes;
@@ -719,7 +715,7 @@ export class InvestigationOrdersComponent implements OnInit {
           }
         }
       } else {
-        this.snackbar.open("Please select a row to proceed.", "error");
+        this.messageDialogService.error("Please select a row to proceed.");
         this.tableSelectedRows = [];
       }
     }, -1);
@@ -738,7 +734,7 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res === 1) {
-          this.snackbar.open("Saved Successfully!", "success");
+          this.messageDialogService.info("Saved Successfully!");
           this.listRowClick(this.selectedInv);
           this.tableSelectedRows = [];
           //this.tableSelectedRows = []
@@ -762,9 +758,11 @@ export class InvestigationOrdersComponent implements OnInit {
     billedRow = this.tableSelectedRows.filter((e: any) => e.isBilled === 1);
 
     if (nondeniedRow.length > 0) {
-      this.snackbar.open("Please deny the order to cancel the denial", "error");
+      this.messageDialogService.error(
+        "Please deny the order to cancel the denial"
+      );
     } else if (billedRow.length > 0) {
-      this.snackbar.open("Order is already Billed", "error");
+      this.messageDialogService.error("Order is already Billed");
     } else {
       if (deniedRow.length > 0 && this.tableSelectedRows.length > 0) {
         let dialogRes;
@@ -805,7 +803,7 @@ export class InvestigationOrdersComponent implements OnInit {
               .pipe(takeUntil(this._destroying$))
               .subscribe((res: any) => {
                 if (res.success === true) {
-                  this.snackbar.open("Modified Successfully", "success");
+                  this.messageDialogService.info("Modified Successfully");
                   this.disableBtns();
                   this.listRowClick(this.selectedInv);
                   this.tableSelectedRows = [];
@@ -814,7 +812,7 @@ export class InvestigationOrdersComponent implements OnInit {
           }
         });
       } else {
-        this.snackbar.open("Please select a row to proceed", "error");
+        this.messageDialogService.error("Please select a row to proceed");
         this.tableSelectedRows = [];
       }
     }
