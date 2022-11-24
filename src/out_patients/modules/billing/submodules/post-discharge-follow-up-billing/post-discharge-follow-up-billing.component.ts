@@ -57,7 +57,6 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       mobile: {
         type: "tel",
         title: "Mobile Number",
-        pattern: "^[1-9]{1}[0-9]{9}",
       },
       bookingId: {
         type: "string",
@@ -203,9 +202,13 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
           Number(regNumber)
         )
       )
-      .toPromise();
-    if (res == null) {
-      return;
+      .pipe(takeUntil(this._destroying$))
+      .toPromise()
+      .catch((reason: any) => {
+        return reason;
+      });
+    if (res == null || res == undefined) {
+      return false;
     }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
@@ -214,6 +217,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     }
     return false;
   }
+
   async getPatientDetailsByMaxId() {
     if (!this.formGroup.value.maxid) {
       this.apiProcessing = false;
@@ -324,7 +328,11 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       );
   }
   searchByMobileNumber() {
-    if (!this.formGroup.value.mobile) {
+    if (
+      !this.formGroup.value.mobile ||
+      this.formGroup.value.mobile.length != 10
+    ) {
+      this.snackbar.open("Invalid Mobile No.", "error");
       this.apiProcessing = false;
       this.patient = false;
       return;
@@ -342,7 +350,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
             this.formGroup.controls["maxid"].setValue(maxID);
             this.apiProcessing = true;
             this.patient = false;
-            this.getPatientDetailsByMaxId();
+            //this.getPatientDetailsByMaxId();
             this.router.navigate([], {
               queryParams: { maxId: this.formGroup.value.maxid },
               relativeTo: this.route,
@@ -353,7 +361,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "62vh",
+                height: "80vh",
                 data: {
                   searchResults: res,
                 },
@@ -368,7 +376,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
                   this.formGroup.controls["maxid"].setValue(maxID);
                   this.apiProcessing = true;
                   this.patient = false;
-                  this.getPatientDetailsByMaxId();
+                  //this.getPatientDetailsByMaxId();
                   this.router.navigate([], {
                     queryParams: { maxId: this.formGroup.value.maxid },
                     relativeTo: this.route,
