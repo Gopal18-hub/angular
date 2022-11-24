@@ -17,13 +17,13 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
     ReportsModule,
     CommonModule,
     MaxHealthMessageDialogModule,
     HeaderModule,
+    AppRoutingModule,
   ],
   providers: [
     AuthGuardService,

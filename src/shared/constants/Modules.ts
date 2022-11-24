@@ -1182,7 +1182,7 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "OP Bill Register",
-                  defaultPath: "/op-ip/prompt-report/opBillRegisterReport",
+                  defaultPath: "/op-ip/prompt-report/opBillRegister",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
