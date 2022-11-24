@@ -533,7 +533,12 @@ export class BillDetailComponent implements OnInit {
       });
     //interaction master
     this.question[9].options = await this.miscPatient.getinteraction();
-
+    //sEt cache interaction details
+    if (this.miscPatient.cacheBillTabdata.interactionDetails) {
+      this.miscServBillForm.controls["interactionDetails"].setValue(
+        this.miscPatient.cacheBillTabdata.interactionDetails
+      );
+    }
     //Set Payment mode
     if (Number(this.miscPatient.cacheBillTabdata.billType) === 3) {
       this.miscServBillForm.controls["paymentMode"].setValue("3");
@@ -614,7 +619,13 @@ export class BillDetailComponent implements OnInit {
         this.miscPatient.setBillType(value);
         this.miscPatient.cacheBillTabdata.billType = value;
       });
-
+    this.miscServBillForm.controls["interactionDetails"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.miscPatient.cacheBillTabdata.interactionDetails = value;
+        }
+      });
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -1070,16 +1081,15 @@ export class BillDetailComponent implements OnInit {
               data.dtBilltocompany[0].gstNumber === null ||
               data.dtBilltocompany[0].gstNumber === 0
             ) {
-              this.snackbar.open(
-                "Bill To Company GSTN and Address Details are Mandatory for Bill Preparation",
-                "error"
+              this.messageDialogService.error(
+                "Bill To Company GSTN and Address Details are Mandatory for Bill Preparation"
               );
               return;
             } else if (
               this.miscCompanyId === 0 ||
               this.miscCompanyId === null
             ) {
-              this.snackbar.open("Please Select Company GSTN!", "error");
+              this.messageDialogService.error("Please Select Company GSTN!");
             }
           }
         }
@@ -1177,9 +1187,8 @@ export class BillDetailComponent implements OnInit {
         } else if (this.taxcode) {
           if (this.taxcode !== data[0].code) {
             console.log("t1");
-            this.snackbar.open(
-              "Kindly Prepare Sperate Bill For These Services As These Services have Different SAC Code.",
-              "error"
+            this.messageDialogService.error(
+              "Kindly Prepare Sperate Bill For These Services As These Services have Different SAC Code."
             );
             this.clearSelectedService();
 
@@ -1262,7 +1271,7 @@ export class BillDetailComponent implements OnInit {
       this.snackbar.open("Please select remarks!", "error");
       this.question[6].elementRef.focus();
     } else if (this.noMap.length === 0) {
-      this.snackbar.open("Selected Service not Mapped with Tax.", "error");
+      this.messageDialogService.error("Selected Service not Mapped with Tax.");
       this.clearSelectedService();
       return;
     } else {
@@ -1283,9 +1292,8 @@ export class BillDetailComponent implements OnInit {
           } else if (this.taxcode) {
             if (this.taxcode !== data[0].code) {
               console.log("t1");
-              this.snackbar.open(
-                "Kindly Prepare Sperate Bill For These Services As These Services have Different SAC Code.",
-                "error"
+              this.messageDialogService.error(
+                "Kindly Prepare Sperate Bill For These Services As These Services have Different SAC Code."
               );
               this.clearSelectedService();
               return;
@@ -1309,7 +1317,7 @@ export class BillDetailComponent implements OnInit {
         ServiceType == element.ServiceType &&
         itemName == element.ItemDescription
       ) {
-        this.snackbar.open("Item Already Exits", "error");
+        this.messageDialogService.error("Item Already Exits");
         present = true;
         return;
       }
@@ -1510,21 +1518,15 @@ export class BillDetailComponent implements OnInit {
     }
   } //Dialog
   openDiscountdialog() {
-    const MakeDepositDialogref = this.matDialog.open(
-      MakedepositDialogComponent,
-      {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to apply Discounts?",
-        },
-      }
+    const MakeDepositDialogref = this.messageDialogService.confirm(
+      "",
+      "Do you want to apply Discounts?"
     );
 
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        if (result == "Success") {
+        if (result.type == "yes") {
           this.opendiscAmtDialog();
         } else {
           this.miscServBillForm.controls["discAmtCheck"].setValue(false, {
@@ -1642,21 +1644,15 @@ export class BillDetailComponent implements OnInit {
   }
   openDepositdialog() {
     this.getDipositedAmountByMaxID();
-    const MakeDepositDialogref = this.matDialog.open(
-      MakedepositDialogComponent,
-      {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to avail Deposits?",
-        },
-      }
+    const MakeDepositDialogref = this.messageDialogService.confirm(
+      "",
+      "Do you want to avail Deposits?"
     );
 
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        if (result == "Success") {
+        if (result.type == "yes") {
           const dialogref = this.matDialog.open(DepositDetailsComponent, {
             width: "70vw",
             height: "60vh",
@@ -1692,10 +1688,6 @@ export class BillDetailComponent implements OnInit {
               this.miscServBillForm.controls["dipositAmtcheck"].setValue(true, {
                 emitEvent: false,
               });
-              //this.snackbar.open("Deposit Amount availed successfully!");
-              // if (this.makebillFlag == true && this.depositAvailFlag == true) {
-              //   this.openPaymentModeDialog();
-              // }
             } else {
               this.miscServBillForm.controls["dipositAmtcheck"].setValue(
                 false,
@@ -1795,33 +1787,27 @@ export class BillDetailComponent implements OnInit {
           return;
         }
       } else if (!this.miscPatient.selectedcompanydetails.value) {
-        this.snackbar.open("Select the Company", "error");
+        this.messageDialogService.error("Select the Company");
       } else if (
         Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) === 1 &&
         !this.miscPatient.selectedcorporatedetails.value
       ) {
-        this.snackbar.open(" Please select corporate!", "error");
+        this.messageDialogService.error(" Please select corporate!");
       } else if (
         !this.miscPatient.referralDoctor ||
         this.miscPatient.referralDoctor.id === 0
       ) {
-        this.snackbar.open("Please select Referral Doctor", "error");
+        this.messageDialogService.error("Please select Referral Doctor");
       } else {
-        const MakeDepositDialogref = this.matDialog.open(
-          MakeBillDialogComponent,
-          {
-            width: "33vw",
-            height: "40vh",
-            data: {
-              message: "Do you want to make Bill?",
-            },
-          }
+        const MakeDepositDialogref = this.messageDialogService.confirm(
+          "",
+          "Do you want to make Bill?"
         );
 
         MakeDepositDialogref.afterClosed()
           .pipe(takeUntil(this._destroying$))
           .subscribe((result) => {
-            if (result == "Success") {
+            if (result.type == "yes") {
               this.makeBill();
             }
           });
@@ -1831,23 +1817,17 @@ export class BillDetailComponent implements OnInit {
         !this.miscPatient.referralDoctor ||
         this.miscPatient.referralDoctor.id === 0
       ) {
-        this.snackbar.open("Please select Referral Doctor", "error");
+        this.messageDialogService.error("Please select Referral Doctor");
       } else {
-        const MakeDepositDialogref = this.matDialog.open(
-          MakeBillDialogComponent,
-          {
-            width: "33vw",
-            height: "40vh",
-            data: {
-              message: "Do you want to make Bill?",
-            },
-          }
+        const MakeDepositDialogref = this.messageDialogService.confirm(
+          "",
+          "Do you want to make Bill?"
         );
 
         MakeDepositDialogref.afterClosed()
           .pipe(takeUntil(this._destroying$))
           .subscribe((result) => {
-            if (result == "Success") {
+            if (result.type == "yes") {
               this.makeBill();
             }
           });
@@ -1914,11 +1894,11 @@ export class BillDetailComponent implements OnInit {
                       });
                   });
               } else if (resultData[0].successFlag === false) {
-                this.snackbar.open(resultData[0].returnMessage, "error");
+                this.messageDialogService.error(resultData[0].returnMessage);
               }
             },
             (error) => {
-              this.snackbar.open("OOPS! Something went wrong", "error");
+              this.messageDialogService.error("OOPS! Something went wrong");
             }
           );
         this.miscPatient.makeBillPayload.ds_paymode = {
@@ -1963,21 +1943,15 @@ export class BillDetailComponent implements OnInit {
             Number(this.miscServBillForm.value.amtPayByPatient) >
             Number(this.miscPatient.calculatedBill.collectedAmount)
           ) {
-            const MakeDepositDialogref = this.matDialog.open(
-              MakedepositDialogComponent,
-              {
-                width: "33vw",
-                height: "40vh",
-                data: {
-                  message: "Do You Want To Save Less Amount ?",
-                },
-              }
+            const MakeDepositDialogref = this.messageDialogService.confirm(
+              "",
+              "Do You Want To Save Less Amount ?"
             );
 
             MakeDepositDialogref.afterClosed()
               .pipe(takeUntil(this._destroying$))
               .subscribe((result) => {
-                if (result == "Success") {
+                if (result.type == "yes") {
                   this.addNewItem();
                   this.http
                     .post(ApiConstants.postMiscBill, this.postBillObj)
@@ -2023,16 +1997,14 @@ export class BillDetailComponent implements OnInit {
                                 });
                             });
                         } else if (resultData[0].successFlag === false) {
-                          this.snackbar.open(
-                            resultData[0].returnMessage,
-                            "error"
+                          this.messageDialogService.error(
+                            resultData[0].returnMessage
                           );
                         }
                       },
                       (error) => {
-                        this.snackbar.open(
-                          "OOPS, Something went wrong",
-                          "error"
+                        this.messageDialogService.error(
+                          "OOPS, Something went wrong"
                         );
                       }
                     );
@@ -2084,11 +2056,13 @@ export class BillDetailComponent implements OnInit {
                           });
                       });
                   } else if (resultData[0].successFlag === false) {
-                    this.snackbar.open(resultData[0].returnMessage, "error");
+                    this.messageDialogService.error(
+                      resultData[0].returnMessage
+                    );
                   }
                 },
                 (error) => {
-                  this.snackbar.open("OOPS! Something went wrong", "error");
+                  this.messageDialogService.error("OOPS! Something went wrong");
                 }
               );
           }
@@ -2415,15 +2389,19 @@ export class BillDetailComponent implements OnInit {
     });
 
     setTimeout(() => {
-      if(this.duplicateflag == true)
-      {
-        this.http.post(BillingApiConstants.updateopprintbillduplicate(Number(this.generatedBillNo)), '')
-        .subscribe(res => {
-          if(res.success == true)
-          {
-            this.duplicateflag = false;
-          }
-        });
+      if (this.duplicateflag == true) {
+        this.http
+          .post(
+            BillingApiConstants.updateopprintbillduplicate(
+              Number(this.generatedBillNo)
+            ),
+            ""
+          )
+          .subscribe((res) => {
+            if (res.success == true) {
+              this.duplicateflag = false;
+            }
+          });
       }
     }, 2000);
   }
