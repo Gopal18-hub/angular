@@ -162,6 +162,7 @@ export class SubNestedComponent implements OnInit {
 
   @Input() onPageRouterLinkActive: any;
 
+  @Input() tenentPath: any;
   activeSubModule: any;
 
   ngOnInit(): void {

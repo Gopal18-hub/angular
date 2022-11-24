@@ -474,6 +474,7 @@ export class OpRegistrationComponent implements OnInit {
   ) {}
 
   bool: boolean | undefined;
+  disableforeigner: boolean = false;
   ngOnInit(): void {
     this.bool = true;
     this.registeredBy =
@@ -732,6 +733,13 @@ export class OpRegistrationComponent implements OnInit {
   formProcessing() {
     this.checkForMaxID();
 
+    //unfreeze foreigner checkbox
+    this.OPRegForm.controls['nationality'].valueChanges
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(() => {
+      this.disableforeigner = false;
+    })
+
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
     this.OPRegForm.controls["paymentMethod"].valueChanges
@@ -894,21 +902,22 @@ export class OpRegistrationComponent implements OnInit {
           this.clearAddressOnPincodeChange();
         }
         if(this.OPRegForm.value.country.value != 1)
-    {
-      this.OPRegForm.controls["city"].setErrors(null);
-      this.OPRegForm.controls["state"].setErrors(null);
-      this.OPRegForm.controls["district"].setErrors(null);
-      
-      this.questions[21].required = false;
-      this.questions[22].required = false;
-            this.questions[23].required = false;
-            this.questions[24].required = false;
-            this.questions[25].required = false;
-            this.questions[26].required = false;
-            this.questions[24].allowSearchInput = true;
-            this.questions = {...this.questions};
-    }
-      });
+        {
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.OPRegForm.controls["city"].setErrors(null);
+          this.OPRegForm.controls["state"].setErrors(null);
+          this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["pincode"].setErrors(null);
+          this.questions[21].required = false;
+          this.questions[22].required = false;
+          this.questions[23].required = false;
+          this.questions[24].required = false;
+          this.questions[25].required = false;
+          this.questions[26].required = false;
+          this.questions[24].allowSearchInput = true;
+          this.questions = {...this.questions};
+        }
+    });
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -1060,26 +1069,25 @@ export class OpRegistrationComponent implements OnInit {
                 // this.getCityListByState(this.OPRegForm.value.state);
                 this.getLocalityByCity(value);
                 if(this.OPRegForm.value.country.value != 1)
-    {
-      this.OPRegForm.controls["pincode"].setErrors(null);
-      this.OPRegForm.controls["city"].setErrors(null);
-      this.OPRegForm.controls["state"].setErrors(null);
-      this.OPRegForm.controls["district"].setErrors(null);
-      
-      this.questions[21].required = false;
-      this.questions[22].required = false;
-            this.questions[23].required = false;
-            this.questions[24].required = false;
-            this.questions[25].required = false;
-            this.questions[26].required = false;
-            this.questions[24].allowSearchInput = true;
-            this.questions = {...this.questions};
-    }
-              } else if (!this.pincodebasedflow) {
-                this.citybasedflow = true;
-                //this.clearAddressOnCityChange();
-                this.getLocalityByCity(value);
-              }
+                {
+                  this.OPRegForm.controls["pincode"].setErrors(null);
+                  this.OPRegForm.controls["city"].setErrors(null);
+                  this.OPRegForm.controls["state"].setErrors(null);
+                  this.OPRegForm.controls["district"].setErrors(null);
+                  this.questions[21].required = false;
+                  this.questions[22].required = false;
+                  this.questions[23].required = false;
+                  this.questions[24].required = false;
+                  this.questions[25].required = false;
+                  this.questions[26].required = false;
+                  this.questions[24].allowSearchInput = true;
+                  this.questions = {...this.questions};
+                }
+                }else if (!this.pincodebasedflow) {
+                  this.citybasedflow = true;
+                  //this.clearAddressOnCityChange();
+                  this.getLocalityByCity(value);
+                }
             }
           }
         }
@@ -1271,6 +1279,7 @@ export class OpRegistrationComponent implements OnInit {
     //this.checkForMaxID();
     this.clearClicked = false;
     this.registeredBy = this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
+    this.disableforeigner = false;
   }
 
   flushAllObjects() {
@@ -1902,6 +1911,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       } else {
         if (
+          this.OPRegForm.value.pincode.length == 6 ||
           this.OPRegForm.value.pincode.length == 5 ||
           this.OPRegForm.value.pincode.length == 4
         ) {
@@ -1981,9 +1991,15 @@ export class OpRegistrationComponent implements OnInit {
       this.questions[25].readonly = false;
       this.questions[26].readonly = false;
       this.questions[27].readonly = false;
+      console.log(this.OPRegForm.controls["country"].value);
+      // this.getCitiesByCountry({ title: "India", value: 1 });
+      // this.getStatesByCountry({ title: "India", value: 1 });
 
-      this.getCitiesByCountry({ title: "India", value: 1 });
-      this.getStatesByCountry({ title: "India", value: 1 });
+      this.getCitiesByCountry(this.OPRegForm.controls["country"].value);
+      this.getStatesByCountry(this.OPRegForm.controls["country"].value);
+      this.questions[22].options = [];
+      this.questions[25].options = [];
+
       this.localitybyCityList = [];
       this.getLocalityList();
     }
@@ -1992,15 +2008,14 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["city"].setErrors(null);
       this.OPRegForm.controls["state"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
-      
       this.questions[21].required = false;
       this.questions[22].required = false;
-            this.questions[23].required = false;
-            this.questions[24].required = false;
-            this.questions[25].required = false;
-            this.questions[26].required = false;
-            this.questions[24].allowSearchInput = true;
-            this.questions = {...this.questions};
+      this.questions[23].required = false;
+      this.questions[24].required = false;
+      this.questions[25].required = false;
+      this.questions[26].required = false;
+      this.questions[24].allowSearchInput = true;
+      this.questions = {...this.questions};
     }
   }
 
@@ -4527,6 +4542,7 @@ export class OpRegistrationComponent implements OnInit {
         console.log("passport dialog was closed ");
         if (this.passportDetails.passportNo != "") {
           this.OPRegForm.controls["foreigner"].setValue(true);
+          this.disableforeigner = true;
           this.passportDetails = {
             Expirydate:
               this.datepipe.transform(
@@ -4547,6 +4563,7 @@ export class OpRegistrationComponent implements OnInit {
         } else {
           if (result == undefined || result.data == undefined) {
             this.OPRegForm.controls["foreigner"].setValue(false);
+            this.disableforeigner = false;
             if (this.OPRegForm.value.nationality.value != 149) {
               this.OPRegForm.controls["nationality"].setErrors({
                 incorrect: true,
@@ -4572,6 +4589,7 @@ export class OpRegistrationComponent implements OnInit {
               HCF: result.data.hcf,
             };
             this.isPatientdetailModified = true;
+            this.disableforeigner = true;
             console.log(this.passportDetails);
             this.OPRegForm.controls["nationality"].setErrors(null);
             this.questions[28].customErrorMessage = "";

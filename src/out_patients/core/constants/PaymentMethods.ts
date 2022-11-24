@@ -1,3 +1,4 @@
+import { MaxHealthStorage } from "@shared/services/storage";
 export namespace PaymentMethods {
   export const wallets: any = ["PayTM"];
   export const methods: any = {
@@ -211,9 +212,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "dropdown",
+          type: "string",
           label: "POS IMEI",
           required: true,
+          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+          readonly: true,
         },
         transactionid: {
           type: "string",
@@ -233,7 +236,7 @@ export namespace PaymentMethods {
         cCvalidity: {
           type: "date",
           label: "Validity",
-          required: true,
+          required: false,
         },
         bankName: {
           type: "autocomplete",
@@ -269,16 +272,20 @@ export namespace PaymentMethods {
         },
       },
       actionItems: [
-        {
-          label: "Manual",
-          type: "",
-        },
+        // {
+        //   label: "Manual",
+        //   type: "manualEntry",
+        //   paymentKey: "credit",
+        // },
         {
           label: "Get Approval",
+          type: "uploadBillTransaction",
+          paymentKey: "credit",
         },
         {
           label: "Retry",
-          type: "",
+          type: "getBillTransactionStatus",
+          paymentKey: "credit",
         },
       ],
     };
@@ -611,6 +618,13 @@ export namespace PaymentMethods {
           label: "Amount",
           required: true,
         },
+        posimei: {
+          type: "string",
+          label: "POS IMEI",
+          required: true,
+          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+          readonly: true,
+        },
         ccNumber_UPI: {
           type: "number",
           label: "Card No.",
@@ -624,7 +638,7 @@ export namespace PaymentMethods {
         cCvalidity_UPI: {
           type: "date",
           label: "Validity",
-          required: true,
+          required: false,
         },
         approvalno_UPI: {
           type: "string",
@@ -656,14 +670,22 @@ export namespace PaymentMethods {
           label: "Acquiring Bank",
           required: true,
         },
+        banktid: {
+          type: "string",
+          label: "Bank TID",
+          required: true,
+        },
       },
       actionItems: [
         {
           label: "Get Status",
-          type: "",
+          type: "getBillTransactionStatus",
+          paymentKey: "upi",
         },
         {
           label: "OK",
+          type: "uploadBillTransaction",
+          paymentKey: "upi",
         },
       ],
     };

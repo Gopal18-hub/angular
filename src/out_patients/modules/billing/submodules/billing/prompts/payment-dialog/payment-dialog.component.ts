@@ -18,22 +18,23 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
   styleUrls: ["./payment-dialog.component.scss"],
 })
 export class BillPaymentDialogComponent implements OnInit {
-  dueFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      onlinepaymentreq: {
-        type: "checkbox",
-        options: [{ title: "Online Payment Request" }],
-      },
-      paymenttype: {
-        type: "dropdown",
-        placeholder: "Online Payment Type",
-      },
-    },
-  };
-  dueform!: FormGroup;
-  questions: any;
+  //GAV-1010 do not remove this commented code
+  // dueFormData = {
+  //   title: "",
+  //   type: "object",
+  //   properties: {
+  //     onlinepaymentreq: {
+  //       type: "checkbox",
+  //       options: [{ title: "Online Payment Request" }],
+  //     },
+  //     paymenttype: {
+  //       type: "dropdown",
+  //       placeholder: "Online Payment Type",
+  //     },
+  //   },
+  // };
+  // dueform!: FormGroup;
+  // questions: any;
 
   hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
   stationId: any = Number(this.cookie.get("StationId"));
@@ -95,12 +96,13 @@ export class BillPaymentDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let formResult: any = this.formService.createForm(
-      this.dueFormData.properties,
-      {}
-    );
-    this.dueform = formResult.form;
-    this.questions = formResult.questions;
+    //GAV-1010 do not remove this commented code
+    // let formResult: any = this.formService.createForm(
+    //   this.dueFormData.properties,
+    //   {}
+    // );
+    // this.dueform = formResult.form;
+    // this.questions = formResult.questions;
     this.totaldue = this.due;
     this.patientInfo = {
       patientinfo: {
@@ -134,7 +136,7 @@ export class BillPaymentDialogComponent implements OnInit {
   clear() {
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.dueform.reset();
+    // this.dueform.reset();
     this.paymentmethod.tabs.forEach((tab: any, index: number) => {
       this.paymentmethod.tabPrices[index] = 0;
       this.paymentmethod.paymentForm[tab.key].reset();
@@ -143,6 +145,8 @@ export class BillPaymentDialogComponent implements OnInit {
 
   async makeBill() {
     //pan card and form 60
+    this.billingService.makeBillPayload.panNo =
+      this.billingpatientidentity.patientidentityform.value.panno || "";
     this.billpatientIdentityInfo =
       this.billingpatientidentity.patientidentityform.value;
     if (

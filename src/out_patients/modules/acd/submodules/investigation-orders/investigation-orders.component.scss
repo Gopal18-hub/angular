@@ -85,26 +85,7 @@
   // ::ng-deep mat-option#mat-option-5 {
   //   background-color: #9FF1AC !important;
   // }
-  ::ng-deep mat-option[maxvalue="Billed"] {
-    background-color: #9ff1ac !important;
-  }
-  ::ng-deep mat-option[maxvalue="Partially Billed"] {
-    background-color: #f9fca6 !important;
-  }
-  ::ng-deep mat-option[maxvalue="Denied"] {
-    background-color: #ffcaa7 !important;
-  }
-  ::ng-deep mat-option[maxvalue="Billed"]:hover {
-    background-color: #219935 !important;
-  }
 
-  ::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
-    background-color: #b8a52f !important;
-  }
-
-  ::ng-deep mat-option[maxvalue="Denied"]:hover {
-    background-color: #ff7777 !important;
-  }
   ::ng-deep tr.isBilled1 {
     background-color: #9ff1ac !important;
   }
@@ -141,20 +122,13 @@
       left: 1px !important;
     }
   }
-  .searchbtn {
-    //min-width: initial !important;
-    // button {
-    //height: 1.7rem;
-    line-height: 1.675rem;
-    //width :2rem;
-    // }
-    height: 1.9rem !important;
+  .searchbtn {    
+    line-height: 1.675rem;    
+    height: 1.7rem !important;
     width: 5vw !important;
-
-    //line-height: 1.875rem  !important;
   }
   .clr {
-    height: 1.9rem !important;
+    height: 1.7rem !important;
     line-height: 1.675rem;
   }
   .serachcss {
@@ -172,7 +146,8 @@
   }
   .bg-darkgray {
     background: #d8d8d8;
-    width: 31%;
+    width: 32%;
+    height: 31px;
   }
 
   .bg-white {
@@ -194,3 +169,24 @@
     }
   }
 }
+
+  ::ng-deep mat-option[maxvalue="Billed"] {
+    background-color: #9ff1ac !important;
+  }
+  ::ng-deep mat-option[maxvalue="Partially Billed"] {
+    background-color: #f9fca6 !important;
+  }
+  ::ng-deep mat-option[maxvalue="Denied"] {
+    background-color: #ffcaa7 !important;
+  }
+  ::ng-deep mat-option[maxvalue="Billed"]:hover {
+    background-color: #219935 !important;
+  }
+
+  ::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
+    background-color: #b8a52f !important;
+  }
+
+  ::ng-deep mat-option[maxvalue="Denied"]:hover {
+    background-color: #ff7777 !important;
+  }

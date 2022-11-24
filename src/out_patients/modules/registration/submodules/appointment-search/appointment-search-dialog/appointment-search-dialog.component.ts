@@ -72,7 +72,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
       },
       bookingNo: {
         type: "string",
-        title: "Book No",
+        title: "Booking ID",
         required: false,
         defaultValue: "",
       },
@@ -90,7 +90,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
         type: "checkbox",
         required: false,
         options: [{ title: "" }],
-        defaultValue: 0,
+        defaultValue: 1,
       },
       fromDate: {
         type: "date",
@@ -494,7 +494,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
         this.OPAppointmentForm.value.phone || "",
         this.OPAppointmentForm.value.name ?this.OPAppointmentForm.value.name.split(" ")[0]:'',
         this.OPAppointmentForm.value.name ?this.OPAppointmentForm.value.name.split(" ")[1]:'',
-        this.OPAppointmentForm.value.datevalidation == false ? 0 : 1,
+        this.OPAppointmentForm.value.datevalidation == true ? 0 : 1,
         this.datepipe.transform(
           this.OPAppointmentForm.value.fromDate,
           "yyyy-MM-dd"

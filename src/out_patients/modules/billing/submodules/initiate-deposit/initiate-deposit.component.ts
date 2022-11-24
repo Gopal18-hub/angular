@@ -405,7 +405,11 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       this.hsplocationId,
       this.initiatedepositForm.value.remarks,
       0,
-      0
+      0,
+      0,
+      0,
+      0,
+      ""
     ));
   }
 

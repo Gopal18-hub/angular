@@ -1,6 +1,13 @@
 <section class="h-full">
-    <div>
+    <div class="flex relative justify-between">
         <mat-label class="max-health-primary-color font-bold font-base">Visit History(Last 5 Consultation Bills)</mat-label>
+        <maxhealth-question
+        [question]="questions[0]"
+        [form]="visitform"
+        [questions]="questions[0]"
+        [index]="0"
+        class="absolute right-5-%"
+        ></maxhealth-question>
         <mat-icon mat-dialog-close color="primary" class="float-right cursor-pointer max-dialog-close-icon" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
     </div>
     <div class="mt-3 h-85 table">

@@ -21,6 +21,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { SaveUpdateDialogComponent } from "../save-update-dialog/save-update-dialog.component";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+
 @Component({
   selector: "out-patients-medicine-orders",
   templateUrl: "./medicine-orders.component.html",
@@ -379,6 +380,7 @@ export class MedicineOrdersComponent implements OnInit {
         this.medOrderDetails = [];
         this.idValue = value;
         this.patientInfo = "";
+        this.EnableBill = false;
       }
     );
     this.investigationForm.controls["denyorder"].valueChanges.subscribe(
@@ -411,6 +413,8 @@ export class MedicineOrdersComponent implements OnInit {
         this.statusvalue = value;
         this.medOrderList = [];
         this.medOrderDetails = [];
+        this.patientInfo = "";
+        this.EnableBill = false;
       }
     );
     // this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
@@ -445,32 +449,47 @@ export class MedicineOrdersComponent implements OnInit {
     this.medOrderList = [];
     this.medOrderDetails = [];
     this.patientInfo = "";
-
-    this.http
-      .get(
-        ApiConstants.geteprescriptdrugorders(
-          this.datepipe.transform(
-            this.investigationForm.controls["fromdate"].value,
-            "yyyy-MM-dd"
-          ),
-          this.datepipe.transform(
-            this.investigationForm.controls["todate"].value,
-            "yyyy-MM-dd"
-          ),
-          this.hsplocationId
+    this.EnableBill = false;
+    ////changes for performance impact
+    var fdate = new Date(this.investigationForm.controls["fromdate"].value);
+    var tdate = new Date(this.investigationForm.controls["todate"].value);
+    var dif_in_time = tdate.getTime() - fdate.getTime();
+    var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+    if (dif_in_days < 3) {
+      this.http
+        .get(
+          ApiConstants.geteprescriptdrugorders(
+            this.datepipe.transform(
+              this.investigationForm.controls["fromdate"].value,
+              "yyyy-MM-dd"
+            ),
+            this.datepipe.transform(
+              this.investigationForm.controls["todate"].value,
+              "yyyy-MM-dd"
+            ),
+            this.hsplocationId
+          )
         )
-      )
-      // this.http
-      //   .get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.medOrderListMain = res.objOrderDetails;
-        this.medOrderList = res.objOrderDetails;
-        this.searchFilter();
-      });
+        // this.http
+        //   .get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.medOrderListMain = res.objOrderDetails;
+          this.medOrderList = res.objOrderDetails;
+          this.searchFilter();
+        });
+    } else {
+      ////changes for performance impact
+      this.apiProcessing = false;
+      this.messageDialogService.info(
+        "Can not process requests for more than 3 Days, Please select the dates accordingly."
+      );
+    }
   }
   searchFilter() {
-    let maxid = String(this.investigationForm.value.input.trim()).toUpperCase();
+    let maxid = this.investigationForm.value.input
+      ? String(this.investigationForm.value.input.trim()).toUpperCase()
+      : "";
     if (!this.statusvalue && !maxid && this.medOrderListMain !== undefined) {
       this.medOrderList = this.medOrderListMain;
     } else if (this.statusvalue === "All") {

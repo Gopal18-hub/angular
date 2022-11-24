@@ -184,6 +184,10 @@
         }
         
     }
+    .mat-raised-button.mat-button-base.mat-button-disabled{
+        background-color:rgb(200, 200, 200) !important;
+        color: rgba(0, 0, 0, 0.26) !important;    
+    }
 }
 
 

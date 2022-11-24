@@ -46,7 +46,7 @@ export class OpRegApprovalComponent implements OnInit {
   approvePostobject: any;
   rejectPostobject: any;
   hsplocationId: any = this.cookie.get("HSPLocationId");
-  userId: number =  Number(this.cookie.get("UserId"));
+  userId: number = Number(this.cookie.get("UserId"));
   enableapprovebtn: boolean = false;
 
   showapprovalpending: boolean = false;
@@ -532,6 +532,9 @@ export class OpRegApprovalComponent implements OnInit {
   approvalPendingColumnClick($event: any) {
     this.modifyDialog($event.row);
   }
+  approvedRequestColumnClick($event: any) {
+    this.modifyDialog($event.row);
+  }
 
   getopapprovalpending() {
     return this.http.get(
@@ -662,6 +665,7 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   modifyDialog(modfiedapprovalPatiendDetailsForPopUp: OpdpendingrequestModel) {
+    console.log(modfiedapprovalPatiendDetailsForPopUp);
     this.patientDetails = [];
     this.modfiedPatiendDetails = [];
     if (modfiedapprovalPatiendDetailsForPopUp.operatorID == this.userId) {
@@ -708,6 +712,7 @@ export class OpRegApprovalComponent implements OnInit {
           patientDetails: this.patientDetails[0],
           modifiedDetails: this.modfiedPatiendDetails[0],
           submitButton: true,
+          submitButtononApproved: this.showapprovalaccepting ? true : false,
         },
       });
 

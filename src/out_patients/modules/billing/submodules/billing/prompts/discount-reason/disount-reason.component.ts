@@ -204,6 +204,14 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
     }
     this.selectedItems = this.calculateBillService.discountSelectedItems;
+    if ("removeRow" in this.data) {
+      if (!this.data.removeRow) {
+        this.selectedItems.forEach((sItem: any) => {
+          sItem.reason_disabled = true;
+          sItem.head_disabled = true;
+        });
+      }
+    }
 
     let formResult: any = this.formService.createForm(
       this.discAmtFormData.properties,
@@ -592,7 +600,8 @@ export class DisountReasonComponent implements OnInit {
     for (let i = 0; i < selecetdServices.length; i++) {
       for (let j = 0; j < selecetdServices[i].items.length; j++) {
         let item = selecetdServices[i].items[j];
-        let price = item.price * item.qty;
+        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+        let price = item.price * quanity;
         existReason = this.discretionaryCheck(existReason, price);
         const discAmt = (price * existReason.discountPer) / 100;
         let temp = {
@@ -602,7 +611,7 @@ export class DisountReasonComponent implements OnInit {
           service: selecetdServices[i].name,
           itemId: item.itemId,
           doctor: item.itemName,
-          price: item.price * item.qty,
+          price: item.price * quanity,
           disc: existReason.discountPer,
           discAmt: discAmt,
           totalAmt: price - discAmt,
@@ -638,7 +647,8 @@ export class DisountReasonComponent implements OnInit {
     for (let i = 0; i < selecetdServices.length; i++) {
       let price = 0;
       selecetdServices[i].items.forEach((item: any) => {
-        price += item.price * item.qty;
+        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+        price += item.price * quanity;
       });
       existReason = this.discretionaryCheck(existReason, price);
       const discAmt = (price * existReason.discountPer) / 100;

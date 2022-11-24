@@ -346,7 +346,8 @@ export namespace BillingForm {
           type: "date",
           defaultValue: new Date(),
           minimum: new Date(),
-          title:"Validity"
+          title:"Validity",
+          required: true,
         },
         creditbanktid:{
           type: "string",

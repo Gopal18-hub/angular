@@ -49,7 +49,7 @@ export class CalculateBillService {
 
   otherPlanSelectedItems: any = [];
 
-  consumablesUnselectedItems = [];
+  consumablesUnselectedItems: any = {};
 
   constructor(
     public matDialog: MatDialog,
@@ -184,7 +184,8 @@ export class CalculateBillService {
           );
           let price = 0;
           serviceItem.items.forEach((item: any) => {
-            price += item.price * item.qty;
+            let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+            price += item.price * quanity;
           });
           const discAmt = (price * disIt.disc) / 100;
           disIt.price = price;
@@ -201,9 +202,10 @@ export class CalculateBillService {
       this.billingServiceRef.billItems.forEach((item: any) => {
         item.disc = 0;
         item.discAmount = 0;
-        const price = item.price * item.qty;
+        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+        const price = item.price * quanity;
         item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
-        item.totalAmount = item.price * item.qty + item.gstValue;
+        item.totalAmount = item.price * quanity + item.gstValue;
         item.discountType = 0;
         item.discountReason = 0;
       });
@@ -214,9 +216,10 @@ export class CalculateBillService {
       ) {
         const discItem = this.discountSelectedItems[0];
         this.billingServiceRef.billItems.forEach((item: any) => {
+          let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
           item.disc = discItem.disc;
-          item.discAmount = (item.price * item.qty * discItem.disc) / 100;
-          const itemPrice = item.price * item.qty - item.discAmount;
+          item.discAmount = (item.price * quanity * discItem.disc) / 100;
+          const itemPrice = item.price * quanity - item.discAmount;
           item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
           item.totalAmount = itemPrice + item.gstValue;
           item.discountType = this.discountSelectedItems[0].discTypeId;
@@ -229,9 +232,10 @@ export class CalculateBillService {
               (it: any) => it.itemId == ditem.itemId
             );
             if (item) {
+              let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
               item.disc = ditem.disc;
-              item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-              const itemPrice = item.price * item.qty - item.discAmount;
+              item.discAmount = (item.price * quanity * ditem.disc) / 100;
+              const itemPrice = item.price * quanity - item.discAmount;
               item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
               item.totalAmount = itemPrice + item.gstValue;
               item.discountType = 3;
@@ -243,9 +247,10 @@ export class CalculateBillService {
             );
             if (items) {
               items.forEach((item: any) => {
+                let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
                 item.disc = ditem.disc;
-                item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-                const itemPrice = item.price * item.qty - item.discAmount;
+                item.discAmount = (item.price * quanity * ditem.disc) / 100;
+                const itemPrice = item.price * quanity - item.discAmount;
                 item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
                 item.totalAmount = itemPrice + item.gstValue;
                 item.discountType = 2;
@@ -321,9 +326,12 @@ export class CalculateBillService {
         this.processDiscountLogics(formGroup, componentRef, from);
       } else if (this.totalDiscountAmt == 0) {
         this.processDiscountLogics(formGroup, componentRef, from);
-        formGroup.controls["discAmtCheck"].setValue(false, {
-          emitEvent: false,
-        });
+        ////GAV-1144 - coupon discount
+        if (from != "coupon") {
+          formGroup.controls["discAmtCheck"].setValue(false, {
+            emitEvent: false,
+          });
+        }
       }
     });
   }
@@ -344,6 +352,11 @@ export class CalculateBillService {
       });
     } else {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
+    }
+
+    ////GAV-1144 - coupon discount
+    if (from == "coupon") {
+      this.calculateDiscount();
     }
 
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
@@ -445,7 +458,7 @@ export class CalculateBillService {
         formGroup.controls["coupon"].setValue("", {
           emitEvent: false,
         });
-        componentRef.IsValidateCoupon =false;
+        componentRef.IsValidateCoupon = false;
         return;
       } else {
         componentRef.IsValidateCoupon = true;
@@ -472,7 +485,7 @@ export class CalculateBillService {
                     formGroup.controls["coupon"].setValue("", {
                       emitEvent: false,
                     });
-                    componentRef.IsValidateCoupon =false;
+                    componentRef.IsValidateCoupon = false;
                     return;
                   }
                 } else {
@@ -483,7 +496,7 @@ export class CalculateBillService {
                   formGroup.controls["coupon"].setValue("", {
                     emitEvent: false,
                   });
-                  componentRef.IsValidateCoupon =false;
+                  componentRef.IsValidateCoupon = false;
                   return;
                 }
               } else {
