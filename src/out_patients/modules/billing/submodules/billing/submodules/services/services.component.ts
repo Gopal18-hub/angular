@@ -143,20 +143,13 @@ export class ServicesComponent implements OnInit {
       return;
     }
 
+    ////GAV-902 Registration Charges with Health Checkup
     if (
       tab.id == 3 &&
-      this.billingService.checkOtherServicesForHealthCheckups()
+      this.billingService.checkOtherServicesForHealthCheckups(tab.id)
     ) {
-      ////GAV-902 Registration Charges with Health Checkup
-      if (
-        BillingStaticConstants.allowService[tab.id].includes(
-          this.billingService.ProcedureItems[0].itemid
-        )
-      ) {
-      } else {
-        this.healthCheckupWarning();
-        return;
-      }
+      this.healthCheckupWarning();
+      return;
     } else if (
       tab.id == 6 &&
       this.billingService.checkOtherServicesForConsumables()

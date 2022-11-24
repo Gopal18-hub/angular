@@ -60,7 +60,7 @@ export class OrderServicesComponent implements OnInit {
     this.activeMaxId = this.billingService.activeMaxId;
     if (
       tab.id == 3 &&
-      this.billingService.checkOtherServicesForHealthCheckups()
+      this.billingService.checkOtherServicesForHealthCheckups(tab.id)
     ) {
       this.healthCheckupWarning();
       return;
