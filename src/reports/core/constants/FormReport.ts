@@ -1824,13 +1824,13 @@ export namespace FormReport {
           type: "crystalReport",
           reportConfig: {
             reportName: "OP Discount Report",
-            reportEntity: "opDiscountReport",
+            reportEntity: "OPDiscountReport",
           },
         },
         {
           label: "Export",
           type: "export",
-          reportEntity: "opDiscountReport",
+          reportEntity: "OPDiscountReport",
           fileName: "Op Discount Report.xls",
           contenType: "application/vnd.ms-excel",
         },
