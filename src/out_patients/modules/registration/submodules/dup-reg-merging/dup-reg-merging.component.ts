@@ -221,7 +221,7 @@ export class DupRegMergingComponent implements OnInit {
                 item.age= this.onageCalculator(item.dob);
                 return item;
               });
-              this.results = resultData;
+              this.results = resultData.filter((res:any) => res.parentMergeLinked == "");
               this.results = this.patientServie.getAllCategoryIcons(
                 this.results
               );
@@ -327,7 +327,7 @@ export class DupRegMergingComponent implements OnInit {
       item.age= this.onageCalculator(item.dob);
       return item;
     });
-    this.results = resultData;
+    this.results = resultData.filter((res:any) => res.parentMergeLinked == "");
     this.results = this.patientServie.getAllCategoryIcons(this.results);
     this.isAPIProcess = true;
     this.showmergespinner = false;

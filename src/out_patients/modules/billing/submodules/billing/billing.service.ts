@@ -215,15 +215,26 @@ export class BillingService {
     return false;
   }
 
-  checkOtherServicesForHealthCheckups() {
+  checkOtherServicesForHealthCheckups(tabId: number) {
     if (
       this.consultationItems.length > 0 ||
       this.InvestigationItems.length > 0 ||
-      this.ProcedureItems.length > 0 ||
       this.OrderSetItems.length > 0 ||
       this.ConsumableItems.length > 0
     ) {
       return true;
+    } ////GAV-902 Registration Charges with Health Checkup
+    else if (this.ProcedureItems.length > 0) {
+      if (this.ProcedureItems.length > 1) {
+        return true;
+      } else if (
+        this.ProcedureItems.length == 1 &&
+        !BillingStaticConstants.allowService[tabId].includes(
+          this.ProcedureItems[0].itemid
+        )
+      ) {
+        return true;
+      }
     }
     return false;
   }
@@ -1034,13 +1045,16 @@ export class BillingService {
         }
       });
 
-      let cashlimit = this.makeBillPayload.ds_paymode.tab_paymentList.filter((mode:any ) => mode.modeOfPayment == "Cash" && mode.amount >= 200000);       
-      if(cashlimit.length > 0){
-        const modeconfirm =  this.messageDialogService.info("Total cash amount cannot exceed Rs.199999");       
-        modeconfirm.afterClosed().toPromise(); 
+      let cashlimit = this.makeBillPayload.ds_paymode.tab_paymentList.filter(
+        (mode: any) => mode.modeOfPayment == "Cash" && mode.amount >= 200000
+      );
+      if (cashlimit.length > 0) {
+        const modeconfirm = this.messageDialogService.info(
+          "Total cash amount cannot exceed Rs.199999"
+        );
+        modeconfirm.afterClosed().toPromise();
         return;
-         }
-        
+      }
 
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;

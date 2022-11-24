@@ -941,15 +941,48 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         dtpFromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
         cmbLocation: {
           type: "dropdown",
@@ -963,16 +996,25 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
         cmbopenscrolltype: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Open Scroll---",
           title: "Open Scroll For",
           defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`,
             fields: {
-              title: "scrollName",
+              title: "autocomplete",
               value: "flag",
             },
           },
@@ -1022,21 +1064,55 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         dtpfrom: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpto",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpto",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpto: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpfrom",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpfrom",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: true,
+          // defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -1044,6 +1120,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -1092,12 +1177,42 @@ export namespace FormReport {
         dtpFromDate: {
           type: "date",
           title: "FromDate",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpToDate: {
           type: "date",
           title: "ToDate",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
         // location: {
         //   type: "dropdown",
@@ -1710,13 +1825,13 @@ export namespace FormReport {
           type: "crystalReport",
           reportConfig: {
             reportName: "OP Discount Report",
-            reportEntity: "opDiscountReport",
+            reportEntity: "OPDiscountReport",
           },
         },
         {
           label: "Export",
           type: "export",
-          reportEntity: "opDiscountReport",
+          reportEntity: "OPDiscountReport",
           fileName: "Op Discount Report.xls",
           contenType: "application/vnd.ms-excel",
         },
@@ -1981,7 +2096,7 @@ export namespace FormReport {
 
         ChkAllLocation: {
           type: "checkbox",
-          options: [{ title: "Location", value: 1 }],
+          options: [{ title: "Location", value: "1" }],
         },
       },
     },
