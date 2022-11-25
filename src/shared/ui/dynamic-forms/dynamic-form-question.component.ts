@@ -253,7 +253,12 @@ export class DynamicFormQuestionComponent
       );
     }
 
-    if (this.question && this.question.type && this.question.type == "date") {
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date" &&
+      this.element
+    ) {
       maskInput({
         inputElement: this.element.nativeElement,
         ...this.dateMaskConfig,
