@@ -24,12 +24,12 @@
     <div
           *ngIf="apiProcessing"
           class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
-        >
+          >
           <mat-spinner strokeWidth="3"></mat-spinner>
         </div>
     <div
       class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg pb-1"
-    >
+      >
       <div class="w-6/7 flex h-full">
         <form [formGroup]="OPRegForm" class="mt-1 mb-0" autocomplete="off">
           <div class="flex flex-wrap">
@@ -595,7 +595,7 @@
             Verify Health ID
           </button>
         </div>
-
+        
         <div class="px-4 py-2 flex justify-center flex-wrap h-2/5 items-center">
           <!-- <svg
             width="242"
@@ -622,7 +622,7 @@
               fill="#F2F2F2"
             />
           </svg> -->
-          <svg
+          <!-- <svg
             xmlns="http://www.w3.org/2000/svg"
             width="124"
             height="170"
@@ -671,7 +671,26 @@
                 </tspan>
               </text>
             </g>
-          </svg>
+          </svg> -->
+          <div class="img-banner-container" fxLayout="column">
+            <div class="img-banner-top" fxLayoutAlign="end center">&nbsp;
+              &nbsp;
+            </div>
+            <div class="no-img-banner-body" 
+            [ngClass]="{ 'img-banner-body': !isNoImage }"
+            fxLayoutAlign="center center">
+                <img width="100%" [src]="patientImage" class="imgHeight cursor-pointer" (click)="openImageUploadDialog()"
+                 *ngIf="patientImage != undefined && patientImage != null && patientImage != ''">
+            </div>
+            <div class="img-banner-bottom" *ngIf="isNoImage" >
+              &nbsp;&nbsp;&nbsp;
+              <a class="cursor-pointer click-here-link " (click)="openImageUploadDialog()" >Click here</a> 
+              <span *ngIf="isNoImage" class="font-click-here"> to capture photo</span>
+            </div>
+        </div>
+        </div>
+        <div>
+          
         </div>
         <div class="mt-4 px-4 py-0 h-1/5 flex flex-column">
           <button
@@ -692,7 +711,7 @@
             [disabled]="!MaxIDExist || expiredPatient"
             (click)="openReportModal('PrintFormReport')"
           >
-            Print Form
+          Print Form
           </button>
         </div>
       </div>
