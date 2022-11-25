@@ -1180,15 +1180,25 @@ export class BillingService {
       corporate: this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate,
       channel: this.makeBillPayload.ds_insert_bill.tab_insertbill.channel,
     };
-    let consumableDetails = [];
+    let consumableDetails: any = [];
     this.ConsumableItems.forEach((cDI: any) => {
-      cDI.items.forEach((item: any, itemIndex: number) => {
-        const existInUnSelected =
-          this.calculateBillService.consumablesUnselectedItems[
-            cDI.orderId
-          ].find((uI: any) => {
-            return uI.itemid == item.itemid;
-          });
+      let filteredItems = cDI.items.filter(
+        (i: any) => i.orderid === cDI.orderId
+      );
+      filteredItems.forEach((item: any, itemIndex: number) => {
+        let existInUnSelected = null;
+        if (
+          cDI.orderId.toString() in
+          this.calculateBillService.consumablesUnselectedItems
+        ) {
+          existInUnSelected =
+            this.calculateBillService.consumablesUnselectedItems[
+              cDI.orderId
+            ].find((uI: any) => {
+              return uI.itemid == item.itemid;
+            });
+        }
+
         if (existInUnSelected) {
           consumableDetails.push({
             orderid: item.orderid,
@@ -1224,7 +1234,10 @@ export class BillingService {
     this.consumablePayload.htParms = this.makeBillPayload.htParms;
     this.consumablePayload.tab_d_deposit_Dto =
       this.makeBillPayload.ds_insert_bill.tab_d_depositList;
-
+    this.consumablePayload.dtConsumableDetail = consumableDetails;
+    this.consumablePayload.hspLocationId = this.cookie.get("HSPLocationId");
+    this.consumablePayload.userId = this.makeBillPayload.userId;
+    this.consumablePayload.stationId = this.makeBillPayload.stationId;
     return this.http
       .post(
         BillingApiConstants.opConsumableBillCreate(),
