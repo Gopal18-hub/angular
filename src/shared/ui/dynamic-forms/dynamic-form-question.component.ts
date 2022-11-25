@@ -252,6 +252,18 @@ export class DynamicFormQuestionComponent
         )
       );
     }
+
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date" &&
+      this.element
+    ) {
+      maskInput({
+        inputElement: this.element.nativeElement,
+        ...this.dateMaskConfig,
+      });
+    }
   }
 
   displayFn(option: any): string {
@@ -292,15 +304,15 @@ export class DynamicFormQuestionComponent
       this.question.type == "autocomplete"
     ) {
       this._subscribeToClosingActions();
-    } else if (
-      this.question &&
-      this.question.type &&
-      this.question.type == "date"
-    ) {
-      maskInput({
-        inputElement: this.element.nativeElement,
-        ...this.dateMaskConfig,
-      });
+      //} else if (
+      //  this.question &&
+      //  this.question.type &&
+      //  this.question.type == "date"
+      // ) {
+      //  maskInput({
+      //   inputElement: this.element.nativeElement,
+      //   ...this.dateMaskConfig,
+      // });
     } else if (
       this.question &&
       this.question.type &&

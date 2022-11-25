@@ -169,6 +169,7 @@ export namespace FormReport {
       layout: {
         locationid: "w-full",
         openScrollFor: "w-full",
+        RepType: "w-screen",
       },
       actionItems: [
         {
@@ -1234,11 +1235,11 @@ export namespace FormReport {
         rbIP: {
           type: "radio",
           title: "Report Type",
+          defaultValue: "true",
           options: [
-            { title: "IP", value: true },
-            { title: "OP", value: false },
+            { title: "IP", value: "true" },
+            { title: "OP", value: "false" },
           ],
-          defaultValue: true,
         },
       },
     },

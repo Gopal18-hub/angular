@@ -388,6 +388,19 @@ export class BillComponent implements OnInit, OnDestroy {
         this.messageDialogService.info(res.element.patient_Instructions);
       }
     });
+    //added for uncheck coupon checkbox when uncheck the discount 
+    this.formGroup.controls['discAmtCheck'].valueChanges.subscribe((value: any) => {
+      console.log(value);
+      if(value == false)
+      {
+        this.IsValidateCoupon = false;
+      }
+    })
+
+    //added for uncheck coupon when valuechange
+    this.formGroup.controls['coupon'].valueChanges.subscribe(() => {
+      this.IsValidateCoupon = false;
+    })
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -1148,7 +1161,7 @@ export class BillComponent implements OnInit, OnDestroy {
             }
           });
       }
-    }, 2000);
+    }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
