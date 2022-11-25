@@ -20,6 +20,7 @@ import { SearchService } from "@shared/services/search.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { LookupService } from "../../../../../out_patients/core/services/lookup.service";
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 @Component({
   selector: "out-patients-dmg-mapping",
   templateUrl: "./dmg-mapping.component.html",
@@ -54,7 +55,7 @@ export class DmgMappingComponent implements OnInit {
       mobileno: {
         type: "tel",
         title: "Mobile Number",
-        pattern: "^[1-9]{1}[0-9]{9}",
+        // pattern: "^[1-9]{1}[0-9]{9}",
       },
     },
   };
@@ -77,7 +78,8 @@ export class DmgMappingComponent implements OnInit {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private lookupservice: LookupService
+    private lookupservice: LookupService,
+    private snackbar: MaxHealthSnackBarService,
   ) {}
 
   ngOnInit(): void {
@@ -157,7 +159,15 @@ export class DmgMappingComponent implements OnInit {
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.onMobilenumberEnter();
+        if(this.dmgMappingForm.value.mobileno.toString().length == 10)
+        {
+          this.onMobilenumberEnter();
+        }
+        else
+        {
+          this.snackbar.open("Invalid Mobile No", 'error');
+        }
+        
       }
     });
   }
@@ -271,10 +281,11 @@ export class DmgMappingComponent implements OnInit {
     this.clearPatientdata();
     this.showCheckboxgrid = false;
     this.questions[1].elementRef.focus();
-    this.dmgMappingForm.controls["maxid"].setErrors({
-      incorrect: true,
-    });
-    this.questions[0].customErrorMessage = "Invalid Maxid";
+    // this.dmgMappingForm.controls["maxid"].setErrors({
+    //   incorrect: true,
+    // });
+    // this.questions[0].customErrorMessage = "Invalid Maxid";
+    this.snackbar.open("Invalid Max ID", 'error');
     this.dmgMappingForm.controls["mobileno"].setValue(null);
     this.questions[0].elementRef.focus();
   }

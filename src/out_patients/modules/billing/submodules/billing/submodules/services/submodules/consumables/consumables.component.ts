@@ -186,7 +186,7 @@ export class ConsumablesComponent implements OnInit {
               credit: 0,
               cash: 0,
               doctorName: head.doctorName,
-              taxAmount: head.totaltaX_Value,
+              taxAmount: head.totaltaX_Value || 0,
               totalAmount: tempTotalAmount,
               originalAmount: head.amount,
               orderId: head.id,
