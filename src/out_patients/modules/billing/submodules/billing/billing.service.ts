@@ -222,15 +222,26 @@ export class BillingService {
     return false;
   }
 
-  checkOtherServicesForHealthCheckups() {
+  checkOtherServicesForHealthCheckups(tabId: number) {
     if (
       this.consultationItems.length > 0 ||
       this.InvestigationItems.length > 0 ||
-      this.ProcedureItems.length > 0 ||
       this.OrderSetItems.length > 0 ||
       this.ConsumableItems.length > 0
     ) {
       return true;
+    } ////GAV-902 Registration Charges with Health Checkup
+    else if (this.ProcedureItems.length > 0) {
+      if (this.ProcedureItems.length > 1) {
+        return true;
+      } else if (
+        this.ProcedureItems.length == 1 &&
+        !BillingStaticConstants.allowService[tabId].includes(
+          this.ProcedureItems[0].itemid
+        )
+      ) {
+        return true;
+      }
     }
     return false;
   }
