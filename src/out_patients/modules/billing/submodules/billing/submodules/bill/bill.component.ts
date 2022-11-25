@@ -594,7 +594,7 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   onModifyDepositAmt() {
-    if (this.formGroup.value.dipositAmtEdit > 0) {
+    if (Number(this.formGroup.value.dipositAmtEdit) > 0) {
       if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
           parseFloat(this.formGroup.value.billAmt) &&
@@ -635,6 +635,8 @@ export class BillComponent implements OnInit, OnDestroy {
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
+    }else{
+      this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
     }
   }
 
@@ -690,7 +692,7 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe(async (result: any) => {
         if (result && "type" in result) {
           if (result.type == "yes") {
-            if (this.formGroup.value.amtPayByPatient > 0) {
+            if (Number(this.formGroup.value.amtPayByPatient) > 0) {
               if (
                 this.calculateBillService.depositDetailsData.length > 0 &&
                 this.totalDeposit == 0
