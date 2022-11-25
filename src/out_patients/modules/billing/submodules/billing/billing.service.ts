@@ -1150,6 +1150,9 @@ export class BillingService {
   }
 
   consumableMakeBill() {
+    this.consumablePayload = JSON.parse(
+      JSON.stringify(BillingStaticConstants.consumablePayload)
+    );
     this.consumablePayload.registrationno =
       this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo;
     this.consumablePayload.iacode =
@@ -1181,7 +1184,30 @@ export class BillingService {
       channel: this.makeBillPayload.ds_insert_bill.tab_insertbill.channel,
     };
     let consumableDetails: any = [];
-    this.ConsumableItems.forEach((cDI: any) => {
+    this.ConsumableItems.forEach((cDI: any, cDIIndex: number) => {
+      this.consumablePayload.dtOTBillDetails.push({
+        slNo: cDIIndex,
+        surgeryName: cDI.surgeryName,
+        priority: cDI.priority.toString(),
+        credit: cDI.credit,
+        cash: cDI.cash,
+        surgeryid: 0,
+        priorityId: "",
+        discountAmount:
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[cDIIndex]
+            .discountamount,
+        taxAmt: cDI.taxAmount,
+        taxPer: 0,
+        totalAmt: cDI.totalAmount,
+        disReasonID: (this.billItems[cDIIndex].discountReason || 0).toString(),
+        empowerApproverCode:
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[cDIIndex]
+            .empowerApproverCode,
+        couponCode:
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[cDIIndex]
+            .couponCode,
+        serviceid: cDI.billItem.serviceId,
+      });
       let filteredItems = cDI.items.filter(
         (i: any) => i.orderid === cDI.orderId
       );
