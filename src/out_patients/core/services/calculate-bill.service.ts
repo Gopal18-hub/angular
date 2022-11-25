@@ -449,7 +449,7 @@ export class CalculateBillService {
     console.log(res);
     if (res.length > 0) {
       console.log(res[0].id);
-      if ((res[0].id = 0)) {
+      if ((res[0].id == 0)) {
         //coupon already used message
         const CouponErrorRef = this.messageDialogService.error(
           "Coupon already used"
