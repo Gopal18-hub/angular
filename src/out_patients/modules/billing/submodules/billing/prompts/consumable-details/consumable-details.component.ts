@@ -75,7 +75,7 @@ export class ConsumableDetailsComponent implements OnInit {
     this.procedureDataForConsumable = this.data.procedureDataForConsumable;
     this.config.columnsInfo.procedure.options =
       this.procedureDataForConsumable.map((r: any) => {
-        return { title: r.procedureName, value: r.procedureid };
+        return { title: r.procedureName, value: r };
       });
     this.data.items.forEach((item: any, index: number) => {
       this.itemsData.push({
@@ -93,14 +93,22 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
+      if (res.data.col == "procedure") {
+        this.tableRows.selection.select(this.itemsData[res.data.index]);
+      }
+    });
+
     this.itemsData.forEach((item: any, index: number) => {
       let exist = this.data.consumablesUnselectedItems.find(
         (gi: any) => gi.itemid == item.itemid
       );
       if (exist) {
+        this.itemsData[index].procedure = exist.procedure;
         this.tableRows.selection.select(item);
       }
     });
+    this.itemsData = [...this.itemsData];
     this.tableRows.selection.changed.subscribe((ch: any) => {
       if (ch.removed.length > 0) {
         ch.removed.forEach((rItem: any) => {
