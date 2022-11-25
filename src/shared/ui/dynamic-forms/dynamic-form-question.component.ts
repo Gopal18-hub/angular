@@ -20,7 +20,6 @@ import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
 import * as moment from "moment";
-
 @Component({
   selector: "maxhealth-question",
   templateUrl: "./dynamic-form-question.component.html",
@@ -253,7 +252,12 @@ export class DynamicFormQuestionComponent
       );
     }
 
-    if (this.question && this.question.type && this.question.type == "date") {
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date" &&
+      this.element
+    ) {
       maskInput({
         inputElement: this.element.nativeElement,
         ...this.dateMaskConfig,
@@ -303,11 +307,11 @@ export class DynamicFormQuestionComponent
       //  this.question &&
       //  this.question.type &&
       //  this.question.type == "date"
-      // ) {
+      //) {
       //  maskInput({
-      //   inputElement: this.element.nativeElement,
-      //   ...this.dateMaskConfig,
-      // });
+      //    inputElement: this.element.nativeElement,
+      //    ...this.dateMaskConfig,
+      //  });
     } else if (
       this.question &&
       this.question.type &&
@@ -351,6 +355,24 @@ export class DynamicFormQuestionComponent
     } else {
       event.preventDefault();
       return false;
+    }
+  }
+
+  keyUpSetDateFormat(event: any) {
+    let vl = event.target.value.replaceAll(/\s+/g, "").length;
+    if (event.target.value.length === 8 && !isNaN(event.target.value)) {
+      this.form.controls[this.question.key].setValue(
+        this.qcs.convertDateObjFormat(
+          maskInput({
+            inputElement: this.element.nativeElement,
+            ...this.dateMaskConfig,
+          }).textMaskInputElement.state.previousConformedValue
+        )
+      );
+    } else if (vl === 10 && isNaN(event.target.value)) {
+      this.form.controls[this.question.key].setValue(
+        this.qcs.convertDateObjFormat(event.target.value)
+      );
     }
   }
 

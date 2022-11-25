@@ -52,7 +52,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -72,7 +72,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -91,7 +91,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        Cmb_Equip: "w-full",
+        Cmb_Equip: "w-full mt-0 !important",
       },
       actionItems: [
         {
@@ -169,6 +169,7 @@ export namespace FormReport {
       layout: {
         locationid: "w-full",
         openScrollFor: "w-full",
+        RepType: "w-screen",
       },
       actionItems: [
         {
@@ -267,13 +268,13 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
-          required: true,
+          // required: true,
           defaultValue: new Date(),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
-          required: true,
+          // required: true,
           defaultValue: new Date(),
         },
         SelectedLocationsId: {
@@ -775,7 +776,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        MemberShipNo: "w-screen",
+        MemberShipNo: "w-full",
       },
       actionItems: [
         {
@@ -824,7 +825,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        membershipno: "w-screen",
+        membershipno: "w-full",
       },
       actionItems: [
         {
@@ -948,7 +949,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -968,7 +969,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1071,7 +1072,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1091,7 +1092,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1178,7 +1179,7 @@ export namespace FormReport {
           title: "FromDate",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1198,7 +1199,7 @@ export namespace FormReport {
           title: "ToDate",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1234,11 +1235,11 @@ export namespace FormReport {
         rbIP: {
           type: "radio",
           title: "Report Type",
+          defaultValue: "true",
           options: [
-            { title: "IP", value: true },
-            { title: "OP", value: false },
+            { title: "IP", value: "true" },
+            { title: "OP", value: "false" },
           ],
-          defaultValue: true,
         },
       },
     },
@@ -1293,7 +1294,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1313,7 +1314,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1400,7 +1401,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1420,7 +1421,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1507,7 +1508,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1527,7 +1528,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -1649,7 +1650,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -2057,7 +2058,7 @@ export namespace FormReport {
           title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",
@@ -2077,7 +2078,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          required: true,
+          // required: true,
           conditions: [
             {
               expression: "self",

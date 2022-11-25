@@ -657,6 +657,7 @@
             [min]="question.minimum"
             [disabled]="question.disabled"
             autocomplete="off"
+            (keyup)="keyUpSetDateFormat($event)"
           />
           <mat-datepicker-toggle
             matSuffix
@@ -670,6 +671,9 @@
             </button>
           </mat-datepicker-actions> -->
           </mat-datepicker>
+          <mat-error *ngIf="isValid  && !question.customErrorMessage">
+            {{ question.label }} is <strong>Invalid</strong>
+          </mat-error>
           <mat-error *ngIf="!isValid && !isCorrect">
             {{ question.label }} is <strong>required</strong>
           </mat-error>
