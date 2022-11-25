@@ -1,0 +1,84 @@
+<div class="relative max-health-primary-color appointment-search-dialog-wrapper">
+    <button mat-icon-button aria-label="close dialog" mat-dialog-close class="absolute max-dialog-close-icon"
+        type="button" (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+    <section class="overflow-x-none overflow-y-none">
+        <h2 mat-dialog-title class="max-health-primary-color">
+            Upload Image
+        </h2>
+        <div class="flex flex-wrap">
+            <div class="wc-35-6 flex">
+                <div class="img-upload-container" fxLayout="column">
+                    <div class="img-banner-top" fxLayoutAlign="end end">
+                        &nbsp;
+                    </div>
+                    <div class="img-banner-body" fxLayoutAlign="center center">
+                        &nbsp;
+                    </div>
+                    <div class="img-banner-bottom">
+                        <button type="button" mat-button mat-stroked-button matPrefix aia-label="remove" class="transparent-btn img-upload"
+                            (click)="IdentifyImgFile.click()">
+                            <mat-icon>save_alt</mat-icon>Upload Image
+                        </button>
+                        <input style="display: none" type="file" accept=".jpg, .jpeg, .bmp, .png, .svg" onclick="this.value = null"
+                            (change)="onIdentifyImgFileUpload($event)" #IdentifyImgFile>
+                            
+                    </div>
+                    <div>
+                        {{selectedFilename}}
+                    </div>
+                </div>
+            </div>
+            <div class="mx-3 border-left">&nbsp;</div>
+            <div class="w-1/4 flex">
+                <div class="img-banner-container" fxLayout="column">
+                    <div class="img-banner-top" fxLayoutAlign="end end">
+                        &nbsp;
+                    </div>
+                    <div class="img-banner-body" fxLayoutAlign="center center">
+                        &nbsp;
+                    </div>
+                    <div class="img-banner-bottom">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+            <div class="w-1/4 flex">
+                <div class="img-banner-container" fxLayout="column">
+                    <div class="img-banner-top" fxLayoutAlign="end end">
+                        &nbsp;
+                    </div>
+                    <div class="img-banner-body" fxLayoutAlign="center center">
+                        <img width="100%" [src]="identityImage" class="imgHeight"
+                            *ngIf="identityImage != undefined && identityImage != null && identityImage != ''">
+                    </div>
+                    <div class="img-banner-bottom">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap">
+            <div class="wc-35-6 flex">
+                &nbsp;
+            </div>
+            <div class="mx-3">&nbsp;</div>
+            <div class="w-1/4 flex align-items-center justify-center">
+                Capture
+            </div>
+            <div class="mx-3">&nbsp;</div>
+            <div class="w-1/4 flex align-items-center justify-center">
+                Preview
+            </div>
+        </div>
+        <div>&nbsp;</div>
+        <div class="flex flex-wrap align-items-center justify-center">
+                <button mat-raised-button color="primary" type="button" class="mt-1 mb-2" [disabled]="submitClicked" (click)="submit()">
+                    Ok
+                </button>
+        </div>
+    </section>
+</div>

@@ -54,6 +54,7 @@ import { PendingChangesGuard } from "@shared/services/guards/pending-change-guar
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 import { VisitHistoryModule } from "@shared/modules/visit-history";
+import { PatientImageUploadDialogComponent } from './submodules/patient-image-upload-dialog/patient-image-upload-dialog.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { VisitHistoryModule } from "@shared/modules/visit-history";
     ModifyDialogComponent,
     SimilarPatientDialog,
     RegistrationDialogueComponent,
+    PatientImageUploadDialogComponent,
   ],
   imports: [
     RegistrationRoutingModule,
