@@ -1161,7 +1161,7 @@ export class BillComponent implements OnInit, OnDestroy {
             }
           });
       }
-    }, 2000);
+    }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
