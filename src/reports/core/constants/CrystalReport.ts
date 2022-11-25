@@ -225,7 +225,9 @@ export namespace CrystalReport {
       params.FromDate
     }&ToDate=${params.ToDate}&locationID=${
       params.locationID
-    }&LocationName=${MaxHealthStorage.getCookie("Location")}`;
+    }&LocationName=${MaxHealthStorage.getCookie(
+      "Location"
+    )}&User=${MaxHealthStorage.getCookie("UserName")}`;
   };
 
   export const opBillRegisterReport = (params: any) => {
@@ -237,7 +239,7 @@ export namespace CrystalReport {
       params.locationID
     }&exportflag=${params.exportflag}&LocationName=${MaxHealthStorage.getCookie(
       "Location"
-    )}`;
+    )}&User=${MaxHealthStorage.getCookie("UserName")}`;
   };
   export const CashScrollReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}&ack=${params.ack}&IsAckByOperator=${params.IsAckByOperator}&ScrollNo=${params.ScrollNo}`;
@@ -277,7 +279,7 @@ export namespace CrystalReport {
       "HSPLocationId"
     )}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${
       params.exportflag
-    }`;
+    }&User=${MaxHealthStorage.getCookie("UserName")}`;
   };
   export const OPRefundReport = (params: any) => {
     return `${
