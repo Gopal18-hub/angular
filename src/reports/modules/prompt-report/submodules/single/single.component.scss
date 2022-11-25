@@ -40,11 +40,11 @@ form.prompt-report-form {
     }
   }
 }
-.mt-error{
-  ::ng-deep .mat-error{
-      margin-top:4%;
-  }
-}
+// .mt-error{
+//   ::ng-deep .mat-error{
+//       margin-top:3%;
+//   }
+// }
 ::ng-deep .mat-input-element 
 {
     color: black;

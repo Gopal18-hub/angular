@@ -54,8 +54,12 @@ export class VisitHistoryComponent implements OnInit {
         type: "number",
       },
       consultationType: {
-        title: "Consultation Type",
+        title: "Service Type",
         type: "string",
+        tooltipColumn: "consultationType",
+        style: {
+          width: "120px",
+        },
       },
       amount: {
         title: "Amount",
@@ -151,12 +155,12 @@ export class VisitHistoryComponent implements OnInit {
   visitFormData = {
     title: "",
     type: "object",
-    properties: {         
-    checkbox: {
-      type: "checkbox",
-      options: [{ title: "Consultation" }],
-      defaultValue: true
-    },   
+    properties: {
+      checkbox: {
+        type: "checkbox",
+        options: [{ title: "Consultation" }],
+        defaultValue: true,
+      },
     },
   };
   visitform!: FormGroup;
@@ -187,17 +191,30 @@ export class VisitHistoryComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.visitform.controls['checkbox'].valueChanges.subscribe((res) => {
+    this.visitform.controls["checkbox"].valueChanges.subscribe((res) => {
       console.log(res);
       setTimeout(() => {
-        this.getvisithistory(this.iacode, this.regnumber, this.hspId, this.docId);
+        this.getvisithistory(
+          this.iacode,
+          this.regnumber,
+          this.hspId,
+          this.docId
+        );
       }, 100);
-    })
+    });
   }
 
   getvisithistory(iacode: any, regnumber: any, hspId: any, docid: any) {
     this.http
-      .get(ApiConstants.getpatientvisithistory(iacode, regnumber, hspId, docid, this.visitform.value.checkbox))
+      .get(
+        ApiConstants.getpatientvisithistory(
+          iacode,
+          regnumber,
+          hspId,
+          docid,
+          this.visitform.value.checkbox
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultdata) => {
