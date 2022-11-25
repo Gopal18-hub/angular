@@ -20,31 +20,10 @@ import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
 import * as moment from "moment";
-import {
-  DateAdapter,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  MAT_NATIVE_DATE_FORMATS,
-} from "@angular/material/core";
-export const MY_FORMATS = {
-  parse: {
-    dateInput: "DDMMYYYY",
-  },
-  display: {
-    dateInput: "DD/MM/YYYY",
-  },
-};
 @Component({
   selector: "maxhealth-question",
   templateUrl: "./dynamic-form-question.component.html",
   styleUrls: ["./dynamic-form.scss"],
-  providers: [
-    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
-    // application's root module. We provide it at the component level here, due to limitations of
-    // our example generation script.
-
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
 })
 export class DynamicFormQuestionComponent
   implements OnInit, AfterViewInit, OnChanges, OnDestroy
