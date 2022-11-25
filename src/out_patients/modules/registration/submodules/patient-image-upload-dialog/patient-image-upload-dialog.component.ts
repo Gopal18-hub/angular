@@ -1,7 +1,7 @@
 import { Component, Inject, Injectable, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { HttpService } from "@shared/services/http.service";
 
 @Injectable({
@@ -51,11 +51,25 @@ export class PatientImageUploadDialogComponent implements OnInit {
       let selectedFile = event.target.files[0];
       this.selectedFilename=event.target.files[0].name;
       const reader = new FileReader();
-      reader.onload = () => {
-        this.identityImage = reader.result;
-      };
-      reader.readAsDataURL(selectedFile);
-      this.getBase64(selectedFile);
+      let fileSize= Number(((event.target.files[0].size/1024)/1024).toFixed(0)); // MB
+      if (fileSize <= 1)
+      {
+        reader.onload = () => {
+          this.identityImage = reader.result;
+        };
+        reader.readAsDataURL(selectedFile);
+        this.getBase64(selectedFile);
+      }
+      else{
+        // alert('File size exceeds 1 MB');
+        const dialogRef = this.messageDialogService.warning(
+          "File size exceeds 1 MB"
+        );
+        dialogRef
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .toPromise();
+      }
     }
   
     public getBase64(file:any) {
