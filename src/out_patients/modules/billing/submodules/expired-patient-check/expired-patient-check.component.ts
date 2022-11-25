@@ -19,6 +19,7 @@ import { SearchService } from "@shared/services/search.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { LookupService } from "../../../../../out_patients/core/services/lookup.service";
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 interface deleteexpiredResponse {
   success: boolean;
   message: string;
@@ -45,7 +46,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
       mobileno: {
         type: "tel",
         title: "Mobile Number",
-        pattern: "^[1-9]{1}[0-9]{9}",
+        // pattern: "^[1-9]{1}[0-9]{9}",
       },
       checkbox: {
         type: "checkbox",
@@ -98,7 +99,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private lookupservice: LookupService
+    private lookupservice: LookupService,
+    private snackbar: MaxHealthSnackBarService,
   ) {}
 
   ngOnInit(): void {
@@ -179,7 +181,15 @@ export class ExpiredPatientCheckComponent implements OnInit {
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.onMobilenumberEnter();
+        if(this.expiredpatientForm.value.mobileno.toString().length == 10)
+        {
+          this.onMobilenumberEnter();
+        }
+        else
+        {
+          this.snackbar.open('Invalid Mobile No', 'error');
+        }
+        
       }
     });
     this.getCheckboxValue();
@@ -300,11 +310,11 @@ export class ExpiredPatientCheckComponent implements OnInit {
   seterroronMaxid() {
     this.clearpatientData();
     this.questions[1].elementRef.focus();
-
-    this.expiredpatientForm.controls["maxid"].setErrors({
-      incorrect: true,
-    });
-    this.questions[0].customErrorMessage = "Invalid Maxid";
+    this.snackbar.open('Invalid Max ID', 'error');
+    // this.expiredpatientForm.controls["maxid"].setErrors({
+    //   incorrect: true,
+    // });
+    // this.questions[0].customErrorMessage = "Invalid Maxid";
     this.expiredpatientForm.controls["mobileno"].setValue(null);
     this.questions[0].elementRef.focus();
   }
