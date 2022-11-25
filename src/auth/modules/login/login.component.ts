@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public stationdetail: StationModel | undefined;
   authStatus: boolean = false;
   public username: string = "";
+  public password: string = "";
   Authentication: boolean = true;
   userValidationError: string = "";
   public name: string = "";
@@ -129,7 +130,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   processEvents() {
-    this.questions[0].elementRef.addEventListener(
+    this.questions[1].elementRef.addEventListener(
       "blur",
       this.validateUserName.bind(this)
     );
@@ -170,71 +171,86 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   validateUserName() {
     this.username = this.loginForm.value.username;
+    this.password = this.loginForm.value.password;
     this.adauth
-      .authenticateUserName(this.username)
+      .authenticateAD(this.username, this.password)
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (data: any) => {
-          this.userlocationandstation = data as UserLocationStationdataModel;
-          this.locationList = this.userlocationandstation.locations;
-          this.stationList = this.userlocationandstation.stations;
+          if (data && !data.success) {
+            if (data.errorMessage && data.errorMessage != "") {
+              this.loginForm.controls["username"].setErrors({
+                incorrect: true,
+              });
+              this.questions[0].customErrorMessage = data.errorMessage;
+              // this.loginForm.controls["password"].disable();
+              this.loginForm.controls["location"].disable();
+              this.loginForm.controls["station"].disable();
+            }
+          } else if (data && data.success) {
+            this.loginForm.controls["username"].setErrors(null);
+            this.questions[0].customErrorMessage = "";
+            this.userlocationandstation = data as UserLocationStationdataModel;
+            this.locationList = this.userlocationandstation.locations;
+            this.stationList = this.userlocationandstation.stations;
 
-          this.questions[3].options = this.stationList.map((s) => {
-            return { title: s.stationName, value: s.stationid };
-          });
-
-          this.questions[2].options = this.locationList.map((l) => {
-            return { title: l.organizationName, value: l.hspLocationId };
-          });
-          //changes for UAT defect fix to select station bydefault if only one location
-          if (this.locationList.length == 1) {
-            this.loginForm.controls["location"].setValue({
-              title: this.locationList[0].organizationName,
-              value: this.locationList[0].hspLocationId,
+            this.questions[3].options = this.stationList.map((s) => {
+              return { title: s.stationName, value: s.stationid };
             });
-          }
 
-          console.log(this.questions);
+            this.questions[2].options = this.locationList.map((l) => {
+              return { title: l.organizationName, value: l.hspLocationId };
+            });
+            //changes for UAT defect fix to select station bydefault if only one location
+            if (this.locationList.length == 1) {
+              this.loginForm.controls["location"].setValue({
+                title: this.locationList[0].organizationName,
+                value: this.locationList[0].hspLocationId,
+              });
+            }
 
-          this.userId = Number(this.userlocationandstation.userId);
-          this.name = this.userlocationandstation.name;
+            console.log(this.questions);
 
-          this.loginForm.controls["location"].valueChanges
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((value) => {
-              if (value) {
-                this.loginForm.controls["station"].enable();
-                this.loginForm.controls["station"].setValue(null);
-                this.locationdetail = this.locationList.filter(
-                  (l) => l.hspLocationId === value.value
-                )[0];
-                //changes for UAT defect fix to select station bydefault if only one station
-                if (this.stationList.length > 1) {
-                  this.questions[3].options = this.stationList
-                    .filter((e) => e.hspLocationId === value.value)
-                    .map((s) => {
-                      return { title: s.stationName, value: s.stationid };
+            this.userId = Number(this.userlocationandstation.userId);
+            this.name = this.userlocationandstation.name;
+
+            this.loginForm.controls["location"].valueChanges
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((value) => {
+                if (value) {
+                  this.loginForm.controls["station"].enable();
+                  this.loginForm.controls["station"].setValue(null);
+                  this.locationdetail = this.locationList.filter(
+                    (l) => l.hspLocationId === value.value
+                  )[0];
+                  //changes for UAT defect fix to select station bydefault if only one station
+                  if (this.stationList.length > 1) {
+                    this.questions[3].options = this.stationList
+                      .filter((e) => e.hspLocationId === value.value)
+                      .map((s) => {
+                        return { title: s.stationName, value: s.stationid };
+                      });
+                  } else {
+                    this.loginForm.controls["station"].setValue({
+                      title: this.stationList[0].stationName,
+                      value: this.stationList[0].stationid,
                     });
-                } else {
-                  this.loginForm.controls["station"].setValue({
-                    title: this.stationList[0].stationName,
-                    value: this.stationList[0].stationid,
-                  });
+                  }
                 }
-              }
-            });
+              });
 
-          this.loginForm.controls["station"].valueChanges
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((value) => {
-              this.stationdetail = this.stationList.filter(
-                (s) => s.stationid === value.value
-              )[0];
-            });
-          // this.loginForm.controls["password"].enable();
-          this.loginForm.controls["location"].enable();
-          //this.loginForm.controls["station"].enable();
-          this.questions[1].elementRef.focus();
+            this.loginForm.controls["station"].valueChanges
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((value) => {
+                this.stationdetail = this.stationList.filter(
+                  (s) => s.stationid === value.value
+                )[0];
+              });
+            // this.loginForm.controls["password"].enable();
+            this.loginForm.controls["location"].enable();
+            //this.loginForm.controls["station"].enable();
+            //this.questions[1].elementRef.focus();
+          }
         },
         (error: any) => {
           this.loginForm.controls["username"].setErrors({ incorrect: true });
@@ -256,7 +272,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         )
         .pipe(takeUntil(this._destroying$))
         .subscribe(
-          (data) => {
+          async (data) => {
             status = data["status"];
             if (status == "Valid") {
               this.authStatus = true;
@@ -287,16 +303,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
               if (data.userData) {
                 if (data.userData["error"]) {
                   console.log(data.userData["error"]);
-                  if (
-                    data.userData["error"].includes(
-                      "Your password is locked due to invalid attempts"
-                    )
-                  ) {
-                    this.messageDialogService.warning(data.userData["error"]);
+                  if ((data.userData.user.logged = "Y")) {
+                    const errorDialogRef = this.messageDialogService.warning(
+                      data.userData["error"]
+                    );
+                    await errorDialogRef.afterClosed().toPromise();
+                    //Delete ActiveSession
                   } else {
-                    this.Authentication = false;
-                    this.authStatus = false;
-                    this.userValidationError = data.userData["error"];
+                    this.messageDialogService.warning(data.userData["error"]);
+                    // this.Authentication = false;
+                    // this.authStatus = false;
+                    // this.userValidationError = data.userData["error"];
                   }
                 }
               }

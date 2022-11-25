@@ -220,6 +220,9 @@ export namespace BillingApiConstants {
   export const insert_billdetailsgst = () =>
     `${environment.BillingApiUrl}api/outpatientbilling/insert_billdetailsgst`;
 
+  export const opConsumableBillCreate = () =>
+    `${environment.BillingApiUrl}api/outpatientbilling/OPConsumableBillCreate`;
+
   export const getbillingappointmentsearch = (
     phoneNo: string,
     name: string,
@@ -374,5 +377,9 @@ export namespace BillingApiConstants {
     adhaarId: string
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/checkcghsbeneficiary/${iacode}/${regNumber}/${companyId}/${adhaarId}`;
+  };
+
+  export const updateopprintbillduplicate = (OPBillID: number) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/updateopprintbillduplicate/${OPBillID}`;
   };
 }

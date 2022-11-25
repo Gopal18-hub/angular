@@ -19,11 +19,32 @@ import "../../utilities/String-Extentions";
 import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
-
+import * as moment from "moment";
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MAT_NATIVE_DATE_FORMATS,
+} from "@angular/material/core";
+export const MY_FORMATS = {
+  parse: {
+    dateInput: "DDMMYYYY",
+  },
+  display: {
+    dateInput: "DD/MM/YYYY",
+  },
+};
 @Component({
   selector: "maxhealth-question",
   templateUrl: "./dynamic-form-question.component.html",
   styleUrls: ["./dynamic-form.scss"],
+  providers: [
+    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
+    // application's root module. We provide it at the component level here, due to limitations of
+    // our example generation script.
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 export class DynamicFormQuestionComponent
   implements OnInit, AfterViewInit, OnChanges, OnDestroy
@@ -140,7 +161,7 @@ export class DynamicFormQuestionComponent
           }
           break;
         case "required":
-          let questionIndex = this.questions.findIndex(
+          let questionIndex: number = this.questions.findIndex(
             (it) => it.key == conditionParam.controlKey
           );
           const exprRequiredEvaluate = eval(conditionParam.expression);
@@ -149,6 +170,49 @@ export class DynamicFormQuestionComponent
           } else {
             this.questions[questionIndex].required = false;
           }
+          break;
+        case "dateMin":
+          let dateTempValue: any = eval(conditionParam.expression);
+          let datequestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[datequestionIndex].minimum = dateTempValue;
+          break;
+        case "dateMax":
+          let dateMaxTempValue: any = eval(conditionParam.expression);
+          let dateMaxquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateMaxquestionIndex].maximum = dateMaxTempValue;
+          break;
+        case "dateMaxWithDays":
+          let dateWithDaysTempValue: any = eval(conditionParam.expression);
+          let dateWithDaysquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateWithDaysquestionIndex].maximum = moment
+            .min(
+              moment(),
+              moment(dateWithDaysTempValue).add(conditionParam.days, "days")
+            )
+            .toDate();
+
+          break;
+        case "dateMinWithDays":
+          let dateWithMinDaysTempValue: any = eval(conditionParam.expression);
+          let dateWithMinDaysquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateWithMinDaysquestionIndex].minimum = moment
+            .min(
+              moment(),
+              moment(dateWithMinDaysTempValue).subtract(
+                conditionParam.days,
+                "days"
+              )
+            )
+            .toDate();
+
           break;
         default:
           console.log(`NA`);
@@ -208,6 +272,18 @@ export class DynamicFormQuestionComponent
         )
       );
     }
+
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date" &&
+      this.element
+    ) {
+      maskInput({
+        inputElement: this.element.nativeElement,
+        ...this.dateMaskConfig,
+      });
+    }
   }
 
   displayFn(option: any): string {
@@ -248,15 +324,15 @@ export class DynamicFormQuestionComponent
       this.question.type == "autocomplete"
     ) {
       this._subscribeToClosingActions();
-    } else if (
-      this.question &&
-      this.question.type &&
-      this.question.type == "date"
-    ) {
-      maskInput({
-        inputElement: this.element.nativeElement,
-        ...this.dateMaskConfig,
-      });
+      //} else if (
+      //  this.question &&
+      //  this.question.type &&
+      //  this.question.type == "date"
+      //) {
+      //  maskInput({
+      //    inputElement: this.element.nativeElement,
+      //    ...this.dateMaskConfig,
+      //  });
     } else if (
       this.question &&
       this.question.type &&
@@ -300,6 +376,24 @@ export class DynamicFormQuestionComponent
     } else {
       event.preventDefault();
       return false;
+    }
+  }
+
+  keyUpSetDateFormat(event: any) {
+    let vl = event.target.value.replaceAll(/\s+/g, "").length;
+    if (event.target.value.length === 8 && !isNaN(event.target.value)) {
+      this.form.controls[this.question.key].setValue(
+        this.qcs.convertDateObjFormat(
+          maskInput({
+            inputElement: this.element.nativeElement,
+            ...this.dateMaskConfig,
+          }).textMaskInputElement.state.previousConformedValue
+        )
+      );
+    } else if (vl === 10 && isNaN(event.target.value)) {
+      this.form.controls[this.question.key].setValue(
+        this.qcs.convertDateObjFormat(event.target.value)
+      );
     }
   }
 
