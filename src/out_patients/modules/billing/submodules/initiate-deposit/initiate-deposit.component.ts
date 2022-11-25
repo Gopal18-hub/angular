@@ -15,6 +15,7 @@ import { LookupService } from "@core/services/lookup.service";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 import * as moment from "moment";
 import { BillingApiConstants } from '../billing/BillingApiConstant';
+import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
 
 @Component({
   selector: 'out-patients-initiate-deposit',
@@ -28,7 +29,8 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
      private route: ActivatedRoute,
      private messageDialogService: MessageDialogService,private http: HttpService, private router: Router,
      private searchService: SearchService,
-     private lookupService: LookupService,) { 
+     private lookupService: LookupService,
+     private snackbar: MaxHealthSnackBarService,) { 
       this.route.queryParams
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (value) => {
@@ -193,8 +195,9 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
             this.getInitatedepositDetailsByMaxId();           
           } 
           else {
-            this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
-            this.questions[0].customErrorMessage = "Invalid Max ID";
+            this.snackbar.open('Invalid Max ID', 'error');
+            // this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
+            // this.questions[0].customErrorMessage = "Invalid Max ID";
           }
         }
       }
@@ -304,24 +307,27 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
            
       }else{        
         this.apiProcessing = false;
-        if(this.initiatedepositForm.value.mobileno){          
-          this.initiatedepositForm.controls["mobileno"].setErrors({ incorrect: true });
-          this.questions[1].customErrorMessage = "Invalid Phone Number";
+        if(this.initiatedepositForm.value.mobileno){  
+          this.snackbar.open('Invalid Phone Number', 'error');        
+          // this.initiatedepositForm.controls["mobileno"].setErrors({ incorrect: true });
+          // this.questions[1].customErrorMessage = "Invalid Phone Number";
           this.questions[1].elementRef.focus();
         }else if(this.initiatedepositForm.value.maxid == (this.cookie.get("LocationIACode") + ".")){ 
           this.messageDialogService.error("Please enter valid MAX ID or Phone Number for search");
         }
         else
         {
-          this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
-          this.questions[0].customErrorMessage = "Invalid Max ID";
+          this.snackbar.open('Invalid Max ID', 'error');  
+          // this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
+          // this.questions[0].customErrorMessage = "Invalid Max ID";
           this.questions[0].elementRef.focus();
         }
       }     
     },
       (error) => {
-        this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
-        this.questions[0].customErrorMessage = "Invalid Max ID";
+        this.snackbar.open('Invalid Max ID', 'error'); 
+        // this.initiatedepositForm.controls["maxid"].setErrors({ incorrect: true });
+        // this.questions[0].customErrorMessage = "Invalid Max ID";
       });
       
   }
@@ -405,7 +411,11 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       this.hsplocationId,
       this.initiatedepositForm.value.remarks,
       0,
-      0
+      0,
+      0,
+      0,
+      0,
+      ""
     ));
   }
 

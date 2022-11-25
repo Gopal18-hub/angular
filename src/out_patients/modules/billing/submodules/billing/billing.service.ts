@@ -50,6 +50,10 @@ export class BillingService {
     JSON.stringify(BillingStaticConstants.makeBillPayload)
   );
 
+  consumablePayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.consumablePayload)
+  );
+
   patientDetailsInfo: any = [];
 
   selectedHealthPlan: any = null;
@@ -151,6 +155,9 @@ export class BillingService {
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
+    this.consumablePayload = JSON.parse(
+      JSON.stringify(BillingStaticConstants.consumablePayload)
+    );
     this.companyData = [];
     this.corporateData = [];
     this.creditcorporateData = [];
@@ -215,15 +222,26 @@ export class BillingService {
     return false;
   }
 
-  checkOtherServicesForHealthCheckups() {
+  checkOtherServicesForHealthCheckups(tabId: number) {
     if (
       this.consultationItems.length > 0 ||
       this.InvestigationItems.length > 0 ||
-      this.ProcedureItems.length > 0 ||
       this.OrderSetItems.length > 0 ||
       this.ConsumableItems.length > 0
     ) {
       return true;
+    } ////GAV-902 Registration Charges with Health Checkup
+    else if (this.ProcedureItems.length > 0) {
+      if (this.ProcedureItems.length > 1) {
+        return true;
+      } else if (
+        this.ProcedureItems.length == 1 &&
+        !BillingStaticConstants.allowService[tabId].includes(
+          this.ProcedureItems[0].itemid
+        )
+      ) {
+        return true;
+      }
     }
     return false;
   }
@@ -1033,6 +1051,18 @@ export class BillingService {
           }
         }
       });
+
+      let cashlimit = this.makeBillPayload.ds_paymode.tab_paymentList.filter(
+        (mode: any) => mode.modeOfPayment == "Cash" && mode.amount >= 200000
+      );
+      if (cashlimit.length > 0) {
+        const modeconfirm = this.messageDialogService.info(
+          "Total cash amount cannot exceed Rs.199999"
+        );
+        modeconfirm.afterClosed().toPromise();
+        return;
+      }
+
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
@@ -1065,7 +1095,7 @@ export class BillingService {
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
-          "Do you want to pay less amount of Rs." +
+          "Do you want to pay with due amount of Rs." +
             (toBePaid - collectedAmount) +
             "?"
         );
@@ -1110,8 +1140,135 @@ export class BillingService {
       }
     }
     this.calculateBillService.blockActions.next(true);
+    if (this.ConsumableItems.length > 0) {
+      return this.consumableMakeBill();
+    } else {
+      return this.http
+        .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
+        .toPromise();
+    }
+  }
+
+  consumableMakeBill() {
+    this.consumablePayload = JSON.parse(
+      JSON.stringify(BillingStaticConstants.consumablePayload)
+    );
+    this.consumablePayload.registrationno =
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo;
+    this.consumablePayload.iacode =
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.iaCode;
+    this.consumablePayload.dtOOpBill = {
+      billtype: this.makeBillPayload.ds_insert_bill.tab_insertbill.billType,
+      billamount: this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount,
+      depositeamount:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount,
+      discountamount:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount,
+      companyid: this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId,
+      collectedAmount:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount,
+      balance: this.makeBillPayload.ds_insert_bill.tab_insertbill.balance,
+      discountReason:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.disReason,
+      refDoctorid:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId,
+      creditLimit:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit,
+      srvTaxOnBill: 0,
+      tpa: this.makeBillPayload.ds_insert_bill.tab_insertbill.tpaId,
+      paidByTPA: 0,
+      interactionID: this.makeBillPayload.cmbInteraction,
+      corporateid:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid,
+      corporate: this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate,
+      channel: this.makeBillPayload.ds_insert_bill.tab_insertbill.channel,
+    };
+    let consumableDetails: any = [];
+    this.ConsumableItems.forEach((cDI: any, cDIIndex: number) => {
+      this.consumablePayload.dtOTBillDetails.push({
+        slNo: cDIIndex,
+        surgeryName: cDI.surgeryName,
+        priority: cDI.priority.toString(),
+        credit: cDI.credit,
+        cash: cDI.cash,
+        surgeryid: 0,
+        priorityId: "",
+        discountAmount:
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[cDIIndex]
+            .discountamount,
+        taxAmt: cDI.taxAmount,
+        taxPer: 0,
+        totalAmt: cDI.totalAmount,
+        disReasonID: (this.billItems[cDIIndex].discountReason || 0).toString(),
+        empowerApproverCode:
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[cDIIndex]
+            .empowerApproverCode,
+        couponCode:
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[cDIIndex]
+            .couponCode,
+        serviceid: cDI.billItem.serviceId,
+      });
+      let filteredItems = cDI.items.filter(
+        (i: any) => i.orderid === cDI.orderId
+      );
+      filteredItems.forEach((item: any, itemIndex: number) => {
+        let existInUnSelected = null;
+        if (
+          cDI.orderId.toString() in
+          this.calculateBillService.consumablesUnselectedItems
+        ) {
+          existInUnSelected =
+            this.calculateBillService.consumablesUnselectedItems[
+              cDI.orderId
+            ].find((uI: any) => {
+              return uI.itemid == item.itemid;
+            });
+        }
+
+        if (existInUnSelected) {
+          consumableDetails.push({
+            orderid: item.orderid,
+            itemid: item.itemid,
+            itemName: item.itemName,
+            quantity: item.quantity,
+            amount: item.amount,
+            inclusion: true,
+            procedureid: existInUnSelected.procedure.procedureid,
+            procedureName: existInUnSelected.procedure.procedureName,
+            reason: existInUnSelected.reason,
+            procedureBillid: existInUnSelected.procedure.procedureBillid,
+            procedureAmt: existInUnSelected.procedure.procedureAmt,
+          });
+        } else {
+          consumableDetails.push({
+            orderid: item.orderid,
+            itemid: item.itemid,
+            itemName: item.itemName,
+            quantity: item.quantity,
+            amount: item.amount,
+            inclusion: false,
+            procedureid: 0,
+            procedureName: "",
+            reason: "",
+            procedureBillid: 0,
+            procedureAmt: 0,
+          });
+        }
+      });
+    });
+    this.consumablePayload.ds_paymode = this.makeBillPayload.ds_paymode;
+    this.consumablePayload.htParms = this.makeBillPayload.htParms;
+    this.consumablePayload.tab_d_deposit_Dto =
+      this.makeBillPayload.ds_insert_bill.tab_d_depositList;
+    this.consumablePayload.dtConsumableDetail = consumableDetails;
+    this.consumablePayload.hspLocationId = this.cookie.get("HSPLocationId");
+    this.consumablePayload.userId = this.makeBillPayload.userId;
+    this.consumablePayload.stationId = this.makeBillPayload.stationId;
     return this.http
-      .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
+      .post(
+        BillingApiConstants.opConsumableBillCreate(),
+        this.consumablePayload
+      )
       .toPromise();
   }
 
@@ -1323,6 +1480,7 @@ export class BillingService {
             specialisationID: investigation.specializationId || 0,
             doctorID: investigation.doctorid || 0,
             patient_Instructions: investigation.patient_Instructions,
+            profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
           },
           gstDetail: {
             gsT_value: rItem.totaltaX_Value,
@@ -1426,6 +1584,7 @@ export class BillingService {
           specialisationID: investigation.specializationId || 0,
           doctorID: investigation.doctorid || 0,
           patient_Instructions: investigation.patient_Instructions,
+          profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
         },
         gstDetail: {
           gsT_value: res[0].totaltaX_Value,
@@ -1515,6 +1674,7 @@ export class BillingService {
         specialisationID: 0,
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
+        profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
       },
       gstDetail: {},
       gstCode: {},

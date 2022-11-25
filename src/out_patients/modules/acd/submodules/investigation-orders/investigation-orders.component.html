@@ -7,9 +7,9 @@
   </div>
     <form [formGroup]="investigationForm">
         <!------------------------------------------- FIRST ROW------------------------------------------>
-        <div class="flex justify-between border-radius-md mt-1 align-items-center">
+        <div class="flex justify-between border-radius-md align-items-center">
             
-                <div class="flex w-1/3 bg-darkgray border-radius-md">
+                <div class="flex w-1/3 bg-darkgray border-radius-md p-1">
                     <div class="ml-2 checkboxh checkbox-bottom-margin">
                         <maxhealth-question [question]="questions[0]" [form]="investigationForm"
                             [questions]="questions[0]" [index]="0" (click)="isChecked($event)">
@@ -54,14 +54,14 @@
                 </div>
                 <div class="flex  mr-2">
                     <div >
-                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn" >
+                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn mb-1" >
                             <img src="assets/lens.svg" class="lens-icon">                                
                                    <span class="ml-5">Search</span> 
 
                         </button>
                     </div>
                     <div class="w-1/2 ml-2">
-                        <button mat-raised-button color="primary" class="clr"(click)="clearInv()" >Clear</button>
+                        <button mat-raised-button color="primary" class="clr mb-1"(click)="clearInv()" >Clear</button>
                     </div>
                 </div>
 

@@ -72,7 +72,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
       },
       bookingNo: {
         type: "string",
-        title: "Book No",
+        title: "Booking ID",
         required: false,
         defaultValue: "",
       },

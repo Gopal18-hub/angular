@@ -4,6 +4,9 @@
   class="max-health-primary-color w-1/3"
   [matMenuTriggerFor]="childMenu"
   [disabled]="menu.disabled"
+  [routerLink]="
+    baseHref == tenentPath ? menu.defaultPath : tenentPath + menu.defaultPath
+  "
 >
   {{ menu.title }}
 </button>
@@ -12,6 +15,9 @@
   mat-menu-item
   class="max-health-primary-color w-1/3"
   [disabled]="menu.disabled"
+  [routerLink]="
+    baseHref == tenentPath ? menu.defaultPath : tenentPath + menu.defaultPath
+  "
 >
   {{ menu.title }}
 </button>
@@ -29,6 +35,7 @@
           #nestedMenu
           [module]="module"
           [menu]="menuItem"
+          [tenentPath]="menu.tenentPath"
           [subMenuTrigger]="subMenuTrigger"
           [baseHref]="baseHref"
           [onPageRouterLinkActive]="onPageRouterLinkActive"
