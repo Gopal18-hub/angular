@@ -1150,8 +1150,80 @@ export class BillingService {
   }
 
   consumableMakeBill() {
+    this.consumablePayload.registrationno =
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo;
+    this.consumablePayload.iacode =
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.iaCode;
+    this.consumablePayload.dtOOpBill = {
+      billtype: this.makeBillPayload.ds_insert_bill.tab_insertbill.billType,
+      billamount: this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount,
+      depositeamount:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount,
+      discountamount:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount,
+      companyid: this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId,
+      collectedAmount:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount,
+      balance: this.makeBillPayload.ds_insert_bill.tab_insertbill.balance,
+      discountReason:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.disReason,
+      refDoctorid:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId,
+      creditLimit:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit,
+      srvTaxOnBill: 0,
+      tpa: this.makeBillPayload.ds_insert_bill.tab_insertbill.tpaId,
+      paidByTPA: 0,
+      interactionID: this.makeBillPayload.cmbInteraction,
+      corporateid:
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid,
+      corporate: this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate,
+      channel: this.makeBillPayload.ds_insert_bill.tab_insertbill.channel,
+    };
+    let consumableDetails = [];
+    this.ConsumableItems.forEach((cDI: any) => {
+      cDI.items.forEach((item: any, itemIndex: number) => {
+        const existInUnSelected =
+          this.calculateBillService.consumablesUnselectedItems[
+            cDI.orderId
+          ].find((uI: any) => {
+            return uI.itemid == item.itemid;
+          });
+        if (existInUnSelected) {
+          consumableDetails.push({
+            orderid: item.orderid,
+            itemid: item.itemid,
+            itemName: item.itemName,
+            quantity: item.quantity,
+            amount: item.amount,
+            inclusion: true,
+            procedureid: existInUnSelected.procedure.procedureid,
+            procedureName: existInUnSelected.procedure.procedureName,
+            reason: existInUnSelected.reason,
+            procedureBillid: existInUnSelected.procedure.procedureBillid,
+            procedureAmt: existInUnSelected.procedure.procedureAmt,
+          });
+        } else {
+          consumableDetails.push({
+            orderid: item.orderid,
+            itemid: item.itemid,
+            itemName: item.itemName,
+            quantity: item.quantity,
+            amount: item.amount,
+            inclusion: false,
+            procedureid: 0,
+            procedureName: "",
+            reason: "",
+            procedureBillid: 0,
+            procedureAmt: 0,
+          });
+        }
+      });
+    });
     this.consumablePayload.ds_paymode = this.makeBillPayload.ds_paymode;
     this.consumablePayload.htParms = this.makeBillPayload.htParms;
+    this.consumablePayload.tab_d_deposit_Dto =
+      this.makeBillPayload.ds_insert_bill.tab_d_depositList;
 
     return this.http
       .post(
