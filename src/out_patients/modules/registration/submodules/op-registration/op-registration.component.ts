@@ -973,14 +973,16 @@ export class OpRegistrationComponent implements OnInit {
             this.questions = {...this.questions};
             console.log(this.OPRegForm.controls);
             console.log(this.questions);
-            if (!this.OPRegForm.value.nationality.value) {
-              this.OPRegForm.controls["nationality"].setValue(null);
-            } else {
-              this.OPRegForm.controls["nationality"].setValue({
-                title: this.OPRegForm.value.nationality.title,
-                value: this.OPRegForm.value.nationality.value,
-              });
-            }
+
+            //commented this on 25/11/2022 by deena - causing issue while changing country for foreigner nationality
+            // if (!this.OPRegForm.value.nationality.value) {
+            //   this.OPRegForm.controls["nationality"].setValue(null);
+            // } else {
+            //   this.OPRegForm.controls["nationality"].setValue({
+            //     title: this.OPRegForm.value.nationality.title,
+            //     value: this.OPRegForm.value.nationality.value,
+            //   });
+            // }
           }
           else
           {
@@ -1011,6 +1013,18 @@ export class OpRegistrationComponent implements OnInit {
               this.countrybasedflow = true;
             }
           }
+        }
+        //added on 25/11/2022 - by deena for empty state refresh other fields
+        else
+        {
+          this.OPRegForm.controls["city"].setValue('');
+          this.OPRegForm.controls["district"].setValue('');
+          // this.OPRegForm.controls["locality"].setValue('');
+          this.getStatesByCountry(this.OPRegForm.controls["country"].value);
+          this.getCitiesByCountry(this.OPRegForm.controls["country"].value);
+          this.questions[25].options = [];
+          this.localitybyCityList = [];
+          this.questions[22].options = [];
         }
         
         if(this.OPRegForm.value.country.value != 1)
@@ -1116,6 +1130,25 @@ export class OpRegistrationComponent implements OnInit {
                   this.getLocalityByCity(value);
                 }
             }
+          }
+        }
+        //added on 25/11/2022 - deena for empty city with other country show error
+        else
+        {
+          if(this.OPRegForm.value.country.value != 1)
+          {
+            this.OPRegForm.controls["pincode"].setErrors(null);
+            this.OPRegForm.controls["city"].setErrors(null);
+            this.OPRegForm.controls["state"].setErrors(null);
+            this.OPRegForm.controls["district"].setErrors(null);
+            this.questions[21].required = false;
+            this.questions[22].required = false;
+            this.questions[23].required = false;
+            this.questions[24].required = false;
+            this.questions[25].required = false;
+            this.questions[26].required = false;
+            this.questions[24].allowSearchInput = true;
+            this.questions = {...this.questions};
           }
         }
       });
@@ -2190,48 +2223,56 @@ export class OpRegistrationComponent implements OnInit {
   localitybasedflow: boolean = false;
   AddressonLocalityModellst!: AddressonLocalityModel;
   addressByLocalityID(locality: any) {
-    if (
-      this.OPRegForm.value.city.value == undefined ||
-      this.OPRegForm.value.city.value == "" ||
-      this.OPRegForm.value.city.value == null
-    ) {
+    //added on 25/11/2022 - for null error by Deena
+    if(
+      this.OPRegForm.value.city == undefined ||
+      this.OPRegForm.value.city == '' ||
+      this.OPRegForm.value.city == null
+    )
+    {
       if (
-        locality.value != undefined &&
-        locality.value != null &&
-        locality.value != "" &&
-        locality.value > 0
+        this.OPRegForm.value.city.value == undefined ||
+        this.OPRegForm.value.city.value == "" ||
+        this.OPRegForm.value.city.value == null
       ) {
-        this.http
-          .get(ApiConstants.addressByLocalityID(locality.value))
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((resultData: any) => {
-            this.AddressonLocalityModellst = resultData[0];
-            this.questions[24].readonly = true;
-            this.questions[25].readonly = true;
-            this.questions[26].readonly = true;
-            this.questions[27].readonly = true;
-
-            this.OPRegForm.controls["country"].setValue({
-              title: this.AddressonLocalityModellst.countryName,
-              value: this.AddressonLocalityModellst.countryid,
+        if (
+          locality.value != undefined &&
+          locality.value != null &&
+          locality.value != "" &&
+          locality.value > 0
+        ) {
+          this.http
+            .get(ApiConstants.addressByLocalityID(locality.value))
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((resultData: any) => {
+              this.AddressonLocalityModellst = resultData[0];
+              this.questions[24].readonly = true;
+              this.questions[25].readonly = true;
+              this.questions[26].readonly = true;
+              this.questions[27].readonly = true;
+  
+              this.OPRegForm.controls["country"].setValue({
+                title: this.AddressonLocalityModellst.countryName,
+                value: this.AddressonLocalityModellst.countryid,
+              });
+              this.OPRegForm.controls["state"].setValue({
+                title: this.AddressonLocalityModellst.stateName,
+                value: this.AddressonLocalityModellst.stateId,
+              });
+              this.OPRegForm.controls["district"].setValue({
+                title: this.AddressonLocalityModellst.districtName,
+                value: this.AddressonLocalityModellst.districtId,
+              });
+              this.OPRegForm.controls["city"].setValue({
+                title: this.AddressonLocalityModellst.cityName,
+                value: this.AddressonLocalityModellst.cityId,
+              });
+              this.pincodebasedflow = false;
             });
-            this.OPRegForm.controls["state"].setValue({
-              title: this.AddressonLocalityModellst.stateName,
-              value: this.AddressonLocalityModellst.stateId,
-            });
-            this.OPRegForm.controls["district"].setValue({
-              title: this.AddressonLocalityModellst.districtName,
-              value: this.AddressonLocalityModellst.districtId,
-            });
-            this.OPRegForm.controls["city"].setValue({
-              title: this.AddressonLocalityModellst.cityName,
-              value: this.AddressonLocalityModellst.cityId,
-            });
-            this.pincodebasedflow = false;
-          });
+        }
+        this.countrybasedflow = false;
+        this.citybasedflow = false;
       }
-      this.countrybasedflow = false;
-      this.citybasedflow = false;
     } else {
       if (
         this.OPRegForm.value.pincode == undefined ||
@@ -2738,7 +2779,6 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
-
     this.OPRegForm.controls["nationality"].setValue({
       title: this.patientDetails?.nationalityName,
       value: this.patientDetails?.nationality,
