@@ -937,6 +937,30 @@ export class BillComponent implements OnInit, OnDestroy {
     const successInfo = this.messageDialogService.info(
       `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
+    if (
+      this.billingservice.ConsumableItems &&
+      this.billingservice.ConsumableItems.length > 0
+    ) {
+      const consumablespopup = this.messageDialogService.confirm(
+        "",
+        "Do you want to view Consumable Entry details"
+      );
+      consumablespopup.afterClosed().subscribe((result: any) => {
+        console.log(result);
+        if (result.type == "yes") {
+          this.reportService.openWindow(
+            "Consumable Entry details Report - " + this.billNo,
+            "ConsumabaleEntryDetailsReport",
+            {
+              billno: this.billingservice.billNo,
+              locationID: this.cookie.get("HSPLocationId"),
+              MAXID: this.billingservice.activeMaxId.maxId,
+            }
+          );
+        }
+      });
+    }
+    //popup fo consumables
     console.log(this.billingservice.makeBillPayload);
     if (
       this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
