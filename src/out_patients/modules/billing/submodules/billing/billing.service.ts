@@ -1480,6 +1480,7 @@ export class BillingService {
             specialisationID: investigation.specializationId || 0,
             doctorID: investigation.doctorid || 0,
             patient_Instructions: investigation.patient_Instructions,
+            profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
           },
           gstDetail: {
             gsT_value: rItem.totaltaX_Value,
@@ -1583,6 +1584,7 @@ export class BillingService {
           specialisationID: investigation.specializationId || 0,
           doctorID: investigation.doctorid || 0,
           patient_Instructions: investigation.patient_Instructions,
+          profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
         },
         gstDetail: {
           gsT_value: res[0].totaltaX_Value,
@@ -1672,6 +1674,7 @@ export class BillingService {
         specialisationID: 0,
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
+        profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
       },
       gstDetail: {},
       gstCode: {},

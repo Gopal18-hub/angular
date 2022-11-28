@@ -388,19 +388,20 @@ export class BillComponent implements OnInit, OnDestroy {
         this.messageDialogService.info(res.element.patient_Instructions);
       }
     });
-    //added for uncheck coupon checkbox when uncheck the discount 
-    this.formGroup.controls['discAmtCheck'].valueChanges.subscribe((value: any) => {
-      console.log(value);
-      if(value == false)
-      {
-        this.IsValidateCoupon = false;
+    //added for uncheck coupon checkbox when uncheck the discount
+    this.formGroup.controls["discAmtCheck"].valueChanges.subscribe(
+      (value: any) => {
+        console.log(value);
+        if (value == false) {
+          this.IsValidateCoupon = false;
+        }
       }
-    })
+    );
 
     //added for uncheck coupon when valuechange
-    this.formGroup.controls['coupon'].valueChanges.subscribe(() => {
+    this.formGroup.controls["coupon"].valueChanges.subscribe(() => {
       this.IsValidateCoupon = false;
-    })
+    });
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -648,8 +649,11 @@ export class BillComponent implements OnInit, OnDestroy {
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
-    }else{
-      this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+    } else if (this.formGroup.value.dipositAmtEdit < 0) {
+      this.formGroup.controls["dipositAmtEdit"].setValue("0.00");
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
     }
   }
 
@@ -758,6 +762,12 @@ export class BillComponent implements OnInit, OnDestroy {
                     : "info@maxhealthcare.com"
                   : "info@maxhealthcare.com";
 
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.BookingNo =
+                (this.billingservice.PaidAppointments
+                  ? this.billingservice.PaidAppointments.bookingid
+                  : this.billingservice.billingFormGroup.form.value
+                      .bookingId) || "";
+
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
                 if (res[0].billNo) {
@@ -810,6 +820,11 @@ export class BillComponent implements OnInit, OnDestroy {
           ? this.billingservice.patientDetailsInfo.peMail
           : "info@maxhealthcare.com"
         : "info@maxhealthcare.com";
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.BookingNo =
+      (this.billingservice.PaidAppointments
+        ? this.billingservice.PaidAppointments.bookingid
+        : this.billingservice.billingFormGroup.form.value.bookingId) || "";
 
     //GAV-530 Paid Online Appointment
     let amount = 0;
