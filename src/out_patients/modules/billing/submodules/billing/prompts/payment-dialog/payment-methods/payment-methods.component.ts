@@ -19,7 +19,10 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../../BillingApiConstant";
 import { PaymentService } from "@core/services/payment.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
-
+import { MatDialog } from "@angular/material/dialog";
+import { OnlinePaymentPaidPatientComponent } from '../../online-payment-paid-patient/online-payment-paid-patient.component';
+import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
+import { BillingService } from "../../../billing.service";
 @Component({
   selector: "billing-payment-methods",
   templateUrl: "./payment-methods.component.html",
@@ -55,7 +58,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private http: HttpService,
     private paymentService: PaymentService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private matdialog: MatDialog,
+    private BillingService: BillingService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -169,6 +174,23 @@ export class BillingPaymentMethodsComponent implements OnInit {
   }
 
   async paymentButtonAction(button: any) {
+    console.log(button);
+    if(button.label == 'Search')
+    {
+      this.matdialog.open(OnlinePaymentPaidPatientComponent, {
+        maxWidth: "90vw",
+        height: "70vh"
+      })
+      // const appointmentSearch = this.matdialog.open(AppointmentSearchComponent, {
+      //   maxWidth: "100vw",
+      //   width: "98vw",
+      //   data: {
+      //     phoneNumber: '',
+      //     maxid: this.BillingService.activeMaxId,
+      //     onlinepayment: true
+      //   },
+      // });
+    }
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
     if (button.type == "uploadBillTransaction") {
