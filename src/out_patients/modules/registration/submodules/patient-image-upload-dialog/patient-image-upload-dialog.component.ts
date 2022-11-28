@@ -45,19 +45,45 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
   }
 
   public ngAfterViewInit() {
-    navigator.mediaDevices.getUserMedia({
-      video: { width: 300, height: 250 },
-      audio: false
-    }).then(MediaStream => {
-      this.video.nativeElement.srcObject = MediaStream;
-      // this.video.nativeElement.play();
-    })
+    let self = this;
+    // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    //   console.log('Initializing');
+    //   navigator.mediaDevices.getUserMedia({
+    //     video: { width: 300, height: 250 },
+    //     audio: false
+    //   }).then(MediaStream => {
+    //     self.video.nativeElement.srcObject = MediaStream;
+    //     // this.video.nativeElement.play();
+    //   })
+    // }
+
+
+
+    var enumeratorPromise = navigator.mediaDevices.enumerateDevices().then(function(devices) {
+      var cam = devices.find(function(device) {
+        return device.kind === "videoinput";
+      });
+        var mic = devices.find(function(device) {
+          return device.kind === "audioinput";
+        });
+        
+        if (cam ){
+          navigator.mediaDevices.getUserMedia({
+            video: { width: 300, height: 250 },
+            audio: false
+          }).then(MediaStream => {
+            self.video.nativeElement.srcObject = MediaStream;
+            // this.video.nativeElement.play();
+          })
+        }
+      });
   }
 
    close() {
     this.identityImage = '';
     this.base64textString = undefined;
-    this.identityImage.nativeElement.value = '';
+    if(this.identityImage)
+      this.identityImage.nativeElement.value = '';
     this.webCameraOff();
     this.dialogRef.close();
   }
@@ -113,7 +139,8 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
     }
 
     public webCameraOff(){
-      const stream = this.video.nativeElement.srcObject;
+      var stream = this.video.nativeElement.srcObject;
+      if (stream && stream.getTracks()) {
       const tracks = stream.getTracks();
   
       tracks.forEach((track: any) => {
@@ -121,5 +148,6 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
       });
   
       this.video.nativeElement.srcObject = null;
+    }
     }
 }
