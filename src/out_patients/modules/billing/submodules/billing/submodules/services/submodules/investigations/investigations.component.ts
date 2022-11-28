@@ -181,10 +181,23 @@ export class InvestigationsComponent implements OnInit {
         item["sno"] = index + 1;
         return item;
       });
+    ////GAV-1280  Adding Investigations with same profile
+    if ($event.data.billItem.profileId == 1) {
+      this.http
+        .get(BillingApiConstants.gettestprofileid($event.data.billItem.itemId))
+        .subscribe((res: any) => {
+          this.childItems = this.childItems.filter(
+            (c: any) => !res.includes(c)
+          );
+        });
+    }
+
     this.data = [...this.billingService.InvestigationItems];
     if (this.data.length == 0) {
       this.defaultPriorityId = 1;
       this.zeroPriceExist = false;
+      ////GAV-1280  Adding Investigations with same profile
+      this.childItems = [];
       this.billingService.changeBillTabStatus(false);
     } else if (this.data.length == 1) {
       this.defaultPriorityId = this.data[0].priority;
@@ -246,7 +259,16 @@ export class InvestigationsComponent implements OnInit {
               "Investigations can not have different priorities"
             );
             await errorDialog.afterClosed().toPromise();
-            this.differentPriorityExist = true;
+            ////GAV-907
+            for (var i = 0; i < this.data.length; i++) {
+              if (this.data[i].priority != res.$event.value) {
+                this.differentPriorityExist = true;
+                break;
+              } else {
+                this.defaultPriorityId = res.$event.value;
+                this.differentPriorityExist = false;
+              }
+            }
           } else {
             this.differentPriorityExist = false;
             this.checkTableValidation();

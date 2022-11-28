@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   ApiUrl: "",
   cookieUrl: "localhost",
+  passwordResetUrl: "https://selfheal.maxhealthcare.com/resetaccount",
   //dev environment urls
   CommonApiUrl: "http://172.30.0.16:1009/",
   PatientApiUrl: "http://172.30.0.16:1008/",
@@ -19,7 +20,7 @@ export const environment = {
   crystalReportBaseUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/",
 
   //local envionment urls for testing
-  IdentityServerUrl: "https://localhost/",
+  IdentityServerUrl: "https://localhost:5001/",
   IentityServerRedirectUrl: "http://localhost:8100/",
   clientId: "hispwa",
 };

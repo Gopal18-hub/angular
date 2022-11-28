@@ -15,7 +15,8 @@ export namespace ApiConstants {
     IACode: string,
     RegistrationNo: number,
     LocationId: number,
-    DoctorId: number
+    DoctorId: number,
+    IsConsult: boolean
   ) => {
     return (
       environment.BillingApiUrl +
@@ -24,10 +25,17 @@ export namespace ApiConstants {
       "/" +
       RegistrationNo +
       "/" +
-      LocationId +
-      "?" +
-      DoctorId
+      LocationId + 
+      "?IsConsult=" +
+      IsConsult
     );
   };
   // export const getPermissions = `${environment.IdentityServerUrl}api/MaxPermission/getpermissionmatrixrolewise`;
+
+  export const getPOSMachineMaster = (
+    locationId: number,
+    stationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/GetPosMachineMaster/${stationId}/${locationId}`;
+  };
 }

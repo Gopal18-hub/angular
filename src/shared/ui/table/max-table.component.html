@@ -93,20 +93,22 @@
               (click)="columnClickFun(element, col)"
               class="type-{{ displayColumnsInfo[col]?.type }}"
             >
-              <ng-container
-                *ngIf="displayColumnsInfo[col].type"
-                [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
-                [ngTemplateOutletContext]="{
-                  $implicit: {
-                    output: element[col],
-                    config: config,
-                    col: col,
-                    element: element,
-                    index: i,
-                    tableForm: tableForm
-                  }
-                }"
-              ></ng-container>
+              <ng-container *ngIf="displayColumnsInfo[col]?.type">
+                <ng-container
+                  [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
+                  [ngTemplateOutletContext]="{
+                    $implicit: {
+                      output: element[col],
+                      config: config,
+                      col: col,
+                      element: element,
+                      index: i,
+                      tableForm: tableForm
+                    }
+                  }"
+                >
+                </ng-container>
+              </ng-container>
             </td>
           </ng-container>
 

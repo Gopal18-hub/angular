@@ -17,6 +17,10 @@
     mat-form-field {
       background-color: #fff;
     }
+    .mat-error{
+      margin-top: 9px;
+      white-space: break-spaces;
+    }
   }
 
   .wt-nowrap {
@@ -33,5 +37,11 @@
   }
   .h-62 {
     height: 62vh;
+  }
+  .api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .w-29{
+    width: 29%;
   }
 }

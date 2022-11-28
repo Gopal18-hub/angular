@@ -23,6 +23,7 @@ import { SimilarPatientDialog } from "@modules/registration/submodules/op-regist
 import { ActivatedRoute, Router } from "@angular/router";
 import { LookupService } from "@core/services/lookup.service";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
+import { MaxHealthSnackBar, MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 @Component({
   selector: "out-patients-patient-history",
   templateUrl: "./patient-history.component.html",
@@ -44,7 +45,7 @@ export class PatientHistoryComponent implements OnInit {
       mobile: {
         title: "Mobile No",
         type: "tel",
-        pattern: "^[1-9]{1}[0-9]{9}",
+        // pattern: "^[1-9]{1}[0-9]{9}",
       },
       fromdate: {
         type: "date",
@@ -367,7 +368,8 @@ export class PatientHistoryComponent implements OnInit {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private snackbar: MaxHealthSnackBarService,
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -517,6 +519,9 @@ export class PatientHistoryComponent implements OnInit {
         if (digit == 10) {
           this.mobilechange();
         }
+        else{
+          this.snackbar.open("Invalid Mobile No",'error');
+        }
       }
     });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
@@ -571,6 +576,7 @@ export class PatientHistoryComponent implements OnInit {
   mobilechange() {
     console.log("mobile changed");
     this.matDialog.closeAll();
+    this.apiProcessing = true;
     console.log(this.similarContactPatientList.length);
     this.http
       .post(ApiConstants.similarSoundPatientDetail, {
@@ -592,6 +598,7 @@ export class PatientHistoryComponent implements OnInit {
               // dialogRef.afterClosed().subscribe(result=>{
               //   console.log(result);
               // })
+              this.apiProcessing = false;
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
@@ -615,17 +622,17 @@ export class PatientHistoryComponent implements OnInit {
                   this.similarContactPatientList = [];
                 });
             } else {
-              this.patienthistoryform.controls["mobile"].setErrors({
-                incorrect: true,
-              });
-              this.questions[1].customErrorMessage = "Invalid Mobile No";
+              this.apiProcessing = false;
+              this.snackbar.open("Invalid Mobile No", 'error');
               console.log("no data found");
             }
           }
         },
         (error) => {
           console.log(error);
-          this.msgdialog.info(error.error);
+          this.apiProcessing = false;
+          this.snackbar.open(error.error, 'error');
+          // this.msgdialog.info(error.error);
         }
       );
   }
@@ -635,25 +642,21 @@ export class PatientHistoryComponent implements OnInit {
     this.clearbtn = false;
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
     let iacode = this.patienthistoryform.value.maxid.split(".")[0];
-    this.http
+    if(regnumber)
+    {
+      this.http
       .get(ApiConstants.getregisteredpatientdetails(iacode, regnumber))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: getRegisteredPatientDetailsModel[]) => {
           console.log(resultData);
           if (resultData == null) {
-            this.patienthistoryform.controls["maxid"].setErrors({
-              incorrect: true,
-            });
-            this.questions[0].customErrorMessage = "Invalid MaxID";
+            this.snackbar.open('Registration number does not exist', 'error');
             // this.msgdialog.info("Registration number does not exist");
             this.apiProcessing = false;
             this.showtable = true;
           } else if (resultData.length == 0) {
-            this.patienthistoryform.controls["maxid"].setErrors({
-              incorrect: true,
-            });
-            this.questions[0].customErrorMessage = "Invalid MaxID";
+            this.snackbar.open('Registration number does not exist', 'error');
             // this.msgdialog.info("Registration number does not exist");
             this.apiProcessing = false;
             this.showtable = true;
@@ -688,15 +691,23 @@ export class PatientHistoryComponent implements OnInit {
         },
         (error) => {
           console.log(error);
-          this.patienthistoryform.controls["maxid"].setErrors({
-            incorrect: true,
-          });
-          this.questions[0].customErrorMessage = "Invalid MaxID";
-          this.msgdialog.info("Registration number does not exist");
+          // this.patienthistoryform.controls["maxid"].setErrors({
+          //   incorrect: true,
+          // });
+          // this.questions[0].customErrorMessage = "Invalid MaxID";
+          this.snackbar.open('Registration number does not exist', 'error');
           this.apiProcessing = false;
           this.showtable = true;
         }
       );
+    }
+    else
+    {
+      this.snackbar.open("Invalid Max ID", 'error');
+      this.apiProcessing = false;
+      this.showtable = true;
+    }
+    
   }
 
   patienthistorysearch() {
@@ -849,7 +860,7 @@ export class PatientHistoryComponent implements OnInit {
         event.row.billType == "OPD" ||
         event.row.billType == "OPD Bill"
       ) {
-        this.openReportModal("billingreport");
+        this.openReportModal("billdetailsreport");
       } else if (event.row.billType == "OP Refund") {
         this.openReportModal("refundReport");
       } else {
@@ -879,7 +890,7 @@ export class PatientHistoryComponent implements OnInit {
           locationID: this.hsplocationId,
         }
       );
-    } else if (btnname == "billingreport") {
+    } else if (btnname == "billdetailsreport") {
       this.reportService.openWindow("OPD Report - " + this.billno, btnname, {
         opbillid: this.billId,
         locationID: this.hsplocationId,

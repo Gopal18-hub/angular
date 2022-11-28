@@ -1,0 +1,109 @@
+<section class="h-full online-search-dialog-wrapper">
+    <!-- Header & Cross Icon-->
+    <div>
+        <mat-label class="max-health-primary-color font-base font-semi-bold">Online Payment Paid Patient List</mat-label>
+        <mat-icon mat-dialog-close class="float-right cursor-pointer max-dialog-close-icon" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+    </div>
+    <!-- First Row -->
+    <div class="w-full flex align-items-center p-1 border-radius-lg mt-1" style="background-color: #F6F6F6;">
+        <div>
+            <mat-label class="nowrap clr-primary font-semi-bold">Name</mat-label>
+        </div>
+        <div class="ml-1 w-1/10 bg-white border-radius-md">
+            <maxhealth-question
+                [question]="questions[0]"
+                [form]="onlinesearchform"
+                [questions]="questions[0]"
+                [index]="0"
+            >
+            </maxhealth-question>
+        </div>
+        <div class="ml-2">
+            <mat-label class="nowrap clr-primary font-semi-bold">Booking ID</mat-label>
+        </div>
+        <div class="ml-1 w-1/10 bg-white border-radius-md">
+            <maxhealth-question
+                [question]="questions[1]"
+                [form]="onlinesearchform"
+                [questions]="questions[1]"
+                [index]="1"
+            >
+            </maxhealth-question>
+        </div>
+        <div class="ml-2">
+            <mat-label class="nowrap clr-primary font-semi-bold">Phone</mat-label>
+        </div>
+        <div class="ml-1 w-1/10 bg-white border-radius-md label">
+            <maxhealth-question
+                [question]="questions[2]"
+                [form]="onlinesearchform"
+                [questions]="questions[2]"
+                [index]="2"
+            >
+            </maxhealth-question>
+        </div>
+        <div class="h-full flex w-2/5 p-1 border-radius-md ml-1" style="background-color:#D8D8D8;">
+            <div class="ml-1 h-full">
+                <maxhealth-question
+                    [question]="questions[3]"
+                    [form]="onlinesearchform"
+                    [questions]="questions[3]"
+                    [index]="3"
+                >
+                </maxhealth-question>
+            </div>
+            <div class="ml-1">
+                <mat-label class="clr-primary font-semi-bold">From Date</mat-label>
+            </div>
+            <div class="ml-1 w-3/10 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[4]"
+                    [form]="onlinesearchform"
+                    [questions]="questions[4]"
+                    [index]="4"
+                >
+                </maxhealth-question>
+            </div>
+            <div class="ml-3">
+                <mat-label class="clr-primary font-semi-bold">To Date</mat-label>
+            </div>
+            <div class="ml-1 w-3/10 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[5]"
+                    [form]="onlinesearchform"
+                    [questions]="questions[5]"
+                    [index]="5"
+                >
+                </maxhealth-question>
+            </div>
+        </div>
+        <div class="flex searchbtn ml-3">
+            <button mat-raised-button color="primary" type="submit" class="searchbtn" (click)="search()">
+                <img src="assets/lens.svg" class="lens-icon">
+                Search
+            </button>
+        </div>
+        <div class="float-right btn">
+            <button mat-raised-button class="ml-1" color="primary" type="submit" [disabled]="!onlinesearchform.dirty" (click)="clear()">Clear</button>
+        </div>
+    </div>
+    <!-- Second Row -->
+    <!-- <div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div> -->
+    <div class="w-full h-4/5 mt-2">
+        <maxhealth-table
+            [config]="config"
+            [data]="data"
+            #table
+        ></maxhealth-table>
+    </div>
+    <!-- Third Row -->
+    
+    <!-- Fourth Row -->
+
+    <div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+
+</section>

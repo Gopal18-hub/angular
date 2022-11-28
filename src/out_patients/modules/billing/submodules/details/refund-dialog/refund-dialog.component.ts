@@ -39,81 +39,121 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     },
     //cash
     cashamount: {
+      title:"Amount",
       type: "number",
       defaultValue: "0.00",
+      required: true,
     },
     //cheque
     chequemount: {
+      title:"Amount",
       type: "number",
       defaultValue: "0.00",
+      required: true,
     },
     chequeno: {
-      type: "number"
+      title:"Cheque/NEFT No.",
+      type: "number",
+      required: true,
     },
     chequeissuedate: {
+      title:"Issue Date",
       type: "date",
       maximum: new Date(),
       defaultValue: new Date(),
+      required: true,
     },
     chequevalidity: {
+      title:"Validity",
       type: "date",
       defaultValue: new Date(),
+      required: true,
     },
     chequebankname: {
+      title:"Bank Name",
       type: "dropdown",
-      options: this.bankname
+      options: this.bankname,
+      required: true,
     },
     chequebranchname: {
-      type: "string"
+      title:"Branch Name",
+      type: "string",
+      required: true,
     },
      //credit
     creditamount: {
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     },
     creditcardtype:{
+      title:"Card Type",
       type: "dropdown",
-      options: this.creditcard
+      options: this.creditcard,
+      required: true,
     }, 
     creditcardno: {
-      type: "number"
+      title:"Card No.",
+      type: "number",
+      required: true,
     },
     creditbatchno:{
-       type: "string"
+      title:"Batch No.",
+      type: "string",
+      required: true,
     }, 
      //online
     onlineamount: {
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     },
     onlinetransacid: {
-      type: "string"
+      title:"Transaction ID",
+      type: "string",
+      required: true,
     },
     onlinebookingid: {
-      type: "string"
+      title:"Booking ID",
+      type: "string",
+      required: true,
     }, 
     //mobile
     mobileamount:{
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     },
     mobiletransactionid: {
-      type: "string"
+      title:"Transaction ID",
+      type: "string",
+      required: true,
     },
     mobilemerchantid: {
-      type: "string"
+      title:"Merchant ID",
+      type: "string",
+      required: true,
     },
      
     //upi
     upiamount : {
+      title:"Amount",
       type: "number",
-      defaultValue: "0.00"
+      defaultValue: "0.00",
+      required: true,
     }, 
     upino: {
-      type: "number"
+      title:"UPI No.",
+      type: "number",
+      required: true,
     },
     upibatchno: {
-      type: "string"
+      title:"Batch No.",
+      type: "string",
+      required: true,
     }
     },
   };
@@ -127,6 +167,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   @ViewChild(PaymentMethodsComponent) paymentmethod! : PaymentMethodsComponent;
+  @ViewChild('patientidentity') panform: any;
 
   selected: any = 0;
   forcash: boolean = false;
@@ -241,8 +282,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this.depositamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2);
     this.discountamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2);
     // this.due = this.due.toFixed(2);
-    this.totaldue = this.due.toFixed(2);
-    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
+    this.totaldue = this.data.refundamount;
+    this.patientIdentityInfo = { patientinfo: this.data.patientinfo };
     this.getpaymentmode();
     this.getbankname();
     this.getcreditcard();
@@ -256,6 +297,19 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.otpcheck.bind(this)
     )
     this.mopcheck();
+
+    this.dueform.valueChanges.subscribe(() => {
+      this.validationcheck();
+    })
+    this.panform.patientidentityform.controls['panno'].valueChanges.subscribe(() => {
+      if(this.panform.patientidentityform.controls['panno'].status == "VALID")
+      {
+        this.submitbtnflag = false;
+      }
+      else{
+        this.submitbtnflag = true;
+      }
+    })
   }
   getbankname()
   {
@@ -283,6 +337,101 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     })
     this.questions[9] = {...this.questions[9]};
   }
+  submitbtnflag: boolean = true;
+  validationcheck()
+  {
+    console.log(this.panform);
+    //cash
+    if(this.selected == 0)
+    {
+      this.submitbtnflag = false;
+    }
+    //cheque
+    else if(this.selected == 1)
+    {
+      if(
+        (this.dueform.value.chequemount != '' &&  this.dueform.value.chequemount != undefined && this.dueform.value.chequemount != null) &&
+        (this.dueform.value.chequeno  != '' &&  this.dueform.value.chequeno  != undefined && this.dueform.value.chequeno != null) &&
+        (this.dueform.value.chequeissuedate != '' &&  this.dueform.value.chequeissuedate != undefined && this.dueform.value.chequeissuedate != null) &&
+        (this.dueform.value.chequevalidity != '' &&  this.dueform.value.chequevalidity != undefined && this.dueform.value.chequevalidity != null) &&
+        (this.dueform.value.chequebankname != '' &&  this.dueform.value.chequebankname != undefined && this.dueform.value.chequebankname != null) &&
+        (this.dueform.value.chequebranchname != '' &&  this.dueform.value.chequebranchname != undefined && this.dueform.value.chequebranchname != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+     
+    }
+    //credit
+    else if(this.selected == 2)
+    {
+      if(
+        (this.dueform.value.creditamount != '' &&  this.dueform.value.creditamount != undefined && this.dueform.value.creditamount != null) &&
+        (this.dueform.value.creditcardtype  != '' &&  this.dueform.value.creditcardtype  != undefined && this.dueform.value.creditcardtype != null) &&
+        (this.dueform.value.creditcardno != '' &&  this.dueform.value.creditcardno != undefined && this.dueform.value.creditcardno != null) &&
+        (this.dueform.value.creditbatchno != '' &&  this.dueform.value.creditbatchno != undefined && this.dueform.value.creditbatchno != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+    //online
+    else if(this.selected == 3)
+    {
+      if(
+        (this.dueform.value.onlineamount != '' &&  this.dueform.value.onlineamount != undefined && this.dueform.value.onlineamount != null) &&
+        (this.dueform.value.onlinetransacid  != '' &&  this.dueform.value.onlinetransacid  != undefined && this.dueform.value.onlinetransacid != null) &&
+        (this.dueform.value.onlinebookingid != '' &&  this.dueform.value.onlinebookingid != undefined && this.dueform.value.onlinebookingid != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+    //mobile
+    else if(this.selected == 4)
+    {
+      if(
+        (this.dueform.value.mobileamount != '' &&  this.dueform.value.mobileamount != undefined && this.dueform.value.mobileamount != null) &&
+        (this.dueform.value.mobiletransactionid  != '' &&  this.dueform.value.mobiletransactionid  != undefined && this.dueform.value.mobiletransactionid != null) &&
+        (this.dueform.value.mobilemerchantid != '' &&  this.dueform.value.mobilemerchantid != undefined && this.dueform.value.mobilemerchantid != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+    //upi
+    else if(this.selected == 5)
+    {
+      if(
+        (this.dueform.value.upiamount != '' &&  this.dueform.value.upiamount != undefined && this.dueform.value.upiamount != null) &&
+        (this.dueform.value.upino  != '' &&  this.dueform.value.upino  != undefined && this.dueform.value.upino != null) &&
+        (this.dueform.value.upibatchno != '' &&  this.dueform.value.upibatchno != undefined && this.dueform.value.upibatchno != null)
+      )
+      {
+        this.submitbtnflag = false;
+      }
+      else
+      {
+        this.submitbtnflag = true;
+      }
+    }
+  }
   mopcheck()
   {
     if(this.data.mop == 'Cash')
@@ -298,6 +447,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.formobile = true;
       this.forupi = true;
       this.mop = 1;
+      this.submitbtnflag = false;
     }
     else if(this.data.mop == 'Cheque')
     {
@@ -574,8 +724,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0
+              )
             {
+
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
               .subscribe(value => {
@@ -608,7 +761,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0)
             {
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
@@ -652,7 +806,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0)
             {
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
@@ -686,7 +841,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
           if(res[0].successFlag == true)
           {
-            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0 && 
+              this.cancelVisitNumberinRefundList.objVisitDataTable.length > 0)
             {
               this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
               .pipe(takeUntil(this._destroying$))
@@ -838,28 +994,36 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   }
   cancelvisitrequestbody()
   {
-    var dtlist;
+    var dtlist: any = [];
     this.billDetailService.sendforapproval.forEach((item: any) => {
       console.log(item);
       dtlist = this.billDetailService.serviceList.filter((i: any) => {
-        return i.itemid == item.itemid;
+        return i.itemid == item.itemid && item.serviceId == 25;
       }) 
     });
+    console.log(dtlist);
     this.cancelVisitNumberinRefundList.objVisitDataTable = [] as Array<objVisitDataTable>;
-    this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.forEach((item: any) => {
-      this.cancelVisitNumberinRefundList.cancelReasonID = Number(this.data.reasonid);
-      this.cancelVisitNumberinRefundList.operatorID = Number(this.cookie.get('UserId'));
-      this.cancelVisitNumberinRefundList.locationId = Number(this.cookie.get('HSPLocationId'));
-      this.cancelVisitNumberinRefundList.objVisitDataTable.push({
-        id: item.id,
-        visitId: 0,
-        visitno: item.visitNo,
-        deleted: 1,
-        ssn: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
-        uhid: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
-        registrationno : this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid.split('.')[1]
+    if(dtlist.length > 0)
+    {
+      this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.forEach((item: any) => {
+        this.cancelVisitNumberinRefundList.cancelReasonID = Number(this.data.reasonid);
+        this.cancelVisitNumberinRefundList.operatorID = Number(this.cookie.get('UserId'));
+        this.cancelVisitNumberinRefundList.locationId = Number(this.cookie.get('HSPLocationId'));
+        this.cancelVisitNumberinRefundList.objVisitDataTable.push({
+          id: item.id,
+          visitId: 0,
+          visitno: item.visitNo,
+          deleted: 1,
+          ssn: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+          uhid: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+          registrationno : this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid.split('.')[1]
+        })
       })
-    })
+    }
+    else
+    {
+      this.cancelVisitNumberinRefundList.objVisitDataTable = [] as Array<objVisitDataTable>;
+    }
     console.log(this.cancelVisitNumberinRefundList);
     return this.cancelVisitNumberinRefundList;
   }

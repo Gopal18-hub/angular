@@ -23,7 +23,7 @@ export namespace FormReport {
           placeholder: "---Equipment---",
 
           title: "Equipment Name",
-
+          required: true,
           // defaultValue: "0",
 
           optionsModelConfig: {
@@ -33,7 +33,7 @@ export namespace FormReport {
               title: "name",
 
               value: "id",
-              filter:"hsplocationid"
+              filter: "hsplocationid",
             },
           },
 
@@ -51,19 +51,47 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
-          required: true,
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "EquipToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "EquipToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
-          required: true,
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "EquipFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "EquipFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
       },
     },
     form: {
       layout: {
-        Cmb_Equip: "w-full",
+        Cmb_Equip: "w-full mt-0 !important",
       },
       actionItems: [
         {
@@ -141,6 +169,7 @@ export namespace FormReport {
       layout: {
         locationid: "w-full",
         openScrollFor: "w-full",
+        RepType: "w-screen",
       },
       actionItems: [
         {
@@ -239,16 +268,20 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          // required: true,
+          defaultValue: new Date(),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          // required: true,
+          defaultValue: new Date(),
         },
         SelectedLocationsId: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Select Organization---",
           title: "Organization",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -329,16 +362,40 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
-          //minimum: Reportconstants.minimumDate["oneMonth"],
-          //maximum: new Date(),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
-          // minimum: Reportconstants.minimumDate["oneMonth"],
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
@@ -372,7 +429,6 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "YYYY/MM/dd",
       properties: {
         specilizationName: {
           type: "hidden",
@@ -410,13 +466,40 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpEndDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
           maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpStartDate",
+              type: "dateMinWithDays",
+              days: 30,
+            },
+          ],
         },
       },
     },
@@ -465,11 +548,39 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
       },
     },
@@ -665,7 +776,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        MemberShipNo: "w-screen",
+        MemberShipNo: "w-full",
       },
       actionItems: [
         {
@@ -714,7 +825,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        membershipno: "w-screen",
+        membershipno: "w-full",
       },
       actionItems: [
         {
@@ -740,7 +851,6 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
       properties: {
         LocationName: {
           type: "hidden",
@@ -749,13 +859,27 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtptodate",
+              type: "dateMin",
+            },
+          ],
         },
         dtptodate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
-          minimum: new Date("From Date"),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpfromdate",
+              type: "dateMax",
+            },
+          ],
         },
         locationid: {
           type: "autocomplete",
@@ -817,15 +941,48 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         dtpFromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
         cmbLocation: {
           type: "dropdown",
@@ -839,16 +996,25 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
         cmbopenscrolltype: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Open Scroll---",
           title: "Open Scroll For",
           defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`,
             fields: {
-              title: "scrollName",
+              title: "autocomplete",
               value: "flag",
             },
           },
@@ -898,21 +1064,55 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         dtpfrom: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpto",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpto",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpto: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpfrom",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpfrom",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: true,
+          // defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -920,6 +1120,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -968,12 +1177,42 @@ export namespace FormReport {
         dtpFromDate: {
           type: "date",
           title: "FromDate",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         dtpToDate: {
           type: "date",
           title: "ToDate",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "dtpFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
         // location: {
         //   type: "dropdown",
@@ -981,7 +1220,7 @@ export namespace FormReport {
         //   title: "Location",
         // },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           //defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
@@ -996,11 +1235,11 @@ export namespace FormReport {
         rbIP: {
           type: "radio",
           title: "Report Type",
+          defaultValue: "true",
           options: [
-            { title: "IP", value: true },
-            { title: "OP", value: false },
+            { title: "IP", value: "true" },
+            { title: "OP", value: "false" },
           ],
-          defaultValue: true,
         },
       },
     },
@@ -1047,21 +1286,55 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         FromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
 
         locationID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -1069,6 +1342,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -1111,21 +1393,55 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         FromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
 
         locationID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -1133,6 +1449,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -1175,21 +1500,55 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        locationName: {
+          type: "hidden",
+        },
         FromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
 
         locationID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -1197,15 +1556,24 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "locationName",
+
+              type: "value",
+            },
+          ],
         },
 
         sortBy: {
           type: "radio",
           options: [
-            { title: "Summary", value: 1 },
-            { title: "Details", value: 2 },
+            { title: "Summary", value: "1" },
+            { title: "Details", value: "2" },
           ],
-          defaultValue: "Summary",
+          defaultValue: "1",
         },
       },
     },
@@ -1255,21 +1623,54 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        organisationName: {
+          type: "hidden",
+        },
         ValueFromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
 
         SelectedLocationsId: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "--- Select Organization---",
           title: "Organization",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/locationlookup/0`,
             fields: {
@@ -1277,6 +1678,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "organisationName",
+
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -1328,30 +1738,62 @@ export namespace FormReport {
       type: "object",
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
+        organisationName: {
+          type: "hidden",
+        },
         ReportChecked: {
           type: "radio",
           options: [
-            { title: "Summary", value: 1 },
-            { title: "Details", value: 2 },
+            { title: "Summary", value: "1" },
+            { title: "Details", value: "2" },
           ],
-          defaultValue: "Summary",
+          defaultValue: "1",
         },
 
         ValueFromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
 
         SelectedLocationsId: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "--- Select Organization---",
           title: "Organization",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/locationlookup/0`,
             fields: {
@@ -1359,6 +1801,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "organisationName",
+
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -1366,6 +1817,7 @@ export namespace FormReport {
       layout: {
         location: "w-full",
         SelectedLocationsId: "w-full",
+        ReportChecked: "w-full",
       },
       actionItems: [
         {
@@ -1373,13 +1825,13 @@ export namespace FormReport {
           type: "crystalReport",
           reportConfig: {
             reportName: "OP Discount Report",
-            reportEntity: "opDiscountReport",
+            reportEntity: "OPDiscountReport",
           },
         },
         {
           label: "Export",
           type: "export",
-          reportEntity: "opDiscountReport",
+          reportEntity: "OPDiscountReport",
           fileName: "Op Discount Report.xls",
           contenType: "application/vnd.ms-excel",
         },
@@ -1594,7 +2046,7 @@ export namespace FormReport {
     childrens: [{ ...DetailedReport }, { ...SummaryReport }],
   };
 
-  export const MiscellaneousReportMIS = {
+  export const MiscellaneousMISReport = {
     reportName: "Miscellaneous Billing Report",
     filterForm: {
       title: "",
@@ -1604,17 +2056,47 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
+          maximum: new Date(),
+          // required: true,
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "FromDate",
+              // type: "dateMinWithDays",
+              // days: 30,
+            },
+          ],
         },
 
         ChkAllLocation: {
           type: "checkbox",
-          options: [{ title: "Location", value: 1 }],
+          options: [{ title: "Location", value: "1" }],
         },
       },
     },

@@ -351,6 +351,7 @@
             cdkOverlayOrigin
             #trigger="cdkOverlayOrigin"
             class="editable-textarea-button w-full"
+            disableRipple="true"
           >
             <span
               *ngIf="question.label"
@@ -480,7 +481,6 @@
             >{{ question.label }}
           </label>
           <mat-radio-group
-            formControlName="floatLabel"
             class="flex flex-column"
             [formControlName]="question.key"
             [value]="question.value"
@@ -657,6 +657,7 @@
             [min]="question.minimum"
             [disabled]="question.disabled"
             autocomplete="off"
+            (keyup)="keyUpSetDateFormat($event)"
           />
           <mat-datepicker-toggle
             matSuffix
@@ -670,6 +671,9 @@
             </button>
           </mat-datepicker-actions> -->
           </mat-datepicker>
+          <mat-error *ngIf="isValid  && !question.customErrorMessage">
+            {{ question.label }} is <strong>Invalid</strong>
+          </mat-error>
           <mat-error *ngIf="!isValid && !isCorrect">
             {{ question.label }} is <strong>required</strong>
           </mat-error>

@@ -17,7 +17,12 @@ import { DepositService } from "@core/services/deposit.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../../BillingApiConstant";
-
+import { PaymentService } from "@core/services/payment.service";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { MatDialog } from "@angular/material/dialog";
+import { OnlinePaymentPaidPatientComponent } from '../../online-payment-paid-patient/online-payment-paid-patient.component';
+import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
+import { BillingService } from "../../../billing.service";
 @Component({
   selector: "billing-payment-methods",
   templateUrl: "./payment-methods.component.html",
@@ -51,7 +56,11 @@ export class BillingPaymentMethodsComponent implements OnInit {
     private formService: QuestionControlService,
     private depositservice: DepositService,
     private messageDialogService: MessageDialogService,
-    private http: HttpService
+    private http: HttpService,
+    private paymentService: PaymentService,
+    private calculateBillService: CalculateBillService,
+    private matdialog: MatDialog,
+    private BillingService: BillingService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -162,5 +171,162 @@ export class BillingPaymentMethodsComponent implements OnInit {
   clearTabForm(tab: any) {
     console.log(tab);
     this.paymentForm[tab.key].reset();
+  }
+
+  async paymentButtonAction(button: any) {
+    console.log(button);
+    if(button.label == 'Search')
+    {
+      const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
+        maxWidth: "90vw",
+        height: "70vh"
+      })
+      onlinedialog.afterClosed().subscribe((res) => {
+        console.log(res);
+      })
+      // const appointmentSearch = this.matdialog.open(AppointmentSearchComponent, {
+      //   maxWidth: "100vw",
+      //   width: "98vw",
+      //   data: {
+      //     phoneNumber: '',
+      //     maxid: this.BillingService.activeMaxId,
+      //     onlinepayment: true
+      //   },
+      // });
+    }
+    const payloadData = this.paymentForm[button.paymentKey].value;
+    let module = "OPD_Billing";
+    if (button.type == "uploadBillTransaction") {
+      if (payloadData.price > 0) {
+        //  this.calculateBillService.blockActions.next(true);
+        let res = await this.paymentService.uploadBillTransaction(
+          payloadData,
+          module
+        );
+        await this.processPaymentApiResponse(button, res);
+      } else {
+        const errorDialogRef = this.messageDialogService.warning(
+          "Please Give Proper Amount."
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
+    } else if (button.type == "getBillTransactionStatus") {
+      if (payloadData.price > 0) {
+        // this.calculateBillService.blockActions.next(true);
+        let res = await this.paymentService.getBillTransactionStatus(
+          payloadData,
+          module
+        );
+        await this.processPaymentApiResponse(button, res);
+      } else {
+        const errorDialogRef = this.messageDialogService.warning(
+          "Please Give Proper Amount."
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
+    }
+  }
+
+  async processPaymentApiResponse(button: any, res: any) {
+    // this.calculateBillService.blockActions.next(false);
+    if (res && res.success) {
+      if (res.responseMessage && res.responseMessage != "") {
+        if (res.responseMessage == "APPROVED") {
+          if (button.paymentKey == "credit") {
+            if (res.transactionRefId) {
+              this.paymentForm["transactionid"].patchValue(
+                res.transactionRefId
+              );
+            }
+          } else if (button.paymentKey == "upi") {
+            if (res.transactionRefId) {
+              this.paymentForm["approvalno_UPI"].patchValue(
+                res.transactionRefId
+              );
+            }
+          }
+          const infoDialogRef = this.messageDialogService.info(
+            "Kindly Pay Using Machine"
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        } else if (res.responseMessage == "TXN APPROVED") {
+          if (res.pineLabReturnResponse) {
+            let bankId = 0;
+            let bank = this.bankList.filter(
+              (r: any) => r.title == res.pineLabReturnResponse.ccResAcquirerName
+            );
+            if (bank && bank.length > 0) {
+              bankId = bank[0].value;
+            }
+            if (button.payloadKey == "credit") {
+              this.paymentForm["ccNumber"].patchValue(
+                res.pineLabReturnResponse.ccResCardNo
+              );
+              this.paymentForm["creditholdername"].patchValue(
+                res.cardHolderName
+              );
+              this.paymentForm["bankName"].patchValue(bankId);
+              this.paymentForm["approvalno"].patchValue(
+                res.pineLabReturnResponse.ccResBatchNumber
+              );
+              this.paymentForm["approvalcode"].patchValue(
+                res.pineLabReturnResponse.ccResApprovalCode
+              );
+              this.paymentForm["terminalID"].patchValue(res.terminalId);
+              this.paymentForm["acquirer"].patchValue(
+                res.pineLabReturnResponse.ccResAcquirerName
+              );
+              this.paymentForm["banktid"].patchValue(
+                res.pineLabReturnResponse.ccResBankTID
+              );
+            } else if (button.payloadKey == "upi") {
+              this.paymentForm["ccNumber_UPI"].patchValue(
+                res.pineLabReturnResponse.ccResCardNo
+              );
+              this.paymentForm["cardholdername_UPI"].patchValue(
+                res.cardHolderName
+              );
+              this.paymentForm["bankname_UPI"].patchValue(bankId);
+              this.paymentForm["flagman_UPI"].patchValue(
+                res.pineLabReturnResponse.ccResBatchNumber
+              );
+              this.paymentForm["approvalcode_UPI"].patchValue(
+                res.pineLabReturnResponse.ccResApprovalCode
+              );
+              this.paymentForm["terminalID_UPI"].patchValue(res.terminalId);
+              this.paymentForm["acquirer_UPI"].patchValue(
+                res.pineLabReturnResponse.ccResAcquirerName
+              );
+              this.paymentForm["banktid"].patchValue(
+                res.pineLabReturnResponse.ccResBankTID
+              );
+            }
+          }
+        } else {
+          const infoDialogRef = this.messageDialogService.info(
+            res.responseMessage
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        }
+      }
+    } else if (res && !res.success) {
+      if (res.errorMessage && res.errorMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.errorMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      } else if (res.responseMessage && res.responseMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.responseMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
+    }
   }
 }

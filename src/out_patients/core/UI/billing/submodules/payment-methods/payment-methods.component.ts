@@ -72,7 +72,8 @@ export class PaymentMethodsComponent implements OnInit {
       }
     });
   }
-
+ 
+  activeTab: any = "Cash";
   PaymentMethodcashdeposit: any = [];
 
   defaultamount: boolean = true;
@@ -80,10 +81,11 @@ export class PaymentMethodsComponent implements OnInit {
   PaymentType: number = 1; //default cash
 
   tabChanged(event: MatTabChangeEvent) {
+    this.activeTab = event.tab.textLabel;
     this.clearpaymentmethod();
   }
 
-  async PaymentMethodvalidation() {
+  PaymentMethodvalidation() {
     this.PaymentMethodcashdeposit = this.refundform.value;
     this.depositamount = 0;
     if (Number(this.PaymentMethodcashdeposit.cashamount)) {
@@ -108,39 +110,44 @@ export class PaymentMethodsComponent implements OnInit {
       this.PaymentType = 6;
     }
     if (Number(this.depositamount < 0)) {
-      const depositamt =  this.messageDialogService.error(
+      const depositamt =  this.messageDialogService.info(
           "Amount Zero or Negative number is not Allowed"
         );
-        await depositamt.afterClosed().toPromise();
-        if(this.PaymentType == 1){
-          this.refundform.controls["cashamount"].setValue("0.00");
-          this.questions[0].elementRef.focus();
-        } 
-        else if(this.PaymentType == 2)
-        {
-          this.refundform.controls["chequeamount"].setValue("0.00");
-          this.questions[5].elementRef.focus();
-        }
-        else if(this.PaymentType == 4)
-        {
-          this.refundform.controls["creditamount"].setValue("0.00");
-          this.questions[11].elementRef.focus();
-        }
-        else if(this.PaymentType == 3)
-        {
-          this.refundform.controls["demandamount"].setValue("0.00");
-          this.questions[19].elementRef.focus();
-        }
-        else if(this.PaymentType == 8)
-        {
-          this.refundform.controls["upiamount"].setValue("0.00");
-          this.questions[44].elementRef.focus();
-        }
-        else if(this.PaymentType == 9)
-        {
-          this.refundform.controls["internetamount"].setValue("0.00");
-          this.questions[51].elementRef.focus();
-        }
+        depositamt
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          if(this.PaymentType == 1){
+            this.refundform.controls["cashamount"].setValue("0.00");
+            this.questions[0].elementRef.focus();
+          } 
+          else if(this.PaymentType == 2)
+          {
+            this.refundform.controls["chequeamount"].setValue("0.00");
+            this.questions[5].elementRef.focus();
+          }
+          else if(this.PaymentType == 4)
+          {
+            this.refundform.controls["creditamount"].setValue("0.00");
+            this.questions[11].elementRef.focus();
+          }
+          else if(this.PaymentType == 3)
+          {
+            this.refundform.controls["demandamount"].setValue("0.00");
+            this.questions[19].elementRef.focus();
+          }
+          else if(this.PaymentType == 8)
+          {
+            this.refundform.controls["upiamount"].setValue("0.00");
+            this.questions[44].elementRef.focus();
+          }
+          else if(this.PaymentType == 9)
+          {
+            this.refundform.controls["internetamount"].setValue("0.00");
+            this.questions[51].elementRef.focus();
+          }
+        });
+       
   
       } else if (this.Refundavalaiblemaount) {
       let cashlimit = this.depositservice.refundcashlimit;
@@ -149,27 +156,28 @@ export class PaymentMethodsComponent implements OnInit {
           Number(this.Refundavalaiblemaount.avalaiblemaount) &&
         this.Refundavalaiblemaount.type == "Refund"
       ) {
-        this.messageDialogService.error(
+        this.messageDialogService.info(
           "Refund Amount must be less then available amount"
         );
       } else if (
         Number(this.depositamount) > Number(cashlimit[0].cashLimit) &&
         this.PaymentType == 1
       ) {
-        this.messageDialogService.error(
+        this.messageDialogService.info(
           "Refund through Cash Cannot be more then Rs 10000"
         );
       } else if (Number(this.depositamount <= 0)) {
-        this.messageDialogService.error(
+        this.messageDialogService.info(
           "Refund Amount must not be Zero or Negative number"
         );
       }
-    }else if(Number(this.depositamount >= 200000) && this.PaymentType == 1){
-      this.messageDialogService.error("Cash amount cannot exceed Rs.199999");
-      this.questions[0].elementRef.focus();     
+    }
+    else if(Number(this.depositamount >= 200000) && this.PaymentType == 1){
+      this.messageDialogService.info("Cash amount cannot exceed Rs.199999");   
+      this.refundform.controls["cashamount"].setErrors({ incorrect: true });     
     } 
     else {
-      this.depositservice.setFormList(this.refundform.value);
+      this.depositservice.setFormList(this.refundform.value);      
     }
   }
 
@@ -219,6 +227,10 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["creditapproval"].enable();
     this.refundform.controls["creditacquiring"].enable();
     this.refundform.controls["creditterminal"].enable();
+    this.refundform.controls["posimei"].enable();
+    this.refundform.controls["creditcardtransactionid"].enable();
+    this.refundform.controls["creditvaliditydate"].enable();
+    this.refundform.controls["creditbanktid"].enable();
   }
 
   Disablecreditfields() {
@@ -229,6 +241,10 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["creditapproval"].disable();
     this.refundform.controls["creditacquiring"].disable();
     this.refundform.controls["creditterminal"].disable();
+    this.refundform.controls["posimei"].disable();
+    this.refundform.controls["creditcardtransactionid"].disable();
+    this.refundform.controls["creditvaliditydate"].disable();
+    this.refundform.controls["creditbanktid"].disable();
   }
 
   clearpaymentmethod() {
@@ -244,8 +260,8 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["demandamount"].setValue("0.00");
     this.refundform.controls["upiamount"].setValue("0.00");
     this.refundform.controls["internetamount"].setValue("0.00");
-    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo.patientinfo.mobileno);
-    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo.patientinfo.emailId);
+    this.refundform.controls["internetmobile"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.mobileno);
+    this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.emailId);
   }
 
   resetcreditcard() {
@@ -301,4 +317,78 @@ export class PaymentMethodsComponent implements OnInit {
     this._destroying$.complete();
   }
 
+  //add only required fields
+  chequemandatoryfields(){
+    if(this.refundform.value.chequeno == "" || this.refundform.value.chequeno == null
+    || this.refundform.value.chequebankname == "" || this.refundform.value.chequebankname == null
+    || this.refundform.value.chequebranchname == ""  || this.refundform.value.chequebranchname == null 
+    || this.refundform.value.chequeissuedate == "" || this.refundform.value.chequeissuedate == null
+    || this.refundform.value.chequeauth == "" || this.refundform.value.chequeauth == null
+   || Number(this.refundform.value.chequeamount) <= 0){
+    return false;
+   } else{
+     return true;
+   }
+  }
+
+//add only required fields
+  creditcardmandatoryfields(){
+    if(this.refundform.value.creditcardno == "" || this.refundform.value.creditcardno == null
+    || this.refundform.value.creditholdername == "" || this.refundform.value.creditholdername == null
+    || this.refundform.value.creditbankname == "" || this.refundform.value.creditbankname == null
+    || this.refundform.value.creditbatchno == "" || this.refundform.value.creditbatchno == null
+    || this.refundform.value.creditapproval == "" || this.refundform.value.creditapproval == null
+    || this.refundform.value.creditterminal == "" || this.refundform.value.creditterminal == null
+    || this.refundform.value.creditacquiring == "" || this.refundform.value.creditacquiring == null
+    || this.refundform.value.creditvaliditydate == "" || this.refundform.value.creditvaliditydate == null
+    || this.refundform.value.creditbanktid == "" || this.refundform.value.creditbanktid == null
+    || Number(this.refundform.value.creditamount) <= 0){
+      return false;
+     } else{
+       return true;
+     }
+  }
+
+  //add only required fields
+  demanddraftmandatoryfields(){
+    if(this.refundform.value.demandddno == "" || this.refundform.value.demandddno == null
+    || this.refundform.value.demandissuedate == "" || this.refundform.value.demandissuedate == null
+    || this.refundform.value.demandbankname == "" || this.refundform.value.demandbankname == null
+    || this.refundform.value.demandbranchname == "" || this.refundform.value.demandbranchname == null
+    || this.refundform.value.demandauth == "" || this.refundform.value.demandauth == null || Number(this.refundform.value.demandamount) <= 0){
+      return false;
+     } else{
+       return true;
+     }
+  }
+    //add only required fields
+    internetmandatoryfields(){
+      if( Number(this.refundform.value.internetamount) <= 0
+      || this.refundform.value.internetemail == "" || this.refundform.value.internetemail == null
+      || this.refundform.value.internetmobile == "" || this.refundform.value.internetmobile == null
+      || this.refundform.value.internetremarks == "" || this.refundform.value.internetremarks == null
+    ){
+        return false;
+       } else{
+         return true;
+       }
+    }
+  //add only required fields
+  upimandatoryfields(){
+    if( Number(this.refundform.value.upiamount) <= 0
+    || this.refundform.value.upiacquiring == "" || this.refundform.value.upiacquiring == null
+    || this.refundform.value.upiapproval == "" || this.refundform.value.upiapproval == null
+    || this.refundform.value.upibankname == "" || this.refundform.value.upibankname == null
+    || this.refundform.value.upibatchno == "" || this.refundform.value.upibatchno == null
+    || this.refundform.value.upicardholdername == "" || this.refundform.value.upicardholdername == null
+    || this.refundform.value.upicardno == "" || this.refundform.value.upicardno == null
+    || this.refundform.value.upivalidity == "" || this.refundform.value.upivalidity == null
+    || this.refundform.value.upiterminal == "" || this.refundform.value.upiterminal == null
+    || this.refundform.value.upitransactionid == "" || this.refundform.value.upitransactionid == null
+  ){
+      return false;
+     } else{
+       return true;
+     }
+  }
 }

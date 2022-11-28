@@ -26,6 +26,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
 import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
+import { timeStamp } from "console";
 
 @Component({
   selector: "out-patients-bill",
@@ -276,15 +277,21 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   async refreshForm() {
-    this.calculateBillService.refreshDiscount(this.formGroup);
-    this.calculateBillService.calculateDiscount();
+    //resetting discount on removing all items from Bill tab
+    if (this.billingservice.billItems.length == 0) {
+      this.resetDiscount();
+      this.formGroup.controls["discAmtCheck"].setValue(false);
+    } else {
+      this.calculateBillService.refreshDiscount(this.formGroup);
+      this.calculateBillService.calculateDiscount();
 
-    this.formGroup.controls["billAmt"].setValue(
-      this.billingservice.totalCostWithOutGst.toFixed(2)
-    );
-    this.formGroup.controls["discAmt"].setValue(
-      this.calculateBillService.totalDiscountAmt.toFixed(2)
-    );
+      this.formGroup.controls["billAmt"].setValue(
+        this.billingservice.totalCostWithOutGst.toFixed(2)
+      );
+      this.formGroup.controls["discAmt"].setValue(
+        this.calculateBillService.totalDiscountAmt.toFixed(2)
+      );
+    }
 
     this.billTypeChange(this.formGroup.value.paymentMode);
   }
@@ -380,6 +387,20 @@ export class BillComponent implements OnInit, OnDestroy {
       ) {
         this.messageDialogService.info(res.element.patient_Instructions);
       }
+    });
+    //added for uncheck coupon checkbox when uncheck the discount
+    this.formGroup.controls["discAmtCheck"].valueChanges.subscribe(
+      (value: any) => {
+        console.log(value);
+        if (value == false) {
+          this.IsValidateCoupon = false;
+        }
+      }
+    );
+
+    //added for uncheck coupon when valuechange
+    this.formGroup.controls["coupon"].valueChanges.subscribe(() => {
+      this.IsValidateCoupon = false;
     });
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -587,7 +608,7 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   onModifyDepositAmt() {
-    if (this.formGroup.value.dipositAmtEdit > 0) {
+    if (Number(this.formGroup.value.dipositAmtEdit) > 0) {
       if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
           parseFloat(this.formGroup.value.billAmt) &&
@@ -625,6 +646,11 @@ export class BillComponent implements OnInit, OnDestroy {
           parseFloat(this.formGroup.value.dipositAmt).toFixed(2)
         );
       }
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
+    } else if (this.formGroup.value.dipositAmtEdit < 0) {
+      this.formGroup.controls["dipositAmtEdit"].setValue("0.00");
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
@@ -683,7 +709,7 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe(async (result: any) => {
         if (result && "type" in result) {
           if (result.type == "yes") {
-            if (this.formGroup.value.amtPayByPatient > 0) {
+            if (Number(this.formGroup.value.amtPayByPatient) > 0) {
               if (
                 this.calculateBillService.depositDetailsData.length > 0 &&
                 this.totalDeposit == 0
@@ -735,6 +761,12 @@ export class BillComponent implements OnInit, OnDestroy {
                     ? this.billingservice.patientDetailsInfo.peMail
                     : "info@maxhealthcare.com"
                   : "info@maxhealthcare.com";
+
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.BookingNo =
+                (this.billingservice.PaidAppointments
+                  ? this.billingservice.PaidAppointments.bookingid
+                  : this.billingservice.billingFormGroup.form.value
+                      .bookingId) || "";
 
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
@@ -788,6 +820,11 @@ export class BillComponent implements OnInit, OnDestroy {
           ? this.billingservice.patientDetailsInfo.peMail
           : "info@maxhealthcare.com"
         : "info@maxhealthcare.com";
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.BookingNo =
+      (this.billingservice.PaidAppointments
+        ? this.billingservice.PaidAppointments.bookingid
+        : this.billingservice.billingFormGroup.form.value.bookingId) || "";
 
     //GAV-530 Paid Online Appointment
     let amount = 0;
@@ -1035,7 +1072,9 @@ export class BillComponent implements OnInit, OnDestroy {
         if (
           this.locationexclude.includes(
             Number(this.cookie.get("HSPLocationId"))
-          )
+          ) &&
+          this.billingservice.consultationItems &&
+          this.billingservice.consultationItems.length > 0
         ) {
           const dialogref = this.messageDialogService.confirm(
             "",
@@ -1114,6 +1153,7 @@ export class BillComponent implements OnInit, OnDestroy {
         }
       });
   }
+  duplicateflag: boolean = true;
   makePrint() {
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
@@ -1124,6 +1164,21 @@ export class BillComponent implements OnInit, OnDestroy {
         locationID: this.cookie.get("HSPLocationId"),
       }
     );
+
+    setTimeout(() => {
+      if (this.duplicateflag == true) {
+        this.http
+          .post(
+            BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
+            ""
+          )
+          .subscribe((res) => {
+            if (res.success == true) {
+              this.duplicateflag = false;
+            }
+          });
+      }
+    }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1182,7 +1237,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     console.log("Amount Pay by Patinet: ", temp);
 
-    return temp > 0 ? temp.toFixed(2) : 0;
+    return temp > 0 ? temp.toFixed(2) : "0.00";
   }
 
   depositdetails() {

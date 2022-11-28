@@ -212,24 +212,29 @@ export class BillingComponent implements OnInit, OnDestroy {
           const tempBulkInvPayload: any = [];
           res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
-              tempBulkInvPayload.push({
-                title: item.testName,
-                value: item.testID,
-                originalTitle: item.testName,
-                docRequired: item.doctorid ? true : false,
-                patient_Instructions: "",
-                item_Instructions: "",
-                serviceid: item.serviceId,
-                doctorid: item.doctorid,
-                specialization: item.specialization,
-                specializationId: item.specializationId,
-              });
-              if (item.doctorid)
-                referalDoctor = {
-                  id: item.refDocID,
-                  name: item.refDocName,
-                  specialisation: "",
-                };
+              ////GAV-1227
+              ////GAV-1274 added filter for ServiceId and TestID -
+              ////for which serviceId is null or testId is 0 user need to manually select that test
+              if (!item.isBilled && item.serviceId && item.testID) {
+                tempBulkInvPayload.push({
+                  title: item.testName,
+                  value: item.testID,
+                  originalTitle: item.testName,
+                  docRequired: item.doctorid ? true : false,
+                  patient_Instructions: "",
+                  item_Instructions: "",
+                  serviceid: item.serviceId,
+                  doctorid: item.doctorid,
+                  specialization: item.specialization,
+                  specializationId: item.specializationId,
+                });
+                if (item.doctorid)
+                  referalDoctor = {
+                    id: item.refDocID,
+                    name: item.refDocName,
+                    specialisation: "",
+                  };
+              }
             }
           });
           if (tempBulkInvPayload.length > 0) {
@@ -839,6 +844,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     ) {
       const dialogRef = this.matDialog.open(PaydueComponent, {
         width: "30vw",
+        disableClose: true,
         data: {
           dueAmount: dtPatientPastDetails[4].data,
           maxId: this.formGroup.value.maxid,

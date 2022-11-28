@@ -75,7 +75,7 @@ export class OpRegApprovalComponent implements OnInit {
     clickedRows: true,
     clickSelection: "multiple",
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -162,7 +162,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approveconfig: any = {
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -261,7 +261,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   rejectconfig: any = {
     dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+    datetimeformat: "dd/MM/yyyy HH:mm",
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -532,6 +532,9 @@ export class OpRegApprovalComponent implements OnInit {
   approvalPendingColumnClick($event: any) {
     this.modifyDialog($event.row);
   }
+  approvedRequestColumnClick($event: any) {
+    this.modifyDialog($event.row);
+  }
 
   getopapprovalpending() {
     return this.http.get(
@@ -662,6 +665,7 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   modifyDialog(modfiedapprovalPatiendDetailsForPopUp: OpdpendingrequestModel) {
+    console.log(modfiedapprovalPatiendDetailsForPopUp);
     this.patientDetails = [];
     this.modfiedPatiendDetails = [];
     if (modfiedapprovalPatiendDetailsForPopUp.operatorID == this.userId) {
@@ -708,6 +712,7 @@ export class OpRegApprovalComponent implements OnInit {
           patientDetails: this.patientDetails[0],
           modifiedDetails: this.modfiedPatiendDetails[0],
           submitButton: true,
+          submitButtononApproved: this.showapprovalaccepting ? true : false,
         },
       });
 

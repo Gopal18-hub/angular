@@ -2,11 +2,14 @@
   ::ng-deep {
     maxhealth-table {
       table {
-        width: 170% !important;
+        width: 140% !important;
         .mat-column-precaution {
           text-align: center;
         }
       }
+    }
+    .mat-select{
+      padding: 2px !important;
     }
   }
 }

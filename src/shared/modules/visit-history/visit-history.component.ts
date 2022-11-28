@@ -6,7 +6,8 @@ import { getPatientVisitHistory } from "@shared/types/getPatientVisitHistory.Int
 import { Subject, takeUntil } from "rxjs";
 import { CookieService } from "@shared/services/cookie.service";
 import { DatePipe, formatDate } from "@angular/common";
-import * as moment from "moment";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { FormGroup } from "@angular/forms";
 @Component({
   selector: "out-patients-visit-history",
   templateUrl: "./visit-history.component.html",
@@ -53,8 +54,12 @@ export class VisitHistoryComponent implements OnInit {
         type: "number",
       },
       consultationType: {
-        title: "Consultation Type",
+        title: "Service Type",
         type: "string",
+        tooltipColumn: "consultationType",
+        style: {
+          width: "120px",
+        },
       },
       amount: {
         title: "Amount",
@@ -146,30 +151,80 @@ export class VisitHistoryComponent implements OnInit {
     opGroupDoctorLog: [],
   };
   private readonly _destroying$ = new Subject<void>();
+
+  visitFormData = {
+    title: "",
+    type: "object",
+    properties: {
+      checkbox: {
+        type: "checkbox",
+        options: [{ title: "Consultation" }],
+        defaultValue: true,
+      },
+    },
+  };
+  visitform!: FormGroup;
+  questions: any;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { maxid: any; docid: any },
     private http: HttpService,
     private cookie: CookieService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private formService: QuestionControlService
   ) {
     this.maxId = data.maxid;
     this.docId = data.docid;
   }
 
   ngOnInit(): void {
+    let formResult = this.formService.createForm(
+      this.visitFormData.properties,
+      {}
+    );
+    this.visitform = formResult.form;
+    this.questions = formResult.questions;
     const id = this.maxId.split(".");
     this.iacode = id[0];
     this.regnumber = id[1];
     this.hspId = Number(this.cookie.get("HSPLocationId"));
     this.getvisithistory(this.iacode, this.regnumber, this.hspId, this.docId);
   }
+
+  ngAfterViewInit(): void {
+    this.visitform.controls["checkbox"].valueChanges.subscribe((res) => {
+      console.log(res);
+      setTimeout(() => {
+        this.getvisithistory(
+          this.iacode,
+          this.regnumber,
+          this.hspId,
+          this.docId
+        );
+      }, 100);
+    });
+  }
+
   getvisithistory(iacode: any, regnumber: any, hspId: any, docid: any) {
     this.http
-      .get(ApiConstants.getpatientvisithistory(iacode, regnumber, hspId, docid))
+      .get(
+        ApiConstants.getpatientvisithistory(
+          iacode,
+          regnumber,
+          hspId,
+          docid,
+          this.visitform.value.checkbox
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultdata) => {
           console.log(resultdata);
+          this.visithistorylist = {
+            lastConsultationData: [],
+            opPreviousDMGMappingDoctorData: [],
+            opdmgmAppingDoctorData: [],
+            opGroupDoctorLog: [],
+          };
           this.visithistorylist = resultdata;
           this.visithistorylist.lastConsultationData.forEach((e) => {
             e.visitDate = e.visitDate.replaceAll("-", "/");

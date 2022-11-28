@@ -98,26 +98,7 @@
 ::ng-deep tr.Denied:hover {
   background-color: #FF7777 !important; 
 }
-::ng-deep mat-option[maxvalue="Billed"] {
-  background-color: #9ff1ac !important;
-}
-::ng-deep mat-option[maxvalue="Partially Billed"] {
-  background-color: #f9fca6 !important;
-}
-::ng-deep mat-option[maxvalue="Denied"] {
-  background-color: #ffcaa7 !important;
-}
-::ng-deep mat-option[maxvalue="Billed"]:hover {
-  background-color: #219935 !important;
-}
 
-::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
-  background-color: #b8a52f !important;
-}
-
-::ng-deep mat-option[maxvalue="Denied"]:hover {
-  background-color: #ff7777 !important;
-}
 ::ng-deep tr.isBilled1
 {
   background-color: #9FF1AC !important;
@@ -165,17 +146,14 @@
   }
 }
 
-.searchbtn {
-  //min-width: initial !important;
-  line-height: 1.675rem;
-  height: 1.9rem !important;
-  width : 5vw!important
-
-  //line-height: 1.875rem  !important;
+.searchbtn {    
+  line-height: 1.675rem;    
+  height: 1.7rem !important;
+  width: 5vw !important;
 }
 .clr {
+  height: 1.7rem !important;
   line-height: 1.675rem;
-  height: 1.9rem !important;
 }
 .serachcss{
   
@@ -212,9 +190,9 @@
 }
 
 .bg-darkgray {
-
   background: #d8d8d8;
-  width: 31%
+  width: 32%;
+  height: 31px;
 }
 
 .bg-white {
@@ -235,4 +213,25 @@
     padding-right: 42px !important;
   } 
 }
+}
+
+::ng-deep mat-option[maxvalue="Billed"] {
+  background-color: #9ff1ac !important;
+}
+::ng-deep mat-option[maxvalue="Partially Billed"] {
+  background-color: #f9fca6 !important;
+}
+::ng-deep mat-option[maxvalue="Denied"] {
+  background-color: #ffcaa7 !important;
+}
+::ng-deep mat-option[maxvalue="Billed"]:hover {
+  background-color: #219935 !important;
+}
+
+::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
+  background-color: #b8a52f !important;
+}
+
+::ng-deep mat-option[maxvalue="Denied"]:hover {
+  background-color: #ff7777 !important;
 }
