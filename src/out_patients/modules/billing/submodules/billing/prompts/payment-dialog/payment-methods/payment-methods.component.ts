@@ -177,9 +177,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
     console.log(button);
     if(button.label == 'Search')
     {
-      this.matdialog.open(OnlinePaymentPaidPatientComponent, {
+      const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
         maxWidth: "90vw",
         height: "70vh"
+      })
+      onlinedialog.afterClosed().subscribe((res) => {
+        console.log(res);
       })
       // const appointmentSearch = this.matdialog.open(AppointmentSearchComponent, {
       //   maxWidth: "100vw",

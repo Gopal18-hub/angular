@@ -214,7 +214,7 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
       }
     })
     this.tableRows.selection.changed.subscribe((res: any) => {
-      this.dialogRef.close({ data: res });
+      this.dialogRef.close(res.added[0]);
     });
   }
   search()
