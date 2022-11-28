@@ -958,89 +958,93 @@ export class BillComponent implements OnInit, OnDestroy {
                 MAXID: this.billingservice.activeMaxId.maxId,
               }
             );
+          } else {
+            //need to add for no
           }
         });
       });
+    } else {
+      console.log(this.billingservice.makeBillPayload);
+      if (
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+          .companyId == 0 &&
+        Number(
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+            .companyPaidAmt
+        ) == 0
+      ) {
+        this.http
+          .get(
+            BillingApiConstants.isemailenablelocation(
+              this.cookie.get("HSPLocationId")
+            )
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res) => {
+            console.log(res);
+            if (res == 1) {
+              successInfo
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  const maildialog = this.messageDialogService.confirm(
+                    "",
+                    "Do you want to Email this bill?"
+                  );
+                  maildialog
+                    .afterClosed()
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((result: any) => {
+                      console.log(result);
+                      if ("type" in result) {
+                        if (result.type == "yes") {
+                          const sendmaildialog = this.matDialog.open(
+                            SendMailDialogComponent,
+                            {
+                              width: "40vw",
+                              height: "50vh",
+                              data: {
+                                mail: this.billingservice.makeBillPayload
+                                  .ds_insert_bill.tab_insertbill.emailId,
+                                mobile:
+                                  this.billingservice.makeBillPayload
+                                    .ds_insert_bill.tab_insertbill.mobileNo,
+                                billid: this.billId,
+                              },
+                            }
+                          );
+                          sendmaildialog
+                            .afterClosed()
+                            .pipe(takeUntil(this._destroying$))
+                            .subscribe(() => {
+                              this.dialogopen();
+                            });
+                        } else {
+                          this.dialogopen();
+                        }
+                      }
+                    });
+                });
+            } else {
+              successInfo
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  this.dialogopen();
+                });
+            }
+          });
+      } else {
+        successInfo
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            this.dialogopen();
+          });
+      }
     }
     //popup fo consumables
-    console.log(this.billingservice.makeBillPayload);
-    if (
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-        .companyId == 0 &&
-      Number(
-        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-          .companyPaidAmt
-      ) == 0
-    ) {
-      this.http
-        .get(
-          BillingApiConstants.isemailenablelocation(
-            this.cookie.get("HSPLocationId")
-          )
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res) => {
-          console.log(res);
-          if (res == 1) {
-            successInfo
-              .afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                const maildialog = this.messageDialogService.confirm(
-                  "",
-                  "Do you want to Email this bill?"
-                );
-                maildialog
-                  .afterClosed()
-                  .pipe(takeUntil(this._destroying$))
-                  .subscribe((result: any) => {
-                    console.log(result);
-                    if ("type" in result) {
-                      if (result.type == "yes") {
-                        const sendmaildialog = this.matDialog.open(
-                          SendMailDialogComponent,
-                          {
-                            width: "40vw",
-                            height: "50vh",
-                            data: {
-                              mail: this.billingservice.makeBillPayload
-                                .ds_insert_bill.tab_insertbill.emailId,
-                              mobile:
-                                this.billingservice.makeBillPayload
-                                  .ds_insert_bill.tab_insertbill.mobileNo,
-                              billid: this.billId,
-                            },
-                          }
-                        );
-                        sendmaildialog
-                          .afterClosed()
-                          .pipe(takeUntil(this._destroying$))
-                          .subscribe(() => {
-                            this.dialogopen();
-                          });
-                      } else {
-                        this.dialogopen();
-                      }
-                    }
-                  });
-              });
-          } else {
-            successInfo
-              .afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                this.dialogopen();
-              });
-          }
-        });
-    } else {
-      successInfo
-        .afterClosed()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          this.dialogopen();
-        });
-    }
+
     // successInfo
     //   .afterClosed()
     //   .pipe(takeUntil(this._destroying$))
