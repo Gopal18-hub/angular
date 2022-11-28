@@ -593,9 +593,10 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllCountryList();
     this.getAllCityList();
     this.getAllDisttList();
-    this.getAllDisttList();
-    this.getAllStateList();
+    // this.getAllStateList();
     this.getLocalityList();
+    //added for initially load state based on country
+    this.getStatesByCountry(this.OPRegForm.controls["country"].value);
     
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))

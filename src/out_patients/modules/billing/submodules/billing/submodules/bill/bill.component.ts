@@ -1164,21 +1164,20 @@ export class BillComponent implements OnInit, OnDestroy {
         locationID: this.cookie.get("HSPLocationId"),
       }
     );
-
-    setTimeout(() => {
-      if (this.duplicateflag == true) {
-        this.http
-          .post(
-            BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
-            ""
-          )
-          .subscribe((res) => {
-            if (res.success == true) {
-              this.duplicateflag = false;
-            }
-          });
-      }
-    }, 3000);
+    // setTimeout(() => {
+    //   if (this.duplicateflag == true) {
+    //     this.http
+    //       .post(
+    //         BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
+    //         ""
+    //       )
+    //       .subscribe((res) => {
+    //         if (res.success == true) {
+    //           this.duplicateflag = false;
+    //         }
+    //       });
+    //   }
+    // }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;

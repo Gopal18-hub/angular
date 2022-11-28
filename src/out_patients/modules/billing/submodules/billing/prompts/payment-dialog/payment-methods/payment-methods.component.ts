@@ -183,6 +183,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
       })
       onlinedialog.afterClosed().subscribe((res) => {
         console.log(res);
+        this.paymentForm.onlinepayment.controls["transactionId"].setValue(res.transactionNo);
+        this.paymentForm.onlinepayment.controls["bookingId"].setValue(res.bookingNo);
+        this.paymentForm.onlinepayment.controls["price"].setValue(res.bookingAmount.toFixed(2));
+        this.paymentForm.onlinepayment.controls["onlineContact"].setValue(res.mobile);
+        this.paymentForm.onlinepayment.controls['cardValidation'].setValue("yes");
+        console.log(this.paymentForm);
       })
       // const appointmentSearch = this.matdialog.open(AppointmentSearchComponent, {
       //   maxWidth: "100vw",
