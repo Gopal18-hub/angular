@@ -1,4 +1,4 @@
-import { Component, Inject, Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, Injectable, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject, takeUntil } from "rxjs";
@@ -14,7 +14,7 @@ import { HttpService } from "@shared/services/http.service";
   styleUrls: ['./patient-image-upload-dialog.component.scss']
 })
 
-export class PatientImageUploadDialogComponent implements OnInit {
+export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit {
   
   public selecetdFile : any;
   public imagePreview: any;
@@ -24,6 +24,14 @@ export class PatientImageUploadDialogComponent implements OnInit {
   saveApimessage!: string;
   base64textString:any = [];
   identityImage:any;
+
+  @ViewChild("video")
+  public video!: ElementRef;
+
+  @ViewChild("canvas")
+  public canvas!: ElementRef;
+
+  @ViewChild('photo') photo: any;
 
   constructor(public dialogRef: MatDialogRef<PatientImageUploadDialogComponent>,
     private http: HttpService,
@@ -36,14 +44,26 @@ export class PatientImageUploadDialogComponent implements OnInit {
    this.identityImage=this.data.imageData;
   }
 
+  public ngAfterViewInit() {
+    navigator.mediaDevices.getUserMedia({
+      video: { width: 300, height: 250 },
+      audio: false
+    }).then(MediaStream => {
+      this.video.nativeElement.srcObject = MediaStream;
+      // this.video.nativeElement.play();
+    })
+  }
+
    close() {
     this.identityImage = '';
     this.base64textString = undefined;
     this.identityImage.nativeElement.value = '';
+    this.webCameraOff();
     this.dialogRef.close();
   }
 
   submit(){
+    this.webCameraOff();
     this.dialogRef.close({ patientImage: this.identityImage });
   }
 
@@ -86,4 +106,20 @@ export class PatientImageUploadDialogComponent implements OnInit {
       this.submitClicked=false;
     }
 
+    public capture() {
+      const context = this.canvas.nativeElement.getContext("2d").drawImage(this.video.nativeElement, 0, 0, 640, 480);
+      let data = this.canvas.nativeElement.toDataURL("image/png");
+      this.identityImage = data;
+    }
+
+    public webCameraOff(){
+      const stream = this.video.nativeElement.srcObject;
+      const tracks = stream.getTracks();
+  
+      tracks.forEach((track: any) => {
+        track.stop();
+      });
+  
+      this.video.nativeElement.srcObject = null;
+    }
 }

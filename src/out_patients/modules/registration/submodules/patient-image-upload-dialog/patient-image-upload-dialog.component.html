@@ -37,7 +37,8 @@
                         &nbsp;
                     </div>
                     <div class="img-banner-body" fxLayoutAlign="center center">
-                        &nbsp;
+                        <video #video id="video"  autoplay (click)="capture()"></video>
+                        <canvas #canvas id="canvas" width="640" height="480"></canvas>
                     </div>
                     <div class="img-banner-bottom">
                         &nbsp;
