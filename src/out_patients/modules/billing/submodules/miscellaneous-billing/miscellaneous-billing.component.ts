@@ -146,15 +146,6 @@ export class MiscellaneousBillingComponent implements OnInit {
       narration: {
         type: "buttonTextarea",
       },
-
-      b2bInvoiceType: {
-        type: "checkbox",
-        options: [
-          {
-            title: "B2B Invoice",
-          },
-        ],
-      },
     },
   };
 
@@ -277,17 +268,6 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.Misc.setCorporate(res, res, this.miscForm, "header");
           this.setItemsToBill.corporateId = 0;
         }
-      });
-    this.miscForm.controls["b2bInvoiceType"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value === true) {
-          this.setItemsToBill.b2bInvoiceType = "B2B";
-        } else {
-          this.setItemsToBill.b2bInvoiceType = "B2C";
-        }
-        this.Misc.setCalculateBillItems(this.setItemsToBill);
-        //this.Misc.setPatientDetail(this.patientDetail);
       });
   }
 
