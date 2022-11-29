@@ -941,104 +941,110 @@ export class BillComponent implements OnInit, OnDestroy {
       this.billingservice.ConsumableItems &&
       this.billingservice.ConsumableItems.length > 0
     ) {
-      const consumablespopup = this.messageDialogService.confirm(
-        "",
-        "Do you want to view Consumable Entry details"
-      );
-      consumablespopup.afterClosed().subscribe((result: any) => {
-        console.log(result);
-        if (result.type == "yes") {
-          this.reportService.openWindow(
-            "Consumable Entry details Report - " + this.billNo,
-            "ConsumabaleEntryDetailsReport",
-            {
-              billno: this.billingservice.billNo,
-              locationID: this.cookie.get("HSPLocationId"),
-              MAXID: this.billingservice.activeMaxId.maxId,
-            }
-          );
-        }
-      });
-    }
-    //popup fo consumables
-    console.log(this.billingservice.makeBillPayload);
-    if (
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-        .companyId == 0 &&
-      Number(
-        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-          .companyPaidAmt
-      ) == 0
-    ) {
-      this.http
-        .get(
-          BillingApiConstants.isemailenablelocation(
-            this.cookie.get("HSPLocationId")
-          )
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res) => {
-          console.log(res);
-          if (res == 1) {
-            successInfo
-              .afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                const maildialog = this.messageDialogService.confirm(
-                  "",
-                  "Do you want to Email this bill?"
-                );
-                maildialog
-                  .afterClosed()
-                  .pipe(takeUntil(this._destroying$))
-                  .subscribe((result: any) => {
-                    console.log(result);
-                    if ("type" in result) {
-                      if (result.type == "yes") {
-                        const sendmaildialog = this.matDialog.open(
-                          SendMailDialogComponent,
-                          {
-                            width: "40vw",
-                            height: "50vh",
-                            data: {
-                              mail: this.billingservice.makeBillPayload
-                                .ds_insert_bill.tab_insertbill.emailId,
-                              mobile:
-                                this.billingservice.makeBillPayload
-                                  .ds_insert_bill.tab_insertbill.mobileNo,
-                              billid: this.billId,
-                            },
-                          }
-                        );
-                        sendmaildialog
-                          .afterClosed()
-                          .pipe(takeUntil(this._destroying$))
-                          .subscribe(() => {
-                            this.dialogopen();
-                          });
-                      } else {
-                        this.dialogopen();
-                      }
-                    }
-                  });
-              });
+      successInfo.afterClosed().subscribe(() => {
+        const consumablespopup = this.messageDialogService.confirm(
+          "",
+          "Do you want to view Consumable Entry details"
+        );
+        consumablespopup.afterClosed().subscribe((result: any) => {
+          console.log(result);
+          if (result.type == "yes") {
+            this.reportService.openWindow(
+              "Consumable Entry details Report - " + this.billNo,
+              "ConsumabaleEntryDetailsReport",
+              {
+                billno: this.billingservice.billNo,
+                locationID: this.cookie.get("HSPLocationId"),
+                MAXID: this.billingservice.activeMaxId.maxId,
+              }
+            );
           } else {
-            successInfo
-              .afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                this.dialogopen();
-              });
+            //need to add for no
           }
         });
+      });
     } else {
-      successInfo
-        .afterClosed()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          this.dialogopen();
-        });
+      console.log(this.billingservice.makeBillPayload);
+      if (
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+          .companyId == 0 &&
+        Number(
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+            .companyPaidAmt
+        ) == 0
+      ) {
+        this.http
+          .get(
+            BillingApiConstants.isemailenablelocation(
+              this.cookie.get("HSPLocationId")
+            )
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res) => {
+            console.log(res);
+            if (res == 1) {
+              successInfo
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  const maildialog = this.messageDialogService.confirm(
+                    "",
+                    "Do you want to Email this bill?"
+                  );
+                  maildialog
+                    .afterClosed()
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((result: any) => {
+                      console.log(result);
+                      if ("type" in result) {
+                        if (result.type == "yes") {
+                          const sendmaildialog = this.matDialog.open(
+                            SendMailDialogComponent,
+                            {
+                              width: "40vw",
+                              height: "50vh",
+                              data: {
+                                mail: this.billingservice.makeBillPayload
+                                  .ds_insert_bill.tab_insertbill.emailId,
+                                mobile:
+                                  this.billingservice.makeBillPayload
+                                    .ds_insert_bill.tab_insertbill.mobileNo,
+                                billid: this.billId,
+                              },
+                            }
+                          );
+                          sendmaildialog
+                            .afterClosed()
+                            .pipe(takeUntil(this._destroying$))
+                            .subscribe(() => {
+                              this.dialogopen();
+                            });
+                        } else {
+                          this.dialogopen();
+                        }
+                      }
+                    });
+                });
+            } else {
+              successInfo
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  this.dialogopen();
+                });
+            }
+          });
+      } else {
+        successInfo
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            this.dialogopen();
+          });
+      }
     }
+    //popup fo consumables
+
     // successInfo
     //   .afterClosed()
     //   .pipe(takeUntil(this._destroying$))
@@ -1188,21 +1194,20 @@ export class BillComponent implements OnInit, OnDestroy {
         locationID: this.cookie.get("HSPLocationId"),
       }
     );
-
-    setTimeout(() => {
-      if (this.duplicateflag == true) {
-        this.http
-          .post(
-            BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
-            ""
-          )
-          .subscribe((res) => {
-            if (res.success == true) {
-              this.duplicateflag = false;
-            }
-          });
-      }
-    }, 3000);
+    // setTimeout(() => {
+    //   if (this.duplicateflag == true) {
+    //     this.http
+    //       .post(
+    //         BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
+    //         ""
+    //       )
+    //       .subscribe((res) => {
+    //         if (res.success == true) {
+    //           this.duplicateflag = false;
+    //         }
+    //       });
+    //   }
+    // }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
