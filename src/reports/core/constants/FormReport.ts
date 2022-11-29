@@ -941,9 +941,11 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        openscrolltypename: { type: "hidden" },
         locationName: {
           type: "hidden",
         },
+
         dtpFromDate: {
           type: "date",
           title: "From Date",
@@ -985,7 +987,7 @@ export namespace FormReport {
           ],
         },
         cmbLocation: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
@@ -1014,10 +1016,17 @@ export namespace FormReport {
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`,
             fields: {
-              title: "autocomplete",
+              title: "scrollName",
               value: "flag",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "openscrolltypename",
+              type: "value",
+            },
+          ],
         },
       },
     },

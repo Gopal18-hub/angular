@@ -20,7 +20,7 @@ export const environment = {
   crystalReportBaseUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/",
 
   //local envionment urls for testing
-  IdentityServerUrl: "https://localhost:5001/",
+  IdentityServerUrl: "https://localhost/",
   IentityServerRedirectUrl: "http://localhost:8100/",
   clientId: "hispwa",
 };

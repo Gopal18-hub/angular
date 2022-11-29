@@ -19,7 +19,10 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../../BillingApiConstant";
 import { PaymentService } from "@core/services/payment.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
-
+import { MatDialog } from "@angular/material/dialog";
+import { OnlinePaymentPaidPatientComponent } from '../../online-payment-paid-patient/online-payment-paid-patient.component';
+import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
+import { BillingService } from "../../../billing.service";
 @Component({
   selector: "billing-payment-methods",
   templateUrl: "./payment-methods.component.html",
@@ -55,7 +58,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private http: HttpService,
     private paymentService: PaymentService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private matdialog: MatDialog,
+    private BillingService: BillingService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -169,6 +174,26 @@ export class BillingPaymentMethodsComponent implements OnInit {
   }
 
   async paymentButtonAction(button: any) {
+    console.log(button);
+    if(button.label == 'Search')
+    {
+      const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
+        maxWidth: "90vw",
+        height: "70vh"
+      })
+      onlinedialog.afterClosed().subscribe((res) => {
+        console.log(res);
+        if(res)
+        {
+          this.paymentForm.onlinepayment.controls["transactionId"].setValue(res.transactionNo);
+          this.paymentForm.onlinepayment.controls["bookingId"].setValue(res.bookingNo);
+          this.paymentForm.onlinepayment.controls["price"].setValue(res.bookingAmount.toFixed(2));
+          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(res.mobile);
+          this.paymentForm.onlinepayment.controls['cardValidation'].setValue("yes");
+        }
+        console.log(this.paymentForm);
+      })
+    }
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
     if (button.type == "uploadBillTransaction") {
