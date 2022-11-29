@@ -1711,23 +1711,26 @@ export class OpRegistrationComponent implements OnInit {
         console.log(resultData);
         // this.Hotlistform.hotlistTitle
         console.log(this.hotlistdialogref);
-
+        console.log(this.hotlistReason);
         // this.hotlistDialogList = this.hotlistMasterList.map((l) =>
         this.hotlistDialogList = this.hotlistMasterList.map((l) => {
           return { title: l.name, value: l.id };
           // this.questions[24].options = this.cityList.map((l) => {
           //   return { title: l.cityName, value: l.id };
         });
-        let hotlistvalue = this.hotlistDialogList.filter((e) => {
-          e.title == this.hotlistReason.title;
-          return e.value;
-        });
+        // let hotlistvalue = this.hotlistDialogList.filter((e) => {
+        //   e.title == this.hotlistReason.title;
+        //   return e.value;
+        // });
 
-        this.hotlistReason = {
-          title: this.hotlistReason.title,
-          value: hotlistvalue[0].value,
-        };
-
+        let hotlistvalue = this.hotlistMasterList.filter((l) => {
+          return l.name == this.hotlistReason.title
+        })
+        
+        // this.hotlistReason = {
+        //   title: this.hotlistReason.title,
+        //   value: hotlistvalue[0].value,
+        // };
         // this.hotlistReasondb = {
         //   title: this.hotlistReasondb.title,
         //   value: hotlistvalue[0].value,
@@ -1746,7 +1749,7 @@ export class OpRegistrationComponent implements OnInit {
                   type: "dropdown",
                   title: "Hot Listing",
                   required: true,
-                  //  defaultValue: this.hotlistReason,
+                  defaultValue: hotlistvalue.length > 0 ? hotlistvalue[0].id: {title: '', value: ''},
                   options: this.hotlistDialogList,
                 },
                 reason: {
@@ -2806,6 +2809,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   setHotlistDetails(patientDetail: PatientDetails) {
+    console.log(patientDetail);
     this.hotlistReason.title = patientDetail.hotlistreason;
 
     this.hotlistRemark = patientDetail.hotlistcomments;
@@ -2813,6 +2817,7 @@ export class OpRegistrationComponent implements OnInit {
       this.hotlistReasondb.title = patientDetail.hotlistreason;
       this.hotlistRemarkdb = patientDetail.hotlistcomments;
     }
+    console.log(this.hotlistReason)
   }
 
   // commented as UAT requirement change
