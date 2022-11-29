@@ -494,7 +494,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
         this.OPAppointmentForm.value.phone || "",
         this.OPAppointmentForm.value.name ?this.OPAppointmentForm.value.name.split(" ")[0]:'',
         this.OPAppointmentForm.value.name ?this.OPAppointmentForm.value.name.split(" ")[1]:'',
-        this.OPAppointmentForm.value.datevalidation == true ? 0 : 1,
+        this.OPAppointmentForm.value.datevalidation == true ? 1 : 0,
         this.datepipe.transform(
           this.OPAppointmentForm.value.fromDate,
           "yyyy-MM-dd"

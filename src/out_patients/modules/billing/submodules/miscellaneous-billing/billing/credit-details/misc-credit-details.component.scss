@@ -15,6 +15,25 @@
     top:49%;
     color: red;
 }
+.special-checkbox {
+  ::ng-deep .mat-checkbox-label {
+    color: #45c0be !important;
+    text-decoration: underline;
+  }
+}
+.txt-blue
+{   
+ color: #45C0BE;
+ font-style: italic;
+ text-decoration: underline;
+ font-weight:550;
+
+ ::ng-deep .mat-checkbox-label
+ {
+  text-decoration: underline;
+  margin-left: 0.3rem;
+ }
+}
 .width-49 {
     width: 49%;
   }
