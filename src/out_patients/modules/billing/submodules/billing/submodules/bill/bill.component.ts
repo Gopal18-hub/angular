@@ -489,17 +489,25 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        if (
-          this.formGroup.value.credLimit &&
-          this.formGroup.value.credLimit > 0
-        ) {
-          this.applyCreditLimit();
-        } else {
-          this.formGroup.controls["credLimit"].setValue("0.00");
-          this.applyCreditLimit();
-        }
+        // if (
+        //   this.formGroup.value.credLimit &&
+        //   this.formGroup.value.credLimit > 0
+        // ) {
+        //   this.applyCreditLimit();
+        // } else {
+        //   this.formGroup.controls["credLimit"].setValue("0.00");
+        //   this.applyCreditLimit();
+        // }
+
+        this.checkCreditLimit();
       }
     });
+
+    /////UAT review
+    this.question[14].elementRef.addEventListener(
+      "blur",
+      this.checkCreditLimit.bind(this)
+    );
 
     this.question[20].elementRef.addEventListener(
       "change",
@@ -543,6 +551,15 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
     this.applyCreditLimit();
+  }
+
+  checkCreditLimit() {
+    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      this.applyCreditLimit();
+    } else {
+      this.formGroup.controls["credLimit"].setValue("0.00");
+      this.applyCreditLimit();
+    }
   }
 
   applyCreditLimit() {
