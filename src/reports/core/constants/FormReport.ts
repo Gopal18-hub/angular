@@ -829,7 +829,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        MemberShipNo: "w-full",
+        MemberShipNo: "w-screen",
       },
       actionItems: [
         {
@@ -878,7 +878,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        membershipno: "w-full",
+        membershipno: "w-screen",
       },
       actionItems: [
         {
