@@ -819,7 +819,11 @@ export class InvestigationOrdersComponent implements OnInit {
   }
   createBill() {
     this.router.navigate(["out-patient-billing"], {
-      queryParams: { maxId: this.maxid, orderid: this.orderid },
+      queryParams: {
+        maxId: this.maxid,
+        orderid: this.orderid,
+        name: "Investigation",
+      },
     });
   }
   clearInv() {
