@@ -132,11 +132,37 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "todate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "todate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         todate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "fromdate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "fromdate",
+            },
+          ],
         },
         locationid: {
           type: "autocomplete",
@@ -212,6 +238,7 @@ export namespace FormReport {
           type: "date",
           title: "Date",
           defaultValue: new Date(),
+          maximum: new Date(),
         },
         locationID: {
           type: "autocomplete",
@@ -270,12 +297,38 @@ export namespace FormReport {
           title: "From Date",
           // required: true,
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMin",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueToDate",
+              type: "dateMaxWithDays",
+              days: 30,
+            },
+          ],
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
           // required: true,
           defaultValue: new Date(),
+          maximum: new Date(),
+          conditions: [
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+              type: "dateMax",
+            },
+            {
+              expression: "self",
+              controlKey: "ValueFromDate",
+            },
+          ],
         },
         SelectedLocationsId: {
           type: "autocomplete",
@@ -776,7 +829,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        MemberShipNo: "w-full",
+        MemberShipNo: "w-screen",
       },
       actionItems: [
         {
@@ -825,7 +878,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        membershipno: "w-full",
+        membershipno: "w-screen",
       },
       actionItems: [
         {
