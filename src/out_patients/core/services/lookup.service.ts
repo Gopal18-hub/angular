@@ -86,13 +86,15 @@ export class LookupService {
             searchData["adhaar"] ? searchData["adhaar"] : "",
             searchData["healthID"] ? searchData["healthID"] : ""
           );
-          const resultData = await this.http.get(url).toPromise();
+          const resultData = await this.http.get(url).toPromise().catch((reason: any) => {
+            return reason.error;
+          });
           if (this.routeswithoutsearch[this.router.url]) {
             this.router.navigate([this.routeswithoutsearch[this.router.url]], {
               queryParams: formdata.data,
             });
           } else {
-            if (!resultData) {
+            if (!resultData || resultData == "Search Not found") {
               return [];
             }
             if (resultData.length > 1) {
