@@ -1,26 +1,47 @@
-<button
-  *ngIf="menu.childrens?.length > 0"
-  mat-menu-item
-  class="max-health-primary-color w-1/3"
-  [matMenuTriggerFor]="childMenu"
-  [disabled]="menu.disabled"
-  [routerLink]="
-    baseHref == tenentPath ? menu.defaultPath : tenentPath + menu.defaultPath
-  "
->
-  {{ menu.title }}
-</button>
-<button
-  *ngIf="menu.childrens?.length == 0 || !menu.childrens"
-  mat-menu-item
-  class="max-health-primary-color w-1/3"
-  [disabled]="menu.disabled"
-  [routerLink]="
-    baseHref == tenentPath ? menu.defaultPath : tenentPath + menu.defaultPath
-  "
->
-  {{ menu.title }}
-</button>
+<ng-container *ngIf="menu.defaultPath">
+  <button
+    *ngIf="menu.childrens?.length > 0"
+    mat-menu-item
+    class="max-health-primary-color w-1/3"
+    [matMenuTriggerFor]="childMenu"
+    [disabled]="menu.disabled"
+    [routerLink]="
+      baseHref == tenentPath ? menu.defaultPath : tenentPath + menu.defaultPath
+    "
+  >
+    {{ menu.title }}
+  </button>
+  <button
+    *ngIf="menu.childrens?.length == 0 || !menu.childrens"
+    mat-menu-item
+    class="max-health-primary-color w-1/3"
+    [disabled]="menu.disabled"
+    [routerLink]="
+      baseHref == tenentPath ? menu.defaultPath : tenentPath + menu.defaultPath
+    "
+  >
+    {{ menu.title }}
+  </button>
+</ng-container>
+<ng-container *ngIf="!menu.defaultPath">
+  <button
+    *ngIf="menu.childrens?.length > 0"
+    mat-menu-item
+    class="max-health-primary-color w-1/3"
+    [matMenuTriggerFor]="childMenu"
+    [disabled]="menu.disabled"
+  >
+    {{ menu.title }}
+  </button>
+  <button
+    *ngIf="menu.childrens?.length == 0 || !menu.childrens"
+    mat-menu-item
+    class="max-health-primary-color w-1/3"
+    [disabled]="menu.disabled"
+  >
+    {{ menu.title }}
+  </button>
+</ng-container>
 
 <mat-menu #childMenu="matMenu">
   <div class="flex flex-column flex-wrap box">

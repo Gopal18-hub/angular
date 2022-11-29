@@ -177,19 +177,22 @@ export class BillingPaymentMethodsComponent implements OnInit {
     console.log(button);
     if(button.label == 'Search')
     {
-      this.matdialog.open(OnlinePaymentPaidPatientComponent, {
+      const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
         maxWidth: "90vw",
         height: "70vh"
       })
-      // const appointmentSearch = this.matdialog.open(AppointmentSearchComponent, {
-      //   maxWidth: "100vw",
-      //   width: "98vw",
-      //   data: {
-      //     phoneNumber: '',
-      //     maxid: this.BillingService.activeMaxId,
-      //     onlinepayment: true
-      //   },
-      // });
+      onlinedialog.afterClosed().subscribe((res) => {
+        console.log(res);
+        if(res)
+        {
+          this.paymentForm.onlinepayment.controls["transactionId"].setValue(res.transactionNo);
+          this.paymentForm.onlinepayment.controls["bookingId"].setValue(res.bookingNo);
+          this.paymentForm.onlinepayment.controls["price"].setValue(res.bookingAmount.toFixed(2));
+          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(res.mobile);
+          this.paymentForm.onlinepayment.controls['cardValidation'].setValue("yes");
+        }
+        console.log(this.paymentForm);
+      })
     }
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";

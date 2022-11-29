@@ -48,5 +48,17 @@
         line-height:35px;
     }
   
+    #video {
+      background-color: #000000;
+       height:100% !important;
+       width:100% !important;
+    }
+
+    #canvas {
+        display: none;
+        height:100% !important;
+        width:100% !important;
+    }
+
   }
   

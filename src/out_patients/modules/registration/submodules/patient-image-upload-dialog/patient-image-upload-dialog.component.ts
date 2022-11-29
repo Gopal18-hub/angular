@@ -1,4 +1,4 @@
-import { Component, Inject, Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, Injectable, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject, takeUntil } from "rxjs";
@@ -14,7 +14,7 @@ import { HttpService } from "@shared/services/http.service";
   styleUrls: ['./patient-image-upload-dialog.component.scss']
 })
 
-export class PatientImageUploadDialogComponent implements OnInit {
+export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit {
   
   public selecetdFile : any;
   public imagePreview: any;
@@ -24,6 +24,14 @@ export class PatientImageUploadDialogComponent implements OnInit {
   saveApimessage!: string;
   base64textString:any = [];
   identityImage:any;
+
+  @ViewChild("video")
+  public video!: ElementRef;
+
+  @ViewChild("canvas")
+  public canvas!: ElementRef;
+
+  @ViewChild('photo') photo: any;
 
   constructor(public dialogRef: MatDialogRef<PatientImageUploadDialogComponent>,
     private http: HttpService,
@@ -36,14 +44,52 @@ export class PatientImageUploadDialogComponent implements OnInit {
    this.identityImage=this.data.imageData;
   }
 
+  public ngAfterViewInit() {
+    let self = this;
+    // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    //   console.log('Initializing');
+    //   navigator.mediaDevices.getUserMedia({
+    //     video: { width: 300, height: 250 },
+    //     audio: false
+    //   }).then(MediaStream => {
+    //     self.video.nativeElement.srcObject = MediaStream;
+    //     // this.video.nativeElement.play();
+    //   })
+    // }
+
+
+
+    var enumeratorPromise = navigator.mediaDevices.enumerateDevices().then(function(devices) {
+      var cam = devices.find(function(device) {
+        return device.kind === "videoinput";
+      });
+        var mic = devices.find(function(device) {
+          return device.kind === "audioinput";
+        });
+        
+        if (cam ){
+          navigator.mediaDevices.getUserMedia({
+            video: { width: 300, height: 250 },
+            audio: false
+          }).then(MediaStream => {
+            self.video.nativeElement.srcObject = MediaStream;
+            // this.video.nativeElement.play();
+          })
+        }
+      });
+  }
+
    close() {
     this.identityImage = '';
     this.base64textString = undefined;
-    this.identityImage.nativeElement.value = '';
+    if(this.identityImage)
+      this.identityImage.nativeElement.value = '';
+    this.webCameraOff();
     this.dialogRef.close();
   }
 
   submit(){
+    this.webCameraOff();
     this.dialogRef.close({ patientImage: this.identityImage });
   }
 
@@ -86,4 +132,22 @@ export class PatientImageUploadDialogComponent implements OnInit {
       this.submitClicked=false;
     }
 
+    public capture() {
+      const context = this.canvas.nativeElement.getContext("2d").drawImage(this.video.nativeElement, 0, 0, 640, 480);
+      let data = this.canvas.nativeElement.toDataURL("image/png");
+      this.identityImage = data;
+    }
+
+    public webCameraOff(){
+      var stream = this.video.nativeElement.srcObject;
+      if (stream && stream.getTracks()) {
+      const tracks = stream.getTracks();
+  
+      tracks.forEach((track: any) => {
+        track.stop();
+      });
+  
+      this.video.nativeElement.srcObject = null;
+    }
+    }
 }
