@@ -1337,6 +1337,9 @@ export class OpRegistrationComponent implements OnInit {
       this.formProcessing();
     }, 10);
 
+    this.isNoImage=true;
+    this.patientImage=this.patientNoImage;
+
     //this.checkForMaxID();
     this.clearClicked = false;
     this.registeredBy = this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
