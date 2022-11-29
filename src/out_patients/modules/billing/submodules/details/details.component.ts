@@ -835,7 +835,7 @@ export class DetailsComponent implements OnInit {
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].operator;
     this.billdate = this.datepipe.transform(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime,
-      "dd/MM/YYYY"
+      "dd/MM/YYYY hh:mm:ss"
     );
     this.BServiceForm.controls["billAmt"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(
@@ -1186,12 +1186,10 @@ export class DetailsComponent implements OnInit {
         }
       );
     } else if (btnname == "PrintOPPrescriptionReport") {
-      const dialogref = this.matDialog.open(OpPrescriptionDialogComponent, {
-        width: "30vw",
-        height: "35vh",
-      });
+      const dialogref = this.msgdialog.confirm('',"Do you want to print Blank Op Prescription?");
       dialogref.afterClosed().subscribe((res) => {
-        if (res == "yes") {
+        console.log(res);
+        if (res.type == "yes") {
           this.reportService.openWindow(
             "OP Prescription Report - " + this.BServiceForm.value.billNo,
             btnname,
