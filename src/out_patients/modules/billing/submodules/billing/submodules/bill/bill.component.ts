@@ -489,17 +489,25 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        if (
-          this.formGroup.value.credLimit &&
-          this.formGroup.value.credLimit > 0
-        ) {
-          this.applyCreditLimit();
-        } else {
-          this.formGroup.controls["credLimit"].setValue("0.00");
-          this.applyCreditLimit();
-        }
+        // if (
+        //   this.formGroup.value.credLimit &&
+        //   this.formGroup.value.credLimit > 0
+        // ) {
+        //   this.applyCreditLimit();
+        // } else {
+        //   this.formGroup.controls["credLimit"].setValue("0.00");
+        //   this.applyCreditLimit();
+        // }
+
+        this.checkCreditLimit();
       }
     });
+
+    /////UAT review
+    this.question[14].elementRef.addEventListener(
+      "blur",
+      this.checkCreditLimit.bind(this)
+    );
 
     this.question[20].elementRef.addEventListener(
       "change",
@@ -543,6 +551,15 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
     this.applyCreditLimit();
+  }
+
+  checkCreditLimit() {
+    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      this.applyCreditLimit();
+    } else {
+      this.formGroup.controls["credLimit"].setValue("0.00");
+      this.applyCreditLimit();
+    }
   }
 
   applyCreditLimit() {
@@ -1161,21 +1178,20 @@ export class BillComponent implements OnInit, OnDestroy {
         locationID: this.cookie.get("HSPLocationId"),
       }
     );
-
-    setTimeout(() => {
-      if (this.duplicateflag == true) {
-        this.http
-          .post(
-            BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
-            ""
-          )
-          .subscribe((res) => {
-            if (res.success == true) {
-              this.duplicateflag = false;
-            }
-          });
-      }
-    }, 3000);
+    // setTimeout(() => {
+    //   if (this.duplicateflag == true) {
+    //     this.http
+    //       .post(
+    //         BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
+    //         ""
+    //       )
+    //       .subscribe((res) => {
+    //         if (res.success == true) {
+    //           this.duplicateflag = false;
+    //         }
+    //       });
+    //   }
+    // }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;

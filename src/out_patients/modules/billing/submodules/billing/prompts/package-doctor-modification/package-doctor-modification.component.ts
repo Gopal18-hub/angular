@@ -62,7 +62,9 @@ export class PackageDoctorModificationComponent implements OnInit {
       .subscribe((res) => {
         let i = 0;
         res.forEach((item: any, index: number) => {
-          this.packageContent.push(item.itemName);
+          if (item.itemServiceID != 25) {
+            this.packageContent.push(item.itemName);
+          }
           if (item.isConsult == 1 && item.itemServiceID == 25) {
             this.itemsData[i] = {
               sno: i + 1,
