@@ -20,7 +20,7 @@ import { BillingApiConstants } from "../../../BillingApiConstant";
 import { PaymentService } from "@core/services/payment.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { MatDialog } from "@angular/material/dialog";
-import { OnlinePaymentPaidPatientComponent } from '../../online-payment-paid-patient/online-payment-paid-patient.component';
+import { OnlinePaymentPaidPatientComponent } from "../../online-payment-paid-patient/online-payment-paid-patient.component";
 import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
 import { BillingService } from "../../../billing.service";
 @Component({
@@ -175,24 +175,35 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   async paymentButtonAction(button: any) {
     console.log(button);
-    if(button.label == 'Search')
-    {
-      const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
-        maxWidth: "90vw",
-        height: "70vh"
-      })
+    if (button.label == "Search") {
+      const onlinedialog = this.matdialog.open(
+        OnlinePaymentPaidPatientComponent,
+        {
+          maxWidth: "90vw",
+          height: "70vh",
+        }
+      );
       onlinedialog.afterClosed().subscribe((res) => {
         console.log(res);
-        if(res)
-        {
-          this.paymentForm.onlinepayment.controls["transactionId"].setValue(res.transactionNo);
-          this.paymentForm.onlinepayment.controls["bookingId"].setValue(res.bookingNo);
-          this.paymentForm.onlinepayment.controls["price"].setValue(res.bookingAmount.toFixed(2));
-          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(res.mobile);
-          this.paymentForm.onlinepayment.controls['cardValidation'].setValue("yes");
+        if (res) {
+          this.paymentForm.onlinepayment.controls["transactionId"].setValue(
+            res.transactionNo
+          );
+          this.paymentForm.onlinepayment.controls["bookingId"].setValue(
+            res.bookingNo
+          );
+          this.paymentForm.onlinepayment.controls["price"].setValue(
+            res.bookingAmount.toFixed(2)
+          );
+          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(
+            res.mobile
+          );
+          this.paymentForm.onlinepayment.controls["cardValidation"].setValue(
+            "yes"
+          );
         }
         console.log(this.paymentForm);
-      })
+      });
     }
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
@@ -201,7 +212,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
         //  this.calculateBillService.blockActions.next(true);
         let res = await this.paymentService.uploadBillTransaction(
           payloadData,
-          module
+          module,
+          this.BillingService.activeMaxId.maxId
         );
         await this.processPaymentApiResponse(button, res);
       } else {
@@ -216,7 +228,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
         // this.calculateBillService.blockActions.next(true);
         let res = await this.paymentService.getBillTransactionStatus(
           payloadData,
-          module
+          module,
+          this.BillingService.activeMaxId.maxId
         );
         await this.processPaymentApiResponse(button, res);
       } else {
