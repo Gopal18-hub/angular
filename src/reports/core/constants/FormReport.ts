@@ -128,6 +128,9 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        organisationName: {
+          type: "hidden",
+        },
         fromdate: {
           type: "date",
           title: "From Date",
@@ -177,6 +180,15 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+
+              controlKey: "organisationName",
+
+              type: "value",
+            },
+          ],
         },
         RepType: {
           title: "Report Type",
