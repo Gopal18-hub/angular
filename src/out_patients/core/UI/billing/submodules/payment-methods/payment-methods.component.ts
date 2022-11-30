@@ -182,7 +182,7 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.Disablecreditfields();
+   // this.Disablecreditfields();
     this.questions[0].elementRef.addEventListener(
       "blur",
       this.PaymentMethodvalidation.bind(this)
