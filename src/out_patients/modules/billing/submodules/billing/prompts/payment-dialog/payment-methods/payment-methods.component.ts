@@ -181,6 +181,10 @@ export class BillingPaymentMethodsComponent implements OnInit {
         {
           maxWidth: "90vw",
           height: "70vh",
+          data: {
+            maxid: this.BillingService.activeMaxId.maxId,
+            status: "Y",
+          },
         }
       );
       onlinedialog.afterClosed().subscribe((res) => {
