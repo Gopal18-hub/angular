@@ -384,7 +384,11 @@ export class MedicineOrdersComponent implements OnInit {
       (value: any) => {
         if (value === 10) {
           this.matdialog
-            .open(ScheduleDateDialogComponent)
+            .open(ScheduleDateDialogComponent, {
+              width: "29vw",
+              height: "28vh",
+              maxWidth: "30vw",
+            })
             .afterClosed()
             .subscribe((res) => {
               // received data from dialog-component

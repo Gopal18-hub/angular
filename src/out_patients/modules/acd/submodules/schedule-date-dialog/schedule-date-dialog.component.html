@@ -1,23 +1,16 @@
-<div class="relative max-health-primary-color modify-dialog-wrapper">
-    <label class="max-health-primary-color font-lg font-bold text-center"
-      >Schedule</label
-    >
-    <button
-      mat-icon-button
-      aria-label="close dialog"
-      mat-dialog-close
-      class="absolute max-dialog-close-icon"
-      type="button"
-    >
-      <mat-icon>close</mat-icon>
-    </button>
-    <section class="overflow-x-none overflow-y-none  justify-between">
+<div class="modify-dialog-wrapper h-full w-full relative">    
+
+    <div class="text-center labelsc border-radius-lg p-3">    
+        <label class="max-health-primary-color font-lg font-bold">Schedule</label>      
+ 
+</div>
+    <section class="overflow-x-none overflow-y-none justify-between text-center">
     <form [formGroup]="scheduleDateForm">
         <div class="w-full flex mt-4">
             <div class="flex">
-                <mat-label class="font-semi-bold fontcolor">Schedule for</mat-label>
-                <mat-label class="font-semi-bold ml-2">Date</mat-label>
-                <div class=" w-1/3 ml-2 flex">
+                <mat-label class="font-normal font-lg fontcolor mleft">Schedule for</mat-label>
+                <mat-label class="font-medium font-base ml-2 datefont">Date</mat-label>
+                <div class="ml-2 w-1/3">
                     <maxhealth-question  [question]="questions[0]" [form]="scheduleDateForm"
                         [questions]="questions[0]" [index]="0">
                     </maxhealth-question>
@@ -26,10 +19,10 @@
             </div>
         </form>
 
-        <div class=" mt-4  float-right mr-6" >
-            <button mat-raised-button color="primary" class="ml-3"
+        <div class="text-center mt-2" >
+            <button mat-raised-button color="primary" class="ml-5 btnSize"
                 (click)="save()">Save</button>
-                <button mat-raised-button color="primary" class="ml-3"
+                <button mat-raised-button color="primary" class="ml-3 btnSize"
                 (click)="cancel()">Cancel</button>
         </div>
     </section>
