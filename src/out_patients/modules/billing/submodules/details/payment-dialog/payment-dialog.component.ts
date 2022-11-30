@@ -476,7 +476,8 @@ export class PaymentDialogComponent implements OnInit {
       console.log(payloadData);
       let res = await this.paymentService.uploadBillTransaction(
         payloadData,
-        module
+        module,
+        this.billDetailService.activemaxid
       );
       await this.processPaymentApiResponse(res);
     } 
@@ -495,7 +496,8 @@ export class PaymentDialogComponent implements OnInit {
     {
       let res = await this.paymentService.getBillTransactionStatus(
         payloadData,
-        module
+        module,
+        this.billDetailService.activemaxid
       );
       await this.processPaymentApiResponse(res);
     } 
