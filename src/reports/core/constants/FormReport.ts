@@ -1043,7 +1043,8 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          required: true,
+          //defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -1065,7 +1066,8 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Open Scroll---",
           title: "Open Scroll For",
-          defaultValue: "0",
+          //defaultValue: "0",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`,
             fields: {
@@ -1120,7 +1122,7 @@ export namespace FormReport {
   };
 
   export const CROPItemPriceModifiedReport = {
-    reportName: "Op Item PriceModification Report",
+    reportName: "Op Item Price Modified Report",
     filterForm: {
       title: "",
       type: "object",
@@ -1204,7 +1206,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Op Item PriceModification Report",
+            reportName: "Op Item Price Modified Report",
             reportEntity: "CROPItemPriceModifiedReport",
           },
         },
@@ -1238,7 +1240,7 @@ export namespace FormReport {
       properties: {
         dtpFromDate: {
           type: "date",
-          title: "FromDate",
+          title: "From Date",
           defaultValue: new Date(),
           maximum: new Date(),
           // required: true,
@@ -1258,7 +1260,7 @@ export namespace FormReport {
         },
         dtpToDate: {
           type: "date",
-          title: "ToDate",
+          title: "To Date",
           defaultValue: new Date(),
           maximum: new Date(),
           // required: true,
@@ -1285,6 +1287,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
+          required: true,
           //defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
