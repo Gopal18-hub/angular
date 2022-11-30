@@ -21,6 +21,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ds_paymode, insertDueAmountModel, tab_cheque, tab_credit, tab_dd, tab_debit, tab_Mobile, tab_Online, tab_paymentList, tab_rec, tab_UPI } from '../../../../../core/models/insertDueAmountModel.Model'
 import { BillingApiConstants } from '../../billing/BillingApiConstant';
 import { OnlinePaymentPaidPatientComponent } from '../../billing/prompts/online-payment-paid-patient/online-payment-paid-patient.component';
+import { MaxHealthStorage } from '@shared/services/storage';
+import { PaymentService } from '@core/services/payment.service';
 @Component({
   selector: 'out-patients-payment-dialog',
   templateUrl: './payment-dialog.component.html',
@@ -198,11 +200,37 @@ export class PaymentDialogComponent implements OnInit {
         type: 'string',
         required: true,
       },
+      //28
       onlinepaidamount: {
         title:'Amount',
         type: 'string',
         required: true,
-      }
+      },
+
+      //credit latest added
+    posimei: {
+      type: "string",
+      title: "POS IMEI",
+      required: true,
+      defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+      readonly: true,
+    },
+    transactionid: {
+      type: "string",
+      title: "Transaction ID",
+      required: true,
+    },
+    creditvalidity: {
+      type: "date",
+      title: "Validity",
+      required: true,
+      defaultValue: new Date()
+    },
+    banktid: {
+      type: "string",
+      title: "Bank TID",
+      required: true,
+    },
     },
   };
   dueform!: FormGroup;
@@ -260,7 +288,8 @@ export class PaymentDialogComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private billDetailService: billDetailService,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
+    private paymentService: PaymentService,
   ) { }
 
   ngOnInit(): void {
@@ -307,7 +336,6 @@ export class PaymentDialogComponent implements OnInit {
     this.questions[9].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[17].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[23].elementRef.addEventListener('blur', this.amountcheck.bind(this));
-    this.disablecc();
     this.billingpatientidentity.patientidentityform.controls['panno'].valueChanges.subscribe(() => {
       if(this.billingpatientidentity.patientidentityform.controls['panno'].status == "VALID")
       {
@@ -324,9 +352,22 @@ export class PaymentDialogComponent implements OnInit {
 
   formvalidation()
   {
-    this.dueform.controls['chequeamount'].valueChanges.subscribe((res) => {
-      if(Number(res) > 0)
+    console.log(this.dueform);
+    this.dueform.controls['cashamount'].valueChanges.subscribe((res) => {
+      if(res && Number(res) > 0)
       {
+        this.questions[2].required = true;
+      }
+      else
+      {
+        this.questions[2].required = false;
+      }
+    });
+
+    this.dueform.controls['chequeamount'].valueChanges.subscribe((res) => {
+      if(res && Number(res) > 0)
+      {
+        this.questions[3].required = true;
         this.questions[4].required = true;
         this.questions[5].required = true;
         this.questions[6].required = true;
@@ -335,6 +376,7 @@ export class PaymentDialogComponent implements OnInit {
       }
       else
       {
+        this.questions[3].required = false;
         this.questions[4].required = false;
         this.questions[5].required = false;
         this.questions[6].required = false;
@@ -344,8 +386,9 @@ export class PaymentDialogComponent implements OnInit {
     });
 
     this.dueform.controls['creditamount'].valueChanges.subscribe((res) => {
-      if(Number(res) > 0)
+      if(res && Number(res) > 0)
       {
+        this.questions[9].required = true;
         this.questions[10].required = true;
         this.questions[11].required = true;
         this.questions[12].required = true;
@@ -353,9 +396,14 @@ export class PaymentDialogComponent implements OnInit {
         this.questions[14].required = true;
         this.questions[15].required = true;
         this.questions[16].required = true;
+        this.questions[29].required = true;
+        this.questions[30].required = true;
+        this.questions[31].required = true;
+        this.questions[32].required = true;
       }
       else
       {
+        this.questions[9].required = false;
         this.questions[10].required = false;
         this.questions[11].required = false;
         this.questions[12].required = false;
@@ -363,12 +411,17 @@ export class PaymentDialogComponent implements OnInit {
         this.questions[14].required = false;
         this.questions[15].required = false;
         this.questions[16].required = false;
+        this.questions[29].required = false;
+        this.questions[30].required = false;
+        this.questions[31].required = false;
+        this.questions[32].required = false;
       }
     });
 
     this.dueform.controls['demandamount'].valueChanges.subscribe((res) => {
-      if(Number(res) > 0)
+      if(res && Number(res) > 0)
       {
+        this.questions[17].required = true;
         this.questions[18].required = true;
         this.questions[19].required = true;
         this.questions[20].required = true;
@@ -377,6 +430,7 @@ export class PaymentDialogComponent implements OnInit {
       }
       else
       {
+        this.questions[17].required = false;
         this.questions[18].required = false;
         this.questions[19].required = false;
         this.questions[20].required = false;
@@ -386,8 +440,9 @@ export class PaymentDialogComponent implements OnInit {
     });
 
     this.dueform.controls['onlineamount'].valueChanges.subscribe((res) => {
-      if(Number(res) > 0)
+      if(res && Number(res) > 0)
       {
+        this.questions[23].required = true;
         this.questions[24].required = true;
         this.questions[25].required = true;
         this.questions[26].required = true;
@@ -396,6 +451,7 @@ export class PaymentDialogComponent implements OnInit {
       }
       else
       {
+        this.questions[23].required = false;
         this.questions[24].required = false;
         this.questions[25].required = false;
         this.questions[26].required = false;
@@ -404,54 +460,120 @@ export class PaymentDialogComponent implements OnInit {
       }
     });
   }
-  disablecc()
+
+  async getapproval()
   {
-    this.dueform.controls['creditcardno'].disable();
-    this.dueform.controls['creditcardholdername'].disable();
-    this.dueform.controls['creditbankname'].disable();
-    this.dueform.controls['creditbatchno'].disable();
-    this.dueform.controls['creditapprovalno'].disable();
-    this.dueform.controls['creditterminalid'].disable();
-    this.dueform.controls['creditacquiringbank'].disable();
-  }
-  enablecc()
-  {
-    this.dueform.controls['creditcardno'].enable();
-    this.dueform.controls['creditcardholdername'].enable();
-    this.dueform.controls['creditbankname'].enable();
-    this.dueform.controls['creditbatchno'].enable();
-    this.dueform.controls['creditapprovalno'].enable();
-    this.dueform.controls['creditterminalid'].enable();
-    this.dueform.controls['creditacquiringbank'].enable();
-  }
-  getmanual()
-  {
+    let module = "OPD_Billing";
+    const payloadData = {
+      price: Number(this.dueform.controls['creditamount'].value),
+    }
     if(Number(this.dueform.controls['creditamount'].value) == 0)
     {
-      this.messageDialogService.info('Please Give Proper Amount.');
+      this.messageDialogService.warning('Please Give Proper Amount.');
     }
     else
     {
-      this.enablecc();
-      this.manualbtn = false;
-      this.retrybtn = false;
-      this.approvalbtn = false;
+      console.log(payloadData);
+      let res = await this.paymentService.uploadBillTransaction(
+        payloadData,
+        module
+      );
+      await this.processPaymentApiResponse(res);
     } 
   }
-  retry()
+  async retry()
   {
-    this.disablecc();
-    this.manualbtn = true;
-    this.retrybtn = true;
-    this.approvalbtn = true;
-    this.dueform.controls['creditcardno'].reset();
-    this.dueform.controls['creditcardholdername'].reset();
-    this.dueform.controls['creditbankname'].reset();
-    this.dueform.controls['creditbatchno'].reset();
-    this.dueform.controls['creditapprovalno'].reset();
-    this.dueform.controls['creditterminalid'].reset();
-    this.dueform.controls['creditacquiringbank'].reset();
+    let module = "OPD_Billing";
+    const payloadData = {
+      price: Number(this.dueform.controls['creditamount'].value),
+    }
+    if(Number(this.dueform.controls['creditamount'].value) == 0)
+    {
+      this.messageDialogService.warning('Please Give Proper Amount.');
+    }
+    else
+    {
+      let res = await this.paymentService.getBillTransactionStatus(
+        payloadData,
+        module
+      );
+      await this.processPaymentApiResponse(res);
+    } 
   }
+
+  async processPaymentApiResponse(res: any)
+  {
+    if (res && res.success){
+      if (res.responseMessage && res.responseMessage != ""){
+        if (res.responseMessage == "APPROVED"){
+          if (res.transactionRefId) {
+            this.dueform.controls["transactionid"].setValue(
+              res.transactionRefId
+            );
+          }
+          const infoDialogRef = this.messageDialogService.info(
+            "Kindly Pay Using Machine"
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        }
+        else if (res.responseMessage == "TXN APPROVED"){
+          if (res.pineLabReturnResponse) {
+            let bankId = 0;
+            let bank = this.creditcard.filter(
+              (r: any) => r.title == res.pineLabReturnResponse.ccResAcquirerName
+            );
+            if (bank && bank.length > 0) {
+              bankId = bank[0].id;
+            }
+            this.dueform.controls["creditcardno"].patchValue(
+              res.pineLabReturnResponse.ccResCardNo
+            );
+            this.dueform.controls["creditcardholdername"].patchValue(
+              res.cardHolderName
+            );
+            this.dueform.controls["creditbankname"].patchValue(bankId);
+            this.dueform.controls["creditbatchno"].patchValue(
+              res.pineLabReturnResponse.ccResBatchNumber
+            );
+            this.dueform.controls["creditapprovalno"].patchValue(
+              res.pineLabReturnResponse.ccResApprovalCode
+            );
+            this.dueform.controls["creditterminalid"].patchValue(res.terminalId);
+            this.dueform.controls["creditacquiringbank"].patchValue(
+              res.pineLabReturnResponse.ccResAcquirerName
+            );
+            this.dueform.controls["banktid"].patchValue(
+              res.pineLabReturnResponse.ccResBankTID
+            );
+          }
+        }
+        else{
+            const infoDialogRef = this.messageDialogService.info(
+              res.responseMessage
+            );
+            await infoDialogRef.afterClosed().toPromise();
+            return;
+        }
+      }
+    }
+    else if (res && !res.success) {
+      if (res.errorMessage && res.errorMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.errorMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      } else if (res.responseMessage && res.responseMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.responseMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
+    }
+  }
+
   tabchange(event: MatTabChangeEvent)
   {
     console.log(event);
