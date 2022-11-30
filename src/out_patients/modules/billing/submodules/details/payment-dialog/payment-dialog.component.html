@@ -45,6 +45,17 @@
                 
                 <mat-tab-group class="mt-4 input-label" animationDuration="0ms" (selectedTabChange)="tabchange($event)" #mattab [(selectedIndex)]="selected">
                     <mat-tab label="Cash">
+                        <!-- <ng-template mat-tab-label>
+                        <button
+                        mat-icon-button
+                        aria-label="close dialog"
+                        class="absolute max-dialog-close-icon mt-2 mr-3"
+                        type="button"
+                        >
+                        <mat-icon>close</mat-icon>
+                        </button>
+                        Cash
+                        </ng-template> -->
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Cash Details</mat-label>
                             <div class="flex w-1/2 mt-3">
@@ -432,7 +443,7 @@
                                 
                             </div>  -->
                             <div class="flex mt-4 ml-2 btn">
-                                <button mat-raised-button color="primary">Search</button>
+                                <button mat-raised-button color="primary" [disabled]="!onlineamtcheck()" (click)="onlinesearch()">Search</button>
                                 <button mat-raised-button color="primary" class="ml-2">Clear</button>
                             </div> 
                         </div>
