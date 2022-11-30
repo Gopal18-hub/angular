@@ -179,7 +179,11 @@ export class BillingPaymentMethodsComponent implements OnInit {
     {
       const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
         maxWidth: "90vw",
-        height: "70vh"
+        height: "70vh",
+        data: {
+          maxid: this.BillingService.activeMaxId.maxId,
+          status: 'Y'
+        }
       })
       onlinedialog.afterClosed().subscribe((res) => {
         console.log(res);

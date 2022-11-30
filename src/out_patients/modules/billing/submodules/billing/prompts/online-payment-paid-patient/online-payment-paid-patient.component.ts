@@ -246,7 +246,7 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
       console.log(res);
       console.log(this.BillingService.activeMaxId)
       this.data = res.filter((i: any) => {
-        return i.maxId == this.BillingService.activeMaxId.maxId && i.paymentStatus == 'Y'
+        return i.maxId == this.data.maxId && i.paymentStatus == this.data.status
       });
     },
     (error) => {
