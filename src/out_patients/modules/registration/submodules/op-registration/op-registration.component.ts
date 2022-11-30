@@ -3322,6 +3322,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       }
     }
+
     if (!validationerror) {
       if (this.OPRegForm.value.mobileNumber) {
         if (!this.MaxIDExist && !this.maxIDChangeCall) {
@@ -3404,6 +3405,16 @@ export class OpRegistrationComponent implements OnInit {
         this.messageDialogService.error("Please enter gender");
       } else {
         validationerror = false;
+      }
+    }
+
+    if (!validationerror) {
+        let sex = this.titleList.filter((e) => e.name === this.OPRegForm.controls["title"].value && e.gender != null);
+        if (sex.length && this.OPRegForm.controls["gender"].value != 3 ) {
+          if(this.OPRegForm.controls["gender"].value != sex[0].sex){
+            validationerror = true;
+            this.messageDialogService.error("Please select correct Title against gender");
+          }
       }
     }
 

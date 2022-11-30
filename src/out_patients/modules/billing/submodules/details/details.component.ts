@@ -879,6 +879,9 @@ export class DetailsComponent implements OnInit {
     this.billdetailservice.setActiveBillnNo(
       this.BServiceForm.controls["billNo"].value
     );
+    this.billdetailservice.setActiveMaxId(
+      this.BServiceForm.controls['maxid'].value
+    )
     this.sendapprovalcheck();
   }
   dms() {
