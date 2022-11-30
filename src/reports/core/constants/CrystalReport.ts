@@ -150,7 +150,9 @@ export namespace CrystalReport {
       params.dtpto
     }&locationid=${params.locationid}&LocationName=${MaxHealthStorage.getCookie(
       "Location"
-    )}&user=${MaxHealthStorage.getCookie("UserName")}`;
+    )}&user=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
+      params.exportflag
+    }`;
   };
 
   export const OpenScrollReport = (params: any) => {
@@ -164,7 +166,9 @@ export namespace CrystalReport {
       params.openscrolltypename
     }&user=${MaxHealthStorage.getCookie(
       "UserName"
-    )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
+    )}&LocationName=${MaxHealthStorage.getCookie("Location")}&exportflag=${
+      params.exportflag
+    }`;
   };
 
   export const ServiceTaxReportData = (params: any) => {
@@ -176,7 +180,9 @@ export namespace CrystalReport {
       params.locationid
     }&LocationName=${MaxHealthStorage.getCookie(
       "Location"
-    )}&user=${MaxHealthStorage.getCookie("UserName")}`;
+    )}&user=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
+      params.exportflag
+    }`;
   };
   export const refundReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/refundreport?refundBill=${params.refundBill}&locationID=${params.locationID}`;

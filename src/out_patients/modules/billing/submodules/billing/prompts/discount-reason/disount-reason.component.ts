@@ -471,6 +471,8 @@ export class DisountReasonComponent implements OnInit {
     if (this.discAmtForm.value.amt > 0) {
       reason.discountPer =
         (parseFloat(this.discAmtForm.value.amt) / price) * 100;
+
+      //  reason.discountPer = parseFloat(reason.discountPer.toString()).toFixed(4);
     }
     return reason;
   }

@@ -20,6 +20,7 @@ import { getcreditcard } from '../../../../../core/types/billdetails/getcreditca
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ds_paymode, insertDueAmountModel, tab_cheque, tab_credit, tab_dd, tab_debit, tab_Mobile, tab_Online, tab_paymentList, tab_rec, tab_UPI } from '../../../../../core/models/insertDueAmountModel.Model'
 import { BillingApiConstants } from '../../billing/BillingApiConstant';
+import { OnlinePaymentPaidPatientComponent } from '../../billing/prompts/online-payment-paid-patient/online-payment-paid-patient.component';
 @Component({
   selector: 'out-patients-payment-dialog',
   templateUrl: './payment-dialog.component.html',
@@ -258,7 +259,8 @@ export class PaymentDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<PaymentDialogComponent>,
     private http: HttpService,
     private datepipe: DatePipe,
-    private billDetailService: billDetailService
+    private billDetailService: billDetailService,
+    private matdialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -936,7 +938,38 @@ export class PaymentDialogComponent implements OnInit {
     this._destroying$.complete();
     this.dueform.reset();
   }
-  
+  onlinesearch()
+  {
+    console.log(typeof this.dueform.value.onlineamount);
+    const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
+      maxWidth: "90vw",
+      height: "70vh",
+      data: {
+        maxid: this.billDetailService.activemaxid,
+        status: 'Y'
+      }
+    })
+    onlinedialog.afterClosed().subscribe((res) => {
+      console.log(res);
+      if(res)
+      {
+        this.dueform.controls["onlinetransacid"].setValue(res.transactionNo);
+        this.dueform.controls["onlinebookingid"].setValue(res.bookingNo);
+        this.dueform.controls["onlineamount"].setValue(res.bookingAmount.toFixed(2));
+        this.dueform.controls["onlinecontact"].setValue(res.mobile);
+        this.dueform.controls['onlinecardvalidate'].setValue("yes");
+      }
+    })
+  }
+
+  onlineamtcheck()
+  {
+    console.log('online check');
+    if(Number(this.dueform.value.onlineamount) > 0)
+      return true;
+    else
+      return false;
+  }
   getdepositcashlimit(){
     this.http
     .get(ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(this.hsplocationId))

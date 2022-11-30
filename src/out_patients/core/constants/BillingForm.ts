@@ -1,3 +1,4 @@
+import { MaxHealthStorage } from "@shared/services/storage";
 export namespace BillingForm {
 
     // Payment Methods Form Data
@@ -319,6 +320,8 @@ export namespace BillingForm {
             type: "string",
             required: true,
             title: "POS IMEI",
+            defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+            readonly: true,
           },
           creditcardtransactionid:{
             type: "string",
