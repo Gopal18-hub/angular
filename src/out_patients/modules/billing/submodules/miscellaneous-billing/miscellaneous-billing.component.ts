@@ -84,7 +84,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         bplCardNo: patientDetails.bplcardNo,
         BPLAddress: patientDetails.addressOnCard,
       },
-      hotlist: {
+      hotList: {
         hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
         reason: patientDetails.hotlistcomments,
       },
