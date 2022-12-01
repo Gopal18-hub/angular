@@ -14,14 +14,18 @@ export class PaymentService {
 
   constructor(private http: HttpService, public cookie: CookieService) {}
 
-  async uploadBillTransaction(payloadData: any, module: any): Promise<any> {
+  async uploadBillTransaction(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
     this.billTransaction = {
       amount: payloadData.price,
       userID: this.cookie.get("UserId"),
       imei: this.cookie.get("MAXMachineName"),
       merchantStorePosCode: this.cookie.get("MerchantPOSCode"),
       totalInvoiceAmount: payloadData.price,
-      maxID: "",
+      maxID: maxId,
       posEDCMachineId: this.cookie.get("POSIMEI"),
       merchantID: this.cookie.get("MerchantId"),
       securityToken: this.cookie.get("SecurityToken"),
@@ -39,14 +43,18 @@ export class PaymentService {
       .toPromise();
   }
 
-  async getBillTransactionStatus(payloadData: any, module: any): Promise<any> {
+  async getBillTransactionStatus(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
     this.billTransaction = {
       amount: payloadData.price,
       userID: this.cookie.get("UserId"),
       imei: this.cookie.get("MAXMachineName"),
       merchantStorePosCode: this.cookie.get("MerchantPOSCode"),
       totalInvoiceAmount: payloadData.price,
-      maxID: "",
+      maxID: maxId,
       posEDCMachineId: this.cookie.get("POSIMEI"),
       merchantID: this.cookie.get("MerchantId"),
       securityToken: this.cookie.get("SecurityToken"),
