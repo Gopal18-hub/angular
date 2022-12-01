@@ -148,7 +148,7 @@ export class ConsumablesComponent implements OnInit {
 
               if (companyIdNotApplicable && companyIdNotApplicable.length > 0) {
                 this.messageDialogService.info(
-                  "Consumable inclusion in procdure is not applicable for this company"
+                  "Consumable mapping with procedure is not configured for selected unit or company"
                 );
               }
             }
