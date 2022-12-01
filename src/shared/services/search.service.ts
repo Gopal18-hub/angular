@@ -13,7 +13,7 @@ export class SearchService {
 
   activePage: any;
   fromdate = this.datepipe.transform(
-    new Date().setMonth(new Date().getMonth() - 2),
+    new Date().setDate(new Date().getDate() - 1),
     "yyyy-MM-dd"
   );
 
