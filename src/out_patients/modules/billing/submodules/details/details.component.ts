@@ -561,7 +561,7 @@ export class DetailsComponent implements OnInit {
         this.noteRemarkdb = res.notereason;
         this.vipdb = res.vipreason;
         this.hwcRemarkdb = res.hwcRemarks;
-        this.hotlistReasondb = res.hotlistreason;
+        this.hotlistReasondb = { title: res.hotlistreason, valu: 0 };
         this.hotlistRemarkdb = res.hotlistcomments;
         this.bplcardNo = res.bplcardNo;
         this.bplCardAddress = res.addressOnCard;
