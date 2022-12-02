@@ -1190,8 +1190,7 @@ export class CalculateBillService {
   //#region  CGHS Beneficiary
   async checkCGHSBeneficiary() {
     if (
-      this.billingServiceRef.patientDetailsInfo &&
-      this.billingServiceRef.patientDetailsInfo.adhaarID
+      this.billingServiceRef.patientDetailsInfo 
     ) {
       let cghsBeneficiary = await this.http
         .get(
@@ -1199,7 +1198,7 @@ export class CalculateBillService {
             this.billingServiceRef.activeMaxId.iacode,
             this.billingServiceRef.activeMaxId.regNumber,
             this.billingServiceRef.company,
-            this.billingServiceRef.patientDetailsInfo.adhaarID
+            this.billingServiceRef.patientDetailsInfo.adhaarID || ''
           )
         )
         .toPromise();

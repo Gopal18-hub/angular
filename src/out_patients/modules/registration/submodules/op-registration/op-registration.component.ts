@@ -3099,10 +3099,19 @@ export class OpRegistrationComponent implements OnInit {
       let sourceofinfo = this.sourceOfInfoList.filter(
         (e) => e.id === patientDetails?.sourceofinfo
       );
-      this.OPRegForm.controls["sourceOfInput"].setValue({
-        title: sourceofinfo[0].name,
-        value: sourceofinfo[0].id,
-      });
+      if(sourceofinfo.length > 0)
+      {
+        this.OPRegForm.controls["sourceOfInput"].setValue({
+          title: sourceofinfo[0].name,
+          value: sourceofinfo[0].id,
+        });
+      }
+      else {
+        this.OPRegForm.controls["sourceOfInput"].setValue({
+          title: "",
+          value: 0,
+        });
+      }
     } else {
       this.OPRegForm.controls["sourceOfInput"].setValue({
         title: "",
