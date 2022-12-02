@@ -3749,10 +3749,11 @@ export class OpRegistrationComponent implements OnInit {
       false,
       "",
       "",
-      this.datepipe.transform(
-        this.OPRegForm.value.dob,
-        "yyyy-MM-ddThh:mm:ss"
-      ) || null,
+      this.OPRegForm.value.dob || null,
+      // this.datepipe.transform(
+      //   this.OPRegForm.value.dob,
+      //   "yyyy-MM-ddThh:mm:ss"
+      // ) || null,
       this.OPRegForm.controls["age"].value,
       this.OPRegForm.value.ageType,
       ageTypeName
