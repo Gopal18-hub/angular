@@ -684,7 +684,9 @@ export class DetailsComponent implements OnInit {
             var approvalpending: any = 0;
             for(var i = 0; i < this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.length; i++)
             {
-              if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[i].notApproved == 0)
+              if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[i].notApproved == 0 &&
+                this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[i].itemId != 0
+                )
               {
                 approvalpending++;
               }

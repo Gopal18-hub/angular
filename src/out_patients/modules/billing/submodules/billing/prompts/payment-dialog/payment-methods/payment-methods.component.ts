@@ -125,12 +125,21 @@ export class BillingPaymentMethodsComponent implements OnInit {
       if (this.paymentForm[method].controls["price"]) {
         this.paymentForm[method].controls["price"].valueChanges.subscribe(
           (res: any) => {
-            this.tabPrices[index] = Number(res);
-            const sum = this.tabPrices.reduce(
-              (partialSum, a) => partialSum + a,
-              0
-            );
-            this.remainingAmount = this.totalAmount - sum;
+            if(Number(res) < 0)
+            {
+              this.messageDialogService.warning('Amount Cannot be Negative');
+              this.paymentForm[method].controls["price"].setValue(Math.abs((res)).toFixed(2));
+            }
+            else
+            {
+              this.tabPrices[index] = Number(res);
+              const sum = this.tabPrices.reduce(
+                (partialSum, a) => partialSum + a,
+                0
+              );
+              this.remainingAmount = this.totalAmount - sum;
+            }
+            
           }
         );
       }
