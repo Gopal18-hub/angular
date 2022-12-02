@@ -3099,10 +3099,19 @@ export class OpRegistrationComponent implements OnInit {
       let sourceofinfo = this.sourceOfInfoList.filter(
         (e) => e.id === patientDetails?.sourceofinfo
       );
-      this.OPRegForm.controls["sourceOfInput"].setValue({
-        title: sourceofinfo[0].name,
-        value: sourceofinfo[0].id,
-      });
+      if(sourceofinfo.length > 0)
+      {
+        this.OPRegForm.controls["sourceOfInput"].setValue({
+          title: sourceofinfo[0].name,
+          value: sourceofinfo[0].id,
+        });
+      }
+      else {
+        this.OPRegForm.controls["sourceOfInput"].setValue({
+          title: "",
+          value: 0,
+        });
+      }
     } else {
       this.OPRegForm.controls["sourceOfInput"].setValue({
         title: "",
@@ -3749,10 +3758,11 @@ export class OpRegistrationComponent implements OnInit {
       false,
       "",
       "",
-      this.datepipe.transform(
-        this.OPRegForm.value.dob,
-        "yyyy-MM-ddThh:mm:ss"
-      ) || null,
+      this.OPRegForm.value.dob || null,
+      // this.datepipe.transform(
+      //   this.OPRegForm.value.dob,
+      //   "yyyy-MM-ddThh:mm:ss"
+      // ) || null,
       this.OPRegForm.controls["age"].value,
       this.OPRegForm.value.ageType,
       ageTypeName
