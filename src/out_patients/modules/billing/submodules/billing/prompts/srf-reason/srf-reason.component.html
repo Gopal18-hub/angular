@@ -1,0 +1,41 @@
+<section class="h-full reason-for-no-reason-wrapper">
+    <!-- Header & Cross Icon-->
+    <div>
+      <mat-label class="max-health-primary-color font-lg font-semi-bold"
+        >SRF</mat-label
+      >
+      <!-- <mat-icon
+        mat-dialog-close
+        class="float-right cursor-pointer max-dialog-close-icon"
+        aria-hidden="false"
+        aria-label="Example home icon"
+        >close</mat-icon
+      > -->
+    </div>
+    <div class="flex mt-4 justify-between">
+      <mat-label class="max-health-primary-color font-semi-bold"
+        >Reason</mat-label
+      >
+      <div class="w-3/4">
+        <maxhealth-question
+          [question]="question[0]"
+          [form]="srfForm"
+          [questions]="question[0]"
+          [index]="0"
+        >
+        </maxhealth-question>
+      </div>
+    </div>   
+    <div class="flex justify-end gap-05 mt-4">
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!srfForm.valid"
+        (click)="saveReason()"
+      >
+        Save
+      </button>
+      <button mat-raised-button color="primary"  (click)="Close()">Cancel</button>
+    </div>
+  </section>
+  
