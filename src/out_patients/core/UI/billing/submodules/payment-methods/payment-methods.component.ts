@@ -278,7 +278,8 @@ export class PaymentMethodsComponent implements OnInit {
            };
         let res = this.paymentService.uploadBillTransaction(
           this.payloadData,
-          module
+          module,
+          this.paymentpatientinfo.patientinfo.iacode+ "." + this.paymentpatientinfo.patientinfo.registrationno
         );
         await this.processPaymentApiResponse(button, res);
       } else {
@@ -302,7 +303,8 @@ export class PaymentMethodsComponent implements OnInit {
         };
       let res = await this.paymentService.getBillTransactionStatus(
         this.payloadData,
-        module
+        module,
+        this.paymentpatientinfo.patientinfo.iacode+ "." + this.paymentpatientinfo.patientinfo.registrationno
       );
       await this.processPaymentApiResponse(button, res);
     } else {
