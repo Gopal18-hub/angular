@@ -834,9 +834,7 @@ export class DepositComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: SimilarSoundPatientResponse[]) => {
-          this.similarContactPatientList = resultData;
-          console.log(this.similarContactPatientList);
-          {
+          this.similarContactPatientList = resultData;         
             if (this.similarContactPatientList.length > 1) {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
@@ -882,6 +880,9 @@ export class DepositComponent implements OnInit {
               console.log(resultData);
               let maxID = resultData[0].maxid;
               this.depositForm.controls["maxid"].setValue(maxID);
+              this.regNumber = Number(maxID.split(".")[1]);
+              this.iacode = maxID.split(".")[0];
+
               this.getPatientDetailsByMaxId();
             } else {
               this.snackbar.open('Invalid Mobile No', 'error');
@@ -892,7 +893,6 @@ export class DepositComponent implements OnInit {
 
               console.log("no data found");
             }
-          }
         },
         (error) => {
           console.log(error);
