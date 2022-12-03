@@ -432,7 +432,7 @@ export class OpOrderRequestComponent implements OnInit {
             this.noteRemarkdb = resultData.notereason;
             this.vipdb = resultData.vipreason;
             this.hwcRemarkdb = resultData.hwcRemarks;
-            this.hotlistReasondb = resultData.hotlistreason;
+            this.hotlistReasondb = { title: resultData.hotlistreason, value: 0 };
             this.hotlistRemarkdb = resultData.hotlistcomments;
             this.bplcardNo = resultData.bplcardNo;
             this.bplCardAddress = resultData.addressOnCard;

@@ -57,7 +57,7 @@ export class OpRegApprovalComponent implements OnInit {
   to: any;
   today = new Date();
   defaultUI: boolean = false;
-  opappprovalmessage: string = "Please search From Date and To Date ";
+  opappprovalmessage: string = "No records found";
   opapprovalimage: string = "placeholder";
   patientDetails: any = [];
   modfiedPatiendDetails: any = [];
@@ -377,10 +377,14 @@ export class OpRegApprovalComponent implements OnInit {
         this.searchApproval(formdata.data);
       });
     if (this.from == undefined && this.to == undefined) {
+      // this.from = this.datepipe.transform(
+      //   new Date().setMonth(new Date().getMonth() - 2),
+      //   "yyyy-MM-dd"
+      // );
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 2),
+        new Date().setDate(new Date().getDate() - 1),
         "yyyy-MM-dd"
-      );
+      )
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.showmain(this.link1[0]);
@@ -460,7 +464,7 @@ export class OpRegApprovalComponent implements OnInit {
               this.enableapprovebtn = false;
               this.defaultUI = false;
               this.opappprovalmessage = "No records found";
-              this.opapprovalimage = "norecordfound";
+              // this.opapprovalimage = "norecordfound";
             }
           },
           (error: any) => {
@@ -468,7 +472,7 @@ export class OpRegApprovalComponent implements OnInit {
             this.enableapprovebtn = false;
             this.defaultUI = false;
             this.opappprovalmessage = "No records found";
-            this.opapprovalimage = "norecordfound";
+            // this.opapprovalimage = "norecordfound";
             console.log(error);
           }
         );
@@ -498,7 +502,7 @@ export class OpRegApprovalComponent implements OnInit {
             console.log(error);
             this.defaultUI = false;
             this.opappprovalmessage = "No records found";
-            this.opapprovalimage = "norecordfound";
+            // this.opapprovalimage = "norecordfound";
           }
         );
     } else if (link == "Reject Requests") {
@@ -524,7 +528,7 @@ export class OpRegApprovalComponent implements OnInit {
           console.log(error);
           this.defaultUI = false;
           this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
+          // this.opapprovalimage = "norecordfound";
         }
       );
     }
@@ -599,7 +603,7 @@ export class OpRegApprovalComponent implements OnInit {
             this.ApprovalidList = [];
             this.defaultUI = true;
             this.opappprovalmessage = "No records found";
-            this.opapprovalimage = "norecordfound";
+            // this.opapprovalimage = "norecordfound";
           }
         );
     }
@@ -652,7 +656,7 @@ export class OpRegApprovalComponent implements OnInit {
             this.ApprovalidList = [];
             this.defaultUI = true;
             this.opappprovalmessage = "No records found";
-            this.opapprovalimage = "norecordfound";
+            // this.opapprovalimage = "norecordfound";
           }
         );
     }
@@ -753,7 +757,7 @@ export class OpRegApprovalComponent implements OnInit {
                     this.ApprovalidList = [];
                     this.defaultUI = true;
                     this.opappprovalmessage = "No records found";
-                    this.opapprovalimage = "norecordfound";
+                    // this.opapprovalimage = "norecordfound";
                   }
                 );
             }
@@ -783,7 +787,7 @@ export class OpRegApprovalComponent implements OnInit {
                     this.ApprovalidList = [];
                     this.defaultUI = true;
                     this.opappprovalmessage = "No records found";
-                    this.opapprovalimage = "norecordfound";
+                    // this.opapprovalimage = "norecordfound";
                   }
                 );
             }
