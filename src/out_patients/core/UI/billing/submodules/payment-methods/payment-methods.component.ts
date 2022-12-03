@@ -20,6 +20,7 @@ import { getBankName } from '../../../../../core/types/billdetails/getBankName.I
 import { getcreditcard } from '../../../../../core/types/billdetails/getcreditcard.Interface';
 import { CookieService } from '@shared/services/cookie.service';
 import { HttpService } from '@shared/services/http.service';
+import { PaymentService } from "@core/services/payment.service";
 
 @Component({
   selector: "payment-methods",
@@ -44,6 +45,7 @@ export class PaymentMethodsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private cookie: CookieService,  
     private http: HttpService,
+    private paymentService: PaymentService,
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -79,6 +81,7 @@ export class PaymentMethodsComponent implements OnInit {
   defaultamount: boolean = true;
   depositamount: number = 0;
   PaymentType: number = 1; //default cash
+  payloadData: any =[];
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = event.tab.textLabel;
@@ -264,22 +267,151 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.emailId);
   }
 
-  resetcreditcard() {
-    this.refundform.controls["creditcardno"].setValue("");
-    this.refundform.controls["creditholdername"].setValue("");
-    this.refundform.controls["creditbankname"].setValue("");
-    this.refundform.controls["creditbatchno"].setValue("");
-    this.refundform.controls["creditapproval"].setValue("");
-    this.refundform.controls["creditacquiring"].setValue("");
-    this.refundform.controls["creditterminal"].setValue("");
-    this.refundform.controls["creditamount"].setValue("");
+  async paymentupiapproval(button:string){
+    let price = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditamount"].value : this.refundform.controls["upiamount"].value;
+    let transactionid = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditcardtransactionid"].value : this.refundform.controls["upitransactionid"].value;
+    if ( Number(price) > 0) {
+       let module = "OPD_Deposit";
+       this.payloadData = {
+               price : Number(price),
+               transactionid : transactionid
+           };
+        let res = this.paymentService.uploadBillTransaction(
+          this.payloadData,
+          module
+        );
+        await this.processPaymentApiResponse(button, res);
+      } else {
+        const errorDialogRef = this.messageDialogService.warning(
+          "Please Give Proper Amount."
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
   }
-  savecheque(){
 
+  async paymentretryokbtnfunc(button:string){
+    let price = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditamount"].value : this.refundform.controls["upiamount"].value;
+    let transactionid = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditcardtransactionid"].value : this.refundform.controls["upitransactionid"].value;
+  
+    if (Number(price) > 0) { 
+    let module = "OPD_Deposit";
+    this.payloadData = {
+            price : Number(price),
+            transactionid : transactionid
+        };
+      let res = await this.paymentService.getBillTransactionStatus(
+        this.payloadData,
+        module
+      );
+      await this.processPaymentApiResponse(button, res);
+    } else {
+      const errorDialogRef = this.messageDialogService.warning(
+        "Please Give Proper Amount."
+      );
+      await errorDialogRef.afterClosed().toPromise();
+      return;
+    }
   }
-
-  resetchequedetails(){
-    
+  
+  async processPaymentApiResponse(button: any, res: any) {
+    if (res && res.success) {
+      if (res.responseMessage && res.responseMessage != "") {
+        if (res.responseMessage == "APPROVED") {
+          if (button == "credit") {
+            if (res.transactionRefId) {
+              this.refundform.controls["creditcardtransactionid"].patchValue(
+                res.transactionRefId
+              );
+            }
+          } else if (button == "upi") {
+            if (res.transactionRefId) {
+              this.refundform.controls["upitransactionid"].patchValue(
+                res.transactionRefId
+              );
+            }
+          }
+          const infoDialogRef = this.messageDialogService.info(
+            "Kindly Pay Using Machine"
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        } else if (res.responseMessage == "TXN APPROVED") {
+          if (res.pineLabReturnResponse) {
+            let bankId = 0;
+            let bank = this.bankname.filter(
+              (r: any) => r.title == res.pineLabReturnResponse.ccResAcquirerName
+            );
+            if (bank && bank.length > 0) {
+              bankId = bank[0].id;
+            }
+            if (button == "credit") {
+              this.refundform.controls["creditcardno"].patchValue(
+                res.pineLabReturnResponse.ccResCardNo
+              );
+              this.refundform.controls["creditholdername"].patchValue(
+                res.cardHolderName
+              );
+              this.refundform.controls["creditbankname"].patchValue(bankId);
+              this.refundform.controls["creditbatchno"].patchValue(
+                res.pineLabReturnResponse.ccResBatchNumber
+              );
+              this.refundform.controls["creditapproval"].patchValue(
+                res.pineLabReturnResponse.ccResApprovalCode
+              );
+              this.refundform.controls["creditterminal"].patchValue(res.terminalId);
+              this.refundform.controls["creditacquiring"].patchValue(
+                res.pineLabReturnResponse.ccResAcquirerName
+              );
+              this.refundform.controls["creditbanktid"].patchValue(
+                res.pineLabReturnResponse.ccResBankTID
+              );
+            } else if (button == "upi") {
+              this.refundform.controls["upicardno"].patchValue(
+                res.pineLabReturnResponse.ccResCardNo
+              );
+              this.refundform.controls["upicardholdername"].patchValue(
+                res.cardHolderName
+              );
+              this.refundform.controls["upibankname"].patchValue(bankId);
+              this.refundform.controls["upibatchno"].patchValue(
+                res.pineLabReturnResponse.ccResBatchNumber
+              );
+              this.refundform.controls["upiapproval"].patchValue(
+                res.pineLabReturnResponse.ccResApprovalCode
+              );
+              this.refundform.controls["upiterminal"].patchValue(res.terminalId);
+              this.refundform.controls["upiacquiring"].patchValue(
+                res.pineLabReturnResponse.ccResAcquirerName
+              );
+              this.refundform.controls["creditbanktid"].patchValue(
+                res.pineLabReturnResponse.ccResBankTID
+              );
+            }
+          }
+        } else {
+          const infoDialogRef = this.messageDialogService.info(
+            res.responseMessage
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        }
+      }
+    } else if (res && !res.success) {
+      if (res.errorMessage && res.errorMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.errorMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      } else if (res.responseMessage && res.responseMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.responseMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
+    }
   }
   getbankname()
   {
