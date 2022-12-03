@@ -14,6 +14,7 @@ import { DisountReasonComponent } from "../../modules/billing/submodules/billing
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { SrfReasonComponent } from "@modules/billing/submodules/billing/prompts/srf-reason/srf-reason.component";
 
 @Injectable({
   providedIn: "root",
@@ -155,7 +156,36 @@ export class CalculateBillService {
         [{ id: item.itemId }]
       )
       .toPromise();
+
     console.log(checkResult);
+    if (checkResult && checkResult.length > 0) {
+      const infoDialog = await this.messageDialogService.confirm(
+        "",
+        "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
+      );
+
+      const infoDialogRes = await infoDialog.afterClosed().toPromise();
+      if (
+        infoDialogRes &&
+        "type" in infoDialogRes &&
+        infoDialogRes.type == "yes"
+      ) {
+        const srfDialogref = this.matDialog.open(SrfReasonComponent, {
+          width: "28vw",
+          height: "42vh",
+        });
+
+        let res = await srfDialogref
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .toPromise();
+
+        if (res && res.data && res.data.reason) {
+          this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
+            res.data.reason;
+        }
+      }
+    }
   }
 
   async getinteraction() {
@@ -449,7 +479,7 @@ export class CalculateBillService {
     console.log(res);
     if (res.length > 0) {
       console.log(res[0].id);
-      if ((res[0].id == 0)) {
+      if (res[0].id == 0) {
         //coupon already used message
         const CouponErrorRef = this.messageDialogService.error(
           "Coupon already used"
@@ -1160,8 +1190,7 @@ export class CalculateBillService {
   //#region  CGHS Beneficiary
   async checkCGHSBeneficiary() {
     if (
-      this.billingServiceRef.patientDetailsInfo &&
-      this.billingServiceRef.patientDetailsInfo.adhaarID
+      this.billingServiceRef.patientDetailsInfo 
     ) {
       let cghsBeneficiary = await this.http
         .get(
@@ -1169,7 +1198,7 @@ export class CalculateBillService {
             this.billingServiceRef.activeMaxId.iacode,
             this.billingServiceRef.activeMaxId.regNumber,
             this.billingServiceRef.company,
-            this.billingServiceRef.patientDetailsInfo.adhaarID
+            this.billingServiceRef.patientDetailsInfo.adhaarID || ''
           )
         )
         .toPromise();
