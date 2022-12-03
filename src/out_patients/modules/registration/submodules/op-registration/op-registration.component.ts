@@ -657,6 +657,10 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
+    this.questions[2].elementRef.addEventListener(
+      "blur",
+      this.onPhoneModify.bind(this)
+    );
 
     //ENTER EVENT ON PHONE NUMBER
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
@@ -672,17 +676,17 @@ export class OpRegistrationComponent implements OnInit {
     });
 
     //tab event for Mobile Field
-    this.questions[2].elementRef.addEventListener("keydown", (event: any) => {
+    //this.questions[2].elementRef.addEventListener("keydown", (event: any) => {
       // If the user presses the "TAB" key on the keyboard
 
-      if (event.key === "Tab") {
+    //  if (event.key === "Tab") {
         // Cancel the default action, if needed
 
         // event.preventDefault();
 
-        this.onPhoneModify();
-      }
-    });
+        //this.onPhoneModify();
+    //  }
+   // });
 
     this.questions[2].elementRef.addEventListener(
       "change",
