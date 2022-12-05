@@ -342,7 +342,7 @@ export class BillDetailTableComponent implements OnInit {
       if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID)
       {
         var acklist = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
-          return i.ackby > 1;
+          return i.ackby != 0 && i.ackby != 1 && i.ackby != 9;
         })
         console.log(acklist);
         if(acklist.length > 0)
@@ -496,7 +496,7 @@ export class BillDetailTableComponent implements OnInit {
           console.log(list);
           for(var z = 0; z < list.length; z++)
           {
-            if(list[z].ackby > 1)
+            if(list[z].ackby != 0 && list[z].ackby != 1 && list[z].ackby != 9)
             {
               this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
               console.log(this.tableRows.selection);
