@@ -200,7 +200,7 @@ export class BillPaymentDialogComponent implements OnInit {
     let tabForms = true;
     if (this.paymentmethod) {
       this.paymentmethod.tabs.forEach((tab: any, index: number) => {
-        console.log(this.paymentmethod.paymentForm[tab.key]);
+        // console.log(this.paymentmethod.paymentForm[tab.key]);
         if (
           this.paymentmethod.tabPrices[index] > 0 &&
           this.paymentmethod.paymentForm[tab.key].valid == false
