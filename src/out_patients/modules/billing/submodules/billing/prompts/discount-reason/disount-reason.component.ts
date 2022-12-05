@@ -47,7 +47,7 @@ export class DisountReasonComponent implements OnInit {
         readonly: true,
       },
       amt: {
-        type: "string",
+        type: "currency",
         title: "Dis. Amt",
         defaultValue: "0.00",
         readonly: true,

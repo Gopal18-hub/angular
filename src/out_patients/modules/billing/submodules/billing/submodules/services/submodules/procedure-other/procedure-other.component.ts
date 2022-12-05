@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SpecializationService } from "../../../../specialization.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ReasonForGxtTaxComponent } from "@modules/billing/submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component";
+import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -396,7 +397,9 @@ export class ProcedureOtherComponent implements OnInit {
 
     // this.data = [...this.billingService.ProcedureItems];
     if (
-      Number(this.billingService.ProcedureItems[0].gstDetail.codeId) == 1406
+      BillingStaticConstants.excludeCodeIdGSTReason.includes(
+        this.billingService.ProcedureItems[0].gstDetail.codeId
+      )
     ) {
       this.data = [...this.billingService.ProcedureItems];
       this.checkTableValidation();
