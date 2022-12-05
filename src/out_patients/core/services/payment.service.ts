@@ -26,15 +26,15 @@ export class PaymentService {
       merchantStorePosCode: this.cookie.get("MerchantPOSCode"),
       totalInvoiceAmount: payloadData.price,
       maxID: maxId,
-      posEDCMachineId: this.cookie.get("POSIMEI"),
+      posEDCMachineId: Number(this.cookie.get("POSIMEI")),
       merchantID: this.cookie.get("MerchantId"),
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
       allowedPaymentMode: 1,
       loginUserId: Number(this.cookie.get("UserId")),
-      hsplocationId: this.cookie.get("HSPLocationId"),
-      stationId: this.cookie.get("StationId"),
+      hsplocationId: Number(this.cookie.get("HSPLocationId")),
+      stationId: Number(this.cookie.get("StationId")),
       transactionReferenceId: payloadData.transactionid || "",
     };
 
@@ -55,19 +55,19 @@ export class PaymentService {
       merchantStorePosCode: this.cookie.get("MerchantPOSCode"),
       totalInvoiceAmount: payloadData.price,
       maxID: maxId,
-      posEDCMachineId: this.cookie.get("POSIMEI"),
+      posEDCMachineId: Number(this.cookie.get("POSIMEI")),
       merchantID: this.cookie.get("MerchantId"),
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
       allowedPaymentMode: 1,
       loginUserId: Number(this.cookie.get("UserId")),
-      hsplocationId: this.cookie.get("HSPLocationId"),
-      stationId: this.cookie.get("StationId"),
+      hsplocationId: Number(this.cookie.get("HSPLocationId")),
+      stationId: Number(this.cookie.get("StationId")),
       transactionReferenceId: payloadData.transactionid || "",
     };
     return await this.http
-      .post(PaymentApiConstants.uploadBillTransaction, this.billTransaction)
+      .post(PaymentApiConstants.getBillTransactionStatus, this.billTransaction)
       .toPromise();
   }
 

@@ -1554,4 +1554,14 @@ export namespace ApiConstants {
   ) => {
     return `${environment.PatientApiUrl}api/patient/verifydmsdocument/${ID}/${flag}/${IaCode}/${RegistrationNo}/${userId}`
   }
+
+  export const getsearchbasedreferraldoctor = (
+    ReferralDoctorName?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getrefdoctorname/" +
+      ReferralDoctorName
+    );
+  };
 }
