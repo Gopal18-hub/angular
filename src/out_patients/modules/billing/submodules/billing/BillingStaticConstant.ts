@@ -575,4 +575,8 @@ export namespace BillingStaticConstants {
     { title: "SRF Done", value: 2 },
     { title: "SRF Done", value: 3 },
   ];
+
+  //GST Confirm POPUP exclusion and Apply GST
+
+  export const excludeCodeIdGSTReason: any = [1406];
 }
