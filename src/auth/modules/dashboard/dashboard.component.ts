@@ -174,7 +174,8 @@ export class DashboardComponent implements OnInit {
           item.age= this.onageCalculator(item.dob);
           return item;
         });
-        this.patientList = resultData;
+         //Added line for restricting secondary id to display in list
+        this.patientList = resultData.filter((res:any) => res.parentMergeLinked == "");
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
         );
@@ -267,7 +268,8 @@ export class DashboardComponent implements OnInit {
           item.age= this.onageCalculator(item.dob);
           return item;
         });
-        this.patientList = resultData;
+         //Added line for restricting secondary id to display in list
+        this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
         );

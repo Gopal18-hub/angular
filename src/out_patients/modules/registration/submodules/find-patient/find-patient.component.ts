@@ -384,6 +384,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       item.age = this.onageCalculator(item.dob);
       return item;
     });
+     //Added line for restricting secondary id to display in list
     this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
     this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
     this.isAPIProcess = true;
