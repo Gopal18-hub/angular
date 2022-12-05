@@ -353,9 +353,9 @@ export class InvestigationOrdersComponent implements OnInit {
         if (value === 10) {
           this.matdialog
             .open(ScheduleDateDialogComponent, {
-              width: "29vw",
+              width: "33vw",
               height: "28vh",
-              maxWidth: "30vw",
+              maxWidth: "33vw",
             })
             .afterClosed()
             .subscribe((res) => {
@@ -738,10 +738,10 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res === 1) {
-          this.messageDialogService.info("Saved Successfully!");
-          this.listRowClick(this.selectedInv);
           this.tableSelectedRows = [];
-          //this.tableSelectedRows = []
+          this.messageDialogService.info("Saved Successfully!");
+          this.search();
+          //this.listRowClick(this.selectedInv);
         }
         this.objPhyOrder = [];
         this.objdtdenialorder = [];
@@ -808,8 +808,9 @@ export class InvestigationOrdersComponent implements OnInit {
               .subscribe((res: any) => {
                 if (res.success === true) {
                   this.messageDialogService.info("Modified Successfully");
+                  this.search();
                   this.disableBtns();
-                  this.listRowClick(this.selectedInv);
+                  //this.listRowClick(this.selectedInv);
                   this.tableSelectedRows = [];
                 }
               });

@@ -223,7 +223,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Dues",
         type: "number",
         style: {
-          width: "4rem",
+          width: "9rem",
         },
       },
       tdsamount: {
@@ -430,6 +430,7 @@ else
       item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment).toFixed(2);
       item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment).toFixed(2);
       item.tdsamount = Number(item.tdsamount).toFixed(2);
+      item.dues = item.dues == undefined ? "0" : Number(item.dues).toFixed(2);
       item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
       item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
       item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
@@ -453,7 +454,7 @@ else
       creditcard: this.creditcard.toFixed(2),
       mobilePayment: this.mobilePayment.toFixed(2),
       onlinePayment: this.OnlinePayment.toFixed(2),
-      dues: this.dues,
+      dues: this.dues.toFixed(2),
       tdsamount: this.tdsamount.toFixed(2),
       upiamount : this.UPIAmt.toFixed(2),
       donation: this.DonationAmount.toFixed(2),
