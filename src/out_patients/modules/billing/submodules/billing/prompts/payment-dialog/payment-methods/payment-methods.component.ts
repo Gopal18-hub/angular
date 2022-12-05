@@ -23,6 +23,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { OnlinePaymentPaidPatientComponent } from "../../online-payment-paid-patient/online-payment-paid-patient.component";
 import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
 import { BillingService } from "../../../billing.service";
+import { MaxHealthStorage } from "@shared/services/storage";
+
 @Component({
   selector: "billing-payment-methods",
   templateUrl: "./payment-methods.component.html",
@@ -125,13 +127,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
       if (this.paymentForm[method].controls["price"]) {
         this.paymentForm[method].controls["price"].valueChanges.subscribe(
           (res: any) => {
-            if(Number(res) < 0)
-            {
-              this.messageDialogService.warning('Amount Cannot be Negative');
-              this.paymentForm[method].controls["price"].setValue(Math.abs((res)).toFixed(2));
-            }
-            else
-            {
+            if (Number(res) < 0) {
+              this.messageDialogService.warning("Amount Cannot be Negative");
+              this.paymentForm[method].controls["price"].setValue(
+                Math.abs(res).toFixed(2)
+              );
+            } else {
               this.tabPrices[index] = Number(res);
               const sum = this.tabPrices.reduce(
                 (partialSum, a) => partialSum + a,
@@ -139,7 +140,6 @@ export class BillingPaymentMethodsComponent implements OnInit {
               );
               this.remainingAmount = this.totalAmount - sum;
             }
-            
           }
         );
       }
@@ -165,6 +165,11 @@ export class BillingPaymentMethodsComponent implements OnInit {
             );
           }
         } else {
+          if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
+            this.paymentForm[this.activeTab.key].controls["posimei"].setValue(
+              MaxHealthStorage.getCookie("MAXMachineName")
+            );
+          }
           this.paymentForm[this.activeTab.key].controls["price"].setValue(
             this.remainingAmount
           );
