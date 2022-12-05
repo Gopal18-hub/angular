@@ -532,7 +532,7 @@ export class DisountReasonComponent implements OnInit {
     } else {
       this.discretionaryDis = false;
       this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
-      this.question[4].customErrorMessage = "Please enter valid Amount";
+      this.question[4].customErrorMessage = "Invalid amount";
     }
   }
   OnPatientPrepare() {
@@ -584,7 +584,7 @@ export class DisountReasonComponent implements OnInit {
     } else {
       this.discretionaryDis = false;
       this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
-      this.question[4].customErrorMessage = "Please enter valid Amount";
+      this.question[4].customErrorMessage = "Invalid amount";
     }
   }
 
@@ -637,7 +637,7 @@ export class DisountReasonComponent implements OnInit {
     } else {
       this.discretionaryDis = false;
       this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
-      this.question[4].customErrorMessage = "Please enter valid Amount";
+      this.question[4].customErrorMessage = "Invalid amount";
     }
   }
 
@@ -705,7 +705,7 @@ export class DisountReasonComponent implements OnInit {
       });
     } else {
       this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
-      this.question[4].customErrorMessage = "Please enter valid Amount";
+      this.question[4].customErrorMessage = "Invalid amount";
     }
   }
 
@@ -764,7 +764,7 @@ export class DisountReasonComponent implements OnInit {
       });
     } else {
       this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
-      this.question[4].customErrorMessage = "Please enter valid Amount";
+      this.question[4].customErrorMessage = "Invalid amount";
     }
   }
 
@@ -826,7 +826,7 @@ export class DisountReasonComponent implements OnInit {
     } else {
       this.discretionaryDis = false;
       this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
-      this.question[4].customErrorMessage = "Please enter valid Amount";
+      this.question[4].customErrorMessage = "Invalid amount";
     }
   }
 

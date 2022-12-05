@@ -272,7 +272,7 @@ export class CashScrollNewComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   queryparamssearch:boolean = false;
   takenat: any;
-  
+  apiProcessing: boolean = false;
   uniquescrollnumber !: GetDataForOldScroll;
 
   private readonly _destroying$ = new Subject<void>();
@@ -333,7 +333,7 @@ export class CashScrollNewComponent implements OnInit {
   }
 
   formint(){
-    this.getdetailsfornewscroll();      
+    this.getdetailsfornewscroll();    
     this.cashscrollnewForm.controls["todate"].enable();
       this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
       this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
@@ -370,6 +370,7 @@ export class CashScrollNewComponent implements OnInit {
  }
 else
  {
+   this.apiProcessing = true;
     this.http
     .get(ApiConstants.getscrolldetailsforoneuser(
     this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
@@ -390,7 +391,7 @@ else
     for (var i = 0; i < this.scrolldetailsList.length; i++) {
       this.scrolldetailsList[i].sno = i + 1;
     }
-
+    this.apiProcessing = false;
     this.billamount = this.scrolldetailsList.map((t:any) => t.billamount).reduce((acc: any, value: any) => acc + value, 0);
     this.refund = this.scrolldetailsList.map((t:any) => t.refund).reduce((acc:any, value:any) => acc + value, 0);
     this.depositamount = this.scrolldetailsList.map((t:any) => t.depositamount).reduce((acc:any, value:any) => acc + value, 0);
