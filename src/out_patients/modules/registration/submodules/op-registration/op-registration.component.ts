@@ -210,7 +210,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
+        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z. '']+",
         //onlyKeyPressAlpha: true,
         capitalizeText: true,
       },
@@ -677,16 +677,16 @@ export class OpRegistrationComponent implements OnInit {
 
     //tab event for Mobile Field
     //this.questions[2].elementRef.addEventListener("keydown", (event: any) => {
-      // If the user presses the "TAB" key on the keyboard
+    // If the user presses the "TAB" key on the keyboard
 
     //  if (event.key === "Tab") {
-        // Cancel the default action, if needed
+    // Cancel the default action, if needed
 
-        // event.preventDefault();
+    // event.preventDefault();
 
-        //this.onPhoneModify();
+    //this.onPhoneModify();
     //  }
-   // });
+    // });
 
     this.questions[2].elementRef.addEventListener(
       "change",
@@ -2628,7 +2628,15 @@ export class OpRegistrationComponent implements OnInit {
             ) {
               this.OPRegForm.markAllAsTouched();
               this.OPRegForm.markAsPristine();
-              this.showRegisteredId("Modified request went for approval");
+              ////GAV-1389 - popup change
+              this.messageDialogService.success(
+                "Max Id " +
+                  this.patientDetails.iacode +
+                  "." +
+                  this.patientDetails.registrationno +
+                  " modified request sent for approval"
+              );
+              //this.showRegisteredId("Modified request sent for approval");
             }
           } else {
             this.messageDialogService.info(resultData["message"]);
@@ -3094,14 +3102,12 @@ export class OpRegistrationComponent implements OnInit {
       let sourceofinfo = this.sourceOfInfoList.filter(
         (e) => e.id === patientDetails?.sourceofinfo
       );
-      if(sourceofinfo.length > 0)
-      {
+      if (sourceofinfo.length > 0) {
         this.OPRegForm.controls["sourceOfInput"].setValue({
           title: sourceofinfo[0].name,
           value: sourceofinfo[0].id,
         });
-      }
-      else {
+      } else {
         this.OPRegForm.controls["sourceOfInput"].setValue({
           title: "",
           value: 0,
