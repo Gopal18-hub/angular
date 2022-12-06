@@ -184,7 +184,7 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
     private BillingService: BillingService,
     private dialogRef: MatDialogRef<OnlinePaymentPaidPatientComponent>,
     @Inject(MAT_DIALOG_DATA) private formdata: {
-      maxId: any,
+      maxid: any,
       status: any
     }
   ) { 
@@ -249,9 +249,10 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
     .subscribe((res) => {
       this.apiProcessing = false;
       console.log(res);
+      console.log(this.formdata);
       console.log(this.BillingService.activeMaxId)
       this.data = res.filter((i: any) => {
-        return i.maxId == this.formdata.maxId && i.paymentStatus == this.formdata.status
+        return i.maxId == this.formdata.maxid && i.paymentStatus == this.formdata.status
       });
     },
     (error) => {
