@@ -199,8 +199,12 @@ export class RefundDialogComponent implements OnInit {
         this.messageDialogService.info("Enter OTP");
        
         this.validationexists = true;
+      }  else if(this.refundform.value.otp.length != 4){
+        this.questions[4].elementRef.focus(); 
+        this.messageDialogService.info("Invalid OTP");
+        this.validationexists = true;
       }
-    }
+    }  
      else{
       this.validationexists = false;
      }
@@ -266,7 +270,12 @@ export class RefundDialogComponent implements OnInit {
           },
           (error) => {
             console.log(error);
-            this.messageDialogService.error(error.error);
+            if(error.error == "Invalid OTP"){
+              this.questions[4].elementRef.focus(); 
+              this.messageDialogService.info(error.error);
+            }else{
+              this.messageDialogService.error(error.error);
+            }
           }
         );
     }
@@ -334,7 +343,8 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          const otpsuccessInfo = this.messageDialogService.info(
+          this.questions[4].elementRef.focus();
+          const otpsuccessInfo = this.messageDialogService.success(
             `OTP Sent Successfully`
           ); 
           setTimeout(()=>{                           
@@ -375,7 +385,8 @@ export class RefundDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
         if(resultData == 1){
-          this.messageDialogService.info("OTP Sent Successfully");
+          this.questions[4].elementRef.focus();
+          this.messageDialogService.success("OTP Sent Successfully");
           setTimeout(()=>{                           
             this.otpsenttomobile = false;
             this.otpresenttomobile = true;

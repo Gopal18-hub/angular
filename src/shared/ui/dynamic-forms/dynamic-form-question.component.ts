@@ -19,7 +19,7 @@ import "../../utilities/String-Extentions";
 import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
-
+import * as moment from "moment";
 @Component({
   selector: "maxhealth-question",
   templateUrl: "./dynamic-form-question.component.html",
@@ -140,7 +140,7 @@ export class DynamicFormQuestionComponent
           }
           break;
         case "required":
-          let questionIndex = this.questions.findIndex(
+          let questionIndex: number = this.questions.findIndex(
             (it) => it.key == conditionParam.controlKey
           );
           const exprRequiredEvaluate = eval(conditionParam.expression);
@@ -149,6 +149,49 @@ export class DynamicFormQuestionComponent
           } else {
             this.questions[questionIndex].required = false;
           }
+          break;
+        case "dateMin":
+          let dateTempValue: any = eval(conditionParam.expression);
+          let datequestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[datequestionIndex].minimum = dateTempValue;
+          break;
+        case "dateMax":
+          let dateMaxTempValue: any = eval(conditionParam.expression);
+          let dateMaxquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateMaxquestionIndex].maximum = dateMaxTempValue;
+          break;
+        case "dateMaxWithDays":
+          let dateWithDaysTempValue: any = eval(conditionParam.expression);
+          let dateWithDaysquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateWithDaysquestionIndex].maximum = moment
+            .min(
+              moment(),
+              moment(dateWithDaysTempValue).add(conditionParam.days, "days")
+            )
+            .toDate();
+
+          break;
+        case "dateMinWithDays":
+          let dateWithMinDaysTempValue: any = eval(conditionParam.expression);
+          let dateWithMinDaysquestionIndex = this.questions.findIndex(
+            (it) => it.key == conditionParam.controlKey
+          );
+          this.questions[dateWithMinDaysquestionIndex].minimum = moment
+            .min(
+              moment(),
+              moment(dateWithMinDaysTempValue).subtract(
+                conditionParam.days,
+                "days"
+              )
+            )
+            .toDate();
+
           break;
         default:
           console.log(`NA`);
@@ -208,6 +251,18 @@ export class DynamicFormQuestionComponent
         )
       );
     }
+
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date" &&
+      this.element
+    ) {
+      maskInput({
+        inputElement: this.element.nativeElement,
+        ...this.dateMaskConfig,
+      });
+    }
   }
 
   displayFn(option: any): string {
@@ -248,15 +303,15 @@ export class DynamicFormQuestionComponent
       this.question.type == "autocomplete"
     ) {
       this._subscribeToClosingActions();
-    } else if (
-      this.question &&
-      this.question.type &&
-      this.question.type == "date"
-    ) {
-      maskInput({
-        inputElement: this.element.nativeElement,
-        ...this.dateMaskConfig,
-      });
+      //} else if (
+      //  this.question &&
+      //  this.question.type &&
+      //  this.question.type == "date"
+      //) {
+      //  maskInput({
+      //    inputElement: this.element.nativeElement,
+      //    ...this.dateMaskConfig,
+      //  });
     } else if (
       this.question &&
       this.question.type &&
@@ -300,6 +355,24 @@ export class DynamicFormQuestionComponent
     } else {
       event.preventDefault();
       return false;
+    }
+  }
+
+  keyUpSetDateFormat(event: any) {
+    let vl = event.target.value.replaceAll(/\s+/g, "").length;
+    if (event.target.value.length === 8 && !isNaN(event.target.value)) {
+      this.form.controls[this.question.key].setValue(
+        this.qcs.convertDateObjFormat(
+          maskInput({
+            inputElement: this.element.nativeElement,
+            ...this.dateMaskConfig,
+          }).textMaskInputElement.state.previousConformedValue
+        )
+      );
+    } else if (vl === 10 && isNaN(event.target.value)) {
+      this.form.controls[this.question.key].setValue(
+        this.qcs.convertDateObjFormat(event.target.value)
+      );
     }
   }
 

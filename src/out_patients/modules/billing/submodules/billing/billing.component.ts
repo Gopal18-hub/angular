@@ -213,7 +213,9 @@ export class BillingComponent implements OnInit, OnDestroy {
           res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
               ////GAV-1227
-              if (!item.isBilled) {
+              ////GAV-1274 added filter for ServiceId and TestID -
+              ////for which serviceId is null or testId is 0 user need to manually select that test
+              if (!item.isBilled && item.serviceId && item.testID) {
                 tempBulkInvPayload.push({
                   title: item.testName,
                   value: item.testID,
@@ -621,7 +623,11 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
-    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+    if (
+      !pDetails.dsPersonalDetails.dtPersonalDetails1 ||
+      (pDetails.dsPersonalDetails.dtPersonalDetails1 &&
+        pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0)
+    ) {
       this.clear();
       this.snackbar.open("Invalid Max ID", "error");
       return;
@@ -724,7 +730,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         bplCardNo: patientDetails.bplcardNo,
         BPLAddress: patientDetails.addressOnCard,
       },
-      hotlist: {
+      hotList: {
         hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
         reason: patientDetails.hotlistcomments,
       },
@@ -842,6 +848,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     ) {
       const dialogRef = this.matDialog.open(PaydueComponent, {
         width: "30vw",
+        disableClose: true,
         data: {
           dueAmount: dtPatientPastDetails[4].data,
           maxId: this.formGroup.value.maxid,

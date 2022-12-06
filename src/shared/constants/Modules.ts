@@ -445,7 +445,7 @@ export namespace MaxModules {
         {
           id: 34,
           title: "OP/IP",
-          defaultPath: "",
+          defaultPath: "/op-ip",
           moreOptions: true,
           tenentPath: "/mis-reports",
           childrens: [
@@ -455,6 +455,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -462,6 +463,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -536,6 +538,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -659,6 +662,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -771,6 +775,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -801,6 +806,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -831,6 +837,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -856,6 +863,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -863,32 +871,33 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
                       title: "Scroll Summary Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/ScrollSummaryReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
                     {
                       id: 34,
                       title: "Refund Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/opRefundReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
                     {
                       id: 34,
                       title: "Discount Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/discountReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
                     {
                       id: 34,
                       title: "Free Out Patient Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/freeOutPatientReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -900,6 +909,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -937,6 +947,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1017,6 +1028,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1068,6 +1080,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1091,6 +1104,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1153,28 +1167,30 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "Miscellaneous Bill Report",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/MiscellaneousMISReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "Miscellaneous Bill Report New",
-                  defaultPath: "",
+                  defaultPath:
+                    "/op-ip/prompt-report/miscellaneousBillingReportNew",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "OP Bill Register",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/opBillRegister",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "Price Modification Report",
-                  defaultPath: "",
+                  defaultPath:
+                    "/op-ip/prompt-report/CROPItemPriceModifiedReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
@@ -1186,6 +1202,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -1193,6 +1210,7 @@ export namespace MaxModules {
                   defaultPath: "",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  tenentPath: "/mis-reports",
                   childrens: [
                     {
                       id: 34,
@@ -1269,7 +1287,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Open Scroll Amount",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/OpenScrollReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -1283,7 +1301,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Service Tax Report",
-                      defaultPath: "",
+                      defaultPath: "/op-ip/prompt-report/ServiceTaxReportData",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },
@@ -1306,14 +1324,14 @@ export namespace MaxModules {
                 {
                   id: 34,
                   title: "Daily Collection Report",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/DailyCollectionReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 34,
                   title: "Online Payment Detail Report",
-                  defaultPath: "",
+                  defaultPath: "/op-ip/prompt-report/OnlinePaymentDetailReport",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
@@ -1325,6 +1343,7 @@ export namespace MaxModules {
               defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
+              tenentPath: "/mis-reports",
               childrens: [
                 {
                   id: 34,
@@ -1340,16 +1359,16 @@ export namespace MaxModules {
         {
           id: 38,
           title: "Marketing",
-          defaultPath: "",
-          moreOptions: true,
+          defaultPath: "/marketing",
+          moreOptions: false,
           tenentPath: "/mis-reports",
           childrens: [],
         },
         {
           id: 35,
           title: "MMS",
-          defaultPath: "",
-          moreOptions: true,
+          defaultPath: "/mms",
+          moreOptions: false,
           tenentPath: "/mis-reports",
           childrens: [],
         },

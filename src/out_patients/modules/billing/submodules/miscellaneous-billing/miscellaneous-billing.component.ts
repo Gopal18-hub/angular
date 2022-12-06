@@ -26,7 +26,6 @@ import { MakedepositDialogComponent } from "../deposit/makedeposit-dialog/makede
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { BillingApiConstants } from "../billing/BillingApiConstant";
-import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { BillingService } from "../billing/billing.service";
 import { PatientService } from "@core/services/patient.service";
 import * as moment from "moment";
@@ -56,7 +55,6 @@ export class MiscellaneousBillingComponent implements OnInit {
     private db: DbService,
     public Misc: MiscService,
     public billingService: BillingService,
-    private snackbar: MaxHealthSnackBarService,
     private patientService: PatientService,
     private calculateBillService: CalculateBillService,
     private route: ActivatedRoute
@@ -68,7 +66,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   setItemsToBill: any = [];
   expiredPatient = false;
   miscBillCache: any = [];
-  isenableNarration: boolean = false;
+  //isenableNarration: boolean = false;
   doCategoryIconAction(categoryIcon: any) {
     const patientDetails: any =
       this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -86,7 +84,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         bplCardNo: patientDetails.bplcardNo,
         BPLAddress: patientDetails.addressOnCard,
       },
-      hotlist: {
+      hotList: {
         hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
         reason: patientDetails.hotlistcomments,
       },
@@ -148,15 +146,6 @@ export class MiscellaneousBillingComponent implements OnInit {
       narration: {
         type: "buttonTextarea",
       },
-
-      b2bInvoiceType: {
-        type: "checkbox",
-        options: [
-          {
-            title: "B2B Invoice",
-          },
-        ],
-      },
     },
   };
 
@@ -184,14 +173,14 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
     //Enable narration for BLKH & nanavati
-    if (
-      Number(this.cookie.get("HSPLocationId")) === 67 ||
-      Number(this.cookie.get("HSPLocationId")) === 69
-    ) {
-      this.isenableNarration = true;
-    } else {
-      this.isenableNarration = false;
-    }
+    // if (
+    //   Number(this.cookie.get("HSPLocationId")) === 67 ||
+    //   Number(this.cookie.get("HSPLocationId")) === 69
+    // ) {
+    //   this.isenableNarration = true;
+    // } else {
+    //   this.isenableNarration = false;
+    // }
 
     this.getssnandmaxid();
     // this.getAllCompany();
@@ -280,17 +269,6 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.setItemsToBill.corporateId = 0;
         }
       });
-    this.miscForm.controls["b2bInvoiceType"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value === true) {
-          this.setItemsToBill.b2bInvoiceType = "B2B";
-        } else {
-          this.setItemsToBill.b2bInvoiceType = "B2C";
-        }
-        this.Misc.setCalculateBillItems(this.setItemsToBill);
-        //this.Misc.setPatientDetail(this.patientDetail);
-      });
   }
 
   getRemark() {
@@ -308,7 +286,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       !this.miscForm.value.mobileNo ||
       this.miscForm.value.mobileNo.length != 10
     ) {
-      this.snackbar.open("Invalid Mobile No.", "error");
+      this.messageDialogService.error("Invalid Mobile No.");
       this.apiProcessing = false;
       // this.patient = false;
       return;
@@ -466,15 +444,13 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.MaxIDExist = false;
               this.apiProcessing = false;
             }
-            // this.snackbar.open("Invalid Max ID", "error");
-            // this.disableBtn = false;
           }
         );
     } else if (regNumber === 0 || iacode === 0) {
-      this.snackbar.open("Not a valid registration number", "error");
+      this.messageDialogService.error("Not a valid registration number");
       this.apiProcessing = false;
     } else {
-      this.snackbar.open("Invalid Max ID", "error");
+      this.messageDialogService.error("Invalid Max ID");
       this.disableBtn = false;
       this.apiProcessing = false;
       this.questions[0].readonly = false;
@@ -522,8 +498,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       .toPromise()
       .catch((e) => {
         this.apiProcessing = false;
-        //this.snackbar.open(e.error.errors.regiNo, "error");
-        this.snackbar.open("Invalid Max ID", "error");
+        this.messageDialogService.error("Invalid Max ID");
         return false;
       });
 
@@ -606,7 +581,7 @@ export class MiscellaneousBillingComponent implements OnInit {
             }
           } else {
             this.apiProcessing = false;
-            this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
             this.disableBtn = false;
             this.questions[0].readonly = false;
             return;
@@ -691,7 +666,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   //SETTING THE VALUES TO PATIENT DETAIL
   setValuesToMiscForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
-      this.snackbar.open("Invalid Max ID", "error");
+      this.messageDialogService.error("Invalid Max ID");
       this.disableBtn = false;
       this.apiProcessing = false;
       return;
@@ -722,7 +697,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
       if (diffMonths == 0 && diffDays == 0) {
-        this.snackbar.open("Today is Patient’s birthday", "info");
+        this.messageDialogService.info("Today is Patient’s birthday");
       }
       let returnAge = "";
       if (diffYears > 0) {

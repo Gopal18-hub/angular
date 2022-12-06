@@ -7,6 +7,7 @@ import { ConsumableDetailsComponent } from "../../../../prompts/consumable-detai
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-consumables",
@@ -16,6 +17,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
 export class ConsumablesComponent implements OnInit {
   @ViewChild("table") tableRows: any;
   data: any = [];
+  companyNotApplicableData: any = [];
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -51,7 +53,7 @@ export class ConsumablesComponent implements OnInit {
         title: "Priority",
         type: "string",
         style: {
-          width: "100px",
+          width: "80px",
         },
       },
       credit: {
@@ -82,6 +84,9 @@ export class ConsumablesComponent implements OnInit {
       totalAmount: {
         title: "Total Amount",
         type: "currency",
+        style: {
+          width: "200px",
+        },
       },
     },
   };
@@ -93,7 +98,8 @@ export class ConsumablesComponent implements OnInit {
     public matDialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -118,7 +124,12 @@ export class ConsumablesComponent implements OnInit {
           items: filteredItems,
           procedureDataForConsumable: res.element.procedureDataForConsumable,
           consumablesUnselectedItems:
-            this.calculateBillService.consumablesUnselectedItems,
+            res.element.orderId.toString() in
+            this.calculateBillService.consumablesUnselectedItems
+              ? this.calculateBillService.consumablesUnselectedItems[
+                  res.element.orderId.toString()
+                ]
+              : [],
         },
       });
       dialogConst.afterClosed().subscribe((result: any) => {
@@ -126,17 +137,32 @@ export class ConsumablesComponent implements OnInit {
           let tempAmount = 0;
           result.data.forEach((selectedItem: any) => {
             tempAmount += selectedItem.amount;
+            if (
+              this.billingService.company > 0 &&
+              this.companyNotApplicableData &&
+              this.companyNotApplicableData.length > 0
+            ) {
+              let companyIdNotApplicable = this.companyNotApplicableData.filter(
+                (res: any) => res.id === this.billingService.company
+              );
+
+              if (companyIdNotApplicable && companyIdNotApplicable.length > 0) {
+                this.messageDialogService.info(
+                  "Consumable mapping with procedure is not configured for selected unit or company"
+                );
+              }
+            }
           });
-          this.calculateBillService.consumablesUnselectedItems = result.data;
+          this.calculateBillService.consumablesUnselectedItems[
+            result.orderSet.orderId.toString()
+          ] = result.data;
           this.billingService.ConsumableItems[res.index].totalAmount =
-            this.billingService.ConsumableItems[res.index].totalAmount -
+            this.billingService.ConsumableItems[res.index].originalAmount -
             tempAmount;
           this.billingService.ConsumableItems[res.index].billItem.totalAmount =
-            this.billingService.ConsumableItems[res.index].billItem
-              .totalAmount - tempAmount;
+            this.billingService.ConsumableItems[res.index].totalAmount;
           this.billingService.ConsumableItems[res.index].billItem.price =
-            this.billingService.ConsumableItems[res.index].billItem.price -
-            tempAmount;
+            this.billingService.ConsumableItems[res.index].totalAmount;
           this.data = [...this.billingService.ConsumableItems];
           this.billingService.calculateTotalAmount();
         }
@@ -158,7 +184,20 @@ export class ConsumablesComponent implements OnInit {
       .subscribe(
         (res: any) => {
           let data: any = [];
+          this.companyNotApplicableData = res.commonIdData;
           res.consumableServiceHeadData.forEach((head: any, index: number) => {
+            let tempTotalAmount = head.amount;
+            if (
+              head.id in this.calculateBillService.consumablesUnselectedItems
+            ) {
+              let tempAmount = 0;
+              this.calculateBillService.consumablesUnselectedItems[
+                head.id
+              ].forEach((selectedItem: any) => {
+                tempAmount += selectedItem.amount;
+              });
+              tempTotalAmount = head.amount - tempAmount;
+            }
             this.billingService.addToConsumables({
               sno: index + 1,
               surgeryName: head.itemName,
@@ -166,8 +205,9 @@ export class ConsumablesComponent implements OnInit {
               credit: 0,
               cash: 0,
               doctorName: head.doctorName,
-              taxAmount: head.totaltaX_Value,
-              totalAmount: head.amount,
+              taxAmount: head.totaltaX_Value || 0,
+              totalAmount: tempTotalAmount,
+              originalAmount: head.amount,
               orderId: head.id,
               items: res.consumableServiceDetailsData,
               procedureDataForConsumable: res.procedureDataForConsumable,
@@ -185,7 +225,7 @@ export class ConsumablesComponent implements OnInit {
                 cash: 0,
                 disc: 0,
                 discAmount: 0,
-                totalAmount: head.amount,
+                totalAmount: tempTotalAmount,
                 gst: head.totaltaX_RATE,
                 gstValue: head.totaltaX_Value,
                 specialisationID: 0,

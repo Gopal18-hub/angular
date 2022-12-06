@@ -2,6 +2,17 @@
   .background-white {
     background-color: #fff;
   }
+  ::ng-deep 
+  {
+    mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper
+    {
+      padding-bottom: 0 !important;
+    }
+    .mat-error{
+      margin-top: 10px;
+    }
+  }
+  
   mat-toolbar {
     border-radius: 0.75rem 0.75rem 0 0;
     background-color: #dae9f8;
@@ -13,14 +24,10 @@
     font-size: 1.2rem;
   }
   .HappyFamilyPlanAllocationReport-box {
-    min-height: 440px;
+    min-height: 200px;
   }
-  .OnlinePaymentDetailReport-box{
-    .mat-radio-group {
-      flex-direction: row !important;
-      /* flex-wrap: wrap; */
-      justify-content: space-between;
-      gap: 20px;
+  .ScrollSummaryReport-box{
+  
   }
-  }
+  
 }

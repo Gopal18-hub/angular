@@ -47,7 +47,7 @@ export class DisountReasonComponent implements OnInit {
         readonly: true,
       },
       amt: {
-        type: "string",
+        type: "currency",
         title: "Dis. Amt",
         defaultValue: "0.00",
         readonly: true,
@@ -183,10 +183,12 @@ export class DisountReasonComponent implements OnInit {
 
   disableAdd: boolean = false;
 
+  discretionaryDis: boolean = false;
+
   @ViewChild("table") tableRows: any;
 
   dualList: any = [];
-
+  reasontitle: any = '';
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -344,6 +346,8 @@ export class DisountReasonComponent implements OnInit {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == val
         );
+        this.reasontitle = existReason.name;
+        console.log(this.reasontitle);
         if (existReason.valuebasedDisc == 1) {
           this.question[4].readonly = false;
         }
@@ -366,6 +370,10 @@ export class DisountReasonComponent implements OnInit {
             this.discAmtForm.controls["empCode"].setValue(res.data);
           });
         }
+      }
+      else
+      {
+        this.reasontitle = '';
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {
@@ -453,22 +461,43 @@ export class DisountReasonComponent implements OnInit {
       default:
         console.log("default");
     }
-    this.discAmtForm.patchValue({
-      types: null,
-      head: null,
-      reason: null,
-      percentage: null,
-      amt: null,
-    });
-    this.question[4].readonly = true;
+    if (this.discretionaryDis) {
+      this.discAmtForm.patchValue({
+        types: null,
+        head: null,
+        reason: null,
+        percentage: null,
+        amt: null,
+      });
+      this.question[4].readonly = true;
+    }
   }
 
   discretionaryCheck(reason: any, price: number) {
     if (this.discAmtForm.value.amt > 0) {
       reason.discountPer =
         (parseFloat(this.discAmtForm.value.amt) / price) * 100;
+
+      //  reason.discountPer = parseFloat(reason.discountPer.toString()).toFixed(4);
     }
     return reason;
+  }
+
+  isDiscretionaryDis(price: number): boolean {
+    if (
+      this.discAmtForm.value.amt &&
+      this.discAmtForm.value.amt > 0 &&
+      this.discAmtForm.value.amt <= price
+    ) {
+      return true;
+    } else if (
+      this.discAmtForm.value.amt &&
+      this.discAmtForm.value.amt > 0 &&
+      this.discAmtForm.value.amt > price
+    ) {
+      return false;
+    }
+    return true;
   }
 
   OnCampaignPrepare() {
@@ -476,32 +505,41 @@ export class DisountReasonComponent implements OnInit {
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const price = this.billingService.totalCostWithOutGst;
-    existReason = this.discretionaryCheck(existReason, price);
-    const discAmt = (price * existReason.discountPer) / 100;
-    let temp = {
-      sno: this.selectedItems.length + 1,
-      discType: "On Campaign",
-      discTypeId: 6,
-      service: "",
-      doctor: "",
-      price: price,
-      disc: existReason.discountPer,
-      discAmt: discAmt,
-      totalAmt: price - discAmt,
-      head: this.discAmtForm.value.head,
-      reason: this.discAmtForm.value.reason,
-      value: "0",
-      discTypeValue: "On-Campaign",
-      reasonTitle: existReason.name,
-    };
-    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
-      this.discAmtFormConfig.columnsInfo.reason.options;
-    this.calculateBillService.discountSelectedItems.push(temp);
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    this.disableAdd = true;
-    this.question[0].options = this.discounttypes.map((a: any) => {
-      return { title: a.title, value: a.value, disabled: true };
-    });
+    if (this.isDiscretionaryDis(price)) {
+      existReason = this.discretionaryCheck(existReason, price);
+      const discAmt = (price * existReason.discountPer) / 100;
+      let temp = {
+        sno: this.selectedItems.length + 1,
+        discType: "On Campaign",
+        discTypeId: 6,
+        service: "",
+        doctor: "",
+        price: price,
+        disc: existReason.discountPer,
+        discAmt: discAmt,
+        totalAmt: price - discAmt,
+        head: this.discAmtForm.value.head,
+        reason: this.discAmtForm.value.reason,
+        value: "0",
+        discTypeValue: "On-Campaign",
+        reasonTitle: existReason.name,
+      };
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+        this.discAmtFormConfig.columnsInfo.reason.options;
+      this.calculateBillService.discountSelectedItems.push(temp);
+      this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+      this.disableAdd = true;
+      this.question[0].options = this.discounttypes.map((a: any) => {
+        return { title: a.title, value: a.value, disabled: true };
+      });
+      this.discAmtForm.controls["amt"].setErrors(null);
+      this.question[4].customErrorMessage = "";
+      this.discretionaryDis = true;
+    } else {
+      this.discretionaryDis = false;
+      this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
+      this.question[4].customErrorMessage = "Invalid amount";
+    }
   }
   OnPatientPrepare() {
     let existReason: any = this.discReasonList.find(
@@ -510,41 +548,50 @@ export class DisountReasonComponent implements OnInit {
     const price = parseFloat(
       this.calculateBillService.billFormGroup.form.value.amtPayByPatient
     );
-    existReason = this.discretionaryCheck(existReason, price);
-    const discAmt = (price * existReason.discountPer) / 100;
-    let temp = {
-      sno: this.selectedItems.length + 1,
-      discType: "On Patient",
-      discTypeId: 4,
-      service: "",
-      doctor: "",
-      price: price,
-      disc: existReason.discountPer,
-      discAmt: discAmt,
-      totalAmt: price - discAmt,
-      head: this.discAmtForm.value.head,
-      reason: this.discAmtForm.value.reason,
-      value: "0",
-      discTypeValue: "On-Patient",
-      reasonTitle: existReason.name,
-    };
-    this.discAmtFormConfig.columnsInfo.reason.moreOptions[
-      this.dualList.length
-    ] = this.discAmtFormConfig.columnsInfo.reason.options;
-    this.calculateBillService.discountSelectedItems.push(temp);
-    this.dualList.push(4);
+    if (this.isDiscretionaryDis(price)) {
+      existReason = this.discretionaryCheck(existReason, price);
+      const discAmt = (price * existReason.discountPer) / 100;
+      let temp = {
+        sno: this.selectedItems.length + 1,
+        discType: "On Patient",
+        discTypeId: 4,
+        service: "",
+        doctor: "",
+        price: price,
+        disc: existReason.discountPer,
+        discAmt: discAmt,
+        totalAmt: price - discAmt,
+        head: this.discAmtForm.value.head,
+        reason: this.discAmtForm.value.reason,
+        value: "0",
+        discTypeValue: "On-Patient",
+        reasonTitle: existReason.name,
+      };
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[
+        this.dualList.length
+      ] = this.discAmtFormConfig.columnsInfo.reason.options;
+      this.calculateBillService.discountSelectedItems.push(temp);
+      this.dualList.push(4);
 
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    if (this.dualList.includes(5)) {
-      this.disableAdd = true;
-    }
-    this.question[0].options = this.discounttypes.map((a: any) => {
-      if (!this.disableAdd && a.value == "On-Company") {
-        return { title: a.title, value: a.value, disabled: false };
-      } else {
-        return { title: a.title, value: a.value, disabled: true };
+      this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+      if (this.dualList.includes(5)) {
+        this.disableAdd = true;
       }
-    });
+      this.question[0].options = this.discounttypes.map((a: any) => {
+        if (!this.disableAdd && a.value == "On-Company") {
+          return { title: a.title, value: a.value, disabled: false };
+        } else {
+          return { title: a.title, value: a.value, disabled: true };
+        }
+      });
+      this.discAmtForm.controls["amt"].setErrors(null);
+      this.question[4].customErrorMessage = "";
+      this.discretionaryDis = true;
+    } else {
+      this.discretionaryDis = false;
+      this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
+      this.question[4].customErrorMessage = "Invalid amount";
+    }
   }
 
   OnCompanyPrepare() {
@@ -554,107 +601,14 @@ export class DisountReasonComponent implements OnInit {
     const price = parseFloat(
       this.calculateBillService.billFormGroup.form.value.amtPayByComp
     );
-    existReason = this.discretionaryCheck(existReason, price);
-    const discAmt = (price * existReason.discountPer) / 100;
-    let temp = {
-      sno: this.selectedItems.length + 1,
-      discType: "On Company",
-      discTypeId: 5,
-      service: "",
-      doctor: "",
-      price: price,
-      disc: existReason.discountPer,
-      discAmt: discAmt,
-      totalAmt: price - discAmt,
-      head: this.discAmtForm.value.head,
-      reason: this.discAmtForm.value.reason,
-      value: "0",
-      discTypeValue: "On-Company",
-      reasonTitle: existReason.name,
-    };
-    this.discAmtFormConfig.columnsInfo.reason.moreOptions[
-      this.dualList.length
-    ] = this.discAmtFormConfig.columnsInfo.reason.options;
-    this.calculateBillService.discountSelectedItems.push(temp);
-    this.dualList.push(5);
-
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    if (this.dualList.includes(4)) {
-      this.disableAdd = true;
-    }
-    this.question[0].options = this.discounttypes.map((a: any) => {
-      if (!this.disableAdd && a.value == "On-Patient") {
-        return { title: a.title, value: a.value, disabled: false };
-      } else {
-        return { title: a.title, value: a.value, disabled: true };
-      }
-    });
-  }
-
-  OnItemPrepare() {
-    let existReason: any = this.discReasonList.find(
-      (rl: any) => rl.id == this.discAmtForm.value.reason
-    );
-    const selecetdServices: any = Object.values(this.serviceBasedList);
-    let k = 0;
-    for (let i = 0; i < selecetdServices.length; i++) {
-      for (let j = 0; j < selecetdServices[i].items.length; j++) {
-        let item = selecetdServices[i].items[j];
-        let price = item.price * item.qty;
-        existReason = this.discretionaryCheck(existReason, price);
-        const discAmt = (price * existReason.discountPer) / 100;
-        let temp = {
-          sno: this.selectedItems.length + 1,
-          discType: "On Item",
-          discTypeId: 3,
-          service: selecetdServices[i].name,
-          itemId: item.itemId,
-          doctor: item.itemName,
-          price: item.price * item.qty,
-          disc: existReason.discountPer,
-          discAmt: discAmt,
-          totalAmt: price - discAmt,
-          head: this.discAmtForm.value.head,
-          reason: this.discAmtForm.value.reason,
-          value: "0",
-          discTypeValue: "On-Item",
-          reasonTitle: existReason.name,
-        };
-        this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
-          this.discAmtFormConfig.columnsInfo.reason.options;
-        k++;
-
-        this.calculateBillService.discountSelectedItems.push(temp);
-
-        this.selectedItems = [
-          ...this.calculateBillService.discountSelectedItems,
-        ];
-      }
-    }
-
-    this.disableAdd = true;
-    this.question[0].options = this.discounttypes.map((a: any) => {
-      return { title: a.title, value: a.value, disabled: true };
-    });
-  }
-
-  OnServiceItemPrepare() {
-    let existReason: any = this.discReasonList.find(
-      (rl: any) => rl.id == this.discAmtForm.value.reason
-    );
-    const selecetdServices: any = Object.values(this.serviceBasedList);
-    for (let i = 0; i < selecetdServices.length; i++) {
-      let price = 0;
-      selecetdServices[i].items.forEach((item: any) => {
-        price += item.price * item.qty;
-      });
+    if (this.isDiscretionaryDis(price)) {
       existReason = this.discretionaryCheck(existReason, price);
       const discAmt = (price * existReason.discountPer) / 100;
       let temp = {
         sno: this.selectedItems.length + 1,
-        discType: "On Service",
-        discTypeId: 2,
-        service: selecetdServices[i].name,
+        discType: "On Company",
+        discTypeId: 5,
+        service: "",
         doctor: "",
         price: price,
         disc: existReason.discountPer,
@@ -663,19 +617,161 @@ export class DisountReasonComponent implements OnInit {
         head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
         value: "0",
-        discTypeValue: "On-Service",
+        discTypeValue: "On-Company",
         reasonTitle: existReason.name,
       };
-      this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
-        this.discAmtFormConfig.columnsInfo.reason.options;
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[
+        this.dualList.length
+      ] = this.discAmtFormConfig.columnsInfo.reason.options;
       this.calculateBillService.discountSelectedItems.push(temp);
+      this.dualList.push(5);
 
       this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+      if (this.dualList.includes(4)) {
+        this.disableAdd = true;
+      }
+      this.question[0].options = this.discounttypes.map((a: any) => {
+        if (!this.disableAdd && a.value == "On-Patient") {
+          return { title: a.title, value: a.value, disabled: false };
+        } else {
+          return { title: a.title, value: a.value, disabled: true };
+        }
+      });
+      this.discAmtForm.controls["amt"].setErrors(null);
+      this.question[4].customErrorMessage = "";
+      this.discretionaryDis = true;
+    } else {
+      this.discretionaryDis = false;
+      this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
+      this.question[4].customErrorMessage = "Invalid amount";
     }
-    this.disableAdd = true;
-    this.question[0].options = this.discounttypes.map((a: any) => {
-      return { title: a.title, value: a.value, disabled: true };
-    });
+  }
+
+  OnItemPrepare() {
+    let existReason: any = this.discReasonList.find(
+      (rl: any) => rl.id == this.discAmtForm.value.reason
+    );
+    let discretionaryDis = true;
+    const selecetdServices: any = Object.values(this.serviceBasedList);
+    let k = 0;
+    for (let i = 0; i < selecetdServices.length; i++) {
+      for (let j = 0; j < selecetdServices[i].items.length; j++) {
+        let item = selecetdServices[i].items[j];
+        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+        let price = item.price * quanity;
+        if (this.isDiscretionaryDis(price)) {
+          discretionaryDis = true;
+          existReason = this.discretionaryCheck(existReason, price);
+          const discAmt = (price * existReason.discountPer) / 100;
+          let temp = {
+            sno: this.selectedItems.length + 1,
+            discType: "On Item",
+            discTypeId: 3,
+            service: selecetdServices[i].name,
+            itemId: item.itemId,
+            doctor: item.itemName,
+            price: item.price * quanity,
+            disc: existReason.discountPer,
+            discAmt: discAmt,
+            totalAmt: price - discAmt,
+            head: this.discAmtForm.value.head,
+            reason: this.discAmtForm.value.reason,
+            value: "0",
+            discTypeValue: "On-Item",
+            reasonTitle: existReason.name,
+          };
+          this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
+            this.discAmtFormConfig.columnsInfo.reason.options;
+          k++;
+
+          this.calculateBillService.discountSelectedItems.push(temp);
+
+          this.selectedItems = [
+            ...this.calculateBillService.discountSelectedItems,
+          ];
+          this.discretionaryDis = true;
+        } else {
+          discretionaryDis = false;
+          this.discretionaryDis = false;
+          break;
+        }
+      }
+      if (!discretionaryDis) {
+        break;
+      }
+    }
+
+    this.disableAdd = discretionaryDis ? true : false;
+    if (discretionaryDis) {
+      this.discretionaryDis = true;
+      this.discAmtForm.controls["amt"].setErrors(null);
+      this.question[4].customErrorMessage = "";
+      this.question[0].options = this.discounttypes.map((a: any) => {
+        return { title: a.title, value: a.value, disabled: true };
+      });
+    } else {
+      this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
+      this.question[4].customErrorMessage = "Invalid amount";
+    }
+  }
+
+  OnServiceItemPrepare() {
+    let existReason: any = this.discReasonList.find(
+      (rl: any) => rl.id == this.discAmtForm.value.reason
+    );
+    let discretionaryDis = true;
+    const selecetdServices: any = Object.values(this.serviceBasedList);
+    for (let i = 0; i < selecetdServices.length; i++) {
+      let price = 0;
+      selecetdServices[i].items.forEach((item: any) => {
+        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+        price += item.price * quanity;
+      });
+      if (this.isDiscretionaryDis(price)) {
+        discretionaryDis = true;
+        existReason = this.discretionaryCheck(existReason, price);
+        const discAmt = (price * existReason.discountPer) / 100;
+        let temp = {
+          sno: this.selectedItems.length + 1,
+          discType: "On Service",
+          discTypeId: 2,
+          service: selecetdServices[i].name,
+          doctor: "",
+          price: price,
+          disc: existReason.discountPer,
+          discAmt: discAmt,
+          totalAmt: price - discAmt,
+          head: this.discAmtForm.value.head,
+          reason: this.discAmtForm.value.reason,
+          value: "0",
+          discTypeValue: "On-Service",
+          reasonTitle: existReason.name,
+        };
+        this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
+          this.discAmtFormConfig.columnsInfo.reason.options;
+        this.calculateBillService.discountSelectedItems.push(temp);
+
+        this.selectedItems = [
+          ...this.calculateBillService.discountSelectedItems,
+        ];
+        this.discretionaryDis = true;
+      } else {
+        discretionaryDis = false;
+        this.discretionaryDis = false;
+        break;
+      }
+    }
+    this.disableAdd = discretionaryDis ? true : false;
+    if (discretionaryDis) {
+      this.discAmtForm.controls["amt"].setErrors(null);
+      this.question[4].customErrorMessage = "";
+      this.question[0].options = this.discounttypes.map((a: any) => {
+        return { title: a.title, value: a.value, disabled: true };
+      });
+    } else {
+      this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
+      this.question[4].customErrorMessage = "Invalid amount";
+    }
   }
 
   clear() {
@@ -706,30 +802,38 @@ export class DisountReasonComponent implements OnInit {
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const price = this.billingService.totalCostWithOutGst;
-    existReason = this.discretionaryCheck(existReason, price);
-    const discAmt = (price * existReason.discountPer) / 100;
-    let temp = {
-      sno: this.selectedItems.length + 1,
-      discType: "On Bill",
-      discTypeId: 1,
-      service: "",
-      doctor: "",
-      price: price,
-      disc: existReason.discountPer,
-      discAmt: discAmt,
-      totalAmt: price - discAmt,
-      head: this.discAmtForm.value.head,
-      reason: this.discAmtForm.value.reason,
-      value: "0",
-      discTypeValue: "On-Bill",
-      reasonTitle: existReason.name,
-    };
-    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
-      this.discAmtFormConfig.columnsInfo.reason.options;
-    this.calculateBillService.discountSelectedItems.push(temp);
-
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    this.disableAdd = true;
+    if (this.isDiscretionaryDis(price)) {
+      this.discretionaryDis = true;
+      existReason = this.discretionaryCheck(existReason, price);
+      const discAmt = (price * existReason.discountPer) / 100;
+      let temp = {
+        sno: this.selectedItems.length + 1,
+        discType: "On Bill",
+        discTypeId: 1,
+        service: "",
+        doctor: "",
+        price: price,
+        disc: existReason.discountPer,
+        discAmt: discAmt,
+        totalAmt: price - discAmt,
+        head: this.discAmtForm.value.head,
+        reason: this.discAmtForm.value.reason,
+        value: "0",
+        discTypeValue: "On-Bill",
+        reasonTitle: existReason.name,
+      };
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+        this.discAmtFormConfig.columnsInfo.reason.options;
+      this.calculateBillService.discountSelectedItems.push(temp);
+      this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+      this.disableAdd = true;
+      this.discAmtForm.controls["amt"].setErrors(null);
+      this.question[4].customErrorMessage = "";
+    } else {
+      this.discretionaryDis = false;
+      this.discAmtForm.controls["amt"].setErrors({ incorrect: true });
+      this.question[4].customErrorMessage = "Invalid amount";
+    }
   }
 
   getDiscountReasonHead() {

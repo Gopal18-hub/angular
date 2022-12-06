@@ -30,6 +30,7 @@ import { PatientService } from "@core/services/patient.service";
 import { Form60YesOrNoComponent } from "./form60-dialog/form60-yes-or-no.component";
 import { BillingApiConstants } from "../billing/BillingApiConstant";
 import * as moment from "moment";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 
 @Component({
   selector: "out-patients-deposit",
@@ -49,7 +50,8 @@ export class DepositComponent implements OnInit {
     private searchService: SearchService,
     private route: ActivatedRoute,
     private patientService: PatientService,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private snackbar: MaxHealthSnackBarService,
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -149,7 +151,7 @@ export class DepositComponent implements OnInit {
       mobileno: {
         type: "tel",
         title: "Mobile No.",
-        pattern: "^[1-9]{1}[0-9]{9}",
+        // pattern: "^[1-9]{1}[0-9]{9}",
       },
       checkbox: {
         type: "checkbox",
@@ -527,8 +529,9 @@ export class DepositComponent implements OnInit {
               this.getPatientDetailsForDeposit();              
               this.apiProcessing = false;
             } else {
-              this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.snackbar.open('Invalid Max ID', 'error');
+              // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+              // this.questions[0].customErrorMessage = "Invalid Max ID";
             }
           }
         }
@@ -539,7 +542,15 @@ export class DepositComponent implements OnInit {
       if (event.key === "Enter" || event.key === "Tab") {
         //COMMENTED IN ORDER TO MOVE FOCUS TO THE NEXT BUTTON(FOR ERROR MESSAGE)
         // event.preventDefault();
-        this.mobilechange();
+        if(this.depositForm.value.mobileno.toString().length == 10)
+        {
+          this.mobilechange();
+        }
+        else
+        {
+          this.snackbar.open('Invalid Mobile No', 'error');
+        }
+        
       }
     });
   }
@@ -559,8 +570,9 @@ export class DepositComponent implements OnInit {
             this.patientservicetype = resultData.getServiceType;
 
             if (this.patientpersonaldetails.length === 0) {
-              this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.snackbar.open('Invalid Max ID', 'error');
+              // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+              // this.questions[0].customErrorMessage = "Invalid Max ID";
             } else {
               this.depositForm.controls["mobileno"].setValue(
                 this.patientpersonaldetails[0]?.pcellno
@@ -619,8 +631,9 @@ export class DepositComponent implements OnInit {
               this.depositForm.controls["maxid"].setValue(
                 this.iacode + "." + this.regNumber
               );
-              this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.snackbar.open('Invalid Max ID', 'error');
+              // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+              // this.questions[0].customErrorMessage = "Invalid Max ID";
             }
           }
         );
@@ -657,13 +670,15 @@ export class DepositComponent implements OnInit {
           this.getPatientPreviousDepositDetails();
         }
         else if(resultData == null){
-          this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-          this.questions[0].customErrorMessage = "Invalid Max ID";
+          this.snackbar.open('Invalid Max ID', 'error');
+          // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+          // this.questions[0].customErrorMessage = "Invalid Max ID";
         }
       },
       (error) => {
-        this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-        this.questions[0].customErrorMessage = "Invalid Max ID";
+        this.snackbar.open('Invalid Max ID', 'error');
+        // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+        // this.questions[0].customErrorMessage = "Invalid Max ID";
       });
   }
 
@@ -791,8 +806,10 @@ export class DepositComponent implements OnInit {
     this.dob = "";
     this.nationality = "";
     this.ssn = "";
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
+    this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
     this.deposittable.selection.clear();
     this.patientpersonaldetails = [];
     this.depoistList = [];
@@ -817,9 +834,7 @@ export class DepositComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: SimilarSoundPatientResponse[]) => {
-          this.similarContactPatientList = resultData;
-          console.log(this.similarContactPatientList);
-          {
+          this.similarContactPatientList = resultData;         
             if (this.similarContactPatientList.length > 1) {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
@@ -865,16 +880,19 @@ export class DepositComponent implements OnInit {
               console.log(resultData);
               let maxID = resultData[0].maxid;
               this.depositForm.controls["maxid"].setValue(maxID);
+              this.regNumber = Number(maxID.split(".")[1]);
+              this.iacode = maxID.split(".")[0];
+
               this.getPatientDetailsByMaxId();
             } else {
-              this.depositForm.controls["mobile"].setErrors({
-                incorrect: true,
-              });
-              this.questions[1].customErrorMessage = "Invalid Mobile No";
+              this.snackbar.open('Invalid Mobile No', 'error');
+              // this.depositForm.controls["mobile"].setErrors({
+              //   incorrect: true,
+              // });
+              // this.questions[1].customErrorMessage = "Invalid Mobile No";
 
               console.log("no data found");
             }
-          }
         },
         (error) => {
           console.log(error);

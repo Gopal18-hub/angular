@@ -395,13 +395,15 @@ export class DetailsComponent implements OnInit {
         });
       });
   }
+  approvedfalg: boolean = false;
   sendapprovalcheck() {
     if (
       this.BServiceForm.controls["authBy"].value != "" &&
       this.BServiceForm.controls["reason"].value != "" &&
       this.BServiceForm.controls["reason"].value != "0" &&
       this.BServiceForm.controls["paymentMode"].value != "" &&
-      this.BServiceForm.controls["refundAmt"].value > 0
+      this.BServiceForm.controls["refundAmt"].value > 0 &&
+      this.approvedfalg == false
     ) {
       this.approvalsend = false;
       this.billdetailservice.authorisedby =
@@ -506,7 +508,11 @@ export class DetailsComponent implements OnInit {
           this.snackbar.open("Invalid Max ID");
         } else if (this.BServiceForm.value.maxid == "") {
           this.snackbar.open("Invalid Max ID");
-        } else {
+        } else if(!this.BServiceForm.value.maxid.split('.')[0] || !this.BServiceForm.value.maxid.split('.')[1])
+        {
+          this.snackbar.open("Invalid Max ID");
+        }
+        else {
           this.search();
         }
       }
@@ -557,7 +563,7 @@ export class DetailsComponent implements OnInit {
         this.noteRemarkdb = res.notereason;
         this.vipdb = res.vipreason;
         this.hwcRemarkdb = res.hwcRemarks;
-        this.hotlistReasondb = res.hotlistreason;
+        this.hotlistReasondb = { title: res.hotlistreason, valu: 0 };
         this.hotlistRemarkdb = res.hotlistcomments;
         this.bplcardNo = res.bplcardNo;
         this.bplCardAddress = res.addressOnCard;
@@ -675,6 +681,20 @@ export class DetailsComponent implements OnInit {
               this.linkList[2].disabled = false;
               this.linkList[3].disabled = false;
             }
+            var approvalpending: any = 0;
+            for(var i = 0; i < this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.length; i++)
+            {
+              if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[i].notApproved == 0 &&
+                this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[i].itemId != 0
+                )
+              {
+                approvalpending++;
+              }
+            }
+            if(approvalpending > 0)
+            {
+              this.msgdialog.info('Approval Pending');
+            }
             this.BServiceForm.controls["billNo"].setValue(this.billno);
             this.billFormfill();
             if (
@@ -776,10 +796,12 @@ export class DetailsComponent implements OnInit {
             }
           }
         }
-      }),
+      },
       (error: any) => {
+        console.log(error);
         this.apiProcessing = false;
-      };
+        this.msgdialog.error(error.error);
+      })
   }
   getpatientandbilldetailsforrefund() {
     this.http
@@ -829,7 +851,7 @@ export class DetailsComponent implements OnInit {
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].operator;
     this.billdate = this.datepipe.transform(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime,
-      "dd/MM/YYYY"
+      "dd/MM/YYYY hh:mm:ss"
     );
     this.BServiceForm.controls["billAmt"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(
@@ -873,6 +895,9 @@ export class DetailsComponent implements OnInit {
     this.billdetailservice.setActiveBillnNo(
       this.BServiceForm.controls["billNo"].value
     );
+    this.billdetailservice.setActiveMaxId(
+      this.BServiceForm.controls['maxid'].value
+    )
     this.sendapprovalcheck();
   }
   dms() {
@@ -1180,12 +1205,10 @@ export class DetailsComponent implements OnInit {
         }
       );
     } else if (btnname == "PrintOPPrescriptionReport") {
-      const dialogref = this.matDialog.open(OpPrescriptionDialogComponent, {
-        width: "30vw",
-        height: "35vh",
-      });
+      const dialogref = this.msgdialog.confirm('',"Do you want to print Blank Op Prescription?");
       dialogref.afterClosed().subscribe((res) => {
-        if (res == "yes") {
+        console.log(res);
+        if (res.type == "yes") {
           this.reportService.openWindow(
             "OP Prescription Report - " + this.BServiceForm.value.billNo,
             btnname,
@@ -1257,36 +1280,103 @@ export class DetailsComponent implements OnInit {
           this.paymentmode[0].title
         );
       }
-      var forenablerefundbill: any;
+      var forenablerefundbill: any = [];
+      var temp: any;
       if (this.billdetailservice.sendforapproval.length > 0) {
-        this.billdetailservice.sendforapproval.forEach((j: any) => {
-          forenablerefundbill =
-            this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(
-              (k) => {
-                return k.itemId == j.itemid;
-              }
-            );
+        // this.billdetailservice.sendforapproval.forEach((j: any) => {
+        //   temp =
+        //     this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(
+        //       (k) => {
+        //         return k.itemId == j.itemid;
+        //       }
+        //     );
+        //     console.log('temp', temp);
+        //     if(temp.length > 0)
+        //     {
+        //       forenablerefundbill.push(temp[0]);
+        //     }
+            
+        // });
+        var m = 0;
+        console.log(this.billdetailservice.sendforapproval, this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund)
+        this.billdetailservice.sendforapproval.forEach( (j: any) => {
+          this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach( k => {
+            console.log(j, k);
+            if(k.itemId == j.itemid)
+            {
+              console.log(m);
+              forenablerefundbill[m] = k;
+              m++;
+              console.log(m,forenablerefundbill[m]);
+            }
+          })
         });
+        console.log('enable refund bill', forenablerefundbill);
+        console.log('approval list', this.billdetailservice.sendforapproval);
+        // if(forenablerefundbill.length == this.billdetailservice.sendforapproval.length)
+        // {
+        //   this.refundbill = false;
+        //   this.approvalsend = true;
+        // }
+        // else
+        // {
+        //   this.refundbill = true;
+        //   this.approvalsend = false;
+        // }
 
+        //newly added
+        console.log(this.approvedfalg);
+        if(forenablerefundbill.length == 0 && 
+          this.billdetailservice.sendforapproval.length > 0 && 
+          this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby != ""
+        )
+        {
+          this.refundbill = true;
+          this.approvalsend = false;
+
+          this.approvedfalg = false;
+        }
+        else if(forenablerefundbill.length != this.billdetailservice.sendforapproval.length)
+        {
+          this.refundbill = true;
+          this.approvalsend = true;
+        }
+        //end
+        var forboth = 0;
         forenablerefundbill.forEach((k: any) => {
+          forboth = 0;
           if (
             k.notApproved == 1 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0
+              .cancelled == 0 &&
+              this.billdetailservice.sendforapproval.length == forenablerefundbill.length
           ) {
             this.refundbill = false;
             this.approvalsend = true;
+
+            this.approvedfalg = true;
+            forboth++;
           } else if (
             k.notApproved == 0 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0
+              .cancelled == 0 &&
+              this.billdetailservice.sendforapproval.length == forenablerefundbill.length
           ) {
             this.refundbill = true;
-            this.approvalsend = false;
+            this.approvalsend = true;
+
+            this.approvedfalg = true;
+            forboth++;
           }
         });
+        if(forboth > 1 && forenablerefundbill.length != 0)
+        {
+          this.refundbill = true;
+          this.approvalsend = true;
+        }   
       } else {
         this.refundbill = true;
+        this.approvalsend = true;
       }
 
       this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach(

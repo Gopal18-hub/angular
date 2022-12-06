@@ -23,7 +23,8 @@
   <div class="w-full height">
     <!-- payment Methods left  -->
     <billing-payment-methods [config]="config"></billing-payment-methods>
-    <div class="flex absolute mt-2 left-13">
+    <!-- GAV-1010 do not remove this commented code  -->
+    <!-- <div class="flex absolute mt-2 left-13">
       <div>
         <maxhealth-question
           [question]="questions[0]"
@@ -42,7 +43,7 @@
         >
         </maxhealth-question>
       </div>
-    </div>
+    </div> -->
     <!-- payment Methods right -->
     <div class="width h-full mt-2 float-right">
       <div class="back-primary col-white p-3 border-radius-md">
@@ -101,14 +102,16 @@
       </div>
       <div
         class="payment-breakup secondary col-white p-3 border-radius-md mt-2"
-        *ngIf="breakupTotal() > 0"
+        
       >
+      <!-- *ngIf="breakupTotal() > 0" -->
         <mat-label class="font-base">Payment Breakup</mat-label>
         <ng-container *ngFor="let tab of paymentmethod?.tabs">
           <div
             class="mt-2 w-full flex justify-between"
-            *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
+           
           >
+          <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
             <mat-label>{{ tab.method.label }}: </mat-label>
             <span>{{ paymentmethod.paymentForm[tab.key].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
           </div>

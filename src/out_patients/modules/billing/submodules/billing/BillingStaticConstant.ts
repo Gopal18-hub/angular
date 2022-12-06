@@ -1,6 +1,81 @@
 import { MaxHealthStorage } from "@shared/services/storage";
 
 export namespace BillingStaticConstants {
+  export const consumablePayload: any = {
+    registrationno: 0,
+    iacode: "",
+    dtOOpBill: {
+      billtype: 0,
+      billamount: 0,
+      depositeamount: 0,
+      discountamount: 0,
+      companyid: 0,
+      collectedAmount: 0,
+      balance: 0,
+      discountReason: "",
+      refDoctorid: 0,
+      creditLimit: 0,
+      srvTaxOnBill: 0,
+      tpa: 0,
+      paidByTPA: 0,
+      interactionID: 0,
+      corporateid: 0,
+      corporate: "",
+      channel: 0,
+    },
+    dtOTBillDetails: [],
+    ds_paymode: {
+      tab_paymentList: [],
+      tab_cheque: [],
+      tab_dd: [],
+      tab_credit: [],
+      tab_debit: [],
+      tab_Mobile: [],
+      tab_Online: [],
+      tab_UPI: [],
+    },
+    dtSurgerybreakupdetails: [],
+    tab_d_deposit_Dto: [],
+    htParms: {
+      employeename: "",
+      employeeCode: "",
+      department: "",
+      company: "",
+    },
+    gst: 0,
+    gstValue: 0,
+    cgst: 0,
+    cgstValue: 0,
+    sgst: 0,
+    sgstValue: 0,
+    utgst: 0,
+    utgstValue: 0,
+    igst: 0,
+    igstValue: 0,
+    cess: 0,
+    cessValue: 0,
+    sacCode: "",
+    taxRate1: 0,
+    taxRate1Value: 0,
+    taxRate2: 0,
+    taxRate2Value: 0,
+    taxRate3: 0,
+    taxRate3Value: 0,
+    taxRate4: 0,
+    taxRate4Value: 0,
+    taxRate5: 0,
+    taxRate5Value: 0,
+    totaltaX_RATE: 0,
+    totaltaX_Value: 0,
+    taxGrpId: 0,
+    billToCompanyId: 0,
+    invoiceType: "",
+    dtConsumableDetail: [],
+    hspLocationId: 0,
+    userId: 0,
+    stationId: 0,
+  };
+
   export const makeBillPayload: any = {
     ds_insert_bill: {
       tab_insertbill: {}, //header information of entire bill
@@ -109,6 +184,14 @@ export namespace BillingStaticConstants {
     userId: 0,
     stationId: 0,
     panNo: "",
+    creditletterdate: "",
+    issuedBy: "",
+    companyAddress: "",
+    tokenNo: "",
+    companyName: "",
+    employeeNo: "",
+    reasonForAllowingCredit: "",
+    notes: "",
   };
 
   export const billingPageTabs: any = [
@@ -485,4 +568,15 @@ export namespace BillingStaticConstants {
     { title: "Hospital is not on CGHS Panel", value: 3 },
     { title: "As per Patient Instruction request", value: 4 },
   ];
+
+  //SRF Reasons
+  export const srfReasons: any = [
+    { title: "Special Approval Received", value: 1 },
+    { title: "SRF Done", value: 2 },
+    { title: "SRF Done", value: 3 },
+  ];
+
+  //GST Confirm POPUP exclusion and Apply GST
+
+  export const excludeCodeIdGSTReason: any = [1406];
 }

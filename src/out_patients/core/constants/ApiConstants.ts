@@ -181,6 +181,25 @@ export namespace ApiConstants {
   export const postPatientDetails =
     environment.PatientApiUrl + "api/patient/registeropdpatient";
 
+    export const patientImageData = (registrationno: number, iacode: string) => {
+      return (
+         environment.PatientApiUrl +
+        "api/patient/getpatientimagebymaxid/" +
+        registrationno +
+        "/" +
+        iacode
+      );
+    };
+
+    export const postPatientImageData =
+    (operatorId: number) => {
+      return (
+         environment.PatientApiUrl +
+        "api/patient/SaveUpdatePatientImage/" +
+        operatorId
+      );
+    };
+    
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
   // export const hotlistedPatient = (
@@ -1535,4 +1554,14 @@ export namespace ApiConstants {
   ) => {
     return `${environment.PatientApiUrl}api/patient/verifydmsdocument/${ID}/${flag}/${IaCode}/${RegistrationNo}/${userId}`
   }
+
+  export const getsearchbasedreferraldoctor = (
+    ReferralDoctorName?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getrefdoctorname/" +
+      ReferralDoctorName
+    );
+  };
 }

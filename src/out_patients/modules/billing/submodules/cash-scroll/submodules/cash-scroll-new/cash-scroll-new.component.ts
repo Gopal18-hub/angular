@@ -223,7 +223,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Dues",
         type: "number",
         style: {
-          width: "4rem",
+          width: "9rem",
         },
       },
       tdsamount: {
@@ -272,7 +272,7 @@ export class CashScrollNewComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   queryparamssearch:boolean = false;
   takenat: any;
-  
+  apiProcessing: boolean = false;
   uniquescrollnumber !: GetDataForOldScroll;
 
   private readonly _destroying$ = new Subject<void>();
@@ -333,7 +333,7 @@ export class CashScrollNewComponent implements OnInit {
   }
 
   formint(){
-    this.getdetailsfornewscroll();      
+    this.getdetailsfornewscroll();    
     this.cashscrollnewForm.controls["todate"].enable();
       this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
       this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
@@ -370,6 +370,7 @@ export class CashScrollNewComponent implements OnInit {
  }
 else
  {
+   this.apiProcessing = true;
     this.http
     .get(ApiConstants.getscrolldetailsforoneuser(
     this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
@@ -390,7 +391,7 @@ else
     for (var i = 0; i < this.scrolldetailsList.length; i++) {
       this.scrolldetailsList[i].sno = i + 1;
     }
-
+    this.apiProcessing = false;
     this.billamount = this.scrolldetailsList.map((t:any) => t.billamount).reduce((acc: any, value: any) => acc + value, 0);
     this.refund = this.scrolldetailsList.map((t:any) => t.refund).reduce((acc:any, value:any) => acc + value, 0);
     this.depositamount = this.scrolldetailsList.map((t:any) => t.depositamount).reduce((acc:any, value:any) => acc + value, 0);
@@ -429,6 +430,7 @@ else
       item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment).toFixed(2);
       item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment).toFixed(2);
       item.tdsamount = Number(item.tdsamount).toFixed(2);
+      item.dues = item.dues == undefined ? "0" : Number(item.dues).toFixed(2);
       item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
       item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
       item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
@@ -452,7 +454,7 @@ else
       creditcard: this.creditcard.toFixed(2),
       mobilePayment: this.mobilePayment.toFixed(2),
       onlinePayment: this.OnlinePayment.toFixed(2),
-      dues: this.dues,
+      dues: this.dues.toFixed(2),
       tdsamount: this.tdsamount.toFixed(2),
       upiamount : this.UPIAmt.toFixed(2),
       donation: this.DonationAmount.toFixed(2),
@@ -556,8 +558,8 @@ else
   }
   openReportModal(btnname: string) {
       this.reportService.openWindow(btnname, btnname, {
-        Fromdate: this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value, 'YYYY-MM-dd') ,
-        Todate:  this.datepipe.transform(this.cashscrollnewForm.controls["todate"].value, 'YYYY-MM-dd') ,
+        Fromdate: this.cashscrollnewForm.controls["fromdate"].value ,
+        Todate: this.cashscrollnewForm.controls["todate"].value ,
         Operatorid: this.operatorID,
         LocationID: this.hsplocationId,
         EmployeeName: this.lastUpdatedBy,

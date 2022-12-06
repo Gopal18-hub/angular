@@ -18,7 +18,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { LookupService } from "@core/services/lookup.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { MatDialog } from "@angular/material/dialog";
-import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-investigation-orders",
@@ -302,7 +302,7 @@ export class InvestigationOrdersComponent implements OnInit {
     private lookupService: LookupService,
     public matdialog: MatDialog,
     private cookie: CookieService,
-    private snackbar: MaxHealthSnackBarService
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -352,7 +352,11 @@ export class InvestigationOrdersComponent implements OnInit {
       (value: any) => {
         if (value === 10) {
           this.matdialog
-            .open(ScheduleDateDialogComponent)
+            .open(ScheduleDateDialogComponent, {
+              width: "33vw",
+              height: "28vh",
+              maxWidth: "33vw",
+            })
             .afterClosed()
             .subscribe((res) => {
               // received data from dialog-component
@@ -431,34 +435,47 @@ export class InvestigationOrdersComponent implements OnInit {
     this.patientInfo = "";
     this.EnableBill = false;
 
-    this.http
-      .get(
-        ApiConstants.getediganosticacdoninvestigation(
-          this.datepipe.transform(
-            this.investigationForm.controls["fromdate"].value,
-            "yyyy-MM-dd"
-          ),
-          this.datepipe.transform(
-            this.investigationForm.controls["todate"].value,
-            "yyyy-MM-dd"
-          ),
-          this.hsplocationId
+    ////changes for performance impact
+    var fdate = new Date(this.investigationForm.controls["fromdate"].value);
+    var tdate = new Date(this.investigationForm.controls["todate"].value);
+    var dif_in_time = tdate.getTime() - fdate.getTime();
+    var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+    if (dif_in_days < 3) {
+      this.http
+        .get(
+          ApiConstants.getediganosticacdoninvestigation(
+            this.datepipe.transform(
+              this.investigationForm.controls["fromdate"].value,
+              "yyyy-MM-dd"
+            ),
+            this.datepipe.transform(
+              this.investigationForm.controls["todate"].value,
+              "yyyy-MM-dd"
+            ),
+            this.hsplocationId
+          )
         )
-      )
-      // this.http
-      //   .get(
-      //     ApiConstants.getediganosticacdoninvestigation(
-      //       "2021-01-01",
-      //       "2021-01-05",
-      //       7
-      //     )
-      //   )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.invOrderListMain = res.objTempOrderHeader; // Main Grid;
-        this.invOrderList = res.objTempOrderHeader;
-        this.searchFilter();
-      });
+        // this.http
+        //   .get(
+        //     ApiConstants.getediganosticacdoninvestigation(
+        //       "2021-01-01",
+        //       "2021-01-05",
+        //       7
+        //     )
+        //   )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.invOrderListMain = res.objTempOrderHeader; // Main Grid;
+          this.invOrderList = res.objTempOrderHeader;
+          this.searchFilter();
+        });
+    } else {
+      ////changes for performance impact
+      this.apiProcessing = false;
+      this.messageDialogService.error(
+        "Can not process requests for more than 3 Days, Please select the dates accordingly."
+      );
+    }
   }
   searchFilter() {
     let maxid = this.investigationForm.value.input
@@ -566,11 +583,11 @@ export class InvestigationOrdersComponent implements OnInit {
     billedRow = this.tableSelectedRows.filter((e: any) => e.isBilled === 1);
 
     if (deniedRow.length > 0) {
-      this.snackbar.open("Order is already Denied", "error");
+      this.messageDialogService.error("Order is already Denied");
       this.resetRemarksDeny();
       this.isDisableSave = false;
     } else if (billedRow.length > 0) {
-      this.snackbar.open("Order is already Billed", "error");
+      this.messageDialogService.error("Order is already Billed");
       this.resetRemarksDeny();
       this.isDisableSave = false;
     } else if (this.tableSelectedRows.length > 0 && nondeniedRow.length > 0) {
@@ -605,7 +622,7 @@ export class InvestigationOrdersComponent implements OnInit {
         this.unselectRow();
       } else {
         //console.log(this.selectedRow, "Bill")
-        this.snackbar.open("Billed order cannot be denied", "error");
+        this.messageDialogService.error("Billed order cannot be denied");
         event.row.sno = true;
         // this.isDisableCancel = false;
         // this.isDisableSave = false;
@@ -646,14 +663,13 @@ export class InvestigationOrdersComponent implements OnInit {
       billedRow = this.tableSelectedRows.filter((e: any) => e.isBilled === 1);
 
       if (deniedRow.length > 0) {
-        this.snackbar.open("Order is already Denied", "error");
+        this.messageDialogService.error("Order is already Denied");
       } else if (billedRow.length > 0) {
-        this.snackbar.open("Order is already Billed", "error");
+        this.messageDialogService.error("Order is already Billed");
       } else if (nondeniedRow.length > 0 && this.tableSelectedRows.length > 0) {
         if (this.investigationForm.value.denyorder === "Select") {
-          this.snackbar.open(
-            "Please select denial reason for open order before Save!",
-            "error"
+          this.messageDialogService.error(
+            "Please select denial reason for open order before Save!"
           );
         }
         if (this.investigationForm.value.denyorder !== "Select") {
@@ -661,9 +677,8 @@ export class InvestigationOrdersComponent implements OnInit {
             this.denyOthers == true &&
             !this.investigationForm.value.remarks
           ) {
-            this.snackbar.open(
-              "Please enter denial reason remark for order!",
-              "error"
+            this.messageDialogService.error(
+              "Please enter denial reason remark for order!"
             );
           } else {
             let dialogRes;
@@ -704,7 +719,7 @@ export class InvestigationOrdersComponent implements OnInit {
           }
         }
       } else {
-        this.snackbar.open("Please select a row to proceed.", "error");
+        this.messageDialogService.error("Please select a row to proceed.");
         this.tableSelectedRows = [];
       }
     }, -1);
@@ -723,10 +738,10 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res === 1) {
-          this.snackbar.open("Saved Successfully!", "success");
-          this.listRowClick(this.selectedInv);
           this.tableSelectedRows = [];
-          //this.tableSelectedRows = []
+          this.messageDialogService.info("Saved Successfully!");
+          this.search();
+          //this.listRowClick(this.selectedInv);
         }
         this.objPhyOrder = [];
         this.objdtdenialorder = [];
@@ -747,9 +762,11 @@ export class InvestigationOrdersComponent implements OnInit {
     billedRow = this.tableSelectedRows.filter((e: any) => e.isBilled === 1);
 
     if (nondeniedRow.length > 0) {
-      this.snackbar.open("Please deny the order to cancel the denial", "error");
+      this.messageDialogService.error(
+        "Please deny the order to cancel the denial"
+      );
     } else if (billedRow.length > 0) {
-      this.snackbar.open("Order is already Billed", "error");
+      this.messageDialogService.error("Order is already Billed");
     } else {
       if (deniedRow.length > 0 && this.tableSelectedRows.length > 0) {
         let dialogRes;
@@ -790,23 +807,28 @@ export class InvestigationOrdersComponent implements OnInit {
               .pipe(takeUntil(this._destroying$))
               .subscribe((res: any) => {
                 if (res.success === true) {
-                  this.snackbar.open("Modified Successfully", "success");
+                  this.messageDialogService.info("Modified Successfully");
+                  this.search();
                   this.disableBtns();
-                  this.listRowClick(this.selectedInv);
+                  //this.listRowClick(this.selectedInv);
                   this.tableSelectedRows = [];
                 }
               });
           }
         });
       } else {
-        this.snackbar.open("Please select a row to proceed", "error");
+        this.messageDialogService.error("Please select a row to proceed");
         this.tableSelectedRows = [];
       }
     }
   }
   createBill() {
     this.router.navigate(["out-patient-billing"], {
-      queryParams: { maxId: this.maxid, orderid: this.orderid },
+      queryParams: {
+        maxId: this.maxid,
+        orderid: this.orderid,
+        name: "Investigation",
+      },
     });
   }
   clearInv() {

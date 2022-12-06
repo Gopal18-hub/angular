@@ -45,6 +45,8 @@ export class PackageDoctorModificationComponent implements OnInit {
     },
   };
 
+  packageContent: string[] = [];
+
   constructor(
     public dialogRef: MatDialogRef<PackageDoctorModificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -60,6 +62,9 @@ export class PackageDoctorModificationComponent implements OnInit {
       .subscribe((res) => {
         let i = 0;
         res.forEach((item: any, index: number) => {
+          if (item.itemServiceID != 25) {
+            this.packageContent.push(item.itemName);
+          }
           if (item.isConsult == 1 && item.itemServiceID == 25) {
             this.itemsData[i] = {
               sno: i + 1,

@@ -41,7 +41,7 @@ export class StaffDeptDialogComponent implements OnInit {
     actionItems: false,
     //dateformat: 'dd/MM/yyyy',
     selectBox: false,
-    displayedColumns: ["sNo", "empCode", "empName"],
+    displayedColumns: ["sNo", "empCode", "empName", "department"],
     clickedRows: true,
     clickSelection: "single",
     columnsInfo: {
@@ -56,7 +56,7 @@ export class StaffDeptDialogComponent implements OnInit {
         title: "Employee Code",
         type: "string",
         style: {
-          width: "25%",
+          width: "20%",
         },
       },
       empName: {
@@ -64,6 +64,13 @@ export class StaffDeptDialogComponent implements OnInit {
         type: "string",
         style: {
           width: "30%",
+        },
+      },
+      department: {
+        title: "Department",
+        type: "string",
+        style: {
+          width: "40%",
         },
       },
     },

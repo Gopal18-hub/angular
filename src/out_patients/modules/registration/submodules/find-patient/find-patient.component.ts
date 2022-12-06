@@ -179,23 +179,26 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
           const lookupdata = await this.loadGrid(value);
           this.processingQueryParams = true;
         } else {
+         this.defaultUI = false;
           this.getAllpatients()
             .pipe(takeUntil(this._destroying$))
             .subscribe(
               (resultData) => {
-                this.showspinner = false;
-                this.defaultUI = false;
                 resultData = resultData.map((item: any) => {
                   item.fullname = item.firstName + " " + item.lastName;
                   item.notereason = item.noteReason;
                   item.age = this.onageCalculator(item.dob);
                   return item;
                 });
-                this.patientList = resultData as PatientSearchModel[];
+                //Added line for restricting secondary id to display in list
+                resultData = resultData.filter((res:any) => res.parentMergeLinked == "");   
+                this.showspinner = false;
+                this.defaultUI = false;              
+                this.patientList = resultData as PatientSearchModel[]; 
                 this.patientList = this.patientServie.getAllCategoryIcons(
                   this.patientList
-                );
-
+                );               
+                
                 this.isAPIProcess = true;
                 console.log(this.patientList);
                 setTimeout(() => {
@@ -263,13 +266,13 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  ngOnInit(): void {
-    //this.defaultUI = false;
+  ngOnInit(): void {   
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
         console.log(formdata);
         this.showspinner = true;
+        this.defaultUI = false;
         await this.loadGrid(formdata);
       });
   }
@@ -281,7 +284,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
     this.defaultUI = false;
     if (formdata.data) {
       const lookupdata = await this.lookupService.searchPatient(formdata);
-      if (lookupdata == null || lookupdata == undefined) {
+      if (lookupdata == null || lookupdata == undefined || lookupdata.length == 0) {
         this.patientList = [];
         this.defaultUI = true;
         this.showspinner = false;
@@ -315,6 +318,14 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
                           " merged with these " +
                           lookupdata[0]["mergeLinked"]
                       );
+                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                      this.patientList = [];
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["parentMergeLinked"]
+                      );
                     }
                   }
                 }
@@ -333,6 +344,14 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
                           lookupdata[0]["maxid"] +
                           " merged with these " +
                           lookupdata[0]["mergeLinked"]
+                      );
+                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                      this.patientList = [];
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["parentMergeLinked"]
                       );
                     }
                   }
@@ -365,7 +384,8 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       item.age = this.onageCalculator(item.dob);
       return item;
     });
-    this.patientList = resultData;
+     //Added line for restricting secondary id to display in list
+    this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
     this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
     this.isAPIProcess = true;
     this.showspinner = false;
@@ -431,19 +451,19 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {
         returnAge = "1 Day(s)";
       }
+      console.log(ageDOB, diffYears, diffMonths, diffDays, returnAge);
       return returnAge;
     }
     return "N/A";
