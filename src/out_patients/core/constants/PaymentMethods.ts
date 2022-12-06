@@ -537,10 +537,11 @@ export namespace PaymentMethods {
       actionItems: [
         {
           label: "Search",
-          type: "",
+          type: "onlinePaymentSearch",
         },
         {
           label: "Clear",
+          type: "onlinePaymentClear"
         },
       ],
     };

@@ -1364,6 +1364,7 @@ export class OpRegistrationComponent implements OnInit {
     this.maxIDChangeCall = false;
 
     this.MaxIDExist = false;
+    this.countrybasedflow = false;
   }
 
   //validation for Indetity Number if Identity Type Selected
