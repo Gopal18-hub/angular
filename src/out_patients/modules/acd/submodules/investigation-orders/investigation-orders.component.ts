@@ -823,11 +823,28 @@ export class InvestigationOrdersComponent implements OnInit {
     }
   }
   createBill() {
+    let itemid: any = [];
+    // let nonBilledRows = this.tableSelectedRows.filter(
+    //   (e: any) => e.isBilled != 0
+    // );
+    // if (nonBilledRows.length > 0) {
+    //   this.messageDialogService.error(
+    //     "Create Bill is applicable only for Unbilled items"
+    //   );
+    //   return;
+    // }
+    this.tableSelectedRows.forEach((e: any) => {
+      itemid.push(e.testID);
+    });
+    if (this.tableSelectedRows.length === this.invOrderDetails.length) {
+      itemid = [];
+    }
     this.router.navigate(["out-patient-billing"], {
       queryParams: {
         maxId: this.maxid,
         orderid: this.orderid,
         name: "Investigation",
+        itemsids: itemid.join(","),
       },
     });
   }
