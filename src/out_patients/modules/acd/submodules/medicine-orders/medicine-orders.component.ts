@@ -841,11 +841,28 @@ export class MedicineOrdersComponent implements OnInit {
     }
   }
   createBill() {
+    let itemid: any = [];
+    // let nonBilledRows = this.tableSelectedRows.filter(
+    //   (e: any) => e.isBilled != 0
+    // );
+    // if (nonBilledRows.length > 0) {
+    //   this.messageDialogService.error(
+    //     "Kindly select only Unbilled items to create the bill"
+    //   );
+    //   return;
+    // }
+    this.tableSelectedRows.forEach((e: any) => {
+      itemid.push(e.testID);
+    });
+    if (this.tableSelectedRows.length === this.medOrderDetails.length) {
+      itemid = [];
+    }
     this.router.navigate(["out-patient-billing"], {
       queryParams: {
         maxId: this.maxid,
         orderid: this.orderid,
         name: "Medicine",
+        itemsids: itemid.join(","),
       },
     });
   }
