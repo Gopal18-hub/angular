@@ -677,16 +677,16 @@ export class OpRegistrationComponent implements OnInit {
 
     //tab event for Mobile Field
     //this.questions[2].elementRef.addEventListener("keydown", (event: any) => {
-      // If the user presses the "TAB" key on the keyboard
+    // If the user presses the "TAB" key on the keyboard
 
     //  if (event.key === "Tab") {
-        // Cancel the default action, if needed
+    // Cancel the default action, if needed
 
-        // event.preventDefault();
+    // event.preventDefault();
 
-        //this.onPhoneModify();
+    //this.onPhoneModify();
     //  }
-   // });
+    // });
 
     this.questions[2].elementRef.addEventListener(
       "change",
@@ -936,17 +936,16 @@ export class OpRegistrationComponent implements OnInit {
         }
         if (this.OPRegForm.value.country.value != 1) {
           this.OPRegForm.controls["locality"].setErrors(null);
-          this.OPRegForm.controls["city"].setErrors(null);
-          this.OPRegForm.controls["state"].setErrors(null);
+          // this.OPRegForm.controls["city"].setErrors(null);
+          // this.OPRegForm.controls["state"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
           this.OPRegForm.controls["pincode"].setErrors(null);
           this.questions[21].required = false;
           this.questions[22].required = false;
           this.questions[23].required = false;
-          this.questions[24].required = false;
+          // this.questions[24].required = false;
           this.questions[25].required = false;
-          this.questions[26].required = false;
-          this.questions[24].allowSearchInput = true;
+          // this.questions[26].required = false;
           this.questions = { ...this.questions };
         }
       });
@@ -971,10 +970,9 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
-            this.questions[24].required = false;
+            // this.questions[24].required = false;
             this.questions[25].required = false;
-            this.questions[26].required = false;
-            this.questions[24].allowSearchInput = true;
+            // this.questions[26].required = false;
             this.questions = { ...this.questions };
             console.log(this.OPRegForm.controls);
             console.log(this.questions);
@@ -994,7 +992,6 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[24].required = true;
             this.questions[25].required = true;
             this.questions[26].required = true;
-            this.questions[24].allowSearchInput = false;
           }
         }
       });
@@ -1030,17 +1027,16 @@ export class OpRegistrationComponent implements OnInit {
 
         if (this.OPRegForm.value.country.value != 1) {
           this.OPRegForm.controls["pincode"].setErrors(null);
-          this.OPRegForm.controls["city"].setErrors(null);
-          this.OPRegForm.controls["state"].setErrors(null);
+          // this.OPRegForm.controls["city"].setErrors(null);
+          // this.OPRegForm.controls["state"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
 
           this.questions[21].required = false;
           this.questions[22].required = false;
           this.questions[23].required = false;
-          this.questions[24].required = false;
+          // this.questions[24].required = false;
           this.questions[25].required = false;
-          this.questions[26].required = false;
-          this.questions[24].allowSearchInput = true;
+          // this.questions[26].required = false;
           this.questions = { ...this.questions };
         }
       });
@@ -1061,17 +1057,16 @@ export class OpRegistrationComponent implements OnInit {
         }
         if (this.OPRegForm.value.country.value != 1) {
           this.OPRegForm.controls["pincode"].setErrors(null);
-          this.OPRegForm.controls["city"].setErrors(null);
-          this.OPRegForm.controls["state"].setErrors(null);
+          // this.OPRegForm.controls["city"].setErrors(null);
+          // this.OPRegForm.controls["state"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
 
           this.questions[21].required = false;
           this.questions[22].required = false;
           this.questions[23].required = false;
-          this.questions[24].required = false;
+          // this.questions[24].required = false;
           this.questions[25].required = false;
-          this.questions[26].required = false;
-          this.questions[24].allowSearchInput = true;
+          // this.questions[26].required = false;
           this.questions = { ...this.questions };
         }
       });
@@ -1109,16 +1104,15 @@ export class OpRegistrationComponent implements OnInit {
                 this.getLocalityByCity(value);
                 if (this.OPRegForm.value.country.value != 1) {
                   this.OPRegForm.controls["pincode"].setErrors(null);
-                  this.OPRegForm.controls["city"].setErrors(null);
-                  this.OPRegForm.controls["state"].setErrors(null);
+                  // this.OPRegForm.controls["city"].setErrors(null);
+                  // this.OPRegForm.controls["state"].setErrors(null);
                   this.OPRegForm.controls["district"].setErrors(null);
                   this.questions[21].required = false;
                   this.questions[22].required = false;
                   this.questions[23].required = false;
-                  this.questions[24].required = false;
+                  // this.questions[24].required = false;
                   this.questions[25].required = false;
-                  this.questions[26].required = false;
-                  this.questions[24].allowSearchInput = true;
+                  // this.questions[26].required = false;
                   this.questions = { ...this.questions };
                 }
               } else if (!this.pincodebasedflow) {
@@ -1133,16 +1127,15 @@ export class OpRegistrationComponent implements OnInit {
         else {
           if (this.OPRegForm.value.country.value != 1) {
             this.OPRegForm.controls["pincode"].setErrors(null);
-            this.OPRegForm.controls["city"].setErrors(null);
-            this.OPRegForm.controls["state"].setErrors(null);
+            // this.OPRegForm.controls["city"].setErrors(null);
+            // this.OPRegForm.controls["state"].setErrors(null);
             this.OPRegForm.controls["district"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
-            this.questions[24].required = false;
+            // this.questions[24].required = false;
             this.questions[25].required = false;
-            this.questions[26].required = false;
-            this.questions[24].allowSearchInput = true;
+            // this.questions[26].required = false;
             this.questions = { ...this.questions };
           }
         }
@@ -1157,17 +1150,16 @@ export class OpRegistrationComponent implements OnInit {
         }
         if (this.OPRegForm.value.country.value != 1) {
           this.OPRegForm.controls["pincode"].setErrors(null);
-          this.OPRegForm.controls["city"].setErrors(null);
-          this.OPRegForm.controls["state"].setErrors(null);
+          // this.OPRegForm.controls["city"].setErrors(null);
+          // this.OPRegForm.controls["state"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
 
           this.questions[21].required = false;
           this.questions[22].required = false;
           this.questions[23].required = false;
-          this.questions[24].required = false;
+          // this.questions[24].required = false;
           this.questions[25].required = false;
-          this.questions[26].required = false;
-          this.questions[24].allowSearchInput = true;
+          // this.questions[26].required = false;
           this.questions = { ...this.questions };
         }
         if (
@@ -2067,16 +2059,15 @@ export class OpRegistrationComponent implements OnInit {
       this.getLocalityList();
     }
     if (this.OPRegForm.value.country.value != 1) {
-      this.OPRegForm.controls["city"].setErrors(null);
-      this.OPRegForm.controls["state"].setErrors(null);
+      // this.OPRegForm.controls["city"].setErrors(null);
+      // this.OPRegForm.controls["state"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
       this.questions[21].required = false;
       this.questions[22].required = false;
       this.questions[23].required = false;
-      this.questions[24].required = false;
+      // this.questions[24].required = false;
       this.questions[25].required = false;
-      this.questions[26].required = false;
-      this.questions[24].allowSearchInput = true;
+      // this.questions[26].required = false;
       this.questions = { ...this.questions };
     }
   }
@@ -2112,17 +2103,16 @@ export class OpRegistrationComponent implements OnInit {
     }
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["pincode"].setErrors(null);
-      this.OPRegForm.controls["city"].setErrors(null);
-      this.OPRegForm.controls["state"].setErrors(null);
+      // this.OPRegForm.controls["city"].setErrors(null);
+      // this.OPRegForm.controls["state"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
 
       this.questions[21].required = false;
       this.questions[22].required = false;
       this.questions[23].required = false;
-      this.questions[24].required = false;
+      // this.questions[24].required = false;
       this.questions[25].required = false;
-      this.questions[26].required = false;
-      this.questions[24].allowSearchInput = true;
+      // this.questions[26].required = false;
       this.questions = { ...this.questions };
     }
   }
@@ -2637,7 +2627,15 @@ export class OpRegistrationComponent implements OnInit {
             ) {
               this.OPRegForm.markAllAsTouched();
               this.OPRegForm.markAsPristine();
-              this.showRegisteredId("Modified request went for approval");
+              ////GAV-1389 - popup change
+              this.messageDialogService.success(
+                "Max Id " +
+                  this.patientDetails.iacode +
+                  "." +
+                  this.patientDetails.registrationno +
+                  " modified request sent for approval"
+              );
+              //this.showRegisteredId("Modified request sent for approval");
             }
           } else {
             this.messageDialogService.info(resultData["message"]);
@@ -3103,14 +3101,12 @@ export class OpRegistrationComponent implements OnInit {
       let sourceofinfo = this.sourceOfInfoList.filter(
         (e) => e.id === patientDetails?.sourceofinfo
       );
-      if(sourceofinfo.length > 0)
-      {
+      if (sourceofinfo.length > 0) {
         this.OPRegForm.controls["sourceOfInput"].setValue({
           title: sourceofinfo[0].name,
           value: sourceofinfo[0].id,
         });
-      }
-      else {
+      } else {
         this.OPRegForm.controls["sourceOfInput"].setValue({
           title: "",
           value: 0,

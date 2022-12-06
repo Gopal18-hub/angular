@@ -188,7 +188,7 @@ export class DisountReasonComponent implements OnInit {
   @ViewChild("table") tableRows: any;
 
   dualList: any = [];
-
+  reasontitle: any = '';
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -346,6 +346,8 @@ export class DisountReasonComponent implements OnInit {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == val
         );
+        this.reasontitle = existReason.name;
+        console.log(this.reasontitle);
         if (existReason.valuebasedDisc == 1) {
           this.question[4].readonly = false;
         }
@@ -368,6 +370,10 @@ export class DisountReasonComponent implements OnInit {
             this.discAmtForm.controls["empCode"].setValue(res.data);
           });
         }
+      }
+      else
+      {
+        this.reasontitle = '';
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {

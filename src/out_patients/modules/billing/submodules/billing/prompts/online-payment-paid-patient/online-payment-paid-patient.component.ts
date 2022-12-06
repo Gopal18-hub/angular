@@ -1,12 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CookieService } from '@shared/services/cookie.service';
 import { HttpService } from '@shared/services/http.service';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { BillingApiConstants } from '../../BillingApiConstant';
 import { BillingService } from '../../billing.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
   selector: 'out-patients-online-payment-paid-patient',
   templateUrl: './online-payment-paid-patient.component.html',
@@ -182,8 +182,14 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
     private formService: QuestionControlService,
     private datepipe: DatePipe,
     private BillingService: BillingService,
-    private dialogRef: MatDialogRef<OnlinePaymentPaidPatientComponent>
-  ) { }
+    private dialogRef: MatDialogRef<OnlinePaymentPaidPatientComponent>,
+    @Inject(MAT_DIALOG_DATA) private formdata: {
+      maxId: any,
+      status: any
+    }
+  ) { 
+    console.log(formdata);
+  }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -203,7 +209,6 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
       {
         this.onlinesearchform.controls['fromdate'].enable();
         this.onlinesearchform.controls['todate'].enable();
-        this.data = [];
         this.search();
       }
       else
@@ -246,7 +251,7 @@ export class OnlinePaymentPaidPatientComponent implements OnInit {
       console.log(res);
       console.log(this.BillingService.activeMaxId)
       this.data = res.filter((i: any) => {
-        return i.maxId == this.data.maxId && i.paymentStatus == this.data.status
+        return i.maxId == this.formdata.maxId && i.paymentStatus == this.formdata.status
       });
     },
     (error) => {
