@@ -2855,7 +2855,7 @@ export class OpRegistrationComponent implements OnInit {
   }
   onPhoneModify() {
     console.log("phone changed");
-    if (!this.maxIDChangeCall && !this.phoneNumberFlag) {
+    if (this.OPRegForm.controls["mobileNumber"].valid && !this.maxIDChangeCall && !this.phoneNumberFlag) {
       //IF EVENT HAS BEEN NOT HITTED API
       if (!this.similarSoundListPresent()) {
         if (this.checkForModifiedPatientDetail()) {
