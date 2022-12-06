@@ -244,17 +244,17 @@ export class CalculateBillService {
   }
 
   applyDiscount(from: string, formGroup: any) {
+    this.billingServiceRef.billItems.forEach((item: any) => {
+      item.disc = 0;
+      item.discAmount = 0;
+      let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+      const price = item.price * quanity;
+      item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+      item.totalAmount = item.price * quanity + item.gstValue;
+      item.discountType = 0;
+      item.discountReason = 0;
+    });
     if (this.discountSelectedItems.length == 0) {
-      this.billingServiceRef.billItems.forEach((item: any) => {
-        item.disc = 0;
-        item.discAmount = 0;
-        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
-        const price = item.price * quanity;
-        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
-        item.totalAmount = item.price * quanity + item.gstValue;
-        item.discountType = 0;
-        item.discountReason = 0;
-      });
     } else {
       if (
         this.discountSelectedItems.length == 1 &&
