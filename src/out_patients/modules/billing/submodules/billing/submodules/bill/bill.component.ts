@@ -865,7 +865,9 @@ export class BillComponent implements OnInit, OnDestroy {
         width: "80vw",
         height: "96vh",
         data: {
-          totalBillAmount: this.billingservice.totalCost,
+          totalBillAmount:
+            this.billingservice.totalCostWithOutGst +
+            parseFloat(this.formGroup.value.gstTax), //this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,
@@ -893,7 +895,9 @@ export class BillComponent implements OnInit, OnDestroy {
         width: "80vw",
         height: "96vh",
         data: {
-          totalBillAmount: this.billingservice.totalCost,
+          totalBillAmount:
+            this.billingservice.totalCostWithOutGst +
+            parseFloat(this.formGroup.value.gstTax), //this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,

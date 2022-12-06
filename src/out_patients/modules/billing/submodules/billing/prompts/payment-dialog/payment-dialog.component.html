@@ -102,14 +102,16 @@
       </div>
       <div
         class="payment-breakup secondary col-white p-3 border-radius-md mt-2"
-        *ngIf="breakupTotal() > 0"
+        
       >
+      <!-- *ngIf="breakupTotal() > 0" -->
         <mat-label class="font-base">Payment Breakup</mat-label>
         <ng-container *ngFor="let tab of paymentmethod?.tabs">
           <div
             class="mt-2 w-full flex justify-between"
-            *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
+           
           >
+          <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
             <mat-label>{{ tab.method.label }}: </mat-label>
             <span>{{ paymentmethod.paymentForm[tab.key].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
           </div>
