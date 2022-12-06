@@ -384,7 +384,11 @@ export class MedicineOrdersComponent implements OnInit {
       (value: any) => {
         if (value === 10) {
           this.matdialog
-            .open(ScheduleDateDialogComponent)
+            .open(ScheduleDateDialogComponent, {
+              width: "33vw",
+              height: "28vh",
+              maxWidth: "33vw",
+            })
             .afterClosed()
             .subscribe((res) => {
               // received data from dialog-component
@@ -468,7 +472,9 @@ export class MedicineOrdersComponent implements OnInit {
           )
         )
         // this.http
-        //   .get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+        //   .get(
+        //    ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7)
+        //   )
         .pipe(takeUntil(this._destroying$))
         .subscribe((res: any) => {
           this.medOrderListMain = res.objOrderDetails;
@@ -749,9 +755,10 @@ export class MedicineOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res === 1) {
-          this.messageDialogService.info("Saved Successfully!");
-          this.listRowClick(this.selectedInv);
           this.tableSelectedRows = [];
+          this.messageDialogService.info("Saved Successfully!");
+          this.search();
+          //this.listRowClick(this.selectedInv);
         }
         this.objPhyOrder = [];
         this.objdtdenialorder = [];
@@ -818,9 +825,10 @@ export class MedicineOrdersComponent implements OnInit {
               .pipe(takeUntil(this._destroying$))
               .subscribe((res: any) => {
                 if (res.success === true) {
-                  this.messageDialogService.info("Modified Successfully");
-                  this.listRowClick(this.selectedInv);
                   this.tableSelectedRows = [];
+                  this.messageDialogService.info("Modified Successfully");
+                  this.search();
+                  //this.listRowClick(this.selectedInv);
                   this.disableBtns();
                 }
               });
@@ -833,8 +841,29 @@ export class MedicineOrdersComponent implements OnInit {
     }
   }
   createBill() {
+    let itemid: any = [];
+    // let nonBilledRows = this.tableSelectedRows.filter(
+    //   (e: any) => e.isBilled != 0
+    // );
+    // if (nonBilledRows.length > 0) {
+    //   this.messageDialogService.error(
+    //     "Kindly select only Unbilled items to create the bill"
+    //   );
+    //   return;
+    // }
+    this.tableSelectedRows.forEach((e: any) => {
+      itemid.push(e.testID);
+    });
+    if (this.tableSelectedRows.length === this.medOrderDetails.length) {
+      itemid = [];
+    }
     this.router.navigate(["out-patient-billing"], {
-      queryParams: { maxId: this.maxid, orderid: this.orderid },
+      queryParams: {
+        maxId: this.maxid,
+        orderid: this.orderid,
+        name: "Medicine",
+        itemsids: itemid.join(","),
+      },
     });
   }
   clearMed() {

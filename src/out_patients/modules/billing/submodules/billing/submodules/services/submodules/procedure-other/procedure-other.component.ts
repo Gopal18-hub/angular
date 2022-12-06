@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SpecializationService } from "../../../../specialization.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ReasonForGxtTaxComponent } from "@modules/billing/submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component";
+import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -395,36 +396,48 @@ export class ProcedureOtherComponent implements OnInit {
     );
 
     // this.data = [...this.billingService.ProcedureItems];
-    if(Number(this.billingService.ProcedureItems[0].gstDetail.totaltaX_RATE_VALUE) > 0)
-    {
+    if (
+      BillingStaticConstants.excludeCodeIdGSTReason.includes(
+        this.billingService.ProcedureItems[0].gstDetail.codeId
+      )
+    ) {
+      this.data = [...this.billingService.ProcedureItems];
+      this.checkTableValidation();
+    } else if (
+      Number(
+        this.billingService.ProcedureItems[0].gstDetail.totaltaX_RATE_VALUE
+      ) > 0
+    ) {
       const gstxdialog = this.messageDialogService.confirm(
-        '',
-        'GST Tax is applicable on ' + this.billingService.ProcedureItems[0].billItem.itemName +' , Do you want to proceed with GST tax?'
+        "",
+        "GST Tax is applicable on " +
+          this.billingService.ProcedureItems[0].billItem.itemName +
+          " , Do you want to proceed with GST tax?"
       );
       gstxdialog.afterClosed().subscribe((res: any) => {
-        if('type' in res)
-        {
-          if(res.type == 'yes')
-          {
+        if ("type" in res) {
+          if (res.type == "yes") {
             this.data = [...this.billingService.ProcedureItems];
             this.checkTableValidation();
-          }
-          else{
+          } else {
             const reasondialog = this.matdialog.open(ReasonForGxtTaxComponent, {
               width: "30vw",
-              height: '40vh'
-            })
+              height: "40vh",
+            });
             reasondialog.afterClosed().subscribe(async (res: any) => {
               console.log(res);
-              if(res == 'cancel')
-              {
-                this.billingService.removeFromBill(this.billingService.ProcedureItems[0]);
+              if (res == "cancel") {
+                this.billingService.removeFromBill(
+                  this.billingService.ProcedureItems[0]
+                );
                 this.billingService.ProcedureItems = [];
                 this.billingService.calculateTotalAmount();
                 this.data = [...this.billingService.ProcedureItems];
-              }
-              else{
-                this.billingService.resetgstfromservices(this.billingService.ProcedureItems, res)
+              } else {
+                this.billingService.resetgstfromservices(
+                  this.billingService.ProcedureItems,
+                  res
+                );
                 // this.billingService.makeBillPayload.taxReason = res;
                 // this.billingService.ProcedureItems[0].gstDetail = {
                 //   gsT_value: 0,
@@ -475,17 +488,15 @@ export class ProcedureOtherComponent implements OnInit {
                 console.log(this.data);
               }
               console.log(this.billingService.makeBillPayload);
-            }) 
+            });
           }
         }
-      })
-    }
-    else{
+      });
+    } else {
       this.data = [...this.billingService.ProcedureItems];
       this.checkTableValidation();
     }
     this.formGroup.reset();
-    
   }
 
   goToBill() {

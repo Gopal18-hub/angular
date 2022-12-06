@@ -33,7 +33,7 @@ export class OprefundApprovalComponent implements OnInit {
   isPendingList: boolean = false;
   isApprovedList: boolean = false;
   isRejectedList: boolean = false;
-  oprefundmessage: string = "Please search From Date and To Date ";
+  oprefundmessage: string = "No records found";
   oprefundicon: string = "placeholder";
   pendingList: any = [];
   approvedList: any = [];
@@ -607,7 +607,7 @@ export class OprefundApprovalComponent implements OnInit {
       });
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 2),
+        new Date().setDate(new Date().getDate() - 1),
         "yyyy-MM-dd"
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");

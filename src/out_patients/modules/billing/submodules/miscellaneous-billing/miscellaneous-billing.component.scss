@@ -9,12 +9,12 @@
   //   color: #45c0be;
   //   font-weight: 500;
   // }
-  .special-checkbox {
-    ::ng-deep .mat-checkbox-label {
-      color: #45c0be !important;
-      text-decoration: underline;
-    }
-  }
+  // .special-checkbox {
+  //   ::ng-deep .mat-checkbox-label {
+  //     color: #45c0be !important;
+  //     text-decoration: underline;
+  //   }
+  // }
   .iom-button {
     padding: 0;
     min-width: initial;
@@ -44,7 +44,7 @@
     min-width: initial !important;
   }
   .width-13 {
-    width: 13%;
+    width: 17%;
   }
   .width-15 {
     width: 15%;
@@ -121,19 +121,19 @@
 {
   color:#ababab;
 }
-  .txt-blue
-{   
- color: #45C0BE;
- font-style: italic;
- text-decoration: underline;
- font-weight:550;
+//   .txt-blue
+// {   
+//  color: #45C0BE;
+//  font-style: italic;
+//  text-decoration: underline;
+//  font-weight:550;
 
- ::ng-deep .mat-checkbox-label
- {
-  text-decoration: underline;
-  margin-left: 0.3rem;
- }
-}
+//  ::ng-deep .mat-checkbox-label
+//  {
+//   text-decoration: underline;
+//   margin-left: 0.3rem;
+//  }
+// }
 ::ng-deep .mat-error {
   display: none;
 } 

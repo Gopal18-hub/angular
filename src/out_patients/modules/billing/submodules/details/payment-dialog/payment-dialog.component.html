@@ -21,7 +21,7 @@
                             
                         </div> -->
                         <mat-label class="max-health-primary-color font-medium font-base mt-3">Payment Methods</mat-label>
-                        <div class="flex mt-2 ml-8">
+                        <!-- <div class="flex mt-2 ml-8">
                             <div>
                                 <maxhealth-question
                                 [question]="questions[0]"
@@ -40,16 +40,27 @@
                                 >
                                 </maxhealth-question>
                             </div>
-                        </div>
+                        </div> -->
                 </div>
                 
                 <mat-tab-group class="mt-4 input-label" animationDuration="0ms" (selectedTabChange)="tabchange($event)" #mattab [(selectedIndex)]="selected">
                     <mat-tab label="Cash">
+                        <!-- <ng-template mat-tab-label>
+                        <button
+                        mat-icon-button
+                        aria-label="close dialog"
+                        class="absolute max-dialog-close-icon mt-2 mr-3"
+                        type="button"
+                        >
+                        <mat-icon>close</mat-icon>
+                        </button>
+                        Cash
+                        </ng-template> -->
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Cash Details</mat-label>
-                            <div class="flex w-1/2 mt-3">
+                            <div class="flex w-full mt-3">
                                 <!-- <mat-label class="max-health-primary-color font-medium">Amount:</mat-label> -->
-                                <div class="w-5/9 ml-2 input1">
+                                <div class="w-2/5 ml-2 input1">
                                     <maxhealth-question
                                     [question]="questions[2]"
                                     [form]="dueform"
@@ -64,7 +75,7 @@
                     <mat-tab label="Cheque">
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Cheque Details</mat-label>
-                            <div class="flex w-3/4 mt-3 flex-wrap">
+                            <div class="flex w-full mt-3 flex-wrap">
                                 <!-- <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                                 </div> -->
@@ -152,7 +163,7 @@
                     <mat-tab label="Credit Card">
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Credit Card Details</mat-label>
-                            <div class="flex w-3/4 mt-3 flex-wrap">
+                            <div class="flex w-full mt-3 flex-wrap">
                                 <!-- <div class="w-2/5">
                                     <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                                 </div> -->
@@ -162,6 +173,22 @@
                                     [form]="dueform"
                                     [questions]="questions[9]"
                                     [index]="9"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-5 mb-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[29]"
+                                    [form]="dueform"
+                                    [questions]="questions[29]"
+                                    [index]="29"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[30]"
+                                    [form]="dueform"
+                                    [questions]="questions[30]"
+                                    [index]="30"
                                     ></maxhealth-question>
                                 </div>
                                 <div class="w-2/5 ml-5 mb-2">
@@ -182,13 +209,21 @@
                                 </div>
                                 <div class="w-2/5 ml-5 mb-2">
                                     <maxhealth-question
+                                    [question]="questions[31]"
+                                    [form]="dueform"
+                                    [questions]="questions[31]"
+                                    [index]="31"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
                                     [question]="questions[12]"
                                     [form]="dueform"
                                     [questions]="questions[12]"
                                     [index]="12"
                                     ></maxhealth-question>
                                 </div>
-                                <div class="w-2/5 ml-2 mb-2">
+                                <div class="w-2/5 ml-5 mb-2">
                                     <maxhealth-question
                                     [question]="questions[13]"
                                     [form]="dueform"
@@ -196,7 +231,7 @@
                                     [index]="13"
                                     ></maxhealth-question>
                                 </div>
-                                <div class="w-2/5 ml-5 mb-2">
+                                <div class="w-2/5 ml-2 mb-2">
                                     <maxhealth-question
                                     [question]="questions[14]"
                                     [form]="dueform"
@@ -204,7 +239,7 @@
                                     [index]="14"
                                     ></maxhealth-question>
                                 </div>
-                                <div class="w-2/5 ml-2 mb-2">
+                                <div class="w-2/5 ml-5 mb-2">
                                     <maxhealth-question
                                     [question]="questions[15]"
                                     [form]="dueform"
@@ -212,12 +247,20 @@
                                     [index]="15"
                                     ></maxhealth-question>
                                 </div>
-                                <div class="w-2/5 ml-5 mb-2">
+                                <div class="w-2/5 ml-2 mb-2">
                                     <maxhealth-question
                                     [question]="questions[16]"
                                     [form]="dueform"
                                     [questions]="questions[16]"
                                     [index]="16"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-5 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[32]"
+                                    [form]="dueform"
+                                    [questions]="questions[32]"
+                                    [index]="32"
                                     ></maxhealth-question>
                                 </div>
                             </div>
@@ -263,17 +306,17 @@
                                 </div>
                                 
                             </div> -->
-                            <div class="flex mt-4 ml-2 btn w-9/10 justify-center">
-                                <button mat-raised-button color="primary" (click)="getmanual()" [disabled]="!manualbtn">Manual</button>
-                                <button mat-raised-button color="primary" class="ml-2" [disabled]="!approvalbtn">Get Approval</button>
-                                <button mat-raised-button color="primary" class="ml-2" (click)="retry()" [disabled]="retrybtn">Retry</button>
+                            <div class="flex mt-4 ml-2 btn w-9/10 justify-content-space-evenly">
+                                <!-- <button mat-raised-button color="primary" (click)="getmanual()" [disabled]="!manualbtn">Manual</button> -->
+                                <button mat-raised-button color="primary" class="ml-2" (click)="getapproval()">Get Approval</button>
+                                <button mat-raised-button color="primary" class="ml-2" (click)="retry()">Retry</button>
                             </div> 
                         </div>
                     </mat-tab>
                     <mat-tab label="Demand Draft">
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Demand Draft Details</mat-label>
-                            <div class="flex w-3/4 mt-3 flex-wrap">
+                            <div class="flex w-full mt-3 flex-wrap">
                                 <!-- <div class="w-2/5">
                                     <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                                 </div> -->
@@ -361,7 +404,7 @@
                     <mat-tab label="Online Payment">
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Online Payment Details</mat-label>
-                            <div class="flex w-3/4 mt-3 flex-wrap">
+                            <div class="flex w-full mt-3 flex-wrap">
                                 <!-- <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                                 </div> -->
@@ -431,8 +474,8 @@
                                 </div>
                                 
                             </div>  -->
-                            <div class="flex mt-4 ml-2 btn">
-                                <button mat-raised-button color="primary">Search</button>
+                            <div class="flex justify-content-space-evenly mt-4 ml-2 btn">
+                                <button mat-raised-button color="primary" [disabled]="!onlineamtcheck()" (click)="onlinesearch()">Search</button>
                                 <button mat-raised-button color="primary" class="ml-2">Clear</button>
                             </div> 
                         </div>
@@ -443,7 +486,7 @@
         </section>
         
         <!-- payment Methods right -->
-        <div class="width-34 h-full mt-2 float-right">
+        <div class="w-3/10 h-full mt-2 float-right">
             <div class="back-primary col-white p-3 border-radius-md">
                 <mat-label class="font-base">Due Bill Settlement Summary</mat-label>
                 <div class="mt-2 w-full flex justify-between">

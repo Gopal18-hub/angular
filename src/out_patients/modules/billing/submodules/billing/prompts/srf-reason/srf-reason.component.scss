@@ -1,0 +1,20 @@
+.reason-for-no-reason-wrapper {
+  .astreik {
+    color: red;
+  }
+  .gap-05 {
+    gap: 0.5rem;
+  }
+  ::ng-deep .mat-raised-button {
+    min-width: fit-content !important;
+    height: 1.875rem;
+    line-height: 1.875rem;
+  }
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+  .bg-grey {
+    background-color: #f1f1f1;
+    box-shadow: inset 0px 3px 6px #00000029;
+  }
+}

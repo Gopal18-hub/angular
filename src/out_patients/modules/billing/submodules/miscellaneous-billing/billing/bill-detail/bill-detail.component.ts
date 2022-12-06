@@ -2169,8 +2169,11 @@ export class BillDetailComponent implements OnInit {
     if (!miscPatient.narration) {
       miscPatient.narration = "";
     }
-    if (!miscPatient.b2bInvoiceType) {
-      miscPatient.b2bInvoiceType = "B2C";
+    let b2bInvoiceType = "";
+    if (calcBill0.b2bInvoiceType == "B2B") {
+      b2bInvoiceType = "B2B";
+    } else {
+      b2bInvoiceType = "B2C";
     }
     // let refDocId = 0;
     // if (this.selfDoc === true) {
@@ -2208,7 +2211,7 @@ export class BillDetailComponent implements OnInit {
       channelId:
         Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) || 0,
       billToCompany: this.billToCompId,
-      invoiceType: miscPatient.b2bInvoiceType,
+      invoiceType: b2bInvoiceType,
       narration: miscPatient.narration,
     };
     //Discount values
@@ -2388,22 +2391,22 @@ export class BillDetailComponent implements OnInit {
       locationID: this.location,
     });
 
-    setTimeout(() => {
-      if (this.duplicateflag == true) {
-        this.http
-          .post(
-            BillingApiConstants.updateopprintbillduplicate(
-              Number(this.generatedBillNo)
-            ),
-            ""
-          )
-          .subscribe((res) => {
-            if (res.success == true) {
-              this.duplicateflag = false;
-            }
-          });
-      }
-    }, 2000);
+    // setTimeout(() => {
+    //   if (this.duplicateflag == true) {
+    //     this.http
+    //       .post(
+    //         BillingApiConstants.updateopprintbillduplicate(
+    //           Number(this.generatedBillNo)
+    //         ),
+    //         ""
+    //       )
+    //       .subscribe((res) => {
+    //         if (res.success == true) {
+    //           this.duplicateflag = false;
+    //         }
+    //       });
+    //   }
+    // }, 2000);
   }
 
   //USING FOR TESTING PURPOSE
