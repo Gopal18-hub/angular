@@ -108,6 +108,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
             this.paymentForm[method].patchValue(this.config.formData[method]);
             this.tabPrices.push(this.config.formData[method].price);
             this.remainingAmount = 0;
+            this.questions.onlinepayment[1].readonly = true;
           } else {
             this.paymentForm[method].controls["price"].setValue(
               this.totalAmount
@@ -189,7 +190,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   async paymentButtonAction(button: any) {
     console.log(button);
-    if (button.label == "Search") {
+    if (button.type == "onlinePaymentSearch") {
       const onlinedialog = this.matdialog.open(
         OnlinePaymentPaidPatientComponent,
         {
@@ -204,12 +205,20 @@ export class BillingPaymentMethodsComponent implements OnInit {
       onlinedialog.afterClosed().subscribe((res) => {
         console.log(res);
         if (res) {
+          console.log(this.paymentForm);
+          this.tabs.forEach((i: any) => {
+            console.log(i);
+            this.paymentForm[i.key].reset();
+            this.paymentForm[i.key].controls['price'].setValue('0.00')
+            console.log(this.paymentForm[i.key].controls['price']);
+          })
           this.paymentForm.onlinepayment.controls["transactionId"].setValue(
             res.transactionNo
           );
           this.paymentForm.onlinepayment.controls["bookingId"].setValue(
             res.bookingNo
           );
+          this.questions.onlinepayment[1].readonly = true;
           this.paymentForm.onlinepayment.controls["price"].setValue(
             res.bookingAmount.toFixed(2)
           );
@@ -223,6 +232,14 @@ export class BillingPaymentMethodsComponent implements OnInit {
         console.log(this.paymentForm);
       });
     }
+
+    if(button.type == "onlinePaymentClear")
+    {
+      this.paymentForm.onlinepayment.reset();
+      this.questions.onlinepayment[1].readonly = false;
+      this.paymentForm.onlinepayment.controls['price'].setValue('0.00');
+    }
+    
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
     if (button.type == "uploadBillTransaction") {
