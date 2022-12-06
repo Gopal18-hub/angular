@@ -20,9 +20,11 @@ import { BillingApiConstants } from "../../../BillingApiConstant";
 import { PaymentService } from "@core/services/payment.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { MatDialog } from "@angular/material/dialog";
-import { OnlinePaymentPaidPatientComponent } from '../../online-payment-paid-patient/online-payment-paid-patient.component';
+import { OnlinePaymentPaidPatientComponent } from "../../online-payment-paid-patient/online-payment-paid-patient.component";
 import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
 import { BillingService } from "../../../billing.service";
+import { MaxHealthStorage } from "@shared/services/storage";
+
 @Component({
   selector: "billing-payment-methods",
   templateUrl: "./payment-methods.component.html",
@@ -125,12 +127,19 @@ export class BillingPaymentMethodsComponent implements OnInit {
       if (this.paymentForm[method].controls["price"]) {
         this.paymentForm[method].controls["price"].valueChanges.subscribe(
           (res: any) => {
-            this.tabPrices[index] = Number(res);
-            const sum = this.tabPrices.reduce(
-              (partialSum, a) => partialSum + a,
-              0
-            );
-            this.remainingAmount = this.totalAmount - sum;
+            if (Number(res) < 0) {
+              this.messageDialogService.warning("Amount Cannot be Negative");
+              this.paymentForm[method].controls["price"].setValue(
+                Math.abs(res).toFixed(2)
+              );
+            } else {
+              this.tabPrices[index] = Number(res);
+              const sum = this.tabPrices.reduce(
+                (partialSum, a) => partialSum + a,
+                0
+              );
+              this.remainingAmount = this.totalAmount - sum;
+            }
           }
         );
       }
@@ -156,6 +165,11 @@ export class BillingPaymentMethodsComponent implements OnInit {
             );
           }
         } else {
+          if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
+            this.paymentForm[this.activeTab.key].controls["posimei"].setValue(
+              MaxHealthStorage.getCookie("MAXMachineName")
+            );
+          }
           this.paymentForm[this.activeTab.key].controls["price"].setValue(
             this.remainingAmount
           );
@@ -175,24 +189,39 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   async paymentButtonAction(button: any) {
     console.log(button);
-    if(button.label == 'Search')
-    {
-      const onlinedialog = this.matdialog.open(OnlinePaymentPaidPatientComponent, {
-        maxWidth: "90vw",
-        height: "70vh"
-      })
+    if (button.label == "Search") {
+      const onlinedialog = this.matdialog.open(
+        OnlinePaymentPaidPatientComponent,
+        {
+          maxWidth: "90vw",
+          height: "70vh",
+          data: {
+            maxid: this.BillingService.activeMaxId.maxId,
+            status: "Y",
+          },
+        }
+      );
       onlinedialog.afterClosed().subscribe((res) => {
         console.log(res);
-      })
-      // const appointmentSearch = this.matdialog.open(AppointmentSearchComponent, {
-      //   maxWidth: "100vw",
-      //   width: "98vw",
-      //   data: {
-      //     phoneNumber: '',
-      //     maxid: this.BillingService.activeMaxId,
-      //     onlinepayment: true
-      //   },
-      // });
+        if (res) {
+          this.paymentForm.onlinepayment.controls["transactionId"].setValue(
+            res.transactionNo
+          );
+          this.paymentForm.onlinepayment.controls["bookingId"].setValue(
+            res.bookingNo
+          );
+          this.paymentForm.onlinepayment.controls["price"].setValue(
+            res.bookingAmount.toFixed(2)
+          );
+          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(
+            res.mobile
+          );
+          this.paymentForm.onlinepayment.controls["cardValidation"].setValue(
+            "yes"
+          );
+        }
+        console.log(this.paymentForm);
+      });
     }
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
@@ -201,7 +230,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
         //  this.calculateBillService.blockActions.next(true);
         let res = await this.paymentService.uploadBillTransaction(
           payloadData,
-          module
+          module,
+          this.BillingService.activeMaxId.maxId
         );
         await this.processPaymentApiResponse(button, res);
       } else {
@@ -216,7 +246,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
         // this.calculateBillService.blockActions.next(true);
         let res = await this.paymentService.getBillTransactionStatus(
           payloadData,
-          module
+          module,
+          this.BillingService.activeMaxId.maxId
         );
         await this.processPaymentApiResponse(button, res);
       } else {

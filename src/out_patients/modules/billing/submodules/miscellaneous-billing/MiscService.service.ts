@@ -99,6 +99,9 @@ export class MiscService {
   }
   calculateBill() {
     this.calcItems = this.getCalculateBillItems();
+    if (this.calcItems.b2bInvoiceType) {
+      this.calculatedBill.b2bInvoiceType = this.calcItems.b2bInvoiceType;
+    }
 
     if (this.calcItems.depositInput) {
       // if (

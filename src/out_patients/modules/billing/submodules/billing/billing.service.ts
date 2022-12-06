@@ -306,13 +306,16 @@ export class BillingService {
   refreshPrice() {
     let subItems: any = [];
     this.billItems.forEach((item: any, index: number) => {
-      subItems.push({
-        serviceID: item.serviceId,
-        itemId: item.itemId,
-        bundleId: 0,
-        priority: item.priority,
-      });
+      if (item.serviceId != 68) {
+        subItems.push({
+          serviceID: item.serviceId,
+          itemId: item.itemId,
+          bundleId: 0,
+          priority: item.priority,
+        });
+      }
     });
+
     this.http
       .post(
         BillingApiConstants.getPriceBulk(

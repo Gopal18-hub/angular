@@ -322,51 +322,66 @@ export class BillDetailTableComponent implements OnInit {
   ngAfterViewInit()
   {
     console.log(this.billDetailservice.patientbilldetaillist);
-    if(this.billDetailservice.serviceList.length == 1 && this.billDetailservice.serviceList[0].cancelled == 'cancelledrefund')
+    if(this.billDetailservice.patientbilldetaillist)
     {
-      this.headercheck = true;
-    }
-    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
-    {
-      this.headercheck = true;
-    }
-    else if(this.billDetailservice.serviceList.length > 1)
-    {
-      this.headercheck = false;
-    }
-    var acklist = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
-      return i.ackby > 1;
-    })
-    console.log(acklist);
-    if(acklist.length > 0)
-    {
-      this.headercheck = true;
-    }
-    // consultation done
-    var consulted = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
-      return Number(i.serviceId) == 25 && i.visited > 0;
-    })
-    if(consulted.length > 0)
-    {
-      this.headercheck = true;
-    }
+      if(this.billDetailservice.serviceList.length == 1 && this.billDetailservice.serviceList[0].cancelled == 'cancelledrefund')
+      {
+        this.headercheck = true;
+      }
+      else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled)
+      {
+        if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+        {  
+          this.headercheck = true;
+        }
+      }
+      else if(this.billDetailservice.serviceList.length > 1)
+      {
+        this.headercheck = false;
+      }
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID)
+      {
+        var acklist = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
+          return i.ackby != 0 && i.ackby != 1 && i.ackby != 9;
+        })
+        console.log(acklist);
+        if(acklist.length > 0)
+        {
+          this.headercheck = true;
+        }
+        // consultation done
+        var consulted = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
+          return Number(i.serviceId) == 25 && i.visited > 0;
+        })
+        if(consulted.length > 0)
+        {
+          this.headercheck = true;
+        }
+      }
+      
 
-    // if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 1)
-    // {
-    //   this.headercheck = true;
-    // }
-    // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
-    // {
-    //   this.headercheck = false;
-    // }
-    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
-    {
-      this.headercheck = true;
+      // if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 1)
+      // {
+      //   this.headercheck = true;
+      // }
+      // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
+      // {
+      //   this.headercheck = false;
+      // }
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail)
+      {
+        if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+        {
+          this.headercheck = true;
+        }
+      }
+      
+      // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
+      // {
+      //   this.headercheck = false;
+      // }
     }
-    // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
-    // {
-    //   this.headercheck = false;
-    // }
+    
     this.check = this.differ
       .find(this.tableRows)
       .create();
@@ -481,7 +496,7 @@ export class BillDetailTableComponent implements OnInit {
           console.log(list);
           for(var z = 0; z < list.length; z++)
           {
-            if(list[z].ackby > 1)
+            if(list[z].ackby != 0 && list[z].ackby != 1 && list[z].ackby != 9)
             {
               this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
               console.log(this.tableRows.selection);

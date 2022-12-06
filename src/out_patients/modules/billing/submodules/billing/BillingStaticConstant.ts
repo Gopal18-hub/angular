@@ -568,4 +568,15 @@ export namespace BillingStaticConstants {
     { title: "Hospital is not on CGHS Panel", value: 3 },
     { title: "As per Patient Instruction request", value: 4 },
   ];
+
+  //SRF Reasons
+  export const srfReasons: any = [
+    { title: "Special Approval Received", value: 1 },
+    { title: "SRF Done", value: 2 },
+    { title: "SRF Done", value: 3 },
+  ];
+
+  //GST Confirm POPUP exclusion and Apply GST
+
+  export const excludeCodeIdGSTReason: any = [1406];
 }

@@ -184,15 +184,15 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mx-6 justify-between mt-3 ml-4 creditbuttonwidth">
-                        <div class="ml-6">
+                    <div class="flex mt-3 w-full creditbuttonwidth">
+                        <!-- <div class="ml-6">
                             <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="Enablecreditfields()">Manual</button>
+                        </div> -->
+                        <div class="ml-6 w-4/5">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="paymentupiapproval('credit')">Get Approval</button>
                         </div>
-                        <div class="ml-6">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1">Get Approval</button>
-                        </div>
-                        <div class="ml-6">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetcreditcard()">Retry</button>
+                        <div class="ml-6 w-4/5">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="paymentretryokbtnfunc('credit')">Retry</button>
                         </div>
                     </div>
                 </div>                
@@ -766,6 +766,19 @@
                     </div>
                     <div class="flex flex-column w-1/45 mt-2 mb-1">
                         <!-- <div class="w-1/3">
+                            <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                        </div> -->
+                        <div class="w-full input1">
+                            <maxhealth-question
+                            [question]="questions[67]"
+                            [form]="refundform"
+                            [questions]="questions[67]"
+                            [index]="41"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
                             <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
                         </div> -->
                         <div class="w-full">
@@ -876,16 +889,26 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mx-6 justify-between mt-3 align-items-center creditbuttonwidth">
-                        <div class="ml-6">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Get Status</button>
+                    <div class="flex flex-column w-1/45 mt-2 mb-1">
+                        <!-- <div class="w-1/3">
+                            <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                        </div> -->
+                        <div class="w-full input1">
+                            <maxhealth-question
+                            [question]="questions[68]"
+                            [form]="refundform"
+                            [questions]="questions[68]"
+                            [index]="41"
+                            ></maxhealth-question>
                         </div>
-                        <div class="ml-6">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Ok</button>
+                    </div>
+                    <div class="flex mt-3 w-full creditbuttonwidth">
+                        <div class="ml-6 w-4/5">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="paymentretryokbtnfunc('upi')">Get Status</button>
                         </div>
-                        <div class="ml-6">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Retry</button>
-                        </div>
+                        <div class="ml-6 w-4/5">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="paymentupiapproval('upi')">Ok</button>
+                        </div>                       
                     </div>
                 </div>
             </div>
