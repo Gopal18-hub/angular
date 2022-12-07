@@ -61,9 +61,9 @@ export namespace CrystalReport {
       params.RepType
     }&FromDate=${params.fromdate}&ToDate=${params.todate}&locationid=${
       params.locationid
-    }&User=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
-      params.exportflag
-    }`;
+    }&Locationname=${params.organisationName}&User=${MaxHealthStorage.getCookie(
+      "UserName"
+    )}&exportflag=${params.exportflag}`;
   };
 
   export const CreateOPVisitSlipReport = (params: any) => {
@@ -259,7 +259,9 @@ export namespace CrystalReport {
       params.ValueFromDate
     }&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${
       params.SelectedLocationsId
-    }&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&exportflag=${
+    }&user=${MaxHealthStorage.getCookie(
+      "UserName"
+    )}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&exportflag=${
       params.exportflag
     }`;
   };

@@ -137,6 +137,7 @@ export class ConsumablesComponent implements OnInit {
           let tempAmount = 0;
           result.data.forEach((selectedItem: any) => {
             tempAmount += selectedItem.amount;
+            //// GAV-1368
             if (
               this.billingService.company > 0 &&
               this.companyNotApplicableData &&
@@ -145,11 +146,15 @@ export class ConsumablesComponent implements OnInit {
               let companyIdNotApplicable = this.companyNotApplicableData.filter(
                 (res: any) => res.id === this.billingService.company
               );
-
               if (companyIdNotApplicable && companyIdNotApplicable.length > 0) {
+                ////GAV-1368
+                this.billingService.changeBillTabStatus(true);
                 this.messageDialogService.info(
-                  "Consumable inclusion in procdure is not applicable for this company"
+                  "Consumable mapping with procedure is not configured for selected unit or company"
                 );
+              } else {
+                ////GAV-1368
+                this.billingService.changeBillTabStatus(false);
               }
             }
           });

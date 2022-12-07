@@ -384,6 +384,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       item.age = this.onageCalculator(item.dob);
       return item;
     });
+     //Added line for restricting secondary id to display in list
     this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
     this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
     this.isAPIProcess = true;
@@ -450,19 +451,19 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {
         returnAge = "1 Day(s)";
       }
+      console.log(ageDOB, diffYears, diffMonths, diffDays, returnAge);
       return returnAge;
     }
     return "N/A";
