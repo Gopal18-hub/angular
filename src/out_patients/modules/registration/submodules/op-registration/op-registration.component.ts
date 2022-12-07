@@ -515,6 +515,10 @@ export class OpRegistrationComponent implements OnInit {
           this.OPRegForm.value.maxid = value["maxId"];
           this.getPatientDetailsByMaxId();
         }
+        if (value["id"]) {
+          this.apiProcessing = true;
+          this.getappointmentpatientssearchbyid(value["id"]);
+        }
       });
     this.formProcessingFlag = false;
   }
@@ -522,6 +526,48 @@ export class OpRegistrationComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+  getappointmentpatientssearchbyid(id: any) {
+    this.getTitleList();
+    this.http
+      .get(ApiConstants.getappointmentpatientssearchbyid(id))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (res) => {
+        this.OPRegForm.controls["mobileNumber"].setValue(res[0]?.mobileno, {
+          emitEvent: false,
+        });
+        this.OPRegForm.controls["gender"].setValue(res[0]?.gender);
+        this.OPRegForm.controls["emailId"].setValue(res[0]?.email);
+        this.OPRegForm.controls["dob"].setValue(res[0]?.dob);
+        this.OPRegForm.controls["title"].setValue(res[0]?.titleId, {
+          emitEvent: false,
+        });
+        this.OPRegForm.controls["firstName"].setValue(res[0]?.firstName);
+        this.OPRegForm.controls["lastName"].setValue(res[0]?.lastName);
+        this.OPRegForm.controls["age"].setValue(res[0]?.age);
+        this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
+        this.OPRegForm.controls["address"].setValue(res[0]?.houseNo);
+        // this.OPRegForm.controls["pincode"].setValue(
+        //   patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
+        // );
+        this.OPRegForm.controls["country"].setValue({
+          title: res[0]?.country,
+          value: res[0]?.countryId,
+        });
+        this.OPRegForm.controls["state"].setValue({
+          title: res[0]?.state,
+          value: res[0]?.stateId,
+        });
+        // this.OPRegForm.controls["district"].setValue({
+        //   title: patientDetails?.districtName,
+        //   value: patientDetails?.pdistrict,
+        // });
+        this.OPRegForm.controls["city"].setValue({
+          title: res[0]?.city,
+          value: res[0]?.cityId,
+        });
+        this.apiProcessing = false;
+      });
   }
 
   checkForMaxID() {
@@ -1166,15 +1212,11 @@ export class OpRegistrationComponent implements OnInit {
           (this.OPRegForm.value.pincode == "" ||
             this.OPRegForm.value.pincode == undefined ||
             this.OPRegForm.value.pincode == null) &&
-            ((
-              this.OPRegForm.value.city && 
+          ((this.OPRegForm.value.city &&
             (this.OPRegForm.value.city.value == undefined ||
-            this.OPRegForm.value.city.value == "" ||
-            this.OPRegForm.value.city.value == null)
-            ) ||
-              !this.OPRegForm.value.city
-            )
-
+              this.OPRegForm.value.city.value == "" ||
+              this.OPRegForm.value.city.value == null)) ||
+            !this.OPRegForm.value.city)
         ) {
           this.OPRegForm.controls["locality"].setErrors(null);
           this.questions[22].customErrorMessage = "";
@@ -2855,7 +2897,11 @@ export class OpRegistrationComponent implements OnInit {
   }
   onPhoneModify() {
     console.log("phone changed");
-    if (this.OPRegForm.controls["mobileNumber"].valid && !this.maxIDChangeCall && !this.phoneNumberFlag) {
+    if (
+      this.OPRegForm.controls["mobileNumber"].valid &&
+      !this.maxIDChangeCall &&
+      !this.phoneNumberFlag
+    ) {
       //IF EVENT HAS BEEN NOT HITTED API
       if (!this.similarSoundListPresent()) {
         if (this.checkForModifiedPatientDetail()) {
@@ -3006,8 +3052,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["pincode"].setValue(
       patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
     );
-    if(patientDetails?.ppinCode != 0)
-    {
+    if (patientDetails?.ppinCode != 0) {
       this.questions[27].readonly = true;
     }
     this.OPRegForm.controls["state"].setValue({
