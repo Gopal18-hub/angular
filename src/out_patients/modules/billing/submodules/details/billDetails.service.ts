@@ -25,6 +25,7 @@ export class billDetailService{
         {title: 'Mobile Payment', value: 5},
         {title: 'UPI', value: 6},
     ]
+    activemaxid: any;
     constructor(
         private router: Router
     )
@@ -35,6 +36,8 @@ export class billDetailService{
     {
         this.serviceList = [];
         this.patientbilldetaillist = [];
+        this.activeBillNo = '';
+        this.activemaxid = '';
     }
     clear()
     {
@@ -63,5 +66,9 @@ export class billDetailService{
     setActiveBillnNo(billno: any)
     {
         this.activeBillNo = billno;
+    }
+    setActiveMaxId(maxid: any)
+    {
+        this.activemaxid = maxid;
     }
 }

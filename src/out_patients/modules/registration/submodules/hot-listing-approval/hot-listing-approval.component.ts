@@ -51,7 +51,7 @@ export class HotListingApprovalComponent implements OnInit {
   from: any;
   to: any;
   today = new Date();
-  hotlistingmessage: string = "Please search From Date and To Date ";
+  hotlistingmessage: string = "No records found";
   hotlistingicon: string = "placeholder";
 
   hotlistingapprovalpageForm = new FormGroup({
@@ -485,7 +485,7 @@ export class HotListingApprovalComponent implements OnInit {
       });
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 2),
+        new Date().setDate(new Date().getDate() - 1),
         "yyyy-MM-dd"
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -504,7 +504,7 @@ export class HotListingApprovalComponent implements OnInit {
       this.from =
         formdata["from"] != ""
           ? formdata["from"]
-          : this.today.setDate(this.today.getDate() - 30);
+          : this.today.setDate(this.today.getDate() - 1);
       this.from = this.datepipe.transform(this.from, "yyyy-MM-dd");
       this.to = formdata["to"] != "" ? formdata["to"] : new Date();
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
@@ -620,7 +620,7 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalpending = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
-            this.hotlistingicon = "norecordfound";
+            // this.hotlistingicon = "norecordfound";
             console.log(error);
           }
         );
@@ -692,7 +692,7 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalaccepting = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
-            this.hotlistingicon = "norecordfound";
+            // this.hotlistingicon = "norecordfound";
             console.log(error);
           }
         );
@@ -763,7 +763,7 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalreject = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
-            this.hotlistingicon = "norecordfound";
+            // this.hotlistingicon = "norecordfound";
             console.log(error);
           }
         );
@@ -794,7 +794,7 @@ export class HotListingApprovalComponent implements OnInit {
           this.HotListidList = [];
           this.defaultUI = false;
           this.hotlistingmessage = "No records found";
-          this.hotlistingicon = "norecordfound";
+          // this.hotlistingicon = "norecordfound";
         }
       );
   }
@@ -818,7 +818,7 @@ export class HotListingApprovalComponent implements OnInit {
           this.HotListidList = [];
           this.defaultUI = false;
           this.hotlistingmessage = "No records found";
-          this.hotlistingicon = "norecordfound";
+          // this.hotlistingicon = "norecordfound";
         }
       );
   }
@@ -842,7 +842,7 @@ export class HotListingApprovalComponent implements OnInit {
           this.HotListidList = [];
           this.defaultUI = false;
           this.hotlistingmessage = "No records found";
-          this.hotlistingicon = "norecordfound";
+          // this.hotlistingicon = "norecordfound";
         }
       );
   }

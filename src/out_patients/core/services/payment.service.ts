@@ -14,23 +14,27 @@ export class PaymentService {
 
   constructor(private http: HttpService, public cookie: CookieService) {}
 
-  async uploadBillTransaction(payloadData: any, module: any): Promise<any> {
+  async uploadBillTransaction(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
     this.billTransaction = {
       amount: payloadData.price,
       userID: this.cookie.get("UserId"),
       imei: this.cookie.get("MAXMachineName"),
       merchantStorePosCode: this.cookie.get("MerchantPOSCode"),
       totalInvoiceAmount: payloadData.price,
-      maxID: "",
-      posEDCMachineId: this.cookie.get("POSIMEI"),
+      maxID: maxId,
+      posEDCMachineId: Number(this.cookie.get("POSIMEI")),
       merchantID: this.cookie.get("MerchantId"),
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
       allowedPaymentMode: 1,
       loginUserId: Number(this.cookie.get("UserId")),
-      hsplocationId: this.cookie.get("HSPLocationId"),
-      stationId: this.cookie.get("StationId"),
+      hsplocationId: Number(this.cookie.get("HSPLocationId")),
+      stationId: Number(this.cookie.get("StationId")),
       transactionReferenceId: payloadData.transactionid || "",
     };
 
@@ -39,27 +43,31 @@ export class PaymentService {
       .toPromise();
   }
 
-  async getBillTransactionStatus(payloadData: any, module: any): Promise<any> {
+  async getBillTransactionStatus(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
     this.billTransaction = {
       amount: payloadData.price,
       userID: this.cookie.get("UserId"),
       imei: this.cookie.get("MAXMachineName"),
       merchantStorePosCode: this.cookie.get("MerchantPOSCode"),
       totalInvoiceAmount: payloadData.price,
-      maxID: "",
-      posEDCMachineId: this.cookie.get("POSIMEI"),
+      maxID: maxId,
+      posEDCMachineId: Number(this.cookie.get("POSIMEI")),
       merchantID: this.cookie.get("MerchantId"),
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
       allowedPaymentMode: 1,
       loginUserId: Number(this.cookie.get("UserId")),
-      hsplocationId: this.cookie.get("HSPLocationId"),
-      stationId: this.cookie.get("StationId"),
+      hsplocationId: Number(this.cookie.get("HSPLocationId")),
+      stationId: Number(this.cookie.get("StationId")),
       transactionReferenceId: payloadData.transactionid || "",
     };
     return await this.http
-      .post(PaymentApiConstants.uploadBillTransaction, this.billTransaction)
+      .post(PaymentApiConstants.getBillTransactionStatus, this.billTransaction)
       .toPromise();
   }
 

@@ -623,7 +623,11 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
-    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+    if (
+      !pDetails.dsPersonalDetails.dtPersonalDetails1 ||
+      (pDetails.dsPersonalDetails.dtPersonalDetails1 &&
+        pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0)
+    ) {
       this.clear();
       this.snackbar.open("Invalid Max ID", "error");
       return;
@@ -726,7 +730,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         bplCardNo: patientDetails.bplcardNo,
         BPLAddress: patientDetails.addressOnCard,
       },
-      hotlist: {
+      hotList: {
         hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
         reason: patientDetails.hotlistcomments,
       },
