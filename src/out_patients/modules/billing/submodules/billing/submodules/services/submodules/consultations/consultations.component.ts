@@ -245,6 +245,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             this.formGroup.value.specialization.value
           ) {
             return of([]);
+          }
+          /////GAV-1386 - clinics
+          else if (
+            this.formGroup.value.clinics &&
+            this.formGroup.value.clinics.value
+          ) {
+            return of([]);
           } else {
             return this.http
               .get(

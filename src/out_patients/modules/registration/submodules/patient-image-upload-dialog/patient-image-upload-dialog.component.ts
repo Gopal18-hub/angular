@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject, takeUntil } from "rxjs";
 import { HttpService } from "@shared/services/http.service";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: "root",
@@ -20,10 +21,12 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
   public imagePreview: any;
   public submitClicked:boolean=true;
   public selectedFilename!:string;
+  public selectedFileType!:string;
   private readonly _destroying$ = new Subject<void>();
   saveApimessage!: string;
   base64textString:any = [];
   identityImage:any;
+  patientImage:any;
 
   @ViewChild("video")
   public video!: ElementRef;
@@ -36,11 +39,13 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
   constructor(public dialogRef: MatDialogRef<PatientImageUploadDialogComponent>,
     private http: HttpService,
     public messageDialogService: MessageDialogService,
+    private domSanitizer: DomSanitizer,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
   }
 
   ngOnInit(): void {
    this.submitClicked=true;
+   this.patientImage=this.data.imageData;
    this.identityImage=this.data.imageData;
   }
 
@@ -56,8 +61,6 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
     //     // this.video.nativeElement.play();
     //   })
     // }
-
-
 
     var enumeratorPromise = navigator.mediaDevices.enumerateDevices().then(function(devices) {
       var cam = devices.find(function(device) {
@@ -81,27 +84,33 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
 
    close() {
     this.identityImage = '';
+    this.patientImage='';
     this.base64textString = undefined;
     if(this.identityImage)
       this.identityImage.nativeElement.value = '';
+    if(this.patientImage)
+      this.patientImage.nativeElement.value='';
     this.webCameraOff();
     this.dialogRef.close();
   }
 
   submit(){
     this.webCameraOff();
-    this.dialogRef.close({ patientImage: this.identityImage });
+    this.dialogRef.close({ patientImage: this.patientImage, fileType:this.selectedFileType });
   }
 
     public onIdentifyImgFileUpload(event:any) {
       let selectedFile = event.target.files[0];
       this.selectedFilename=event.target.files[0].name;
+      this.selectedFileType=event.target.files[0].type;
       const reader = new FileReader();
       let fileSize= Number(((event.target.files[0].size/1024)/1024).toFixed(0)); // MB
       if (fileSize <= 1)
       {
         reader.onload = () => {
           this.identityImage = reader.result;
+          this.patientImage = reader.result;
+          this.identityImage = this.domSanitizer.bypassSecurityTrustUrl(this.identityImage);
         };
         reader.readAsDataURL(selectedFile);
         this.getBase64(selectedFile);
