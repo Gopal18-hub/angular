@@ -537,22 +537,24 @@ export class DepositComponent implements OnInit {
         }
       }
     );
-    this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
-      console.log(event);
-      if (event.key === "Enter" || event.key === "Tab") {
-        //COMMENTED IN ORDER TO MOVE FOCUS TO THE NEXT BUTTON(FOR ERROR MESSAGE)
-        // event.preventDefault();
-        if(this.depositForm.value.mobileno.toString().length == 10)
-        {
-          this.mobilechange();
-        }
-        else
-        {
-          this.snackbar.open('Invalid Mobile No', 'error');
-        }
+    // this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
+    //   console.log(event);
+    //   if (event.key === "Enter" || event.key === "Tab") {       
+    //     if(this.depositForm.value.mobileno.toString().length == 10)
+    //     {
+    //       this.mobilechange();
+    //     }
+    //     else
+    //     {
+    //       this.snackbar.open('Invalid Mobile No', 'error');
+    //     }
         
-      }
-    });
+    //   }
+    // });
+    this.questions[1].elementRef.addEventListener(
+      "blur",     
+      this.mobilechange.bind(this)
+    );
   }
 
   getPatientDetailsByMaxId() {
@@ -823,9 +825,8 @@ export class DepositComponent implements OnInit {
   }
 
   mobilechange() {
-    if (this.depositForm.value.mobileno.length == 10)
+    if (this.depositForm.controls["mobileno"].valid){
       console.log("mobile changed");
-    this.matDialog.closeAll();
     console.log(this.similarContactPatientList.length);
     this.http
       .post(ApiConstants.similarSoundPatientDetail, {
@@ -899,6 +900,7 @@ export class DepositComponent implements OnInit {
           this.messageDialogService.info(error.error);
         }
       );
+    }
   }
 
   printpatientreceipt() {
