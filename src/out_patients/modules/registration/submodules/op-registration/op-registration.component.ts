@@ -210,7 +210,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
+        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z. '']+",
         //onlyKeyPressAlpha: true,
         capitalizeText: true,
       },
@@ -1166,9 +1166,15 @@ export class OpRegistrationComponent implements OnInit {
           (this.OPRegForm.value.pincode == "" ||
             this.OPRegForm.value.pincode == undefined ||
             this.OPRegForm.value.pincode == null) &&
-          (this.OPRegForm.value.city.value == undefined ||
+            ((
+              this.OPRegForm.value.city && 
+            (this.OPRegForm.value.city.value == undefined ||
             this.OPRegForm.value.city.value == "" ||
             this.OPRegForm.value.city.value == null)
+            ) ||
+              !this.OPRegForm.value.city
+            )
+
         ) {
           this.OPRegForm.controls["locality"].setErrors(null);
           this.questions[22].customErrorMessage = "";
@@ -1201,7 +1207,19 @@ export class OpRegistrationComponent implements OnInit {
               this.citybasedflow = false;
               this.addressByLocalityID(value);
             }
+            // else if(value && value.value)
+            // {
+            //   this.OPRegForm.controls["locality"].setErrors(null);
+            //   this.questions[22].customErrorMessage = "";
+            //   this.addressByLocalityID(value);
+            // }
           }
+          // else if(value && value.value)
+          // {
+          //   this.OPRegForm.controls["locality"].setErrors(null);
+          //   this.questions[22].customErrorMessage = "";
+          //   this.addressByLocalityID(value);
+          // }
         } else if (
           value.value > 0 &&
           value.value != undefined &&
@@ -1364,6 +1382,7 @@ export class OpRegistrationComponent implements OnInit {
     this.maxIDChangeCall = false;
 
     this.MaxIDExist = false;
+    this.countrybasedflow = false;
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -2469,6 +2488,8 @@ export class OpRegistrationComponent implements OnInit {
               //this.clear();
               this.maxIDChangeCall = false;
             } else {
+              //added for modify issue - even though Mobile no not changed
+              this.questions[2].elementRef.blur();
               this.flushAllObjects();
               this.maxIDChangeCall = true;
               this.patientDetails = resultData;
@@ -2834,7 +2855,7 @@ export class OpRegistrationComponent implements OnInit {
   }
   onPhoneModify() {
     console.log("phone changed");
-    if (!this.maxIDChangeCall && !this.phoneNumberFlag) {
+    if (this.OPRegForm.controls["mobileNumber"].valid && !this.maxIDChangeCall && !this.phoneNumberFlag) {
       //IF EVENT HAS BEEN NOT HITTED API
       if (!this.similarSoundListPresent()) {
         if (this.checkForModifiedPatientDetail()) {
@@ -2985,6 +3006,10 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["pincode"].setValue(
       patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
     );
+    if(patientDetails?.ppinCode != 0)
+    {
+      this.questions[27].readonly = true;
+    }
     this.OPRegForm.controls["state"].setValue({
       title: patientDetails?.stateName,
       value: patientDetails?.pstate,
