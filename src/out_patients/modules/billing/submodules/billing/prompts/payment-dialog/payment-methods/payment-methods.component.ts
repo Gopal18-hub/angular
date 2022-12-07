@@ -208,7 +208,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
           console.log(this.paymentForm);
           this.tabs.forEach((i: any) => {
             console.log(i);
-            this.paymentForm[i.key].reset();
+            // this.paymentForm[i.key].reset();
             this.paymentForm[i.key].controls['price'].setValue('0.00')
             console.log(this.paymentForm[i.key].controls['price']);
           })
@@ -238,6 +238,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
       this.paymentForm.onlinepayment.reset();
       this.questions.onlinepayment[1].readonly = false;
       this.paymentForm.onlinepayment.controls['price'].setValue('0.00');
+      this.paymentForm.onlinepayment.controls['modeOfPayment'].setValue('Online Payment');
     }
     
     const payloadData = this.paymentForm[button.paymentKey].value;
