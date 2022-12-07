@@ -148,9 +148,9 @@ export namespace CrystalReport {
       environment.ReportsSampleUrl
     }MAXHIS/MIS/CROPItemPriceModified?dtpfrom=${params.dtpfrom}&dtpto=${
       params.dtpto
-    }&locationid=${params.locationid}&LocationName=${MaxHealthStorage.getCookie(
-      "Location"
-    )}&user=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
+    }&locationid=${params.locationid}&LocationName=${
+      params.LocationName
+    }&user=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
       params.exportflag
     }`;
   };
@@ -164,11 +164,9 @@ export namespace CrystalReport {
       params.dtpFromDate
     }&dtpToDate=${params.dtpToDate}&openscrolltypename=${
       params.openscrolltypename
-    }&user=${MaxHealthStorage.getCookie(
-      "UserName"
-    )}&LocationName=${MaxHealthStorage.getCookie("Location")}&exportflag=${
-      params.exportflag
-    }`;
+    }&user=${MaxHealthStorage.getCookie("UserName")}&LocationName=${
+      params.LocationName
+    }&exportflag=${params.exportflag}`;
   };
 
   export const ServiceTaxReportData = (params: any) => {
@@ -178,11 +176,9 @@ export namespace CrystalReport {
       params.dtpFromDate
     }&dtpToDate=${params.dtpToDate}&rbIP=${params.rbIP}&locationid=${
       params.locationid
-    }&LocationName=${MaxHealthStorage.getCookie(
-      "Location"
-    )}&user=${MaxHealthStorage.getCookie("UserName")}&exportflag=${
-      params.exportflag
-    }`;
+    }&LocationName=${params.LocationName}&user=${MaxHealthStorage.getCookie(
+      "UserName"
+    )}&exportflag=${params.exportflag}`;
   };
   export const refundReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/refundreport?refundBill=${params.refundBill}&locationID=${params.locationID}`;
