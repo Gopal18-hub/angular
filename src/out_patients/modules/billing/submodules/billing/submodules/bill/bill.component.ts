@@ -276,12 +276,14 @@ export class BillComponent implements OnInit, OnDestroy {
     }
   }
 
-  async refreshForm() {
+  refreshForm() {
+    this.billingservice.calculateBill(this.formGroup, this.question);
     //resetting discount on removing all items from Bill tab
     if (this.billingservice.billItems.length == 0) {
       this.resetDiscount();
       this.formGroup.controls["discAmtCheck"].setValue(false);
     } else {
+      console.log("calling the referesh the discount");
       this.calculateBillService.refreshDiscount(this.formGroup);
       this.calculateBillService.calculateDiscount();
 
@@ -349,6 +351,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
     );
+    this.billingservice.calculateTotalAmount();
   }
 
   ////validation check for GenOPD Bill type
