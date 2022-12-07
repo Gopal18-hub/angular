@@ -14,6 +14,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -159,7 +160,8 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private lookupService: LookupService,
     private cookieService: CookieService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    private messageDialogService: MessageDialogService,
   ) {}
 
   ngOnInit(): void {
@@ -174,7 +176,8 @@ export class DashboardComponent implements OnInit {
           item.age= this.onageCalculator(item.dob);
           return item;
         });
-        this.patientList = resultData;
+         //Added line for restricting secondary id to display in list
+        this.patientList = resultData.filter((res:any) => res.parentMergeLinked == "");
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
         );
@@ -241,89 +244,165 @@ export class DashboardComponent implements OnInit {
   async loadGrid(formdata: any): Promise<any> {
     this.apiProcessing = false;
     this.defaultUI = false;
-    const lookupdata = await this.lookupService.searchPatient(formdata);
-    if (lookupdata == null || lookupdata == undefined) {
-      this.patientList = [];
-      this.defaultUI = true;
-      this.showspinner = false;
-      this.findpatientmessage = "No records found";
-      this.findpatientimage = "norecordfound";
-    } else {
-      if (
-        !formdata.data["name"] &&
-        !formdata.data["phone"] &&
-        formdata.data["dob"]
-      ) {
+    if (formdata.data) {
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+      if (lookupdata == null || lookupdata == undefined) {
         this.patientList = [];
         this.defaultUI = true;
         this.showspinner = false;
-        this.findpatientmessage =
-          "Please enter Name / Phone in combination with DOB as search criteria";
-        this.findpatientimage = "placeholder";
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
       } else {
-        const resultData = lookupdata.map((item: any) => {
-          item.fullname = item.firstName + " " + item.lastName;
-          item.notereason = item.noteReason;
-          item.age= this.onageCalculator(item.dob);
-          return item;
-        });
-        this.patientList = resultData;
-        this.patientList = this.patientServie.getAllCategoryIcons(
-          this.patientList
-        );
-        this.apiProcessing = true;
-        this.showspinner = false;
-        this.defaultUI = false;
-        setTimeout(() => {
-          this.table.selection.changed
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((res: any) => {
-              console.log(res);
-              this.router.navigate(
-                ["out-patients", "registration", "op-registration"],
-                {
-                  queryParams: { maxId: res.added[0].maxid },
-                }
-              );
-            });
-          this.table.actionItemClickTrigger.subscribe((res: any) => {
-            console.log(res);
-            if (res) {
-              if (res.item && res.data) {
-                //if else condition due to queryparam for deposite
-                if (res.item["linkid"] == 1) {
-                  if (this.quickLinksRoutes[res.item["linkid"]]) {
-                    this.router.navigate(
-                      [this.quickLinksRoutes[res.item["linkid"]]],
-                      {
-                        queryParams: { maxId: res.data["maxid"] },
-                      }
-                    );
-                  }
-                } else if (res.item["linkid"] == 6) {
-                  this.matDialog.open(VisitHistoryComponent, {
-                    width: "70%",
-                    height: "50%",
-                    data: {
-                      maxid: res.data["maxid"],
-                      docid: "",
-                    },
-                  });
-                } else if (this.quickLinksRoutes[res.item["linkid"]]) {
-                  this.router.navigate(
-                    [this.quickLinksRoutes[res.item["linkid"]]],
-                    {
-                      queryParams: { maxID: res.data["maxid"] },
+        if (
+          !formdata.data["name"] &&
+          !formdata.data["phone"] &&
+          formdata.data["dob"]
+        ) {
+          this.patientList = [];
+          this.defaultUI = true;
+          this.showspinner = false;
+          this.findpatientmessage =
+            "Please enter Name / Phone in combination with DOB as search criteria";
+          this.findpatientimage = "placeholder";
+        } else {
+          this.processLookupData(lookupdata);
+          if (formdata.data["globalSearch"] == 1) {
+            if (formdata.data["SearchTerm"]) {
+              if (formdata.data["SearchTerm"].includes(".")) {
+                let iacode = formdata.data["SearchTerm"].split(".")[0];
+                let regino = formdata.data["SearchTerm"].split(".")[1];
+                if (regino && iacode) {
+                  if (!Number.isNaN(Number(regino)) && iacode.length >= 4) {
+                    if (lookupdata[0]["mergeLinked"]) {
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["mergeLinked"]
+                      );
+                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                      this.patientList = [];
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["parentMergeLinked"]
+                      );
                     }
-                  );
+                  }
                 }
               }
             }
-          });
-        });
+          } else {
+            if (formdata.data["maxID"]) {
+              if (formdata.data["maxID"].includes(".")) {
+                let iacode = formdata.data["maxID"].split(".")[0];
+                let regino = formdata.data["maxID"].split(".")[1];
+                if (regino && iacode) {
+                  if (!Number.isNaN(Number(regino)) && iacode.length >= 4) {
+                    if (lookupdata[0]["mergeLinked"]) {
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["mergeLinked"]
+                      );
+                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                      this.patientList = [];
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["parentMergeLinked"]
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
-    }
+    } else {
+      const lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+      if (lookupdata == null || lookupdata == undefined) {
+        this.patientList = [];
+        this.defaultUI = true;
+        this.showspinner = false;
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
+      } else {
+        this.processLookupData(lookupdata);
+      }
+    }   
   }
+
+  processLookupData(lookupdata: any) {
+    const resultData = lookupdata.map((item: any) => {
+      item.fullname = item.firstName + " " + item.lastName;
+      item.notereason = item.noteReason;
+      item.age= this.onageCalculator(item.dob);
+      return item;
+    });
+     //Added line for restricting secondary id to display in list
+    this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
+    this.patientList = this.patientServie.getAllCategoryIcons(
+      this.patientList
+    );
+    this.apiProcessing = true;
+    this.showspinner = false;
+    this.defaultUI = false;
+    setTimeout(() => {
+      this.table.selection.changed
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          console.log(res);
+          this.router.navigate(
+            ["out-patients", "registration", "op-registration"],
+            {
+              queryParams: { maxId: res.added[0].maxid },
+            }
+          );
+        });
+      this.table.actionItemClickTrigger.subscribe((res: any) => {
+        console.log(res);
+        if (res) {
+          if (res.item && res.data) {
+            //if else condition due to queryparam for deposite
+            if (res.item["linkid"] == 1) {
+              if (this.quickLinksRoutes[res.item["linkid"]]) {
+                this.router.navigate(
+                  [this.quickLinksRoutes[res.item["linkid"]]],
+                  {
+                    queryParams: { maxId: res.data["maxid"] },
+                  }
+                );
+              }
+            } else if (res.item["linkid"] == 6) {
+              this.matDialog.open(VisitHistoryComponent, {
+                width: "70%",
+                height: "50%",
+                data: {
+                  maxid: res.data["maxid"],
+                  docid: "",
+                },
+              });
+            } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+              this.router.navigate(
+                [this.quickLinksRoutes[res.item["linkid"]]],
+                {
+                  queryParams: { maxID: res.data["maxid"] },
+                }
+              );
+            }
+          }
+        }
+      });
+    });
+  }
+
   onageCalculator(ageDOB = "") {
     if (ageDOB) {
       let dobRef = moment(ageDOB);
@@ -339,9 +418,9 @@ export class DashboardComponent implements OnInit {
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {

@@ -628,34 +628,34 @@ export class BillComponent implements OnInit, OnDestroy {
     if (Number(this.formGroup.value.dipositAmtEdit) > 0) {
       if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
-          parseFloat(this.formGroup.value.billAmt) &&
+          parseFloat(this.formGroup.value.amtPayByPatient) &&
         parseFloat(this.formGroup.value.dipositAmt) >=
-          parseFloat(this.formGroup.value.billAmt)
+          parseFloat(this.formGroup.value.amtPayByPatient)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          parseFloat(this.formGroup.value.billAmt).toFixed(2)
+          parseFloat(this.formGroup.value.amtPayByPatient).toFixed(2)
         );
       } else if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
           parseFloat(this.formGroup.value.dipositAmt) &&
         parseFloat(this.formGroup.value.dipositAmt) >
-          parseFloat(this.formGroup.value.billAmt)
+          parseFloat(this.formGroup.value.amtPayByPatient)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          parseFloat(this.formGroup.value.billAmt).toFixed(2)
+          parseFloat(this.formGroup.value.amtPayByPatient).toFixed(2)
         );
       } else if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
-          parseFloat(this.formGroup.value.billAmt) &&
+          parseFloat(this.formGroup.value.amtPayByPatient) &&
         parseFloat(this.formGroup.value.dipositAmt) <
-          parseFloat(this.formGroup.value.billAmt)
+          parseFloat(this.formGroup.value.amtPayByPatient)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           parseFloat(this.formGroup.value.dipositAmt).toFixed(2)
         );
       } else if (
         parseFloat(this.formGroup.value.dipositAmt) <
-          parseFloat(this.formGroup.value.billAmt) &&
+          parseFloat(this.formGroup.value.amtPayByPatient) &&
         parseFloat(this.formGroup.value.dipositAmtEdit) >
           parseFloat(this.formGroup.value.dipositAmt)
       ) {
@@ -666,7 +666,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
-    } else if (this.formGroup.value.dipositAmtEdit < 0) {
+    } else if (this.formGroup.value.dipositAmtEdit <= 0) {
       this.formGroup.controls["dipositAmtEdit"].setValue("0.00");
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
@@ -865,7 +865,9 @@ export class BillComponent implements OnInit, OnDestroy {
         width: "80vw",
         height: "96vh",
         data: {
-          totalBillAmount: this.billingservice.totalCost,
+          totalBillAmount:
+            this.billingservice.totalCostWithOutGst +
+            parseFloat(this.formGroup.value.gstTax), //this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,
@@ -893,7 +895,9 @@ export class BillComponent implements OnInit, OnDestroy {
         width: "80vw",
         height: "96vh",
         data: {
-          totalBillAmount: this.billingservice.totalCost,
+          totalBillAmount:
+            this.billingservice.totalCostWithOutGst +
+            parseFloat(this.formGroup.value.gstTax), //this.billingservice.totalCost,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,
