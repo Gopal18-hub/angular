@@ -210,7 +210,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z. '']+",
+        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
         //onlyKeyPressAlpha: true,
         capitalizeText: true,
       },
@@ -459,9 +459,9 @@ export class OpRegistrationComponent implements OnInit {
       },
     },
   };
-  patientImage:any;
-  patientNoImage:any;
-  fileType!:string;
+  patientImage: any;
+  patientNoImage: any;
+  fileType!: string;
 
   saveApimessage!: string;
   OPRegForm!: FormGroup;
@@ -4614,11 +4614,10 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
         if (res && res.patientImage) {
-          this.patientImage=res.patientImage;
-          this.fileType= res.fileType;
-          this.isNoImage=false;
-        } 
-
+          this.patientImage = res.patientImage;
+          this.fileType = res.fileType;
+          this.isNoImage = false;
+        }
       });
     this.patientImageUploadClicked = false;
   }
@@ -4901,33 +4900,34 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientImageData(regNumber, iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
-        let hexString = resultData.image.replace('0x', '');
+        let hexString = resultData.image.replace("0x", "");
         this.patientImage = hexToBase64(hexString);
         this.isNoImage = false;
       });
   }
-  
-patientImageModel!:patientImageModel;
-getpatientImageObj(): patientImageModel {
-  let iacode = this.OPRegForm.value.maxid.split(".")[0];
-  let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
-  let tmp_imageStr = this.patientImage.split('data:')[1];
-  let tmp_base64 = tmp_imageStr.indexOf(';base64');
-  if (tmp_base64 != -1) {
-    this.fileType = tmp_imageStr.substring(0, tmp_base64);
-  }
-  else{
-    this.fileType ='image/png';
-  }
-  let base64Str = this.patientImage.replace('data:'+this.fileType+';base64,','');
-  let patientImage= base64ToHexa(base64Str);
-  return (this.patientImageModel = new patientImageModel(
-    regNumber,
-    iacode,
-    patientImage,
-  ));
-}
 
+  patientImageModel!: patientImageModel;
+  getpatientImageObj(): patientImageModel {
+    let iacode = this.OPRegForm.value.maxid.split(".")[0];
+    let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
+    let tmp_imageStr = this.patientImage.split("data:")[1];
+    let tmp_base64 = tmp_imageStr.indexOf(";base64");
+    if (tmp_base64 != -1) {
+      this.fileType = tmp_imageStr.substring(0, tmp_base64);
+    } else {
+      this.fileType = "image/png";
+    }
+    let base64Str = this.patientImage.replace(
+      "data:" + this.fileType + ";base64,",
+      ""
+    );
+    let patientImage = base64ToHexa(base64Str);
+    return (this.patientImageModel = new patientImageModel(
+      regNumber,
+      iacode,
+      patientImage
+    ));
+  }
 
   public savePatientImage() {
     this.http
