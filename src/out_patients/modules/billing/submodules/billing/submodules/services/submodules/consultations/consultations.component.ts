@@ -121,7 +121,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   locationId = Number(this.cookie.get("HSPLocationId"));
 
-  excludeClinicsLocations = [67, 69];
+  excludeClinicsLocations = [67, 69, 20];
   userSelectedDMG = 0;
   //GAV_1193
   autoVisitHistoryPopupLocations = [69, 8];
