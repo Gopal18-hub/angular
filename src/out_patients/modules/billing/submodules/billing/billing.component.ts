@@ -1258,6 +1258,11 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (apppatientDetails.maxId.split(".")[1] == "") {
             this.clear();
             this.snackbar.open("Invalid Max ID", "error");
+          } else if (apppatientDetails.maxId == "") {
+            this.router.navigate(["registration", "op-registration"], {
+              queryParams: { id: apppatientDetails.id },
+              queryParamsHandling: "",
+            });
           } else {
             let maxid = apppatientDetails.maxId;
             // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
