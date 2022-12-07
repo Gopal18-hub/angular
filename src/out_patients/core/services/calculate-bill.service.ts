@@ -222,7 +222,7 @@ export class CalculateBillService {
     if (this.discountSelectedItems.length > 0) {
       this.discountSelectedItems.forEach((disIt: any) => {
         if ([1, 6].includes(disIt.discTypeId)) {
-          disIt.price = this.billingServiceRef.totalCost;
+          disIt.price = this.billingServiceRef.totalCostWithOutGst;
           disIt.discAmt = (disIt.price * disIt.disc) / 100;
           disIt.totalAmt = disIt.price - disIt.discAmt;
         } else if (disIt.discTypeId == 2) {
