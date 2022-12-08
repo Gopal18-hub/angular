@@ -121,7 +121,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   locationId = Number(this.cookie.get("HSPLocationId"));
 
-  excludeClinicsLocations = [67, 69];
+  excludeClinicsLocations = [67, 69, 20];
   userSelectedDMG = 0;
   //GAV_1193
   autoVisitHistoryPopupLocations = [69, 8];
@@ -245,6 +245,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             this.formGroup.value.specialization.value
           ) {
             return of([]);
+          }
+          /////GAV-1386 - clinics
+          else if (
+            this.formGroup.value.clinics &&
+            this.formGroup.value.clinics.value
+          ) {
+            return of([]);
           } else {
             return this.http
               .get(
@@ -274,7 +281,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    if (!this.excludeClinicsLocations.includes(this.locationId)) {
+    if (this.cookie.get("VistaLive") != "2") {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
         .subscribe((res: any) => {

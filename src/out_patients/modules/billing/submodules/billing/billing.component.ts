@@ -81,6 +81,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   companyData!: GetCompanyDataInterface[];
 
   orderId: number = 0;
+  itemIds: any = "";
 
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
@@ -151,6 +152,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (params.orderid) {
         this.orderId = Number(params.orderid);
       }
+      ////GAV-1350 - added ItemId as parameter
+      if (params.itemsids) {
+        this.itemIds = params.itemsids;
+      }
     });
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
@@ -196,13 +201,15 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
+    ////GAV-1350 - added ItemId as parameter
     this.http
       .get(
         BillingApiConstants.getediganosticacdoninvestigationgrid(
           this.cookie.get("HSPLocationId"),
           this.orderId,
           regNumber,
-          iacode
+          iacode,
+          this.itemIds
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -1251,6 +1258,11 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (apppatientDetails.maxId.split(".")[1] == "") {
             this.clear();
             this.snackbar.open("Invalid Max ID", "error");
+          } else if (apppatientDetails.maxId == "") {
+            this.router.navigate(["registration", "op-registration"], {
+              queryParams: { id: apppatientDetails.id },
+              queryParamsHandling: "",
+            });
           } else {
             let maxid = apppatientDetails.maxId;
             // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;

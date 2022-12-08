@@ -30,6 +30,7 @@ export class ReasonForDueBillComponent implements OnInit {
       remarks: {
         type: "textarea",
         placeholder: "Write note",
+        required: true,
       },
       authorisedby: {
         type: "dropdown",

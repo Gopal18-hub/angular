@@ -1099,7 +1099,7 @@ export class BillingService {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
           "Do you want to pay with due amount of Rs." +
-            (toBePaid - collectedAmount) +
+            (toBePaid - collectedAmount).toFixed(2) +
             "?"
         );
         const lessAmountWarningResult = await lessAmountWarningDialog
