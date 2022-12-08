@@ -1012,7 +1012,13 @@ export class BillingComponent implements OnInit, OnDestroy {
                             value: selectedServices.selectedDoctor.clinicId,
                           }
                         );
-                      } else if ([41, 42, 43].includes(slItem.serviceid)) {
+                      }
+                      ////GAV-1423
+                      else if (
+                        [41, 42, 43, 38, 10, 52, 64, 74].includes(
+                          slItem.serviceid
+                        )
+                      ) {
                         this.billingService.processInvestigationWithOutApi(
                           1,
                           slItem.serviceid,
@@ -1106,8 +1112,8 @@ export class BillingComponent implements OnInit, OnDestroy {
               let investigationExists = false;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
-
-                if ([41, 42, 43].includes(item.serviceId)) {
+                ////GAV-1423
+                if ([41, 42, 43, 38, 10, 52, 64, 74].includes(item.serviceId)) {
                   investigationExists = true;
                   await this.billingService.processInvestigationAdd(
                     1,
@@ -1116,7 +1122,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       title: item.testName,
                       value: item.testID,
                       originalTitle: item.testName,
-                      docRequired: item.docRequired ? true : false,
+                      docRequired: item.procedureDoctor ? true : false, /////GAV-1423
                       patient_Instructions: item.patient_Instructions,
                       serviceid: item.serviceId,
                       doctorid: item.doctorid,
@@ -1134,7 +1140,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       serviceid: item.serviceId,
                       value: item.testID,
                       originalTitle: item.testName,
-                      docRequired: item.docRequired,
+                      docRequired: item.procedureDoctor, ////GAV-1423
                       popuptext: item.popuptext,
                       specializationId: item.specializationId,
                       doctorid: item.doctorid,
