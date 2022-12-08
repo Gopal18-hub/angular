@@ -151,7 +151,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
-    if (this.remainingAmount > 0) {
+    if (this.remainingAmount > 0) { 
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
         if (this.activeTab.key == "onlinepayment") {
@@ -183,8 +183,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
   ngAfterViewInit(): void {}
 
   clearTabForm(tab: any) {
-    console.log(tab);
+    console.log(tab)
     this.paymentForm[tab.key].reset();
+    this.paymentForm[tab.key].controls['price'].setValue('0.00');
   }
 
   async paymentButtonAction(button: any) {
