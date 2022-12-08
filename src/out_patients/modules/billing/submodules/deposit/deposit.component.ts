@@ -862,7 +862,7 @@ getSimilarPatientDetails() {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "65vh",
+                height: "80vh",
                 data: {
                   searchResults: this.similarContactPatientList,
                 },
