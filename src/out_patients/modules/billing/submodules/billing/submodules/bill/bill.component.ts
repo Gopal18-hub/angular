@@ -27,6 +27,7 @@ import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mai
 import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 import { timeStamp } from "console";
+import { PermissionService } from "@shared/services/permission.service";
 
 @Component({
   selector: "out-patients-bill",
@@ -71,7 +72,8 @@ export class BillComponent implements OnInit, OnDestroy {
     private snackbar: MaxHealthSnackBarService,
     public calculateBillService: CalculateBillService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private permissionservice: PermissionService
   ) {}
 
   ngOnDestroy(): void {
@@ -1189,6 +1191,10 @@ export class BillComponent implements OnInit, OnDestroy {
   }
   duplicateflag: boolean = true;
   makePrint() {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    const exist: any = accessControls[2][7][534][1430];
+    console.log(exist);
+
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
       "billingreport",

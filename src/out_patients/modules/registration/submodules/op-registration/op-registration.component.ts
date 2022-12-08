@@ -1309,6 +1309,11 @@ export class OpRegistrationComponent implements OnInit {
               }
             }
           }
+
+          ///// GAV-1430
+          setTimeout(() => {
+            this.questions[4].elementRef.focus();
+          }, 100);
         }
       });
 
@@ -2158,8 +2163,8 @@ export class OpRegistrationComponent implements OnInit {
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["pincode"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
-      this.OPRegForm.controls["state"].setErrors({'incorrect': true});
-      this.OPRegForm.controls["city"].setErrors({'incorrect': true});
+      this.OPRegForm.controls["state"].setErrors({ incorrect: true });
+      this.OPRegForm.controls["city"].setErrors({ incorrect: true });
       this.questions[21].required = false;
       this.questions[22].required = false;
       this.questions[23].required = false;
