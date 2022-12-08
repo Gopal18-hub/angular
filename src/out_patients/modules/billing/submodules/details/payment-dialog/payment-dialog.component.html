@@ -44,18 +44,20 @@
                 </div>
                 
                 <mat-tab-group class="mt-4 input-label" animationDuration="0ms" (selectedTabChange)="tabchange($event)" #mattab [(selectedIndex)]="selected">
-                    <mat-tab label="Cash">
-                        <!-- <ng-template mat-tab-label>
+                    <mat-tab >
+                        <ng-template mat-tab-label>
                         <button
+                        *ngIf="cashicon"
                         mat-icon-button
                         aria-label="close dialog"
                         class="absolute max-dialog-close-icon mt-2 mr-3"
                         type="button"
+                        (click)="$event.stopPropagation(); clearTabForm(0)"
                         >
                         <mat-icon>close</mat-icon>
                         </button>
                         Cash
-                        </ng-template> -->
+                        </ng-template>
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Cash Details</mat-label>
                             <div class="flex w-full mt-3">
@@ -72,7 +74,20 @@
                             </div>
                         </div> 
                     </mat-tab>
-                    <mat-tab label="Cheque">
+                    <mat-tab >
+                        <ng-template mat-tab-label>
+                            <button
+                            *ngIf="chequeicon"
+                            mat-icon-button
+                            aria-label="close dialog"
+                            class="absolute max-dialog-close-icon mt-2 mr-3"
+                            (click)="$event.stopPropagation(); clearTabForm(1)"
+                            type="button"
+                            >
+                            <mat-icon>close</mat-icon>
+                            </button>
+                            Cheque
+                            </ng-template>
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Cheque Details</mat-label>
                             <div class="flex w-full mt-3 flex-wrap">
@@ -160,7 +175,20 @@
                             </div> -->
                         </div>
                     </mat-tab>
-                    <mat-tab label="Credit Card">
+                    <mat-tab >
+                        <ng-template mat-tab-label>
+                            <button
+                            *ngIf="crediticon"
+                            mat-icon-button
+                            aria-label="close dialog"
+                            class="absolute max-dialog-close-icon mt-2 mr-3"
+                            (click)="$event.stopPropagation(); clearTabForm(2)"
+                            type="button"
+                            >
+                            <mat-icon>close</mat-icon>
+                            </button>
+                            Credit Card
+                            </ng-template>
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Credit Card Details</mat-label>
                             <div class="flex w-full mt-3 flex-wrap">
@@ -313,7 +341,20 @@
                             </div> 
                         </div>
                     </mat-tab>
-                    <mat-tab label="Demand Draft">
+                    <mat-tab >
+                        <ng-template mat-tab-label>
+                            <button
+                            *ngIf="demandicon"
+                            mat-icon-button
+                            aria-label="close dialog"
+                            class="absolute max-dialog-close-icon mt-2 mr-3"
+                            (click)="$event.stopPropagation(); clearTabForm(3)"
+                            type="button"
+                            >
+                            <mat-icon>close</mat-icon>
+                            </button>
+                            Demand Draft
+                            </ng-template>
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Demand Draft Details</mat-label>
                             <div class="flex w-full mt-3 flex-wrap">
@@ -401,7 +442,20 @@
                             </div> -->
                         </div>
                     </mat-tab>
-                    <mat-tab label="Online Payment">
+                    <mat-tab >
+                        <ng-template mat-tab-label>
+                            <button
+                            *ngIf="onlineicon"
+                            mat-icon-button
+                            aria-label="close dialog"
+                            class="absolute max-dialog-close-icon mt-2 mr-3"
+                            (click)="$event.stopPropagation(); clearTabForm(4)"
+                            type="button"
+                            >
+                            <mat-icon>close</mat-icon>
+                            </button>
+                            Online Payment
+                            </ng-template>
                         <div class="ml-8">
                             <mat-label class="max-health-primary-color font-base font-medium ml-2">Online Payment Details</mat-label>
                             <div class="flex w-full mt-3 flex-wrap">
