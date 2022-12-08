@@ -3047,9 +3047,6 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["pincode"].setValue(
       patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
     );
-    if (patientDetails?.ppinCode != 0) {
-      this.questions[27].readonly = true;
-    }
     this.OPRegForm.controls["state"].setValue({
       title: patientDetails?.stateName,
       value: patientDetails?.pstate,
@@ -3089,6 +3086,15 @@ export class OpRegistrationComponent implements OnInit {
     this.questions[25].readonly = true;
     this.questions[26].readonly = true;
 
+    if (patientDetails?.ppinCode != 0) {
+      this.questions[27].readonly = true;
+    }
+    else{
+      //added for make readonly as false in case there is no pincode(Foreign country) by deena
+      this.questions[24].readonly = false;
+      this.questions[25].readonly = false;
+      this.questions[26].readonly = false;
+    }
     //FOR CHECKBOX
     this.OPRegForm.controls["vip"].setValue(patientDetails?.vip);
     //FOR VIP NOTES
@@ -3218,6 +3224,7 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.OPRegForm.value.locality);
     console.log(this.OPRegForm.value.locality.value);
     console.log(this.OPRegForm.value.locality.title);
+    console.log(this.OPRegForm.value.localityTxt);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
