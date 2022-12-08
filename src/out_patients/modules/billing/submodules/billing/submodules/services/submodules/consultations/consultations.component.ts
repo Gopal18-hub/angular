@@ -281,7 +281,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    if (!this.excludeClinicsLocations.includes(this.locationId)) {
+    if (this.cookie.get("VistaLive") != "2") {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
         .subscribe((res: any) => {
