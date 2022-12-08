@@ -25,7 +25,7 @@ export namespace ApiConstants {
       "/" +
       RegistrationNo +
       "/" +
-      LocationId + 
+      LocationId +
       "?IsConsult=" +
       IsConsult
     );
@@ -37,5 +37,9 @@ export namespace ApiConstants {
     stationId: number
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/GetPosMachineMaster/${stationId}/${locationId}`;
+  };
+
+  export const getgstvistaliveflag = (locationId: number) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getgstvistaliveflag/${locationId}`;
   };
 }

@@ -32,34 +32,57 @@ export class VisitHistoryComponent implements OnInit {
       visitDate: {
         title: "Visit Date",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No.",
         type: "number",
+        style: {
+          width: "6rem",
+        },
       },
       paymentMode: {
         title: "Payment Mode",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       companyName: {
         title: "Company Billed",
         type: "string",
+        
       },
       doctorName: {
         title: "Doctor Name",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       days: {
         title: "Days",
         type: "number",
+        style: {
+          width: "4rem",
+        },
       },
       consultationType: {
-        title: "Consultation Type",
+        title: "Service Type",
         type: "string",
+        tooltipColumn: "consultationType",
+        style: {
+          width: "10rem",
+        },
       },
       amount: {
         title: "Amount",
         type: "number",
+        style: {
+          width: "6rem",
+        },
       },
     },
   };
@@ -151,12 +174,12 @@ export class VisitHistoryComponent implements OnInit {
   visitFormData = {
     title: "",
     type: "object",
-    properties: {         
-    checkbox: {
-      type: "checkbox",
-      options: [{ title: "Consultation" }],
-      defaultValue: true
-    },   
+    properties: {
+      checkbox: {
+        type: "checkbox",
+        options: [{ title: "Consultation" }],
+        defaultValue: true,
+      },
     },
   };
   visitform!: FormGroup;
@@ -187,17 +210,30 @@ export class VisitHistoryComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.visitform.controls['checkbox'].valueChanges.subscribe((res) => {
+    this.visitform.controls["checkbox"].valueChanges.subscribe((res) => {
       console.log(res);
       setTimeout(() => {
-        this.getvisithistory(this.iacode, this.regnumber, this.hspId, this.docId);
+        this.getvisithistory(
+          this.iacode,
+          this.regnumber,
+          this.hspId,
+          this.docId
+        );
       }, 100);
-    })
+    });
   }
 
   getvisithistory(iacode: any, regnumber: any, hspId: any, docid: any) {
     this.http
-      .get(ApiConstants.getpatientvisithistory(iacode, regnumber, hspId, docid, this.visitform.value.checkbox))
+      .get(
+        ApiConstants.getpatientvisithistory(
+          iacode,
+          regnumber,
+          hspId,
+          docid,
+          this.visitform.value.checkbox
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultdata) => {

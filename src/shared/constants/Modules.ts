@@ -1287,7 +1287,7 @@ export namespace MaxModules {
                     {
                       id: 34,
                       title: "Open Scroll Amount",
-                      defaultPath: "/op-ip/prompt-report/openScrollReport",
+                      defaultPath: "/op-ip/prompt-report/OpenScrollReport",
                       globalSearchKey: "global",
                       allUsersAllow: false,
                     },

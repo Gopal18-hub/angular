@@ -151,7 +151,7 @@ export class DepositComponent implements OnInit {
       mobileno: {
         type: "tel",
         title: "Mobile No.",
-        // pattern: "^[1-9]{1}[0-9]{9}",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       checkbox: {
         type: "checkbox",
@@ -537,12 +537,11 @@ export class DepositComponent implements OnInit {
         }
       }
     );
-    this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
+
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       console.log(event);
-      if (event.key === "Enter" || event.key === "Tab") {
-        //COMMENTED IN ORDER TO MOVE FOCUS TO THE NEXT BUTTON(FOR ERROR MESSAGE)
-        // event.preventDefault();
-        if(this.depositForm.value.mobileno.toString().length == 10)
+      if (event.key === "Enter") {       
+        if(this.depositForm.controls["mobileno"].valid)
         {
           this.mobilechange();
         }
@@ -553,8 +552,28 @@ export class DepositComponent implements OnInit {
         
       }
     });
+
+    this.questions[1].elementRef.addEventListener(
+      "blur",     
+      this.mobilechange.bind(this)
+    );
+
+    this.questions[1].elementRef.addEventListener(
+      "change",     
+      this.resetPhoneFlag.bind(this)
+    );
+  }
+  resetPhoneFlag() {
+    this.phoneNumberFlag = false;
   }
 
+  phoneNumberFlag: boolean = false;
+  //CLEARING OLDER PHONE SEARCH
+  onEnterPhoneModify() {
+    this.similarContactPatientList = [] as any;
+    this.mobilechange();
+    this.phoneNumberFlag = true;
+  }
   getPatientDetailsByMaxId() {
     console.log(this.depositForm.value.maxid);
     this.MaxIDExist = true;
@@ -822,83 +841,95 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["avalaibledeposit"].setValue("0.00");
   }
 
-  mobilechange() {
-    if (this.depositForm.value.mobileno.length == 10)
-      console.log("mobile changed");
-    this.matDialog.closeAll();
-    console.log(this.similarContactPatientList.length);
-    this.http
-      .post(ApiConstants.similarSoundPatientDetail, {
-        phone: this.depositForm.value.mobileno,
-      })
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData: SimilarSoundPatientResponse[]) => {
-          this.similarContactPatientList = resultData;
-          console.log(this.similarContactPatientList);
-          {
-            if (this.similarContactPatientList.length > 1) {
-              const similarSoundDialogref = this.matDialog.open(
-                SimilarPatientDialog,
-                {
-                  width: "60vw",
-                  height: "65vh",
-                  data: {
-                    searchResults: this.similarContactPatientList,
-                  },
-                }
-              );
-              similarSoundDialogref
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe(async (result) => {
-                  if (result) {
-                    this.apiProcessing = true;
-                    console.log(result.data["added"][0].maxid);
-                    let maxID = result.data["added"][0].maxid;
-                    this.iacode = maxID.split(".")[0];
-                    this.regNumber = Number(maxID.split(".")[1]);
-                    this.depositForm.controls["maxid"].setValue(maxID);
-                    const expiredStatus = await this.checkPatientExpired(
-                      this.iacode,
-                      this.regNumber
-                    );
-                    if (expiredStatus) {
-                      this.apiProcessing = false;
-                      const dialogRef = this.messageDialogService.error(
-                        "Patient is an Expired Patient!"
-                      );
-                      await dialogRef.afterClosed().toPromise();
-                      this.expiredpatientexists = true;
-                      this.questions[0].readonly = false;
-                      this.questions[0].elementRef.focus();
-                    }
-                    this.getPatientDetailsForDeposit();
-                    this.apiProcessing = false;
-                  }
-                  this.similarContactPatientList = [];
-                });
-            } else if ((this.similarContactPatientList.length = 1)) {
-              console.log(resultData);
-              let maxID = resultData[0].maxid;
-              this.depositForm.controls["maxid"].setValue(maxID);
-              this.getPatientDetailsByMaxId();
-            } else {
-              this.snackbar.open('Invalid Mobile No', 'error');
-              // this.depositForm.controls["mobile"].setErrors({
-              //   incorrect: true,
-              // });
-              // this.questions[1].customErrorMessage = "Invalid Mobile No";
+ //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
+ similarSoundListPresent(): boolean {
+  return this.similarContactPatientList.length > 0 ? true : false;
+}
 
-              console.log("no data found");
-            }
+getSimilarPatientDetails() {
+  this.matDialog.closeAll();
+  console.log(this.similarContactPatientList.length);
+  this.http
+    .post(ApiConstants.similarSoundPatientDetail, {
+      phone: this.depositForm.value.mobileno,
+    })
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
+      (resultData: SimilarSoundPatientResponse[]) => {
+        this.similarContactPatientList = resultData;         
+          if (this.similarContactPatientList.length > 1) {
+            const similarSoundDialogref = this.matDialog.open(
+              SimilarPatientDialog,
+              {
+                width: "60vw",
+                height: "80vh",
+                data: {
+                  searchResults: this.similarContactPatientList,
+                },
+              }
+            );
+            similarSoundDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(async (result) => {
+                if (result) {
+                  this.apiProcessing = true;
+                  console.log(result.data["added"][0].maxid);
+                  let maxID = result.data["added"][0].maxid;
+                  this.iacode = maxID.split(".")[0];
+                  this.regNumber = Number(maxID.split(".")[1]);
+                  this.depositForm.controls["maxid"].setValue(maxID);
+                  const expiredStatus = await this.checkPatientExpired(
+                    this.iacode,
+                    this.regNumber
+                  );
+                  if (expiredStatus) {
+                    this.apiProcessing = false;
+                    const dialogRef = this.messageDialogService.error(
+                      "Patient is an Expired Patient!"
+                    );
+                    await dialogRef.afterClosed().toPromise();
+                    this.expiredpatientexists = true;
+                    this.questions[0].readonly = false;
+                    this.questions[0].elementRef.focus();
+                  }
+                  this.getPatientDetailsForDeposit();
+                  this.apiProcessing = false;
+                }
+                this.similarContactPatientList = [];
+              });
+          } else if ((this.similarContactPatientList.length == 1)) {
+            console.log(resultData);
+            let maxID = resultData[0].maxid;
+            this.depositForm.controls["maxid"].setValue(maxID);
+            this.regNumber = Number(maxID.split(".")[1]);
+            this.iacode = maxID.split(".")[0];
+
+            this.getPatientDetailsByMaxId();
+          } else {
+            this.snackbar.open('Invalid Mobile No', 'error');
+            // this.depositForm.controls["mobile"].setErrors({
+            //   incorrect: true,
+            // });
+            // this.questions[1].customErrorMessage = "Invalid Mobile No";
+
+            console.log("no data found");
           }
-        },
-        (error) => {
-          console.log(error);
-          this.messageDialogService.info(error.error);
-        }
-      );
+      },
+      (error) => {
+        console.log(error);
+        this.messageDialogService.info(error.error);
+      }
+    );
+
+}
+
+mobilechange() {
+    if (this.depositForm.controls["mobileno"].valid &&  !this.phoneNumberFlag){
+      if (!this.similarSoundListPresent()) {
+        this.getSimilarPatientDetails();
+      }
+    }
   }
 
   printpatientreceipt() {

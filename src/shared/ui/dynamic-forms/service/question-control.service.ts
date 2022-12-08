@@ -29,7 +29,11 @@ import { CookieService } from "@shared/services/cookie.service";
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
 
-  constructor(private http: HttpService, private auth: AuthService, private cookie:CookieService) {}
+  constructor(
+    private http: HttpService,
+    private auth: AuthService,
+    private cookie: CookieService
+  ) {}
 
   processJson(
     questions: QuestionBase<any>[],
@@ -72,7 +76,7 @@ export class QuestionControlService {
       else if (question.type == "password")
         data.push(new PasswordQuestion(question));
       else if (question.type == "autocomplete")
-        data.push(new AutoCompleteQuestion(question, this.http,this.cookie));
+        data.push(new AutoCompleteQuestion(question, this.http, this.cookie));
       else if (question.type == "date") data.push(new DateQuestion(question));
       else if (question.type == "datetime")
         data.push(new DateTimeQuestion(question));
@@ -187,5 +191,16 @@ export class QuestionControlService {
         this.validateAllFormFields(control);
       }
     });
+  }
+
+  // -- date convert dd/mm/yyyy to Date Object
+  convertDateObjFormat(date: any) {
+    let initial = date.split(/\//);
+    let final = [initial[1], initial[0], initial[2]].join("/");
+    if (new Date(final) instanceof Date) {
+      return new Date(final);
+    } else {
+      return date;
+    }
   }
 }

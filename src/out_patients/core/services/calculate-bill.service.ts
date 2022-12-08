@@ -14,6 +14,7 @@ import { DisountReasonComponent } from "../../modules/billing/submodules/billing
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { SrfReasonComponent } from "@modules/billing/submodules/billing/prompts/srf-reason/srf-reason.component";
 
 @Injectable({
   providedIn: "root",
@@ -43,7 +44,7 @@ export class CalculateBillService {
 
   private readonly _destroying$ = new Subject<void>();
 
-  serviceBasedListItems: any = [];
+  serviceBasedListItems: any = {};
 
   blockActions = new Subject<boolean>();
 
@@ -74,6 +75,7 @@ export class CalculateBillService {
         questions: question,
       };
     }
+    this.serviceBasedListItems = [];
     this.billingServiceRef = billingServiceRef;
     this.billingServiceRef.billItems.forEach((item: any) => {
       if (!this.serviceBasedListItems[item.serviceName.toString()]) {
@@ -149,13 +151,58 @@ export class CalculateBillService {
   }
 
   async CheckOutSourceTest(item: any) {
-    const checkResult = await this.http
-      .post(
-        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
-        [{ id: item.itemId }]
-      )
-      .toPromise();
-    console.log(checkResult);
+    ////GAV-1355  -SRF
+    if (
+      !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID ||
+      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID == 0
+    ) {
+      const checkResult = await this.http
+        .post(
+          BillingApiConstants.checkoutsourcetest(
+            this.billingServiceRef.company
+          ),
+          [{ id: item.itemId }]
+        )
+        .toPromise()
+        .catch((error: any) => {
+          if (error.status == 200) {
+            return error.error.text;
+          }
+        });
+
+      console.log(checkResult);
+      if (checkResult && checkResult.length > 0) {
+        const infoDialog = await this.messageDialogService.confirm(
+          "",
+          "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
+        );
+
+        const infoDialogRes = await infoDialog.afterClosed().toPromise();
+        if (
+          infoDialogRes &&
+          "type" in infoDialogRes &&
+          infoDialogRes.type == "yes"
+        ) {
+          const srfDialogref = this.matDialog.open(SrfReasonComponent, {
+            width: "28vw",
+            height: "25vh",
+            disableClose: true,
+          });
+
+          let res = await srfDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .toPromise();
+
+          if (res && res.data && res.data.reason) {
+            this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
+              res.data.reason;
+          }
+        }
+      }
+    }
   }
 
   async getinteraction() {
@@ -175,18 +222,30 @@ export class CalculateBillService {
     if (this.discountSelectedItems.length > 0) {
       this.discountSelectedItems.forEach((disIt: any) => {
         if ([1, 6].includes(disIt.discTypeId)) {
-          disIt.price = this.billingServiceRef.totalCost;
+          disIt.price = this.billingServiceRef.totalCostWithOutGst;
           disIt.discAmt = (disIt.price * disIt.disc) / 100;
           disIt.totalAmt = disIt.price - disIt.discAmt;
         } else if (disIt.discTypeId == 2) {
-          const serviceItem = this.serviceBasedListItems.find(
-            (sbli: any) => sbli.name == disIt.service
-          );
+          console.log(this.serviceBasedListItems);
+          const serviceItem: any = Object.values(
+            this.serviceBasedListItems
+          ).find((sbli: any) => sbli.name == disIt.service);
+          console.log(serviceItem);
           let price = 0;
           serviceItem.items.forEach((item: any) => {
             let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
             price += item.price * quanity;
           });
+          const discAmt = (price * disIt.disc) / 100;
+          disIt.price = price;
+          disIt.discAmt = discAmt;
+          disIt.totalAmt = price - discAmt;
+        } else if (disIt.discTypeId == 3) {
+          const billItem = this.billingServiceRef.billItems.find(
+            (bItem: any) => bItem.itemId == disIt.itemId
+          );
+          let quanity = !isNaN(Number(billItem.qty)) ? billItem.qty : 1;
+          let price = billItem.price * quanity;
           const discAmt = (price * disIt.disc) / 100;
           disIt.price = price;
           disIt.discAmt = discAmt;
@@ -198,17 +257,17 @@ export class CalculateBillService {
   }
 
   applyDiscount(from: string, formGroup: any) {
+    this.billingServiceRef.billItems.forEach((item: any) => {
+      item.disc = 0;
+      item.discAmount = 0;
+      let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+      const price = item.price * quanity;
+      item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+      item.totalAmount = item.price * quanity + item.gstValue;
+      item.discountType = 0;
+      item.discountReason = 0;
+    });
     if (this.discountSelectedItems.length == 0) {
-      this.billingServiceRef.billItems.forEach((item: any) => {
-        item.disc = 0;
-        item.discAmount = 0;
-        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
-        const price = item.price * quanity;
-        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
-        item.totalAmount = item.price * quanity + item.gstValue;
-        item.discountType = 0;
-        item.discountReason = 0;
-      });
     } else {
       if (
         this.discountSelectedItems.length == 1 &&
@@ -449,7 +508,7 @@ export class CalculateBillService {
     console.log(res);
     if (res.length > 0) {
       console.log(res[0].id);
-      if ((res[0].id == 0)) {
+      if (res[0].id == 0) {
         //coupon already used message
         const CouponErrorRef = this.messageDialogService.error(
           "Coupon already used"
@@ -1159,17 +1218,14 @@ export class CalculateBillService {
 
   //#region  CGHS Beneficiary
   async checkCGHSBeneficiary() {
-    if (
-      this.billingServiceRef.patientDetailsInfo &&
-      this.billingServiceRef.patientDetailsInfo.adhaarID
-    ) {
+    if (this.billingServiceRef.patientDetailsInfo) {
       let cghsBeneficiary = await this.http
         .get(
           BillingApiConstants.checkCGHSBeneficiary(
             this.billingServiceRef.activeMaxId.iacode,
             this.billingServiceRef.activeMaxId.regNumber,
             this.billingServiceRef.company,
-            this.billingServiceRef.patientDetailsInfo.adhaarID
+            this.billingServiceRef.patientDetailsInfo.adhaarID || ""
           )
         )
         .toPromise();

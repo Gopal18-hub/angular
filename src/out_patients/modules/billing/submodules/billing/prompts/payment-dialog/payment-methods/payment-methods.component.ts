@@ -19,6 +19,11 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../../BillingApiConstant";
 import { PaymentService } from "@core/services/payment.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { MatDialog } from "@angular/material/dialog";
+import { OnlinePaymentPaidPatientComponent } from "../../online-payment-paid-patient/online-payment-paid-patient.component";
+import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
+import { BillingService } from "../../../billing.service";
+import { MaxHealthStorage } from "@shared/services/storage";
 
 @Component({
   selector: "billing-payment-methods",
@@ -55,7 +60,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private http: HttpService,
     private paymentService: PaymentService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private matdialog: MatDialog,
+    private BillingService: BillingService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -101,6 +108,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
             this.paymentForm[method].patchValue(this.config.formData[method]);
             this.tabPrices.push(this.config.formData[method].price);
             this.remainingAmount = 0;
+            this.questions.onlinepayment[1].readonly = true;
           } else {
             this.paymentForm[method].controls["price"].setValue(
               this.totalAmount
@@ -120,12 +128,19 @@ export class BillingPaymentMethodsComponent implements OnInit {
       if (this.paymentForm[method].controls["price"]) {
         this.paymentForm[method].controls["price"].valueChanges.subscribe(
           (res: any) => {
-            this.tabPrices[index] = Number(res);
-            const sum = this.tabPrices.reduce(
-              (partialSum, a) => partialSum + a,
-              0
-            );
-            this.remainingAmount = this.totalAmount - sum;
+            if (Number(res) < 0) {
+              this.messageDialogService.warning("Amount Cannot be Negative");
+              this.paymentForm[method].controls["price"].setValue(
+                Math.abs(res).toFixed(2)
+              );
+            } else {
+              this.tabPrices[index] = Number(res);
+              const sum = this.tabPrices.reduce(
+                (partialSum, a) => partialSum + a,
+                0
+              );
+              this.remainingAmount = this.totalAmount - sum;
+            }
           }
         );
       }
@@ -137,7 +152,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
-    if (this.remainingAmount > 0) {
+    if (this.remainingAmount > 0) { 
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
         if (this.activeTab.key == "onlinepayment") {
@@ -151,6 +166,11 @@ export class BillingPaymentMethodsComponent implements OnInit {
             );
           }
         } else {
+          if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
+            this.paymentForm[this.activeTab.key].controls["posimei"].setValue(
+              MaxHealthStorage.getCookie("MAXMachineName")
+            );
+          }
           this.paymentForm[this.activeTab.key].controls["price"].setValue(
             this.remainingAmount
           );
@@ -164,11 +184,64 @@ export class BillingPaymentMethodsComponent implements OnInit {
   ngAfterViewInit(): void {}
 
   clearTabForm(tab: any) {
-    console.log(tab);
+    console.log(tab)
     this.paymentForm[tab.key].reset();
+    this.paymentForm[tab.key].controls['price'].setValue('0.00');
   }
 
   async paymentButtonAction(button: any) {
+    console.log(button);
+    if (button.type == "onlinePaymentSearch") {
+      const onlinedialog = this.matdialog.open(
+        OnlinePaymentPaidPatientComponent,
+        {
+          maxWidth: "90vw",
+          height: "70vh",
+          data: {
+            maxid: this.BillingService.activeMaxId.maxId,
+            status: "Y",
+          },
+        }
+      );
+      onlinedialog.afterClosed().subscribe((res) => {
+        console.log(res);
+        if (res) {
+          console.log(this.paymentForm);
+          this.tabs.forEach((i: any) => {
+            console.log(i);
+            // this.paymentForm[i.key].reset();
+            this.paymentForm[i.key].controls['price'].setValue('0.00')
+            console.log(this.paymentForm[i.key].controls['price']);
+          })
+          this.paymentForm.onlinepayment.controls["transactionId"].setValue(
+            res.transactionNo
+          );
+          this.paymentForm.onlinepayment.controls["bookingId"].setValue(
+            res.bookingNo
+          );
+          this.questions.onlinepayment[1].readonly = true;
+          this.paymentForm.onlinepayment.controls["price"].setValue(
+            res.bookingAmount.toFixed(2)
+          );
+          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(
+            res.mobile
+          );
+          this.paymentForm.onlinepayment.controls["cardValidation"].setValue(
+            "yes"
+          );
+        }
+        console.log(this.paymentForm);
+      });
+    }
+
+    if(button.type == "onlinePaymentClear")
+    {
+      this.paymentForm.onlinepayment.reset();
+      this.questions.onlinepayment[1].readonly = false;
+      this.paymentForm.onlinepayment.controls['price'].setValue('0.00');
+      this.paymentForm.onlinepayment.controls['modeOfPayment'].setValue('Online Payment');
+    }
+    
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
     if (button.type == "uploadBillTransaction") {
@@ -176,7 +249,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
         //  this.calculateBillService.blockActions.next(true);
         let res = await this.paymentService.uploadBillTransaction(
           payloadData,
-          module
+          module,
+          this.BillingService.activeMaxId.maxId
         );
         await this.processPaymentApiResponse(button, res);
       } else {
@@ -191,7 +265,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
         // this.calculateBillService.blockActions.next(true);
         let res = await this.paymentService.getBillTransactionStatus(
           payloadData,
-          module
+          module,
+          this.BillingService.activeMaxId.maxId
         );
         await this.processPaymentApiResponse(button, res);
       } else {

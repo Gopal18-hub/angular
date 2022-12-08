@@ -306,13 +306,16 @@ export class BillingService {
   refreshPrice() {
     let subItems: any = [];
     this.billItems.forEach((item: any, index: number) => {
-      subItems.push({
-        serviceID: item.serviceId,
-        itemId: item.itemId,
-        bundleId: 0,
-        priority: item.priority,
-      });
+      if (item.serviceId != 68) {
+        subItems.push({
+          serviceID: item.serviceId,
+          itemId: item.itemId,
+          bundleId: 0,
+          priority: item.priority,
+        });
+      }
     });
+
     this.http
       .post(
         BillingApiConstants.getPriceBulk(
@@ -1096,7 +1099,7 @@ export class BillingService {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
           "Do you want to pay with due amount of Rs." +
-            (toBePaid - collectedAmount) +
+            (toBePaid - collectedAmount).toFixed(2) +
             "?"
         );
         const lessAmountWarningResult = await lessAmountWarningDialog
@@ -1480,6 +1483,7 @@ export class BillingService {
             specialisationID: investigation.specializationId || 0,
             doctorID: investigation.doctorid || 0,
             patient_Instructions: investigation.patient_Instructions,
+            profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
           },
           gstDetail: {
             gsT_value: rItem.totaltaX_Value,
@@ -1583,6 +1587,7 @@ export class BillingService {
           specialisationID: investigation.specializationId || 0,
           doctorID: investigation.doctorid || 0,
           patient_Instructions: investigation.patient_Instructions,
+          profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
         },
         gstDetail: {
           gsT_value: res[0].totaltaX_Value,
@@ -1672,6 +1677,7 @@ export class BillingService {
         specialisationID: 0,
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
+        profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
       },
       gstDetail: {},
       gstCode: {},

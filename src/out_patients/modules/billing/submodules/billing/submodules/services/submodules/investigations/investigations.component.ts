@@ -181,10 +181,23 @@ export class InvestigationsComponent implements OnInit {
         item["sno"] = index + 1;
         return item;
       });
+    ////GAV-1280  Adding Investigations with same profile
+    if ($event.data.billItem.profileId == 1) {
+      this.http
+        .get(BillingApiConstants.gettestprofileid($event.data.billItem.itemId))
+        .subscribe((res: any) => {
+          this.childItems = this.childItems.filter(
+            (c: any) => !res.includes(c)
+          );
+        });
+    }
+
     this.data = [...this.billingService.InvestigationItems];
     if (this.data.length == 0) {
       this.defaultPriorityId = 1;
       this.zeroPriceExist = false;
+      ////GAV-1280  Adding Investigations with same profile
+      this.childItems = [];
       this.billingService.changeBillTabStatus(false);
     } else if (this.data.length == 1) {
       this.defaultPriorityId = this.data[0].priority;
@@ -302,7 +315,7 @@ export class InvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
-              docRequired: r.docRequired,
+              docRequired: r.procedureDoctor, ////GAV-1423
               patient_Instructions: r.patient_Instructions,
               item_Instructions:
                 BillingStaticConstants.investigationItemBasedInstructions[
@@ -401,7 +414,7 @@ export class InvestigationsComponent implements OnInit {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
-            docRequired: r.docRequired,
+            docRequired: r.procedureDoctor, ////GAV-1423
             patient_Instructions: r.patient_Instructions,
             item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[

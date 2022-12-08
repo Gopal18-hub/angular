@@ -66,7 +66,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   setItemsToBill: any = [];
   expiredPatient = false;
   miscBillCache: any = [];
-  isenableNarration: boolean = false;
+  //isenableNarration: boolean = false;
   doCategoryIconAction(categoryIcon: any) {
     const patientDetails: any =
       this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -84,7 +84,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         bplCardNo: patientDetails.bplcardNo,
         BPLAddress: patientDetails.addressOnCard,
       },
-      hotlist: {
+      hotList: {
         hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
         reason: patientDetails.hotlistcomments,
       },
@@ -146,15 +146,6 @@ export class MiscellaneousBillingComponent implements OnInit {
       narration: {
         type: "buttonTextarea",
       },
-
-      b2bInvoiceType: {
-        type: "checkbox",
-        options: [
-          {
-            title: "B2B Invoice",
-          },
-        ],
-      },
     },
   };
 
@@ -182,14 +173,14 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
     //Enable narration for BLKH & nanavati
-    if (
-      Number(this.cookie.get("HSPLocationId")) === 67 ||
-      Number(this.cookie.get("HSPLocationId")) === 69
-    ) {
-      this.isenableNarration = true;
-    } else {
-      this.isenableNarration = false;
-    }
+    // if (
+    //   Number(this.cookie.get("HSPLocationId")) === 67 ||
+    //   Number(this.cookie.get("HSPLocationId")) === 69
+    // ) {
+    //   this.isenableNarration = true;
+    // } else {
+    //   this.isenableNarration = false;
+    // }
 
     this.getssnandmaxid();
     // this.getAllCompany();
@@ -277,17 +268,6 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.Misc.setCorporate(res, res, this.miscForm, "header");
           this.setItemsToBill.corporateId = 0;
         }
-      });
-    this.miscForm.controls["b2bInvoiceType"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value === true) {
-          this.setItemsToBill.b2bInvoiceType = "B2B";
-        } else {
-          this.setItemsToBill.b2bInvoiceType = "B2C";
-        }
-        this.Misc.setCalculateBillItems(this.setItemsToBill);
-        //this.Misc.setPatientDetail(this.patientDetail);
       });
   }
 
