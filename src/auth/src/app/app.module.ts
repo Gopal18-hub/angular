@@ -22,7 +22,7 @@ import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog"
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
-
+import { ApplicationLogicService } from "@shared/services/applogic.service";
 import { APP_BASE_HREF } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
 
@@ -55,6 +55,7 @@ import { MatIconModule } from "@angular/material/icon";
     MessageDialogService,
     SearchService,
     CookieService,
+    ApplicationLogicService,
     { provide: APP_BASE_HREF, useValue: "/" },
   ],
   bootstrap: [AppComponent],
