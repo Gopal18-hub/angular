@@ -7,9 +7,9 @@ import { StationModel } from "../../../../auth/core/models/stationmodel";
 import { LocationModel } from "../../../../auth/core/models/locationmodel";
 import { UserLocationStationdataModel } from "../../../../auth/core/models/userlocationstationdatamodel";
 import { CookieService } from "@shared/services/cookie.service";
-import { AuthService } from "@shared/services/auth.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ApplicationLogicService } from "@shared/services/applogic.service";
 
 @Component({
   selector: "out-patients-changelocation",
@@ -35,7 +35,7 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
     private formService: QuestionControlService,
     private adauth: ADAuthService,
     private cookieService: CookieService,
-    private authService: AuthService
+    private appLogicService: ApplicationLogicService
   ) {}
 
   ngOnInit(): void {
@@ -126,6 +126,7 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
             path: "/",
           });
         }
+        this.appLogicService.getGSTVistaLiveFlag();
       }
       this.dialogRef.close({ data: this.form.value });
     }

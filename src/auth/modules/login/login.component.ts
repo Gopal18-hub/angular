@@ -12,6 +12,7 @@ import { takeUntil } from "rxjs/operators";
 import { environment } from "@environments/environment";
 import { ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ApplicationLogicService } from "@shared/services/applogic.service";
 @Component({
   selector: "auth-login",
   templateUrl: "./login.component.html",
@@ -74,7 +75,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private cookie: CookieService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private appLogicService: ApplicationLogicService
   ) {}
 
   async ngOnInit() {
@@ -293,6 +295,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 "StationId",
                 this.stationdetail!.stationid.toString()
               );
+              this.appLogicService.getGSTVistaLiveFlag();
               window.location = data["redirectUrl"];
               this.Authentication = true;
             } else if (status == "InvalidUser") {

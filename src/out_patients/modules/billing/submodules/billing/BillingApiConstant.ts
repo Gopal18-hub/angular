@@ -202,9 +202,10 @@ export namespace BillingApiConstants {
     locationid: string,
     orderId: number,
     RegistrationNo: number,
-    IACode: string
+    IACode: string,
+    itemIds: any
   ) =>
-    `${environment.PatientApiUrl}api/patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
+    `${environment.PatientApiUrl}api/patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}?ItemIds=${itemIds}`;
 
   export const checkPatientSex = (
     testId: string,
