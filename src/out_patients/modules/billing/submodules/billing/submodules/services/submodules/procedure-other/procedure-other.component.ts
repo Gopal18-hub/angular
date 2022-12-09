@@ -263,8 +263,9 @@ export class ProcedureOtherComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    ////GAV-1381 - chnage in API
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }

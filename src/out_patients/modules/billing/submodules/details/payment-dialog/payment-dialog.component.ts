@@ -331,11 +331,25 @@ export class PaymentDialogComponent implements OnInit {
     //   console.log(res);
     //   this.adddueamount(res);
     // })
+    
+    this.questions[2].elementRef.addEventListener('focus', this.removezero.bind(this,this.questions[2]));
+    this.questions[3].elementRef.addEventListener('focus', this.removezero.bind(this,this.questions[3]));
+    this.questions[9].elementRef.addEventListener('focus', this.removezero.bind(this,this.questions[9]));
+    this.questions[17].elementRef.addEventListener('focus', this.removezero.bind(this,this.questions[17]));
+    this.questions[23].elementRef.addEventListener('focus', this.removezero.bind(this,this.questions[23]));
+
+    this.questions[2].elementRef.addEventListener('blur', this.adddecimal.bind(this,this.questions[2]));
+    this.questions[3].elementRef.addEventListener('blur', this.adddecimal.bind(this,this.questions[3]));
+    this.questions[9].elementRef.addEventListener('blur', this.adddecimal.bind(this,this.questions[9]));
+    this.questions[17].elementRef.addEventListener('blur', this.adddecimal.bind(this,this.questions[17]));
+    this.questions[23].elementRef.addEventListener('blur', this.adddecimal.bind(this,this.questions[23]));
+
     this.questions[2].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[3].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[9].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[17].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[23].elementRef.addEventListener('blur', this.amountcheck.bind(this));
+
     this.billingpatientidentity.patientidentityform.controls['panno'].valueChanges.subscribe(() => {
       if(this.billingpatientidentity.patientidentityform.controls['panno'].status == "VALID")
       {
@@ -348,6 +362,26 @@ export class PaymentDialogComponent implements OnInit {
     //call for submit btn disable
     // this.formvalidation();
 
+  }
+
+  removezero(question: any)
+  {
+    console.log(question);
+    if(Number(this.dueform.controls[question.key].value) == 0)
+    {
+      this.dueform.controls[question.key].setValue('');
+    }
+  }
+
+  adddecimal(question: any)
+  {
+    if(Number(this.dueform.controls[question.key].value))
+    {
+      this.dueform.controls[question.key].setValue(Number(this.dueform.controls[question.key].value).toFixed(2));
+    }
+    else{
+      this.dueform.controls[question.key].setValue('0.00');
+    }
   }
 
   formvalidation()
@@ -575,7 +609,7 @@ export class PaymentDialogComponent implements OnInit {
       }
     }
   }
-
+  
   tabchange(event: MatTabChangeEvent)
   {
     console.log(event);
@@ -616,6 +650,106 @@ export class PaymentDialogComponent implements OnInit {
       }
     }
     this.amountcheck();
+    this.crossiconcheck(event.index)
+  }
+  cashicon: boolean = false;
+  chequeicon: boolean = false;
+  crediticon: boolean = false;
+  demandicon: boolean = false;
+  onlineicon: boolean = false;
+  crossiconcheck(index: any)
+  {
+    if(Number(this.dueform.controls['cashamount'].value) > 0 && index != 0)
+    {
+      this.cashicon = true;
+    }
+    else{
+      this.cashicon = false;
+    }
+    if(Number(this.dueform.controls['chequeamount'].value) > 0 && index != 1)
+    {
+      this.chequeicon = true;
+    }
+    else{
+      this.chequeicon = false;
+    }
+    if(Number(this.dueform.controls['creditamount'].value) > 0 && index != 2)
+    {
+      this.crediticon = true;
+    }
+    else{
+      this.crediticon = false;
+    }
+    if(Number(this.dueform.controls['demandamount'].value) > 0 && index != 3)
+    {
+      this.demandicon = true;
+    }
+    else{
+      this.demandicon = false;
+    }
+    if(Number(this.dueform.controls['onlineamount'].value) > 0 && index != 4)
+    {
+      this.onlineicon = true;
+    }
+    else{
+      this.onlineicon = false;
+    }
+  }
+  clearTabForm(index: any)
+  {
+    if(index == 0)
+    {
+      this.dueform.controls['cashamount'].setValue(0.00);
+      this.amountcheck();
+      this.cashicon = false;
+    }
+    if(index == 1)
+    {
+      this.dueform.controls['chequeamount'].setValue(0.00);
+      this.dueform.controls['chequeno'].reset();
+      this.dueform.controls['chequeissuedate'].setValue(new Date());
+      this.dueform.controls['chequevalidity'].setValue(new Date());
+      this.dueform.controls['chequebankname'].setValue({title: '', value: ''});
+      this.dueform.controls['chequebranchname'].reset();
+      this.amountcheck();
+      this.chequeicon = false;
+    }
+    if(index == 2)
+    {
+      this.dueform.controls['creditamount'].setValue(0.00);
+      this.dueform.controls['creditcardno'].reset();
+      this.dueform.controls['creditcardholdername'].reset();
+      this.dueform.controls['creditbankname'].setValue({title: '', value: ''});
+      this.dueform.controls['creditbatchno'].reset();
+      this.dueform.controls['creditapprovalno'].reset();
+      this.dueform.controls['creditterminalid'].reset();
+      this.dueform.controls['creditacquiringbank'].reset();
+      this.dueform.controls['transactionid'].reset();
+      this.dueform.controls['creditvalidity'].setValue(new Date());
+      this.dueform.controls['banktid'].reset();
+      this.amountcheck();
+      this.crediticon = false;
+    }
+    if(index == 3)
+    {
+      this.dueform.controls['demandamount'].setValue(0.00);
+      this.dueform.controls['demandddno'].reset();
+      this.dueform.controls['demandissuedate'].setValue(new Date());
+      this.dueform.controls['demandvalidity'].setValue(new Date());
+      this.dueform.controls['demandbankname'].setValue({title: '', value: ''});
+      this.dueform.controls['demandbranchname'].reset();
+      this.amountcheck();
+      this.demandicon = false;
+    }
+    if(index == 4)
+    {
+      this.dueform.controls['onlineamount'].setValue(0.00);
+      this.dueform.controls['onlinetransacid'].reset();
+      this.dueform.controls['onlinebookingid'].reset();
+      this.dueform.controls['onlinecontact'].reset();
+      this.amountcheck();
+      this.onlineicon = false;
+    }
   }
   amountcheck()
   {
@@ -1088,7 +1222,6 @@ export class PaymentDialogComponent implements OnInit {
 
   onlineamtcheck()
   {
-    console.log('online check');
     if(Number(this.dueform.value.onlineamount) > 0)
       return true;
     else

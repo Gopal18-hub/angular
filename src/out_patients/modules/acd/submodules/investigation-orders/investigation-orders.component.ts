@@ -681,41 +681,38 @@ export class InvestigationOrdersComponent implements OnInit {
               "Please enter denial reason remark for order!"
             );
           } else {
-            let dialogRes;
-            const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-              width: "33vw",
-              height: "40vh",
-              data: {
-                message: "Do you want to save?",
-              },
-            });
+            const dialogref = this.messageDialogService.confirm(
+              "",
+              "Do you want to save?"
+            );
 
-            dialogref.afterClosed().subscribe((res) => {
-              // received data from dialog-component
-              dialogRes = res.data;
-              if (dialogRes === "Y") {
-                this.objPhyOrder = [];
-                this.objdtdenialorder = "";
+            dialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result.type == "yes") {
+                  this.objPhyOrder = [];
+                  this.objdtdenialorder = "";
 
-                nondeniedRow.forEach((e: any) => {
-                  this.objPhyOrder.push({
-                    acDisHideDrug: true,
-                    visitid: e.visitId,
-                    drugid: e.testID,
-                    acdRemarks: e.acdRemarks,
+                  nondeniedRow.forEach((e: any) => {
+                    this.objPhyOrder.push({
+                      acDisHideDrug: true,
+                      visitid: e.visitId,
+                      drugid: e.testID,
+                      acdRemarks: e.acdRemarks,
+                    });
                   });
-                });
 
-                this.objdtdenialorder = {
-                  denialid: this.investigationForm.value.denyorder,
-                  denialremark: this.investigationForm.value.remarks,
-                  visitid: nondeniedRow[0].visitId,
-                  nextScheduleDate: this.scheduleDate,
-                  nextflag: true,
-                };
-                this.Save();
-              }
-            });
+                  this.objdtdenialorder = {
+                    denialid: this.investigationForm.value.denyorder,
+                    denialremark: this.investigationForm.value.remarks,
+                    visitid: nondeniedRow[0].visitId,
+                    nextScheduleDate: this.scheduleDate,
+                    nextflag: true,
+                  };
+                  this.Save();
+                }
+              });
           }
         }
       } else {
@@ -769,53 +766,50 @@ export class InvestigationOrdersComponent implements OnInit {
       this.messageDialogService.error("Order is already Billed");
     } else {
       if (deniedRow.length > 0 && this.tableSelectedRows.length > 0) {
-        let dialogRes;
-        const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-          width: "33vw",
-          height: "40vh",
-          data: {
-            message: "Do you want to modify?",
-          },
-        });
-        dialogref.afterClosed().subscribe((res) => {
-          // received data from dialog-component
-          dialogRes = res.data;
-          if (dialogRes === "Y") {
-            this.physicianOrderList = [];
-            deniedRow.forEach((e: any) => {
-              if (e.testID !== 0)
-                this.physicianOrderList.push({
-                  acDisHideDrug: e.boolColumn,
-                  visitid: e.visitId,
-                  drugid: e.testID,
-                  acdRemarks: e.acdRemarks,
-                });
-            });
-            // this.http
-            //   .post(
-            //     ApiConstants.modifyphysicianorderdetail("", 9233),
-            //     this.getModifyModel()
-            //   )
-            this.http
-              .post(
-                ApiConstants.modifyphysicianorderdetail(
-                  "",
-                  Number(this.cookie.get("UserId"))
-                ),
-                this.getModifyModel()
-              )
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                if (res.success === true) {
-                  this.messageDialogService.info("Modified Successfully");
-                  this.search();
-                  this.disableBtns();
-                  //this.listRowClick(this.selectedInv);
-                  this.tableSelectedRows = [];
-                }
+        const dialogref = this.messageDialogService.confirm(
+          "",
+          "Do you want to modify?"
+        );
+        dialogref
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result.type == "yes") {
+              this.physicianOrderList = [];
+              deniedRow.forEach((e: any) => {
+                if (e.testID !== 0)
+                  this.physicianOrderList.push({
+                    acDisHideDrug: e.boolColumn,
+                    visitid: e.visitId,
+                    drugid: e.testID,
+                    acdRemarks: e.acdRemarks,
+                  });
               });
-          }
-        });
+              // this.http
+              //   .post(
+              //     ApiConstants.modifyphysicianorderdetail("", 9233),
+              //     this.getModifyModel()
+              //   )
+              this.http
+                .post(
+                  ApiConstants.modifyphysicianorderdetail(
+                    "",
+                    Number(this.cookie.get("UserId"))
+                  ),
+                  this.getModifyModel()
+                )
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  if (res.success === true) {
+                    this.messageDialogService.info("Modified Successfully");
+                    this.search();
+                    this.disableBtns();
+                    //this.listRowClick(this.selectedInv);
+                    this.tableSelectedRows = [];
+                  }
+                });
+            }
+          });
       } else {
         this.messageDialogService.error("Please select a row to proceed");
         this.tableSelectedRows = [];
@@ -833,6 +827,10 @@ export class InvestigationOrdersComponent implements OnInit {
     //   );
     //   return;
     // }
+
+    if (this.tableSelectedRows.length <= 0) {
+      this.orderid = "";
+    }
     this.tableSelectedRows.forEach((e: any) => {
       itemid.push(e.testID);
     });

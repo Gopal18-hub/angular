@@ -75,6 +75,12 @@ export class OnlineAppointmentComponent implements OnInit {
     this.itemsData = this.data.items;
   }
 
+  ngAfterViewInit(): void {
+    if(this.itemsData.length == 1)
+    {
+      this.tableRows.selection.select(this.itemsData[0]);
+    }
+  }
   close() {
     this.dialogRef.close({ selected: this.tableRows.selection.selected });
   }
