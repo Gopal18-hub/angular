@@ -40,6 +40,14 @@ export namespace BillingApiConstants {
     return `${environment.BillingApiUrl}api/outpatientbilling/getdoctorlistonSpecializationClinic/${isClinic}/${clinicSpecializationId}/${locationId}`;
   };
 
+  ////GAV-1381
+  export const getDoctorsonSpecialization = (
+    specializationId: number,
+    locationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getdoctorlistonspecialization/${specializationId}/${locationId}`;
+  };
+
   export const getinvestigationfromphysician = (
     IACode: string,
     RegistrationNo: number,
