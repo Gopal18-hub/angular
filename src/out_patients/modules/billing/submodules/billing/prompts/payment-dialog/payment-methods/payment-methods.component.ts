@@ -38,7 +38,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
   questions: any = {};
   today: any;
 
-  totalAmount = 0;
+  totalAmount:any = 0;
   // //GAV-530 Paid Online appointment
   onlinePaidAmount = 0;
   isOnlinePaidAppointment = false;
@@ -139,7 +139,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
                 (partialSum, a) => partialSum + a,
                 0
               );
-              this.remainingAmount = this.totalAmount - sum;
+              this.remainingAmount = parseFloat(this.totalAmount) - sum;
             }
           }
         );
@@ -152,7 +152,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
-    if (this.remainingAmount > 0) {
+    if (this.remainingAmount > 0) { 
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
         if (this.activeTab.key == "onlinepayment") {
@@ -184,8 +184,23 @@ export class BillingPaymentMethodsComponent implements OnInit {
   ngAfterViewInit(): void {}
 
   clearTabForm(tab: any) {
-    console.log(tab);
+    console.log(tab)
     this.paymentForm[tab.key].reset();
+    this.paymentForm[tab.key].controls['price'].setValue('0.00');
+    let existingPrice:any=0
+    this.tabs.forEach((tabValue:any, tabIndex:any) => {
+      if(this.paymentForm[tabValue.key].controls.price.value && this.paymentForm[tabValue.key].controls.price.value>0 && tabValue.key!=this.activeTab.key){
+        existingPrice=parseFloat(existingPrice)+
+        parseFloat( this.paymentForm[tabValue.key].controls.price.value);
+      }
+    });
+    this.remainingAmount=(parseFloat(this.totalAmount)-parseFloat(existingPrice))
+    
+   if(this.remainingAmount>0){
+    this.paymentForm[this.activeTab.key].controls["price"].setValue(
+      this.remainingAmount
+    );
+   }
   }
 
   async paymentButtonAction(button: any) {
@@ -208,7 +223,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
           console.log(this.paymentForm);
           this.tabs.forEach((i: any) => {
             console.log(i);
-            this.paymentForm[i.key].reset();
+            // this.paymentForm[i.key].reset();
             this.paymentForm[i.key].controls['price'].setValue('0.00')
             console.log(this.paymentForm[i.key].controls['price']);
           })
@@ -238,6 +253,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
       this.paymentForm.onlinepayment.reset();
       this.questions.onlinepayment[1].readonly = false;
       this.paymentForm.onlinepayment.controls['price'].setValue('0.00');
+      this.paymentForm.onlinepayment.controls['modeOfPayment'].setValue('Online Payment');
     }
     
     const payloadData = this.paymentForm[button.paymentKey].value;

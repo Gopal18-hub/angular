@@ -81,6 +81,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   companyData!: GetCompanyDataInterface[];
 
   orderId: number = 0;
+  itemIds: any = "";
 
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
@@ -151,6 +152,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (params.orderid) {
         this.orderId = Number(params.orderid);
       }
+      ////GAV-1350 - added ItemId as parameter
+      if (params.itemsids) {
+        this.itemIds = params.itemsids;
+      }
     });
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
@@ -196,13 +201,15 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
+    ////GAV-1350 - added ItemId as parameter
     this.http
       .get(
         BillingApiConstants.getediganosticacdoninvestigationgrid(
           this.cookie.get("HSPLocationId"),
           this.orderId,
           regNumber,
-          iacode
+          iacode,
+          this.itemIds
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -1005,7 +1012,13 @@ export class BillingComponent implements OnInit, OnDestroy {
                             value: selectedServices.selectedDoctor.clinicId,
                           }
                         );
-                      } else if ([41, 42, 43].includes(slItem.serviceid)) {
+                      }
+                      ////GAV-1423
+                      else if (
+                        [41, 42, 43, 38, 10, 52, 64, 74].includes(
+                          slItem.serviceid
+                        )
+                      ) {
                         this.billingService.processInvestigationWithOutApi(
                           1,
                           slItem.serviceid,
@@ -1099,8 +1112,8 @@ export class BillingComponent implements OnInit, OnDestroy {
               let investigationExists = false;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
-
-                if ([41, 42, 43].includes(item.serviceId)) {
+                ////GAV-1423
+                if ([41, 42, 43, 38, 10, 52, 64, 74].includes(item.serviceId)) {
                   investigationExists = true;
                   await this.billingService.processInvestigationAdd(
                     1,
@@ -1109,7 +1122,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       title: item.testName,
                       value: item.testID,
                       originalTitle: item.testName,
-                      docRequired: item.docRequired ? true : false,
+                      docRequired: item.procedureDoctor ? true : false, /////GAV-1423
                       patient_Instructions: item.patient_Instructions,
                       serviceid: item.serviceId,
                       doctorid: item.doctorid,
@@ -1127,7 +1140,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       serviceid: item.serviceId,
                       value: item.testID,
                       originalTitle: item.testName,
-                      docRequired: item.docRequired,
+                      docRequired: item.procedureDoctor, ////GAV-1423
                       popuptext: item.popuptext,
                       specializationId: item.specializationId,
                       doctorid: item.doctorid,
@@ -1251,6 +1264,11 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (apppatientDetails.maxId.split(".")[1] == "") {
             this.clear();
             this.snackbar.open("Invalid Max ID", "error");
+          } else if (apppatientDetails.maxId == "") {
+            this.router.navigate(["registration", "op-registration"], {
+              queryParams: { id: apppatientDetails.id },
+              queryParamsHandling: "",
+            });
           } else {
             let maxid = apppatientDetails.maxId;
             // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;

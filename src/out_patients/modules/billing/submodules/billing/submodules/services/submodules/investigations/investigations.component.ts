@@ -315,7 +315,7 @@ export class InvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
-              docRequired: r.docRequired,
+              docRequired: r.procedureDoctor, ////GAV-1423
               patient_Instructions: r.patient_Instructions,
               item_Instructions:
                 BillingStaticConstants.investigationItemBasedInstructions[
@@ -414,7 +414,7 @@ export class InvestigationsComponent implements OnInit {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
-            docRequired: r.docRequired,
+            docRequired: r.procedureDoctor, ////GAV-1423
             patient_Instructions: r.patient_Instructions,
             item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[
