@@ -350,4 +350,28 @@ export namespace CrystalReport {
       "HSPLocationId"
     )}&User=${MaxHealthStorage.getCookie("UserName")}`;
   };
+
+  export const ComplexCareReport=(params:any)=>{
+
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/Billing/ComplexcareReport/ComplexCareReport?maxid=${
+      params.maxid
+    }&locationID=${
+      params.locationID
+    }&firstname=${
+      params.firstName
+    }&lastname=${
+      params.lastName
+    }&age=${
+      params.age
+    }&cmbyear=${
+      params.cmbyear
+    }&cmbsex=${
+      params.cmbsex
+    }&txtregid=${
+      params.regid
+    }`
+
+  }
 }

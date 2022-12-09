@@ -97,6 +97,8 @@ export class BillingService {
   dtCheckedItem: any = [];
   txtOtherGroupDoc: any = "";
   dtFinalGrpDoc: any = {};
+
+  channelDetail: any = [];
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -900,6 +902,10 @@ export class BillingService {
 
   getconfigurationservice() {
     return this.configurationservice;
+  }
+  setPatientChannelDetail(channeldetail: any)
+  {
+    this.channelDetail = channeldetail;
   }
 
   setPatientDetails(patientdetails: any) {

@@ -383,4 +383,12 @@ export namespace BillingApiConstants {
   export const updateopprintbillduplicate = (OPBillID: number) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/updateopprintbillduplicate/${OPBillID}`;
   };
+
+  export const fectchpatientiscomplexcare = (
+    Iacode: string,
+    RegistrationNo: number,
+    HsplocationId: number  
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/fectchpatientiscomplexcare/${Iacode}/${RegistrationNo}/${HsplocationId}`;
+  }
 }
