@@ -375,8 +375,9 @@ export class InvestigationsComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    ////GAV-1381 -
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }

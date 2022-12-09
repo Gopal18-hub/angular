@@ -225,7 +225,41 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     });
   }
+  clearCoPay(){
+   
+    if(this.formGroup.controls["coPay"].value==0){
+      this.formGroup.controls["coPay"].setValue('')
+    }
+  }
 
+  unClearCoPay(){
+    
+    if(this.formGroup.controls["coPay"].value==''){
+      this.formGroup.controls["coPay"].setValue('0')
+    }
+  }
+  clearCredit(){
+    
+    if(this.formGroup.controls["credLimit"].value==0){
+      this.formGroup.controls["credLimit"].setValue('')
+    }
+  }
+  unClearCredit(){
+    if(this.formGroup.controls["credLimit"].value==''){
+      this.formGroup.controls["credLimit"].setValue('0')
+    }
+  }
+  clearDis(){
+    
+    if(this.formGroup.controls["dipositAmtEdit"].value==0){
+      this.formGroup.controls["dipositAmtEdit"].setValue('')
+    }
+  }
+  unClearDis(){
+    if(this.formGroup.controls["dipositAmtEdit"].value==''){
+      this.formGroup.controls["dipositAmtEdit"].setValue('0')
+    }
+  }
   rowRwmove($event: any) {
     this.billingservice.deleteFromService(
       this.billingservice.billItems[$event.index]
@@ -243,6 +277,7 @@ export class BillComponent implements OnInit, OnDestroy {
     );
 
     this.refreshTable();
+    this.resetDiscount();
     this.refreshForm();
   }
 
@@ -551,10 +586,15 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
+    /////GAV-1427
+    this.billingservice.makeBillPayload.tab_o_opDiscount = [];
     this.billTypeChange(this.formGroup.value.paymentMode);
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
+    this.formGroup.controls["discAmtCheck"].setValue(false, {
+      emitEvent: false,
+    });
     this.applyCreditLimit();
   }
 
