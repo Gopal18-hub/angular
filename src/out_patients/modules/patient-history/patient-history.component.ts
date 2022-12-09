@@ -23,7 +23,11 @@ import { SimilarPatientDialog } from "@modules/registration/submodules/op-regist
 import { ActivatedRoute, Router } from "@angular/router";
 import { LookupService } from "@core/services/lookup.service";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
-import { MaxHealthSnackBar, MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import {
+  MaxHealthSnackBar,
+  MaxHealthSnackBarService,
+} from "@shared/ui/snack-bar";
+import { PermissionService } from "@shared/services/permission.service";
 @Component({
   selector: "out-patients-patient-history",
   templateUrl: "./patient-history.component.html",
@@ -184,7 +188,7 @@ export class PatientHistoryComponent implements OnInit {
       },
     },
   };
-  
+
   pname: any;
   age: any;
   gender: any;
@@ -219,6 +223,7 @@ export class PatientHistoryComponent implements OnInit {
     private route: ActivatedRoute,
     private lookupService: LookupService,
     private snackbar: MaxHealthSnackBarService,
+    private permissionservice: PermissionService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -367,9 +372,8 @@ export class PatientHistoryComponent implements OnInit {
         var digit = this.patienthistoryform.value.mobile.toString().length;
         if (digit == 10) {
           this.mobilechange();
-        }
-        else{
-          this.snackbar.open("Invalid Mobile No",'error');
+        } else {
+          this.snackbar.open("Invalid Mobile No", "error");
         }
       }
     });
@@ -472,7 +476,7 @@ export class PatientHistoryComponent implements OnInit {
                 });
             } else {
               this.apiProcessing = false;
-              this.snackbar.open("Invalid Mobile No", 'error');
+              this.snackbar.open("Invalid Mobile No", "error");
               console.log("no data found");
             }
           }
@@ -480,7 +484,7 @@ export class PatientHistoryComponent implements OnInit {
         (error) => {
           console.log(error);
           this.apiProcessing = false;
-          this.snackbar.open(error.error, 'error');
+          this.snackbar.open(error.error, "error");
           // this.msgdialog.info(error.error);
         }
       );
@@ -491,72 +495,68 @@ export class PatientHistoryComponent implements OnInit {
     this.clearbtn = false;
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
     let iacode = this.patienthistoryform.value.maxid.split(".")[0];
-    if(regnumber)
-    {
+    if (regnumber) {
       this.http
-      .get(ApiConstants.getregisteredpatientdetails(iacode, regnumber))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData: getRegisteredPatientDetailsModel[]) => {
-          console.log(resultData);
-          if (resultData == null) {
-            this.snackbar.open('Registration number does not exist', 'error');
-            // this.msgdialog.info("Registration number does not exist");
+        .get(ApiConstants.getregisteredpatientdetails(iacode, regnumber))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: getRegisteredPatientDetailsModel[]) => {
+            console.log(resultData);
+            if (resultData == null) {
+              this.snackbar.open("Registration number does not exist", "error");
+              // this.msgdialog.info("Registration number does not exist");
+              this.apiProcessing = false;
+              this.showtable = true;
+            } else if (resultData.length == 0) {
+              this.snackbar.open("Registration number does not exist", "error");
+              // this.msgdialog.info("Registration number does not exist");
+              this.apiProcessing = false;
+              this.showtable = true;
+            } else {
+              this.patientDetails = resultData;
+              this.pname =
+                this.patientDetails[0].firstName +
+                " " +
+                this.patientDetails[0].middleName +
+                " " +
+                this.patientDetails[0].lastName;
+              this.age =
+                this.patientDetails[0].age +
+                " " +
+                this.patientDetails[0].ageTypeName;
+              this.gender = this.patientDetails[0].genderName;
+              this.dob = this.datepipe.transform(
+                this.patientDetails[0].dateOfBirth,
+                "dd/MM/YYYY"
+              );
+              this.nationality = this.patientDetails[0].nationality;
+              this.ssn = this.patientDetails[0].ssn;
+              this.patienthistoryform.controls["mobile"].setValue(
+                this.patientDetails[0].mobileNo
+              );
+              this.questions[0].readonly = true;
+              this.searchbtn = false;
+              this.apiProcessing = false;
+              this.showtable = true;
+              this.patienthistorysearch();
+            }
+          },
+          (error) => {
+            console.log(error);
+            // this.patienthistoryform.controls["maxid"].setErrors({
+            //   incorrect: true,
+            // });
+            // this.questions[0].customErrorMessage = "Invalid MaxID";
+            this.snackbar.open("Registration number does not exist", "error");
             this.apiProcessing = false;
             this.showtable = true;
-          } else if (resultData.length == 0) {
-            this.snackbar.open('Registration number does not exist', 'error');
-            // this.msgdialog.info("Registration number does not exist");
-            this.apiProcessing = false;
-            this.showtable = true;
-          } else {
-            this.patientDetails = resultData;
-            this.pname =
-              this.patientDetails[0].firstName +
-              " " +
-              this.patientDetails[0].middleName +
-              " " +
-              this.patientDetails[0].lastName;
-            this.age =
-              this.patientDetails[0].age +
-              " " +
-              this.patientDetails[0].ageTypeName;
-            this.gender = this.patientDetails[0].genderName;
-            this.dob = this.datepipe.transform(
-              this.patientDetails[0].dateOfBirth,
-              "dd/MM/YYYY"
-            );
-            this.nationality = this.patientDetails[0].nationality;
-            this.ssn = this.patientDetails[0].ssn;
-            this.patienthistoryform.controls["mobile"].setValue(
-              this.patientDetails[0].mobileNo
-            );
-            this.questions[0].readonly = true;
-            this.searchbtn = false;
-            this.apiProcessing = false;
-            this.showtable = true;
-            this.patienthistorysearch();
           }
-        },
-        (error) => {
-          console.log(error);
-          // this.patienthistoryform.controls["maxid"].setErrors({
-          //   incorrect: true,
-          // });
-          // this.questions[0].customErrorMessage = "Invalid MaxID";
-          this.snackbar.open('Registration number does not exist', 'error');
-          this.apiProcessing = false;
-          this.showtable = true;
-        }
-      );
-    }
-    else
-    {
-      this.snackbar.open("Invalid Max ID", 'error');
+        );
+    } else {
+      this.snackbar.open("Invalid Max ID", "error");
       this.apiProcessing = false;
       this.showtable = true;
     }
-    
   }
 
   patienthistorysearch() {
@@ -722,21 +722,29 @@ export class PatientHistoryComponent implements OnInit {
 
   openReportModal(btnname: string) {
     if (btnname == "DepositReport") {
+      const accessControls: any = this.permissionservice.getAccessControls();
+      const exist: any = accessControls[2][7][534][1436];
+      console.log(exist);
       this.reportService.openWindow(
         "Deposit Report - " + this.billno,
         btnname,
         {
           receiptnumber: this.receiptno,
           locationID: this.hsplocationId,
+          exportflagEnable: exist,
         }
       );
     } else if (btnname == "rptRefund") {
+      const accessControls: any = this.permissionservice.getAccessControls();
+      const exist: any = accessControls[2][7][534][1436];
+      console.log(exist);
       this.reportService.openWindow(
         "Deposit Refund Report - " + this.billno,
         btnname,
         {
           receiptno: this.billno,
           locationID: this.hsplocationId,
+          exportflagEnable: exist,
         }
       );
     } else if (btnname == "billdetailsreport") {
