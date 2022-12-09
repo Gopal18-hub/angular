@@ -207,11 +207,10 @@ export class OpRegistrationComponent implements OnInit {
         options: this.titleList,
       },
       firstName: {
-        type: "string",
+        type: "pattern_string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
-        //onlyKeyPressAlpha: true,
+        pattern: "^[a-zA-Z0-9 .]*$",
         capitalizeText: true,
       },
       middleName: {
@@ -2158,8 +2157,8 @@ export class OpRegistrationComponent implements OnInit {
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["pincode"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
-      this.OPRegForm.controls["state"].setErrors({'incorrect': true});
-      this.OPRegForm.controls["city"].setErrors({'incorrect': true});
+      this.OPRegForm.controls["state"].setErrors({ incorrect: true });
+      this.OPRegForm.controls["city"].setErrors({ incorrect: true });
       this.questions[21].required = false;
       this.questions[22].required = false;
       this.questions[23].required = false;

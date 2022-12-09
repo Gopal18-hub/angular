@@ -25,6 +25,8 @@ import { TelQuestion } from "../types/question-tel";
 import { DateTimeQuestion } from "../types/question-datetime";
 import { CurrencyQuestion } from "../types/question-currency";
 import { CookieService } from "@shared/services/cookie.service";
+import { PatternStringQuestion } from "../types/question-pattern-string";
+
 @Injectable()
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
@@ -50,6 +52,8 @@ export class QuestionControlService {
 
       if (question.type == "dropdown")
         data.push(new DropdownQuestion(question, this.http));
+      else if (question.type == "pattern_string")
+        data.push(new PatternStringQuestion(question));
       else if (question.type == "string")
         data.push(new TextboxQuestion(question));
       else if (question.type == "tel") data.push(new TelQuestion(question));
