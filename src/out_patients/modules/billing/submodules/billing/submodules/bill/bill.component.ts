@@ -225,7 +225,41 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     });
   }
+  clearCoPay(){
+   
+    if(this.formGroup.controls["coPay"].value==0){
+      this.formGroup.controls["coPay"].setValue('')
+    }
+  }
 
+  unClearCoPay(){
+    
+    if(this.formGroup.controls["coPay"].value==''){
+      this.formGroup.controls["coPay"].setValue('0')
+    }
+  }
+  clearCredit(){
+    
+    if(this.formGroup.controls["credLimit"].value==0){
+      this.formGroup.controls["credLimit"].setValue('')
+    }
+  }
+  unClearCredit(){
+    if(this.formGroup.controls["credLimit"].value==''){
+      this.formGroup.controls["credLimit"].setValue('0')
+    }
+  }
+  clearDis(){
+    
+    if(this.formGroup.controls["dipositAmtEdit"].value==0){
+      this.formGroup.controls["dipositAmtEdit"].setValue('')
+    }
+  }
+  unClearDis(){
+    if(this.formGroup.controls["dipositAmtEdit"].value==''){
+      this.formGroup.controls["dipositAmtEdit"].setValue('0')
+    }
+  }
   rowRwmove($event: any) {
     this.billingservice.deleteFromService(
       this.billingservice.billItems[$event.index]
