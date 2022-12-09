@@ -1014,6 +1014,7 @@ export class OpRegistrationComponent implements OnInit {
             this.disttList = [];
             this.localityList = [];
             this.OPRegForm.controls["pincode"].setErrors(null);
+            this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
@@ -1078,6 +1079,7 @@ export class OpRegistrationComponent implements OnInit {
           // this.OPRegForm.controls["city"].setErrors(null);
           // this.OPRegForm.controls["state"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["locality"].setErrors(null);
 
           this.questions[21].required = false;
           this.questions[22].required = false;
@@ -1106,6 +1108,7 @@ export class OpRegistrationComponent implements OnInit {
         if (this.OPRegForm.value.country.value != 1) {
           this.OPRegForm.controls["pincode"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["locality"].setErrors(null);
           this.questions[21].required = false;
           this.questions[22].required = false;
           this.questions[23].required = false;
@@ -1150,6 +1153,7 @@ export class OpRegistrationComponent implements OnInit {
                 if (this.OPRegForm.value.country.value != 1) {
                   this.OPRegForm.controls["pincode"].setErrors(null);
                   this.OPRegForm.controls["district"].setErrors(null);
+                  this.OPRegForm.controls["locality"].setErrors(null);
                   this.questions[21].required = false;
                   this.questions[22].required = false;
                   this.questions[23].required = false;
@@ -1171,6 +1175,7 @@ export class OpRegistrationComponent implements OnInit {
           if (this.OPRegForm.value.country.value != 1) {
             this.OPRegForm.controls["pincode"].setErrors(null);
             this.OPRegForm.controls["district"].setErrors(null);
+            this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
@@ -1188,18 +1193,6 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(async (value: any) => {
         if (!this.maxIDChangeCall && this.countrybasedflow) {
           this.OPRegForm.controls["pincode"].setValue("");
-        }
-        if (this.OPRegForm.value.country.value != 1) {
-          this.OPRegForm.controls["pincode"].setErrors(null);
-          this.OPRegForm.controls["district"].setErrors(null);
-
-          this.questions[21].required = false;
-          this.questions[22].required = false;
-          this.questions[23].required = false;
-          this.questions[24].required = true;
-          this.questions[25].required = false;
-          this.questions[26].required = true;
-          this.questions = { ...this.questions };
         }
         if (
           (this.OPRegForm.value.pincode == "" ||
@@ -1272,6 +1265,19 @@ export class OpRegistrationComponent implements OnInit {
             this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[22].customErrorMessage = "";
           }
+        }
+
+        if (this.OPRegForm.value.country.value != 1) {
+          this.OPRegForm.controls["pincode"].setErrors(null);
+          this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.questions[21].required = false;
+          this.questions[22].required = false;
+          this.questions[23].required = false;
+          this.questions[24].required = true;
+          this.questions[25].required = false;
+          this.questions[26].required = true;
+          this.questions = { ...this.questions };
         }
         console.log(this.OPRegForm);
       });
@@ -2119,6 +2125,7 @@ export class OpRegistrationComponent implements OnInit {
     }
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["district"].setErrors(null);
+      this.OPRegForm.controls["locality"].setErrors(null);
       this.questions[21].required = false;
       this.questions[22].required = false;
       this.questions[23].required = false;
@@ -2162,6 +2169,7 @@ export class OpRegistrationComponent implements OnInit {
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["pincode"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
+      this.OPRegForm.controls["locality"].setErrors(null);
       this.OPRegForm.controls["state"].setErrors({ incorrect: true });
       this.OPRegForm.controls["city"].setErrors({ incorrect: true });
       this.questions[21].required = false;
@@ -3288,10 +3296,10 @@ export class OpRegistrationComponent implements OnInit {
           ? this.OPRegForm.value.locality
             ? this.OPRegForm.value.locality
             : ""
-          : ""
+          : this.OPRegForm.value.locality
         : this.OPRegForm.value.locality.title == undefined ||
           this.OPRegForm.value.locality.title == ""
-        ? this.OPRegForm.value.locality.title || ""
+        ? this.OPRegForm.value.locality.title || this.OPRegForm.value.localityTxt
         : this.OPRegForm.value.locality.title,
       this.OPRegForm.value.sourceOfInput == null ||
       this.OPRegForm.value.sourceOfInput == undefined
