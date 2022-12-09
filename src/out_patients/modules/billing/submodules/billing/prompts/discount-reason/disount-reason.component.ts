@@ -188,7 +188,7 @@ export class DisountReasonComponent implements OnInit {
   @ViewChild("table") tableRows: any;
 
   dualList: any = [];
-  reasontitle: any = '';
+  reasontitle: any = "";
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -370,10 +370,8 @@ export class DisountReasonComponent implements OnInit {
             this.discAmtForm.controls["empCode"].setValue(res.data);
           });
         }
-      }
-      else
-      {
-        this.reasontitle = '';
+      } else {
+        this.reasontitle = "";
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {
@@ -389,6 +387,14 @@ export class DisountReasonComponent implements OnInit {
         this.discAmtFormConfig = { ...this.discAmtFormConfig };
       }
     });
+
+    ///GAV-1348- for reopening popup without clearing data
+    if (this.discAmtForm.value.amt) {
+      this.question[4].elementRef.focus();
+      if (this.discAmtForm.value.reason) {
+      }
+      this.question[4].readonly = false;
+    }
   }
 
   rowRwmove($event: any) {

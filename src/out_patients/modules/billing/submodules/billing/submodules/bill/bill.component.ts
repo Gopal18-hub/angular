@@ -585,6 +585,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
+    /////GAV-1427
+    this.billingservice.makeBillPayload.tab_o_opDiscount = [];
     this.billTypeChange(this.formGroup.value.paymentMode);
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
