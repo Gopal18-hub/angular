@@ -29,6 +29,8 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { A11yModule } from "@angular/cdk/a11y";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
+import { SpecialCharacterDirective } from "../../utilities/directives/specialChracter.directive";
+
 import {
   NgxMatDatetimePickerModule,
   NgxMatNativeDateModule,
@@ -61,6 +63,7 @@ import {
     DynamicFormQuestionComponent,
     OptionGroupComponent,
     MaskedInputDirective,
+    SpecialCharacterDirective,
   ],
   providers: [
     { provide: DateAdapter, useClass: MaxDateAdapter },

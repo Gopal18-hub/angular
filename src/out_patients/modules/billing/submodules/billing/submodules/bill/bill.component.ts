@@ -243,6 +243,7 @@ export class BillComponent implements OnInit, OnDestroy {
     );
 
     this.refreshTable();
+    this.resetDiscount();
     this.refreshForm();
   }
 
@@ -557,6 +558,9 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
+    this.formGroup.controls["discAmtCheck"].setValue(false, {
+      emitEvent: false,
+    });
     this.applyCreditLimit();
   }
 
