@@ -38,7 +38,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
   questions: any = {};
   today: any;
 
-  totalAmount = 0;
+  totalAmount:any = 0;
   // //GAV-530 Paid Online appointment
   onlinePaidAmount = 0;
   isOnlinePaidAppointment = false;
@@ -139,7 +139,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
                 (partialSum, a) => partialSum + a,
                 0
               );
-              this.remainingAmount = this.totalAmount - sum;
+              this.remainingAmount = parseFloat(this.totalAmount) - sum;
             }
           }
         );
@@ -187,6 +187,20 @@ export class BillingPaymentMethodsComponent implements OnInit {
     console.log(tab)
     this.paymentForm[tab.key].reset();
     this.paymentForm[tab.key].controls['price'].setValue('0.00');
+    let existingPrice:any=0
+    this.tabs.forEach((tabValue:any, tabIndex:any) => {
+      if(this.paymentForm[tabValue.key].controls.price.value && this.paymentForm[tabValue.key].controls.price.value>0 && tabValue.key!=this.activeTab.key){
+        existingPrice=parseFloat(existingPrice)+
+        parseFloat( this.paymentForm[tabValue.key].controls.price.value);
+      }
+    });
+    this.remainingAmount=(parseFloat(this.totalAmount)-parseFloat(existingPrice))
+    
+   if(this.remainingAmount>0){
+    this.paymentForm[this.activeTab.key].controls["price"].setValue(
+      this.remainingAmount
+    );
+   }
   }
 
   async paymentButtonAction(button: any) {
