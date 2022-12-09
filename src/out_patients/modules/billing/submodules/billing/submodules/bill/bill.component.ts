@@ -988,6 +988,10 @@ export class BillComponent implements OnInit, OnDestroy {
         consumablespopup.afterClosed().subscribe(async (result: any) => {
           console.log(result);
           if (result.type == "yes") {
+            const accessControls: any =
+              this.permissionservice.getAccessControls();
+            const exist: any = accessControls[2][7][534][1436];
+            console.log(exist);
             this.reportService.openWindow(
               "Consumable Entry details Report - " + this.billNo,
               "ConsumabaleEntryDetailsReport",
@@ -995,6 +999,7 @@ export class BillComponent implements OnInit, OnDestroy {
                 billno: this.billingservice.billNo,
                 locationID: this.cookie.get("HSPLocationId"),
                 MAXID: this.billingservice.activeMaxId.maxId,
+                exportflagEnable: exist,
               }
             );
             this.mailapicheck();
