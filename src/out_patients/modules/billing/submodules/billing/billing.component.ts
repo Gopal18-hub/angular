@@ -140,23 +140,25 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
 
-    this.route.queryParams.subscribe((params: any) => {
-      if (params.maxId) {
-        this.formGroup.controls["maxid"].setValue(params.maxId);
-        this.apiProcessing = true;
-        this.patient = false;
-        this.getAllCompany();
-        this.getAllCorporate();
-        this.getPatientDetailsByMaxId();
-      }
-      if (params.orderid) {
-        this.orderId = Number(params.orderid);
-      }
-      ////GAV-1350 - added ItemId as parameter
-      if (params.itemsids) {
-        this.itemIds = params.itemsids;
-      }
-    });
+    this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((params: any) => {
+        if (params.maxId) {
+          this.formGroup.controls["maxid"].setValue(params.maxId);
+          this.apiProcessing = true;
+          this.patient = false;
+          this.getAllCompany();
+          this.getAllCorporate();
+          this.getPatientDetailsByMaxId();
+        }
+        if (params.orderid) {
+          this.orderId = Number(params.orderid);
+        }
+        ////GAV-1350 - added ItemId as parameter
+        if (params.itemsids) {
+          this.itemIds = params.itemsids;
+        }
+      });
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
@@ -546,6 +548,10 @@ export class BillingComponent implements OnInit, OnDestroy {
               this.billingService.setPatientDetails(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
               );
+
+              this.billingService.setPatientChannelDetail(
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]
+              )
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatientAny(
                   this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
