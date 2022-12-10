@@ -328,7 +328,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
             let bankId = 0;
 
             let bank = this.bankList.filter((r: any) =>
-              r.title.search(res.pineLabReturnResponse.ccResAcquirerName)
+              r.title.includes(res.pineLabReturnResponse.ccResAcquirerName)
             );
             // if (bank && bank.length > 0) {
             //   bankId = bank[0].value;
