@@ -38,7 +38,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
   questions: any = {};
   today: any;
 
-  totalAmount:any = 0;
+  totalAmount: any = 0;
   // //GAV-530 Paid Online appointment
   onlinePaidAmount = 0;
   isOnlinePaidAppointment = false;
@@ -152,7 +152,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
-    if (this.remainingAmount > 0) { 
+    if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
         if (this.activeTab.key == "onlinepayment") {
@@ -184,23 +184,29 @@ export class BillingPaymentMethodsComponent implements OnInit {
   ngAfterViewInit(): void {}
 
   clearTabForm(tab: any) {
-    console.log(tab)
+    console.log(tab);
     this.paymentForm[tab.key].reset();
-    this.paymentForm[tab.key].controls['price'].setValue('0.00');
-    let existingPrice:any=0
-    this.tabs.forEach((tabValue:any, tabIndex:any) => {
-      if(this.paymentForm[tabValue.key].controls.price.value && this.paymentForm[tabValue.key].controls.price.value>0 && tabValue.key!=this.activeTab.key){
-        existingPrice=parseFloat(existingPrice)+
-        parseFloat( this.paymentForm[tabValue.key].controls.price.value);
+    this.paymentForm[tab.key].controls["price"].setValue("0.00");
+    let existingPrice: any = 0;
+    this.tabs.forEach((tabValue: any, tabIndex: any) => {
+      if (
+        this.paymentForm[tabValue.key].controls.price.value &&
+        this.paymentForm[tabValue.key].controls.price.value > 0 &&
+        tabValue.key != this.activeTab.key
+      ) {
+        existingPrice =
+          parseFloat(existingPrice) +
+          parseFloat(this.paymentForm[tabValue.key].controls.price.value);
       }
     });
-    this.remainingAmount=(parseFloat(this.totalAmount)-parseFloat(existingPrice))
-    
-   if(this.remainingAmount>0){
-    this.paymentForm[this.activeTab.key].controls["price"].setValue(
-      this.remainingAmount
-    );
-   }
+    this.remainingAmount =
+      parseFloat(this.totalAmount) - parseFloat(existingPrice);
+
+    if (this.remainingAmount > 0) {
+      this.paymentForm[this.activeTab.key].controls["price"].setValue(
+        this.remainingAmount
+      );
+    }
   }
 
   async paymentButtonAction(button: any) {
@@ -224,9 +230,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
           this.tabs.forEach((i: any) => {
             console.log(i);
             // this.paymentForm[i.key].reset();
-            this.paymentForm[i.key].controls['price'].setValue('0.00')
-            console.log(this.paymentForm[i.key].controls['price']);
-          })
+            this.paymentForm[i.key].controls["price"].setValue("0.00");
+            console.log(this.paymentForm[i.key].controls["price"]);
+          });
           this.paymentForm.onlinepayment.controls["transactionId"].setValue(
             res.transactionNo
           );
@@ -248,14 +254,15 @@ export class BillingPaymentMethodsComponent implements OnInit {
       });
     }
 
-    if(button.type == "onlinePaymentClear")
-    {
+    if (button.type == "onlinePaymentClear") {
       this.paymentForm.onlinepayment.reset();
       this.questions.onlinepayment[1].readonly = false;
-      this.paymentForm.onlinepayment.controls['price'].setValue('0.00');
-      this.paymentForm.onlinepayment.controls['modeOfPayment'].setValue('Online Payment');
+      this.paymentForm.onlinepayment.controls["price"].setValue("0.00");
+      this.paymentForm.onlinepayment.controls["modeOfPayment"].setValue(
+        "Online Payment"
+      );
     }
-    
+
     const payloadData = this.paymentForm[button.paymentKey].value;
     let module = "OPD_Billing";
     if (button.type == "uploadBillTransaction") {
@@ -300,15 +307,15 @@ export class BillingPaymentMethodsComponent implements OnInit {
         if (res.responseMessage == "APPROVED") {
           if (button.paymentKey == "credit") {
             if (res.transactionRefId) {
-              this.paymentForm["transactionid"].patchValue(
-                res.transactionRefId
-              );
+              this.paymentForm[button.paymentKey].controls[
+                "transactionid"
+              ].patchValue(res.transactionRefId);
             }
           } else if (button.paymentKey == "upi") {
             if (res.transactionRefId) {
-              this.paymentForm["approvalno_UPI"].patchValue(
-                res.transactionRefId
-              );
+              this.paymentForm[button.paymentKey].controls[
+                "approvalno_UPI"
+              ].patchValue(res.transactionRefId);
             }
           }
           const infoDialogRef = this.messageDialogService.info(
@@ -326,47 +333,55 @@ export class BillingPaymentMethodsComponent implements OnInit {
               bankId = bank[0].value;
             }
             if (button.payloadKey == "credit") {
-              this.paymentForm["ccNumber"].patchValue(
-                res.pineLabReturnResponse.ccResCardNo
-              );
-              this.paymentForm["creditholdername"].patchValue(
-                res.cardHolderName
-              );
-              this.paymentForm["bankName"].patchValue(bankId);
-              this.paymentForm["approvalno"].patchValue(
-                res.pineLabReturnResponse.ccResBatchNumber
-              );
-              this.paymentForm["approvalcode"].patchValue(
-                res.pineLabReturnResponse.ccResApprovalCode
-              );
-              this.paymentForm["terminalID"].patchValue(res.terminalId);
-              this.paymentForm["acquirer"].patchValue(
-                res.pineLabReturnResponse.ccResAcquirerName
-              );
-              this.paymentForm["banktid"].patchValue(
-                res.pineLabReturnResponse.ccResBankTID
-              );
+              this.paymentForm[button.paymentKey].controls[
+                "ccNumber"
+              ].patchValue(res.pineLabReturnResponse.ccResCardNo);
+              this.paymentForm[button.paymentKey].controls[
+                "creditholdername"
+              ].patchValue(res.cardHolderName);
+              this.paymentForm[button.paymentKey].controls[
+                "bankName"
+              ].patchValue(bankId);
+              this.paymentForm[button.paymentKey].controls[
+                "approvalno"
+              ].patchValue(res.pineLabReturnResponse.ccResBatchNumber);
+              this.paymentForm[button.paymentKey].controls[
+                "approvalcode"
+              ].patchValue(res.pineLabReturnResponse.ccResApprovalCode);
+              this.paymentForm[button.paymentKey].controls[
+                "terminalID"
+              ].patchValue(res.terminalId);
+              this.paymentForm[button.paymentKey].controls[
+                "acquirer"
+              ].patchValue(res.pineLabReturnResponse.ccResAcquirerName);
+              this.paymentForm[button.paymentKey].controls[
+                "banktid"
+              ].patchValue(res.pineLabReturnResponse.ccResBankTID);
             } else if (button.payloadKey == "upi") {
-              this.paymentForm["ccNumber_UPI"].patchValue(
-                res.pineLabReturnResponse.ccResCardNo
-              );
-              this.paymentForm["cardholdername_UPI"].patchValue(
-                res.cardHolderName
-              );
-              this.paymentForm["bankname_UPI"].patchValue(bankId);
-              this.paymentForm["flagman_UPI"].patchValue(
-                res.pineLabReturnResponse.ccResBatchNumber
-              );
-              this.paymentForm["approvalcode_UPI"].patchValue(
-                res.pineLabReturnResponse.ccResApprovalCode
-              );
-              this.paymentForm["terminalID_UPI"].patchValue(res.terminalId);
-              this.paymentForm["acquirer_UPI"].patchValue(
-                res.pineLabReturnResponse.ccResAcquirerName
-              );
-              this.paymentForm["banktid"].patchValue(
-                res.pineLabReturnResponse.ccResBankTID
-              );
+              this.paymentForm[button.paymentKey].controls[
+                "ccNumber_UPI"
+              ].patchValue(res.pineLabReturnResponse.ccResCardNo);
+              this.paymentForm[button.paymentKey].controls[
+                "cardholdername_UPI"
+              ].patchValue(res.cardHolderName);
+              this.paymentForm[button.paymentKey].controls[
+                "bankname_UPI"
+              ].patchValue(bankId);
+              this.paymentForm[button.paymentKey].controls[
+                "flagman_UPI"
+              ].patchValue(res.pineLabReturnResponse.ccResBatchNumber);
+              this.paymentForm[button.paymentKey].controls[
+                "approvalcode_UPI"
+              ].patchValue(res.pineLabReturnResponse.ccResApprovalCode);
+              this.paymentForm[button.paymentKey].controls[
+                "terminalID_UPI"
+              ].patchValue(res.terminalId);
+              this.paymentForm[button.paymentKey].controls[
+                "acquirer_UPI"
+              ].patchValue(res.pineLabReturnResponse.ccResAcquirerName);
+              this.paymentForm[button.paymentKey].controls[
+                "banktid"
+              ].patchValue(res.pineLabReturnResponse.ccResBankTID);
             }
           }
         } else {
