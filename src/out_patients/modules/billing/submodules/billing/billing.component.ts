@@ -548,6 +548,10 @@ export class BillingComponent implements OnInit, OnDestroy {
               this.billingService.setPatientDetails(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
               );
+
+              this.billingService.setPatientChannelDetail(
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]
+              )
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatientAny(
                   this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
