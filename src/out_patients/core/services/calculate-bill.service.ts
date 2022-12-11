@@ -317,9 +317,11 @@ export class CalculateBillService {
               });
             }
           } else if (ditem.discTypeId == 4) {
-            formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+            formGroup.controls["patientDisc"].setValue(
+              ditem.discAmt.toFixed(2)
+            );
           } else if (ditem.discTypeId == 5) {
-            formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["compDisc"].setValue(ditem.discAmt.toFixed(2));
             formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
@@ -418,7 +420,7 @@ export class CalculateBillService {
       this.calculateDiscount();
     }
 
-    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
+    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt.toFixed(2));
     componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {

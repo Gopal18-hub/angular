@@ -326,13 +326,14 @@ export class BillingPaymentMethodsComponent implements OnInit {
         } else if (res.responseMessage == "TXN APPROVED") {
           if (res.pineLabReturnResponse) {
             let bankId = 0;
-            let bank = this.bankList.filter(
-              (r: any) => r.title == res.pineLabReturnResponse.ccResAcquirerName
+
+            let bank = this.bankList.filter((r: any) =>
+              r.title.includes(res.pineLabReturnResponse.ccResAcquirerName)
             );
-            if (bank && bank.length > 0) {
-              bankId = bank[0].value;
-            }
-            if (button.payloadKey == "credit") {
+            // if (bank && bank.length > 0) {
+            //   bankId = bank[0].value;
+            // }
+            if (button.paymentKey == "credit") {
               this.paymentForm[button.paymentKey].controls[
                 "ccNumber"
               ].patchValue(res.pineLabReturnResponse.ccResCardNo);
@@ -341,7 +342,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
               ].patchValue(res.cardHolderName);
               this.paymentForm[button.paymentKey].controls[
                 "bankName"
-              ].patchValue(bankId);
+              ].patchValue(bank[0]);
               this.paymentForm[button.paymentKey].controls[
                 "approvalno"
               ].patchValue(res.pineLabReturnResponse.ccResBatchNumber);
@@ -357,7 +358,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
               this.paymentForm[button.paymentKey].controls[
                 "banktid"
               ].patchValue(res.pineLabReturnResponse.ccResBankTID);
-            } else if (button.payloadKey == "upi") {
+              this.paymentForm[button.paymentKey].controls[
+                "transactionid"
+              ].patchValue(res.transactionRefId);
+              this.paymentForm[button.paymentKey].controls[
+                "cCvalidity"
+              ].patchValue(new Date());
+            } else if (button.paymentKey == "upi") {
               this.paymentForm[button.paymentKey].controls[
                 "ccNumber_UPI"
               ].patchValue(res.pineLabReturnResponse.ccResCardNo);
@@ -366,7 +373,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
               ].patchValue(res.cardHolderName);
               this.paymentForm[button.paymentKey].controls[
                 "bankname_UPI"
-              ].patchValue(bankId);
+              ].patchValue(bank[0]);
               this.paymentForm[button.paymentKey].controls[
                 "flagman_UPI"
               ].patchValue(res.pineLabReturnResponse.ccResBatchNumber);
@@ -382,6 +389,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
               this.paymentForm[button.paymentKey].controls[
                 "banktid"
               ].patchValue(res.pineLabReturnResponse.ccResBankTID);
+              this.paymentForm[button.paymentKey].controls[
+                "transactionid"
+              ].patchValue(res.transactionRefId);
+              this.paymentForm[button.paymentKey].controls[
+                "cCvalidity_UPI"
+              ].patchValue(new Date());
             }
           }
         } else {
