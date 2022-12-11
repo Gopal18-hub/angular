@@ -5,7 +5,7 @@
         matInput
         placeholder="Search"
         autocomplete="off"
-        [(ngModel)]="term"
+        [formControl]="term"
         (click)="$event.stopPropagation()"
       />
     </mat-form-field>
@@ -20,7 +20,7 @@
       <ul class="flex w-full p-0 list-unstyled flex-column">
         <li
           class="flex w-full cursor-pointer"
-          *ngFor="let docotr of doctorsList | filter: term"
+          *ngFor="let docotr of doctorsList"
           (click)="selectedDoctor(docotr)"
         >
           <span class="w-1/2">{{ docotr.name }}</span>

@@ -12,6 +12,16 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../modules/billing/submodules/billing/BillingApiConstant";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { CookieService } from "@shared/services/cookie.service";
+import {
+  debounceTime,
+  tap,
+  switchMap,
+  finalize,
+  distinctUntilChanged,
+  filter,
+  takeUntil,
+} from "rxjs/operators";
+import { FormControl } from "@angular/forms";
 
 @Component({
   selector: "out-patients-referral-external-doctor",
@@ -84,7 +94,7 @@ export class ExternalDoctorComponent implements OnInit {
 
   doctorsList: any = [];
 
-  term: any;
+  term = new FormControl("");
 
   alreadyDoctorsExist: any = [];
 
@@ -101,6 +111,27 @@ export class ExternalDoctorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDoctorsList();
+    this.term.valueChanges
+      .pipe(
+        filter((res: any) => {
+          return res !== null && res.length >= 3;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+        switchMap((val) => {
+          return this.http
+            .get(ApiConstants.getreferraldoctor(2, val))
+            .pipe(finalize(() => {}));
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.doctorsList = data;
+        },
+        (error) => {
+          console.error("There was an error!", error);
+        }
+      );
   }
 
   getDoctorsList() {
