@@ -283,46 +283,42 @@ export class BillingComponent implements OnInit, OnDestroy {
     //       this.billingService.makeBillPayload.invoiceType = "B2C";
     //     }
     //   });
-    this.formGroup.controls["company"].valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((res: any) => {
-        if (res && res.value) {
-          console.log(res);
-          if (this.billingService.billtype == 3 && res.company.id > 0) {
-            this.billingService.checkcreditcompany(
-              res.value,
-              res,
-              this.formGroup,
-              "header"
-            );
-          } else {
-            this.billingService.setCompnay(
-              res.value,
-              res,
-              this.formGroup,
-              "header"
-            );
-          }
-        } else {
-          this.billingService.setCompnay(res, res, this.formGroup, "header");
-        }
-      });
-
-    this.formGroup.controls["corporate"].valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((res: any) => {
-        if (res && res.value) {
-          console.log(res);
-          this.billingService.setCorporate(
+    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
+      if (res && res.value) {
+        console.log(res);
+        if (this.billingService.billtype == 3 && res.company.id > 0) {
+          this.billingService.checkcreditcompany(
             res.value,
             res,
             this.formGroup,
             "header"
           );
         } else {
-          this.billingService.setCorporate(res, res, this.formGroup, "header");
+          this.billingService.setCompnay(
+            res.value,
+            res,
+            this.formGroup,
+            "header"
+          );
         }
-      });
+      } else {
+        this.billingService.setCompnay(res, res, this.formGroup, "header");
+      }
+    });
+
+    this.formGroup.controls["corporate"].valueChanges.subscribe((res: any) => {
+      if (res && res.value) {
+        console.log(res);
+        this.billingService.setCorporate(
+          res.value,
+          res,
+          this.formGroup,
+          "header"
+        );
+      } else {
+        this.billingService.setCorporate(res, res, this.formGroup, "header");
+      }
+    });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
     }
