@@ -234,4 +234,37 @@ export class BillPaymentDialogComponent implements OnInit {
     console.log(event);
     this.formsixtysubmit = event;
   }
+
+  checkForCash()
+  {
+    debugger;
+    let tabForms = 0;
+    if (this.paymentmethod) {
+      this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+        // console.log(this.paymentmethod.paymentForm[tab.key]);
+        if (
+          this.paymentmethod.tabPrices[index] == 0
+        ) {
+          tabForms++;
+        }
+      });
+    }
+    if(this.paymentmethod)
+    {
+      if(tabForms == this.paymentmethod.tabs.length)
+      {
+        return true;
+      }
+      else
+      {
+        return false
+      }
+    }
+    else
+    {
+      return false;
+    }
+    
+  }
+  
 }

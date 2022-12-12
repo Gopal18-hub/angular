@@ -9,7 +9,7 @@
         <!------------------------------------------- FIRST ROW------------------------------------------>
         <div class="flex justify-between border-radius-md align-items-center">
             
-                <div class="flex w-1/3 bg-darkgray border-radius-md p-1">
+                <div class="flex w-1/3 bg-darkgray border-radius-md padding-1">
                     <div class="ml-2 checkboxh checkbox-bottom-margin">
                         <maxhealth-question [question]="questions[0]" [form]="investigationForm"
                             [questions]="questions[0]" [index]="0" (click)="isChecked($event)">
@@ -52,9 +52,9 @@
                         </maxhealth-question>
                     </div>
                 </div>
-                <div class="flex  mr-2">
+                <div class="flex w-1/10 mr-10">
                     <div >
-                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn mb-1" >
+                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn mr-6 mb-1" >
                             <img src="assets/lens.svg" class="lens-icon">                                
                                    <span class="ml-5">Search</span> 
 

@@ -42,4 +42,11 @@ export namespace ApiConstants {
   export const getgstvistaliveflag = (locationId: number) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/getgstvistaliveflag/${locationId}`;
   };
+
+  export const getPayTmMachineMaster = (
+    locationId: number,
+    stationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/fectchpaytmdevice/${stationId}/${locationId}`;
+  };
 }
