@@ -780,7 +780,7 @@ export class OpRegistrationComponent implements OnInit {
     // nationality value chnage event to enable foreigner
     this.questions[28].elementRef.addEventListener(
       "blur",
-      this.onNationalityModify.bind(this)
+      // this.onNationalityModify.bind(this)
     );
 
     //ON MAXID CHANGE
@@ -816,7 +816,13 @@ export class OpRegistrationComponent implements OnInit {
     //unfreeze foreigner checkbox
     this.OPRegForm.controls["nationality"].valueChanges
       .pipe(takeUntil(this._destroying$))
-      .subscribe(() => {
+      .subscribe((res) => {
+        console.log(res);
+        //added for - able to save by don't lose focus of the nationality element
+        if(res.title && res.value)
+        {
+          this.onNationalityModify();
+        }
         this.disableforeigner = false;
       });
 
@@ -909,6 +915,23 @@ export class OpRegistrationComponent implements OnInit {
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
           }
+          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') != 
+          //   this.datepipe.transform(this.patientDetails?.dateOfBirth, 'dd/mm/yyyy'))
+          //   {
+          //     if (!this.maxIDChangeCall) {
+          //       if (this.checkForModifiedPatientDetail()) {
+          //         this.modfiedPatiendDetails.dateOfBirth =
+          //           this.OPRegForm.value.dob;
+          //         this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+          //         this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
+          //       }
+          //     }
+          //   }
+          //   else
+          //   {
+          //     this.isPatientdetailModified = false;
+          //   }
+          
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -941,7 +964,7 @@ export class OpRegistrationComponent implements OnInit {
             if (!this.maxIDChangeCall) {
               if (this.checkForModifiedPatientDetail()) {
                 this.modfiedPatiendDetails.dateOfBirth =
-                  this.OPRegForm.value.dateOfBirth;
+                  this.OPRegForm.value.dob;
                 this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
                 this.modfiedPatiendDetails.agetype =
                   this.OPRegForm.value.ageType;
@@ -965,7 +988,7 @@ export class OpRegistrationComponent implements OnInit {
           if (!this.maxIDChangeCall) {
             if (this.checkForModifiedPatientDetail()) {
               this.modfiedPatiendDetails.dateOfBirth =
-                this.OPRegForm.value.dateOfBirth;
+                this.OPRegForm.value.dob;
               this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
@@ -2665,12 +2688,22 @@ export class OpRegistrationComponent implements OnInit {
 
       if (passportdetailspresent || this.isPatientdetailModified) {
         this.onUpdatePatientDetail();
-
-        if (this.isPatientdetailModified || this.nationalityChanged) {
+      
+        // if (this.isPatientdetailModified || this.nationalityChanged) {
+          
+        //   this.modifyDialogg();
+        // }
+        if(this.modificationCheckForMandatoryControls())
+        {
           this.modifyDialogg();
         }
       } else {
         this.onUpdatePatientDetail();
+
+        if(this.modificationCheckForMandatoryControls())
+        {
+          this.modifyDialogg();
+        }
       }
     }
   }
@@ -2730,10 +2763,21 @@ export class OpRegistrationComponent implements OnInit {
           this.populateUpdatePatientDetail(resultData);
           this.apiProcessing = false;
           this.savePatientImage();
-          if (!this.isPatientdetailModified && !this.nationalityChanged) {
+          // if (!this.isPatientdetailModified && !this.nationalityChanged) {
+          //   const successdialog = this.messageDialogService.success(
+          //     "Patient Details has been modified"
+          //   );
+
+          //   successdialog.afterClosed().subscribe(() => {
+          //     this.getPatientDetailsByMaxId();
+          //   });
+          // }
+
+          if (!this.modificationCheckForMandatoryControls()) {
             const successdialog = this.messageDialogService.success(
               "Patient Details has been modified"
             );
+            
             successdialog.afterClosed().subscribe(() => {
               this.getPatientDetailsByMaxId();
             });
@@ -4663,7 +4707,38 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
+  modificationCheckForMandatoryControls()
+  {
+    this.modfiedPatiendDetailsForPopUp = this.getModifiedPatientDetailObj();
+    console.log(this.OPRegForm.controls);
+    console.log(this.patientDetails);
+    console.log(this.modfiedPatiendDetailsForPopUp);
+    console.log(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname,
+      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName,
+      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName,
+      this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex,
+      this.patientDetails.dateOfBirth != this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+      this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail,
+      this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone,
+      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title); 
 
+    if(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname || 
+      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName ||
+      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName ||
+      this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex ||
+      this.datepipe.transform(this.patientDetails.dateOfBirth, 'dd/mm/yyyy') != this.datepipe.transform(this.modfiedPatiendDetailsForPopUp.dateOfBirth, 'dd/mm/yyyy') ||
+      this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail ||
+      this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone ||
+      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title
+    )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
   passportDetailsdialog(hcfMasterList: { title: string; value: number }[]) {
     let hcfTitle;
     if (
