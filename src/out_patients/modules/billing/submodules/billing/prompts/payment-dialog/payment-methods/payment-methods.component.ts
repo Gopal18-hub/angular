@@ -154,6 +154,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
     this.activeTab = this.tabs[event.index];
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
+        if (this.activeTab.key != "onlinepayment") {
+          this.paymentForm[this.activeTab.key].controls["price"].setValue(
+            Number(this.paymentForm[this.activeTab.key].value.price) +
+              this.remainingAmount
+          );
+        }
       } else {
         if (this.activeTab.key == "onlinepayment") {
           if (this.config.formData && this.config.formData.bookingId) {

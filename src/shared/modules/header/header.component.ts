@@ -213,7 +213,7 @@ export class HeaderComponent implements OnInit {
           type: "object",
           properties: {
             imei: {
-              type: "autocomplete",
+              type: "dropdown",
               title: "POS IMEI",
               required: true,
             },

@@ -31,7 +31,9 @@ export class PaymentService {
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
-      allowedPaymentMode: 1,
+      allowedPaymentMode: payloadData.modeOfPayment.includes("Credit Card")
+        ? 1
+        : Number(this.cookie.get("UPIAllowedPaymentMode")),
       loginUserId: Number(this.cookie.get("UserId")),
       hsplocationId: Number(this.cookie.get("HSPLocationId")),
       stationId: Number(this.cookie.get("StationId")),
@@ -60,7 +62,9 @@ export class PaymentService {
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
-      allowedPaymentMode: 1,
+      allowedPaymentMode: payloadData.modeOfPayment.includes("Credit Card")
+        ? 1
+        : Number(this.cookie.get("UPIAllowedPaymentMode")),
       loginUserId: Number(this.cookie.get("UserId")),
       hsplocationId: Number(this.cookie.get("HSPLocationId")),
       stationId: Number(this.cookie.get("StationId")),
