@@ -1050,7 +1050,7 @@ export class BillComponent implements OnInit, OnDestroy {
               "Complex Care Patient Form - " + this.billNo,
               "ComplexCareReport",
               {
-                maxid: this.billingservice.activeMaxId,
+                maxid: this.billingservice.activeMaxId.maxId,
                 locationID: Number(this.cookie.get('HSPLocationId')),
                 firstName: this.billingservice.patientDetailsInfo.firstname,
                 lastName: this.billingservice.patientDetailsInfo.lastname,
