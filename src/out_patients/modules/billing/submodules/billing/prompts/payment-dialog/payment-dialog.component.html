@@ -106,16 +106,32 @@
       >
       <!-- *ngIf="breakupTotal() > 0" -->
         <mat-label class="font-base">Payment Breakup</mat-label>
-        <ng-container *ngFor="let tab of paymentmethod?.tabs">
-          <div
-            class="mt-2 w-full flex justify-between"
-            *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
-          >
-          <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
-            <mat-label>{{ tab.method.label }}: </mat-label>
-            <span>{{ paymentmethod.paymentForm[tab.key].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
-          </div>
+        <ng-container *ngIf="!checkForCash()">
+          <ng-container *ngFor="let tab of paymentmethod?.tabs">
+            <div
+              class="mt-2 w-full flex justify-between"
+              *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
+            >
+            <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
+              <mat-label>{{ tab.method.label }}: </mat-label>
+              <span>{{ paymentmethod.paymentForm[tab.key].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
+            </div>
+          </ng-container>
         </ng-container>
+
+        <ng-container *ngIf="checkForCash()">
+          <ng-container *ngIf="paymentmethod?.tabs">
+            <div class="mt-2 w-full flex justify-between">
+            <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
+              <mat-label>Cash: </mat-label>
+              <span>{{ paymentmethod.paymentForm['cash'].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        
+
+        
 
         <div class="mt-2 w-full flex justify-between font-bold">
           <mat-label>Total: </mat-label>
