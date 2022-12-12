@@ -1050,7 +1050,7 @@ export class BillComponent implements OnInit, OnDestroy {
               "Complex Care Patient Form - " + this.billNo,
               "ComplexCareReport",
               {
-                maxid: this.billingservice.activeMaxId,
+                maxid: this.billingservice.activeMaxId.maxId,
                 locationID: Number(this.cookie.get('HSPLocationId')),
                 firstName: this.billingservice.patientDetailsInfo.firstname,
                 lastName: this.billingservice.patientDetailsInfo.lastname,
@@ -1294,7 +1294,7 @@ export class BillComponent implements OnInit, OnDestroy {
   duplicateflag: boolean = true;
   makePrint() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1430];
+    const exist: any = accessControls[2][7][534][1436];
     console.log(exist);
 
     this.reportService.openWindow(
@@ -1302,24 +1302,10 @@ export class BillComponent implements OnInit, OnDestroy {
       "billingreport",
       {
         opbillid: this.billId,
-
         locationID: this.cookie.get("HSPLocationId"),
+        enableexport: exist,
       }
     );
-    // setTimeout(() => {
-    //   if (this.duplicateflag == true) {
-    //     this.http
-    //       .post(
-    //         BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
-    //         ""
-    //       )
-    //       .subscribe((res) => {
-    //         if (res.success == true) {
-    //           this.duplicateflag = false;
-    //         }
-    //       });
-    //   }
-    // }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;

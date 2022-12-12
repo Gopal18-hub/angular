@@ -32,7 +32,7 @@ export class ModifyDialogComponent implements OnInit {
     },
     private dialogRef: MatDialogRef<ModifyDialogComponent>,
     private formService: QuestionControlService,
-    private datepipe: DatePipe,
+    public datepipe: DatePipe,
     public matDialog: MatDialog // private cookie:CookieService,
   ) {}
 

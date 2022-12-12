@@ -113,7 +113,8 @@
           [index]="9"
           [ngClass]="{
             dataModified:
-              data.patientDetails.dateOfBirth != data.modifiedDetails.dateOfBirth ||
+            datepipe.transform(data.patientDetails.dateOfBirth, 'dd/mm/yyyy') != 
+            datepipe.transform(data.modifiedDetails.dateOfBirth, 'dd/mm/yyyy') ||
               data.patientDetails.age != data.modifiedDetails.age || 
               data.patientDetails.ageTypeName != data.modifiedDetails.ageTypeName
           }"
