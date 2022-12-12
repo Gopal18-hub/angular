@@ -195,7 +195,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         });
         if (res.from == "disable") {
           this.formGroup.controls["corporate"].disable();
-        } else if (this.formGroup.value.company.value) {
+        } else if (
+          this.formGroup.value.company &&
+          this.formGroup.value.company.value
+        ) {
           this.formGroup.controls["corporate"].enable();
         }
       }
@@ -325,7 +328,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clear();
+    this.clear(0);
   }
 
   formEvents() {
@@ -342,7 +345,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           });
         }
 
-        //this.getPatientDetailsByMaxId();
+        this.getPatientDetailsByMaxId();
       }
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -551,7 +554,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
               this.billingService.setPatientChannelDetail(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]
-              )
+              );
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatientAny(
                   this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
@@ -1331,13 +1334,16 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
   }
 
-  clear() {
+  clear(clearQueryParams = 1) {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.apiProcessing = false;
     this.patient = false;
     this.secondaryMaxId = false;
-    this.formGroup.reset();
+    this.formGroup.reset(
+      { maxid: this.cookie.get("LocationIACode") + "." },
+      { emitEvent: false }
+    );
     this.patientName = "";
     this.ssn = "";
     this.dob = "";
@@ -1352,14 +1358,15 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.expiredPatient = false;
     this.categoryIcons = [];
     this.questions[0].questionClasses = "";
-    this.formGroup.controls["maxid"].setValue(
-      this.cookie.get("LocationIACode") + "."
-    );
+    // this.formGroup.controls["maxid"].setValue(
+    //   this.cookie.get("LocationIACode") + "."
+    // );
     this.questions[0].elementRef.focus();
-    this.router.navigate(["services"], {
-      queryParams: {},
-      relativeTo: this.route,
-    });
+    if (clearQueryParams == 1)
+      this.router.navigate(["services"], {
+        queryParams: {},
+        relativeTo: this.route,
+      });
     this.questions[0].elementRef.focus();
     this.formGroup.controls["company"].enable();
     this.formGroup.controls["corporate"].enable();
