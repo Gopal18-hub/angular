@@ -31,7 +31,7 @@ export class InternalDoctorComponent implements OnInit {
     this.term.valueChanges
       .pipe(
         filter((res: any) => {
-          return res !== null && res.length >= 3;
+          return (res !== null && res.length >= 3) || res == "";
         }),
         debounceTime(1000),
         distinctUntilChanged(),
@@ -59,5 +59,7 @@ export class InternalDoctorComponent implements OnInit {
 
   selectedDoctor(docotr: any) {
     this.selectedDoctorEvent.emit({ docotr });
+    this.term.reset();
+    this.getDoctorsList();
   }
 }
