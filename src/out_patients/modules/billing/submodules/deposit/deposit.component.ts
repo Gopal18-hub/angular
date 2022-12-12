@@ -841,6 +841,7 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["totaldeposit"].setValue("0.00");
     this.depositForm.controls["totalrefund"].setValue("0.00");
     this.depositForm.controls["avalaibledeposit"].setValue("0.00");
+    this.similarContactPatientList = [];
   }
 
   //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER

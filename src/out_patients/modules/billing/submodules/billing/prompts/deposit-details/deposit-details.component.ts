@@ -65,7 +65,11 @@ export class DepositDetailsComponent implements OnInit {
     setTimeout(() => {
       console.log(this.data, "depo");
       this.depoDetails = this.data.data;
-
+      if (this.depoDetails.length == 1) {
+        this.depoDetails.forEach((item: any) => {
+          this.depoTable.selection.select(item);
+        });
+      }
       this.depoDetails;
       this.depoDetails.forEach((e: any) => {
         e.balAmount = Number(e.balanceamount).toFixed(2);

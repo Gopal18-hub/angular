@@ -234,6 +234,11 @@
 }
 .api-loader {
     background: rgba(0, 0, 0, 0.15);
+}
+::ng-deep{
+    .table-height {
+      height: 65vh !important;
+    }
   }
 .h-82{
     height: 82% !important;
