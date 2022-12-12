@@ -465,7 +465,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
-        this.formGroup.controls["dipositAmtEdit"].setValue(0);
+        this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
         );
@@ -499,7 +499,7 @@ export class BillComponent implements OnInit, OnDestroy {
           this.formGroup.controls["dipositAmt"].setValue(
             this.totalDeposit.toFixed(2)
           );
-          this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+          this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
@@ -725,7 +725,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.getAmountPayByPatient()
       );
     } else if (this.formGroup.value.dipositAmtEdit <= 0) {
-      this.formGroup.controls["dipositAmtEdit"].setValue("0.00");
+      this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
@@ -1381,7 +1381,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
-        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+        this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
@@ -1415,7 +1415,7 @@ export class BillComponent implements OnInit, OnDestroy {
             this.formGroup.controls["dipositAmt"].setValue(
               this.totalDeposit.toFixed(2)
             );
-            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
             this.formGroup.controls["dipositAmtEdit"].enable();
             this.question[20].readonly = false;
             this.question[20].disable = false;
