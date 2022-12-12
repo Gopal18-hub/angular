@@ -209,9 +209,10 @@ export class BillPaymentDialogComponent implements OnInit {
         }
       });
 
-      if (!tabForms) {
-        return false;
-      }
+      // if (!tabForms) {
+      //   return false;
+      // }
+      return false;
     }
 
     const collectedAmount = this.breakupTotal();
