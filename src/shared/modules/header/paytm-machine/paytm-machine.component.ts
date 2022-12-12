@@ -150,7 +150,7 @@ export class PaytmMachineComponent implements OnInit, AfterViewInit {
           );
           this.cookieService.delete("PayTmMachineMerchantkey", "/");
           this.cookieService.set(
-            "UPIAllowedPaymentMode",
+            "PayTmMachineMerchantkey",
             this.PayTmMachineDetail.merchantkey,
             {
               path: "/",
