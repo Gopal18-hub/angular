@@ -9,6 +9,50 @@
           #element
         />
       </ng-container>
+      <ng-container *ngSwitchCase="'pattern_string'">
+        <mat-label
+          [attr.for]="question.key"
+          [innerHtml]="question.label"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        ></mat-label>
+        <mat-form-field
+          class="full-width clearfix clear"
+          appearance="outline"
+          floatLabel="never"
+        >
+          <input
+            matInput
+            placeholder=""
+            [formControlName]="question.key"
+            [type]="question.type"
+            [id]="question.key"
+            [required]="question.required"
+            [readonly]="question.readonly"
+            [value]="question.value"
+            [placeholder]="question.placeholder"
+            [minlength]="question.minimum"
+            [maxlength]="question.maximum"
+            #element
+            specialIsAlphaNumeric
+            [regexStr]="question.pattern"
+            [capitalizeText]="question.capitalizeText"
+            autocomplete="off"
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
+          />
+
+          <mat-error *ngIf="!isValid && !isCorrect">
+            {{ question.label }} is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="patternError">
+            {{ question.label }} is <strong>Invalid</strong>
+          </mat-error>
+          <mat-error *ngIf="isCorrect && question.customErrorMessage">
+            {{ question.customErrorMessage }}</mat-error
+          >
+          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+        </mat-form-field>
+      </ng-container>
       <ng-container *ngSwitchCase="'string'">
         <mat-label
           [attr.for]="question.key"
@@ -671,7 +715,7 @@
             </button>
           </mat-datepicker-actions> -->
           </mat-datepicker>
-          <mat-error *ngIf="isValid  && !question.customErrorMessage">
+          <mat-error *ngIf="isValid && !question.customErrorMessage">
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-error *ngIf="!isValid && !isCorrect">
