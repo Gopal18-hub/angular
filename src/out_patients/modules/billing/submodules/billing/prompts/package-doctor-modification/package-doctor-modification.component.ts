@@ -90,7 +90,7 @@ export class PackageDoctorModificationComponent implements OnInit {
     index: number
   ) {
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
 
