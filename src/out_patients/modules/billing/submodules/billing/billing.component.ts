@@ -332,7 +332,10 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        if (!this.route.snapshot.queryParams["maxId"]) {
+        if (
+          !this.route.snapshot.queryParams["maxId"] &&
+          this.formGroup.value.maxid != this.questions[0].defaultValue
+        ) {
           this.apiProcessing = true;
           this.patient = false;
           this.router.navigate([], {
