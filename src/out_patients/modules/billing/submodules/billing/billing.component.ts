@@ -62,6 +62,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   ssn!: string;
 
   private readonly _destroying$ = new Subject<void>();
+  private readonly _routingdestroying$ = new Subject<void>();
 
   patientDetails!: any;
 
@@ -141,7 +142,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.questions = formResult.questions;
 
     this.route.queryParams
-      .pipe(takeUntil(this._destroying$))
+      .pipe(takeUntil(this._routingdestroying$))
       .subscribe((params: any) => {
         if (params.maxId) {
           this.formGroup.controls["maxid"].setValue(params.maxId);
@@ -345,7 +346,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           });
         }
 
-        this.getPatientDetailsByMaxId();
+        //sthis.getPatientDetailsByMaxId();
       }
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -1367,6 +1368,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         queryParams: {},
         relativeTo: this.route,
       });
+    else {
+      this._routingdestroying$.next(undefined);
+      this._routingdestroying$.complete();
+    }
     this.questions[0].elementRef.focus();
     this.formGroup.controls["company"].enable();
     this.formGroup.controls["corporate"].enable();
