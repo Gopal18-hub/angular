@@ -88,6 +88,18 @@ export class PaymentMethodsComponent implements OnInit {
     this.clearpaymentmethod();
   }
 
+  negativePriceValidation()
+  {
+    let control= ['cashamount', 'chequeamount', 'creditamount', 'demandamount', 'internetamount', 'upiamount'];
+    control.forEach(i => {
+      if(Number(this.refundform.controls[i].value) < 0)
+      {
+        this.refundform.controls[i].setValue('0.00');
+        this.messageDialogService.warning('Amount Cannot be Negative');
+        return;
+      }
+    })
+  }
   PaymentMethodvalidation() {
     this.PaymentMethodcashdeposit = this.refundform.value;
     this.depositamount = 0;
@@ -186,6 +198,11 @@ export class PaymentMethodsComponent implements OnInit {
 
   ngAfterViewInit(): void {
    // this.Disablecreditfields();
+   //for GAV-1375
+   this.refundform.valueChanges.subscribe(() => {
+     this.negativePriceValidation();
+   });
+
     this.questions[0].elementRef.addEventListener(
       "blur",
       this.PaymentMethodvalidation.bind(this)
