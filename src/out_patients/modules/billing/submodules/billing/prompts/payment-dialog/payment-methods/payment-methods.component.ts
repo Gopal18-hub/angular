@@ -165,7 +165,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
     this.activeTab = this.tabs[event.index];
     //PayTm Integration
     if (this.activeTab.key == "mobilepayment") {
-      this.paytmRedirectionService.redirectToPayTmDownloadHomeScreen();
+      //this.paytmRedirectionService.redirectToPayTmDownloadHomeScreen();
+      this.paytmRedirectionService.redirectToPayTmHomeScreen();
     }
 
     if (this.remainingAmount > 0) {

@@ -147,7 +147,14 @@ export class BillPaymentDialogComponent implements OnInit {
 
   async makeBill() {
     //paytm redirect home service
-    this.paytmRedirectionService.redirectToPayTmHomeScreen();
+    this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+      if (
+        tab.key == "mobilepayment" &&
+        this.paymentmethod.tabPrices[index] > 0
+      ) {
+        this.paytmRedirectionService.redirectToPayTmHomeScreen();
+      }
+    });
 
     //pan card and form 60
     this.billingService.makeBillPayload.panNo =
