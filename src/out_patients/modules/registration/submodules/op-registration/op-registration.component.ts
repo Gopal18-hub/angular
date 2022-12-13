@@ -817,11 +817,16 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["nationality"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
-        console.log(res);
+        console.log(res, typeof res);
         //added for - able to save by don't lose focus of the nationality element
-        if(res.title && res.value)
+        if(res.title && res.value && typeof res == 'object')
         {
+          this.OPRegForm.controls["nationality"].setErrors(null);
           this.onNationalityModify();
+        }
+        if(typeof res == 'string')
+        {
+          this.OPRegForm.controls["nationality"].setErrors({'incorrect': true});
         }
         this.disableforeigner = false;
       });
