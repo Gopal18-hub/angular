@@ -97,6 +97,8 @@ export class BillingService {
   dtCheckedItem: any = [];
   txtOtherGroupDoc: any = "";
   dtFinalGrpDoc: any = {};
+
+  channelDetail: any = [];
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -690,6 +692,39 @@ export class BillingService {
       empowerApproverCode: "",
       couponCode: "",
     });
+    this.resetDiscount();
+  }
+
+  resetDiscount() {
+    if (this.calculateBillService.discountSelectedItems.length > 0) {
+      this.calculateBillService.validCoupon = false;
+      this.billItems.forEach((item: any) => {
+        item.disc = 0;
+        item.discAmount = 0;
+        let quantity = !isNaN(Number(item.qty)) ? item.qty : 1;
+        const price = item.price * quantity;
+        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+        item.totalAmount = price + item.gstValue;
+        item.discountType = 0;
+        item.discountReason = 0;
+      });
+      this.calculateBillService.setDiscountSelectedItems([]);
+      if (this.calculateBillService.discountForm)
+        this.calculateBillService.discountForm.reset();
+      this.calculateBillService.calculateDiscount();
+      this.makeBillPayload.tab_o_opDiscount = [];
+      if (
+        this.calculateBillService.billFormGroup &&
+        this.calculateBillService.billFormGroup.form
+      ) {
+        this.calculateBillService.billFormGroup.form.patchValue({
+          coupon: "",
+          compDisc: "0.00",
+          patientDisc: "0.00",
+          discAmtCheck: false,
+        });
+      }
+    }
   }
 
   removeFromBill(data: any) {
@@ -698,6 +733,7 @@ export class BillingService {
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
+      this.resetDiscount();
       this.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(exist, 1);
     }
   }
@@ -901,6 +937,10 @@ export class BillingService {
   getconfigurationservice() {
     return this.configurationservice;
   }
+  setPatientChannelDetail(channeldetail: any)
+  {
+    this.channelDetail = channeldetail;
+  }
 
   setPatientDetails(patientdetails: any) {
     this.makeBillPayload.ds_insert_bill.tab_insertbill = {
@@ -1099,7 +1139,7 @@ export class BillingService {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
           "Do you want to pay with due amount of Rs." +
-            (toBePaid - collectedAmount) +
+            (toBePaid - collectedAmount).toFixed(2) +
             "?"
         );
         const lessAmountWarningResult = await lessAmountWarningDialog

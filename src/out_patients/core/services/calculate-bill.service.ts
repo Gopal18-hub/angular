@@ -44,7 +44,7 @@ export class CalculateBillService {
 
   private readonly _destroying$ = new Subject<void>();
 
-  serviceBasedListItems: any = [];
+  serviceBasedListItems: any = {};
 
   blockActions = new Subject<boolean>();
 
@@ -75,6 +75,7 @@ export class CalculateBillService {
         questions: question,
       };
     }
+    this.serviceBasedListItems = [];
     this.billingServiceRef = billingServiceRef;
     this.billingServiceRef.billItems.forEach((item: any) => {
       if (!this.serviceBasedListItems[item.serviceName.toString()]) {
@@ -221,18 +222,30 @@ export class CalculateBillService {
     if (this.discountSelectedItems.length > 0) {
       this.discountSelectedItems.forEach((disIt: any) => {
         if ([1, 6].includes(disIt.discTypeId)) {
-          disIt.price = this.billingServiceRef.totalCost;
+          disIt.price = this.billingServiceRef.totalCostWithOutGst;
           disIt.discAmt = (disIt.price * disIt.disc) / 100;
           disIt.totalAmt = disIt.price - disIt.discAmt;
         } else if (disIt.discTypeId == 2) {
-          const serviceItem = this.serviceBasedListItems.find(
-            (sbli: any) => sbli.name == disIt.service
-          );
+          console.log(this.serviceBasedListItems);
+          const serviceItem: any = Object.values(
+            this.serviceBasedListItems
+          ).find((sbli: any) => sbli.name == disIt.service);
+          console.log(serviceItem);
           let price = 0;
           serviceItem.items.forEach((item: any) => {
             let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
             price += item.price * quanity;
           });
+          const discAmt = (price * disIt.disc) / 100;
+          disIt.price = price;
+          disIt.discAmt = discAmt;
+          disIt.totalAmt = price - discAmt;
+        } else if (disIt.discTypeId == 3) {
+          const billItem = this.billingServiceRef.billItems.find(
+            (bItem: any) => bItem.itemId == disIt.itemId
+          );
+          let quanity = !isNaN(Number(billItem.qty)) ? billItem.qty : 1;
+          let price = billItem.price * quanity;
           const discAmt = (price * disIt.disc) / 100;
           disIt.price = price;
           disIt.discAmt = discAmt;
@@ -304,9 +317,11 @@ export class CalculateBillService {
               });
             }
           } else if (ditem.discTypeId == 4) {
-            formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+            formGroup.controls["patientDisc"].setValue(
+              ditem.discAmt.toFixed(2)
+            );
           } else if (ditem.discTypeId == 5) {
-            formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["compDisc"].setValue(ditem.discAmt.toFixed(2));
             formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
@@ -405,7 +420,7 @@ export class CalculateBillService {
       this.calculateDiscount();
     }
 
-    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
+    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt.toFixed(2));
     componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {

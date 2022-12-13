@@ -12,6 +12,7 @@ import { Subject } from "rxjs";
 import { BillingService } from "../../billing.service";
 import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { PaytmRedirectionService } from "@core/services/paytm-redirection.service";
 @Component({
   selector: "out-patients-payment-dialog",
   templateUrl: "./payment-dialog.component.html",
@@ -92,7 +93,8 @@ export class BillPaymentDialogComponent implements OnInit {
     private cookie: CookieService,
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
     private billingService: BillingService,
-    private miscService: MiscService
+    private miscService: MiscService,
+    private paytmRedirectionService: PaytmRedirectionService
   ) {}
 
   ngOnInit(): void {
@@ -144,6 +146,9 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
+    //paytm redirect home service
+    this.paytmRedirectionService.redirectToPayTmHomeScreen();
+
     //pan card and form 60
     this.billingService.makeBillPayload.panNo =
       this.billingpatientidentity.patientidentityform.value.panno || "";
@@ -232,5 +237,26 @@ export class BillPaymentDialogComponent implements OnInit {
   billingformsixtysuccess(event: any) {
     console.log(event);
     this.formsixtysubmit = event;
+  }
+
+  checkForCash() {
+    let tabForms = 0;
+    if (this.paymentmethod) {
+      this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+        // console.log(this.paymentmethod.paymentForm[tab.key]);
+        if (this.paymentmethod.tabPrices[index] == 0) {
+          tabForms++;
+        }
+      });
+    }
+    if (this.paymentmethod) {
+      if (tabForms == this.paymentmethod.tabs.length) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 }

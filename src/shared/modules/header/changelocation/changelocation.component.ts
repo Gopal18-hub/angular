@@ -7,9 +7,9 @@ import { StationModel } from "../../../../auth/core/models/stationmodel";
 import { LocationModel } from "../../../../auth/core/models/locationmodel";
 import { UserLocationStationdataModel } from "../../../../auth/core/models/userlocationstationdatamodel";
 import { CookieService } from "@shared/services/cookie.service";
-import { AuthService } from "@shared/services/auth.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ApplicationLogicService } from "@shared/services/applogic.service";
 
 @Component({
   selector: "out-patients-changelocation",
@@ -35,7 +35,7 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
     private formService: QuestionControlService,
     private adauth: ADAuthService,
     private cookieService: CookieService,
-    private authService: AuthService
+    private appLogicService: ApplicationLogicService
   ) {}
 
   ngOnInit(): void {
@@ -126,6 +126,28 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
             path: "/",
           });
         }
+        this.appLogicService.getGSTVistaLiveFlag();
+        ////on location chnage deleting PayTm Machine details
+        this.cookieService.delete("PayTmMachineMerchantkey", "/");
+        this.cookieService.delete("PayTmMachineMID", "/");
+        this.cookieService.delete("PayTmMachineDebugMode", "/");
+        this.cookieService.delete("PayTmMachineStopBits", "/");
+        this.cookieService.delete("PayTmMachineDataBits", "/");
+        this.cookieService.delete("PayTmMachineParity", "/");
+        this.cookieService.delete("PayTmMachineBaudRate", "/");
+        this.cookieService.delete("PayTmMachinePortName", "/");
+        this.cookieService.delete("PayTmMachinePOSId", "/");
+
+        ////on location change deleting POS Machine details
+        this.cookieService.delete("POSIMEI", "/");
+        this.cookieService.delete("MachineName", "/");
+        this.cookieService.delete("MAXMachineName", "/");
+        this.cookieService.delete("MAXMachineId", "/");
+        this.cookieService.delete("MerchantId", "/");
+        this.cookieService.delete("MerchantPOSCode", "/");
+        this.cookieService.delete("SecurityToken", "/");
+        this.cookieService.delete("PineLabApiUrl", "/");
+        this.cookieService.delete("UPIAllowedPaymentMode", "/");
       }
       this.dialogRef.close({ data: this.form.value });
     }

@@ -1007,7 +1007,7 @@ export namespace FormReport {
       format: "MM/dd/YYYY",
       properties: {
         openscrolltypename: { type: "hidden" },
-        locationName: {
+        LocationName: {
           type: "hidden",
         },
 
@@ -1068,7 +1068,7 @@ export namespace FormReport {
             {
               expression: "self.title",
 
-              controlKey: "locationName",
+              controlKey: "LocationName",
 
               type: "value",
             },
@@ -1140,7 +1140,7 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
-        locationName: {
+        LocationName: {
           type: "hidden",
         },
         dtpfrom: {
@@ -1200,7 +1200,7 @@ export namespace FormReport {
             {
               expression: "self.title",
 
-              controlKey: "locationName",
+              controlKey: "LocationName",
 
               type: "value",
             },
@@ -1295,6 +1295,7 @@ export namespace FormReport {
         //   placeholder: "---Location---",
         //   title: "Location",
         // },
+        LocationName: { type: "hidden" },
         locationid: {
           type: "autocomplete",
           placeholder: "---Location---",
@@ -1308,6 +1309,13 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "LocationName",
+              type: "value",
+            },
+          ],
         },
         rbIP: {
           type: "radio",
