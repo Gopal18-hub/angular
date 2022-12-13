@@ -43,7 +43,7 @@ export class SelectimeiComponent implements OnInit, AfterViewInit {
       .subscribe((value) => {
         if (value) {
           this.POSMachineDetal = this.POSIMEIList.filter(
-            (s: any) => s.id === value.value
+            (s: any) => s.name === value
           )[0];
         }
       });
@@ -57,15 +57,14 @@ export class SelectimeiComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         if (res && res.length > 0) {
           this.POSIMEIList = res;
-          if (this.POSIMEIList.length > 1) {
-            this.questions[0].options = this.POSIMEIList.map((l: any) => {
-              return { title: l.edcMachineName, value: l.id };
-            });
-          } else {
-            this.form.controls["imei"].setValue({
-              title: this.POSIMEIList[0].edcMachineName,
-              value: this.POSIMEIList[0].id,
-            });
+          this.questions[0].options = this.POSIMEIList.map((l: any) => {
+            return {
+              title: l.merchantStorePosCode + "-" + l.name,
+              value: l.name,
+            };
+          });
+          if (this.POSIMEIList.length == 1) {
+            this.form.controls["imei"].setValue(this.POSIMEIList[0].name);
           }
         }
       });
@@ -76,7 +75,7 @@ export class SelectimeiComponent implements OnInit, AfterViewInit {
       if (this.form.value != "" && this.form.value != undefined) {
         if (
           this.form.value.imei &&
-          this.POSMachineDetal.id == this.form.value.imei.value
+          this.POSMachineDetal.name == this.form.value.imei
         ) {
           this.cookieService.delete("POSIMEI", "/");
           this.cookieService.set("POSIMEI", this.POSMachineDetal.hardwareID, {
