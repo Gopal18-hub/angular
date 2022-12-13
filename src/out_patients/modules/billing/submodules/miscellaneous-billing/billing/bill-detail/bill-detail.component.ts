@@ -1477,6 +1477,7 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["compDisc"].setValue("0.00");
     this.miscServBillForm.controls["planAmt"].setValue("0.00");
     this.miscServBillForm.controls["coPay"].setValue("0.00");
+    this.question[21] = { ...this.question[21] };
     this.miscServBillForm.controls["credLimit"].setValue("0.00");
     this.miscServBillForm.controls["gstTax"].setValue("0.00");
     this.miscServBillForm.controls["paymentMode"].setValue("1");
