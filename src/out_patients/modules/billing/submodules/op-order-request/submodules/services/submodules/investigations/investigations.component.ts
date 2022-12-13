@@ -24,6 +24,7 @@ import {
 } from "rxjs";
 import { BillingStaticConstants } from "../../../../../billing/BillingStaticConstant";
 import { OpOrderRequestService } from "../../../../../op-order-request/op-order-request.service";
+import { SpecializationService } from "@modules/billing/submodules/billing/specialization.service";
 
 @Component({
   selector: "out-patients-investigations",
@@ -142,7 +143,8 @@ export class OderInvestigationsComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     private router: Router,
     private route: ActivatedRoute,
-    public opOrderRequestService: OpOrderRequestService
+    public opOrderRequestService: OpOrderRequestService,
+    private specializationService: SpecializationService,
   ) {}
 
   ngOnInit(): void {
@@ -375,25 +377,29 @@ export class OderInvestigationsComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          // 67
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    // this.http
+    //   .get(
+    //     BillingApiConstants.getdoctorlistonSpecializationClinic(
+    //       false,
+    //       clinicSpecializationId,
+    //       // 67
+    //       Number(this.cookie.get("HSPLocationId"))
+    //     )
+    //   )
+    //   .subscribe((res) => {
+    //     let options = res.map((r: any) => {
+    //       return { title: r.doctorName, value: r.doctorId };
+    //     });
+    //     this.config.columnsInfo.doctorName.moreOptions[index] = options;
+    //   });
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getDoctorsOnSpecialization(
+        clinicSpecializationId
+      );
   }
 
   getServiceTypes() {

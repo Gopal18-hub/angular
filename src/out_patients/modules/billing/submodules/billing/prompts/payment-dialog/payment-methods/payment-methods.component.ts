@@ -135,7 +135,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
             if (Number(res) < 0) {
               this.messageDialogService.warning("Amount Cannot be Negative");
               this.paymentForm[method].controls["price"].setValue(
-                Math.abs(res).toFixed(2)
+                // Math.abs(res).toFixed(2)
+                '0.00'
               );
             } else {
               this.tabPrices[index] = Number(res);
@@ -144,6 +145,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
                 0
               );
               this.remainingAmount = parseFloat(this.totalAmount) - sum;
+              if(this.remainingAmount < 0)
+              {
+                this.messageDialogService.warning("Entered Amount Cannot be Greater than Bill Amount");
+                this.paymentForm[method].controls["price"].setValue('0.00');
+                this.paymentForm[method].controls["price"].setValue(this.remainingAmount);
+              } 
             }
           }
         );
@@ -201,8 +208,15 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   clearTabForm(tab: any) {
     console.log(tab);
+    console.log(this.paymentForm[tab.key]);
+    let hiddenmode: any = PaymentMethods.modeofpaymentHiddenValue.properties;
+    
     this.paymentForm[tab.key].reset();
     this.paymentForm[tab.key].controls["price"].setValue("0.00");
+    
+    //added for setting hidden control Mode of Payment
+    this.paymentForm[tab.key].controls['modeOfPayment'].setValue(hiddenmode[tab.key].value);
+    console.log(this.paymentForm[tab.key])
     let existingPrice: any = 0;
     this.tabs.forEach((tabValue: any, tabIndex: any) => {
       if (
