@@ -3586,67 +3586,6 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
 
-    if (!validationerror) {
-      let localityObj=this.OPRegForm.controls["locality"].value;
-      if (localityObj["value"] == null || localityObj["value"] == 0) {
-        validationerror = true;
-        this.messageDialogService.error("Please enter Locality");
-      } else {
-        validationerror = false;
-      }
-    }
-
-    if (!validationerror) {
-      let distObj=this.OPRegForm.controls["district"].value;
-      if (distObj["value"] == null || distObj["value"] == 0) {
-        validationerror = true;
-        this.messageDialogService.error("Please enter district");
-      } else {
-        validationerror = false;
-      }
-    }
-
-    if (!validationerror) {
-      let cityObj=this.OPRegForm.controls["city"].value;
-      if (cityObj["value"] == null || cityObj["value"] == 0) {
-        validationerror = true;
-        this.messageDialogService.error("Please enter City/Town");
-      } else {
-        validationerror = false;
-      }
-    }
-
-    if (!validationerror) {
-      let stateObj=this.OPRegForm.controls["state"].value;
-      if (stateObj["value"] == null || stateObj["value"] == 0) {
-        validationerror = true;
-        this.messageDialogService.error("Please enter State");
-      } else {
-        validationerror = false;
-      }
-    }
-
-    if (!validationerror) {
-      let countryObj=this.OPRegForm.controls["country"].value;
-      if (countryObj["value"] == null || countryObj["value"] == 0) {
-        validationerror = true;
-        this.messageDialogService.error("Please enter Country");
-      } else {
-        validationerror = false;
-      }
-    }
-
-    if (!validationerror) {
-      let nationalityObj=this.OPRegForm.controls["nationality"].value;
-      if (nationalityObj["value"] == null || nationalityObj["value"] == 0) {
-        validationerror = true;
-        this.messageDialogService.error("Please enter Nationality");
-      } else {
-        validationerror = false;
-      }
-    }
-
-
 
     if (!validationerror) {
       if (this.OPRegForm.value.note) {
