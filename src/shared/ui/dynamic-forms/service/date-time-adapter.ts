@@ -5,7 +5,7 @@ import { Injectable } from "@angular/core";
 @Injectable()
 export class MaxDateTimeAdapter extends NgxMatNativeDateAdapter {
   override format(date: Date): string {
-    return moment(date).format("DD/MM/YYYY hh:mm:ss A");
+    return moment(date).format("DD/MM/YYYY HH:mm:ss");
   }
 
   override parse(value: any): Date | null {

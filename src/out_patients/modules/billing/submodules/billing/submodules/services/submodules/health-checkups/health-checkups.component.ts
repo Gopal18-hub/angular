@@ -120,7 +120,9 @@ export class HealthCheckupsComponent implements OnInit {
         return item;
       });
     if (this.billingService.HealthCheckupItems.length == 0) {
-      this.billingService.servicesTabStatus.next({ clear: true });
+      ////GAV-1440
+      // this.billingService.servicesTabStatus.next({ clear: true });
+      this.billingService.changeBillTabStatus(false);
     }
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();

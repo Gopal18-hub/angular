@@ -24,6 +24,8 @@ import { OnlinePaymentPaidPatientComponent } from "../../online-payment-paid-pat
 import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
 import { BillingService } from "../../../billing.service";
 import { MaxHealthStorage } from "@shared/services/storage";
+import { CookieService } from "@shared/services/cookie.service";
+import { PaytmRedirectionService } from "@core/services/paytm-redirection.service";
 
 @Component({
   selector: "billing-payment-methods",
@@ -62,7 +64,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
     private paymentService: PaymentService,
     private calculateBillService: CalculateBillService,
     private matdialog: MatDialog,
-    private BillingService: BillingService
+    private BillingService: BillingService,
+    private cookie: CookieService,
+    private paytmRedirectionService: PaytmRedirectionService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -152,6 +156,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
+    //PayTm Integration
+    if (this.activeTab.key == "mobilepayment") {
+      //this.paytmRedirectionService.redirectToPayTmDownloadHomeScreen();
+      this.paytmRedirectionService.redirectToPayTmHomeScreen();
+    }
+
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
         if (this.activeTab.key != "onlinepayment") {
@@ -302,6 +312,41 @@ export class BillingPaymentMethodsComponent implements OnInit {
         );
         await errorDialogRef.afterClosed().toPromise();
         return;
+      }
+    } else if (button.type == "paytmPaymentInit") {
+      if (payloadData.price > 0) {
+        let res = await this.paymentService.paytmPaymentInit(
+          payloadData,
+          module,
+          this.BillingService.activeMaxId.maxId
+        );
+
+        if (res && res.order_id) {
+          this.paytmRedirectionService.redirectToPayTmDisplayTxn(
+            res.order_id,
+            res.order_amount,
+            res.qrCodeId
+          );
+        }
+      }
+    } else if (button.type == "paytmPaymentTxnValidate") {
+      if (payloadData.price > 0) {
+        let res = await this.paymentService.paytmPaymentTxnValidate(
+          payloadData,
+          module,
+          this.BillingService.activeMaxId.maxId
+        );
+
+        if (res && res.order_id) {
+          this.paymentForm[button.paymentKey].controls[
+            "paytmorderid"
+          ].patchValue(res.order_id);
+
+          this.paytmRedirectionService.redirectToPayTmSuccessScreen(
+            res.order_id,
+            res.order_amount
+          );
+        }
       }
     }
   }
