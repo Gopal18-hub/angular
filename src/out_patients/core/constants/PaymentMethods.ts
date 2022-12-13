@@ -541,7 +541,7 @@ export namespace PaymentMethods {
         },
         {
           label: "Clear",
-          type: "onlinePaymentClear"
+          type: "onlinePaymentClear",
         },
       ],
     };
@@ -566,39 +566,46 @@ export namespace PaymentMethods {
           type: "autocomplete",
           label: "Wallet",
           placeholder: "PayTM",
-          required: true,
+          required: false,
+          readonly: true,
         },
         mobileNo: {
           type: "number",
           label: "Sender Mobile No.",
-          required: true,
+          required: false,
+          readonly: true,
         },
         // paytmsenername: {
         //   type: "string",
         // },
-        paytmotp: {
-          type: "number",
-          label: "OTP",
-          required: true,
-        },
+        // paytmotp: {
+        //   type: "number",
+        //   label: "OTP",
+        //   required: true,
+        // },
         paytmtransacref: {
           type: "string",
           label: "Transaction Reference",
-          required: true,
+          required: false,
+          readonly: true,
         },
         paytmorderid: {
           type: "string",
           label: "Order ID",
-          required: true,
+          required: false,
+          readonly: true,
         }, ///40
       },
       actionItems: [
         {
-          label: "Recheck",
-          type: "",
+          label: "OK",
+          type: "paytmPaymentInit",
+          paymentKey: "mobilepayment",
         },
         {
-          label: "OK",
+          label: "Get Status",
+          type: "paytmPaymentTxnValidate",
+          paymentKey: "mobilepayment",
         },
       ],
     };

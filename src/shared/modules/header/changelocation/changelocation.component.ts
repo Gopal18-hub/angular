@@ -127,6 +127,27 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
           });
         }
         this.appLogicService.getGSTVistaLiveFlag();
+        ////on location chnage deleting PayTm Machine details
+        this.cookieService.delete("PayTmMachineMerchantkey", "/");
+        this.cookieService.delete("PayTmMachineMID", "/");
+        this.cookieService.delete("PayTmMachineDebugMode", "/");
+        this.cookieService.delete("PayTmMachineStopBits", "/");
+        this.cookieService.delete("PayTmMachineDataBits", "/");
+        this.cookieService.delete("PayTmMachineParity", "/");
+        this.cookieService.delete("PayTmMachineBaudRate", "/");
+        this.cookieService.delete("PayTmMachinePortName", "/");
+        this.cookieService.delete("PayTmMachinePOSId", "/");
+
+        ////on location change deleting POS Machine details
+        this.cookieService.delete("POSIMEI", "/");
+        this.cookieService.delete("MachineName", "/");
+        this.cookieService.delete("MAXMachineName", "/");
+        this.cookieService.delete("MAXMachineId", "/");
+        this.cookieService.delete("MerchantId", "/");
+        this.cookieService.delete("MerchantPOSCode", "/");
+        this.cookieService.delete("SecurityToken", "/");
+        this.cookieService.delete("PineLabApiUrl", "/");
+        this.cookieService.delete("UPIAllowedPaymentMode", "/");
       }
       this.dialogRef.close({ data: this.form.value });
     }
