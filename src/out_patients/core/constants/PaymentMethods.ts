@@ -780,4 +780,32 @@ export namespace PaymentMethods {
       },
     },
   };
+
+  export const modeofpaymentHiddenValue = {
+    type: 'object',
+    title: '',
+    properties: {
+      cash: {
+        value: 'Cash'
+      },
+      cheque: {
+        value: 'Cheque'
+      },
+      credit: {
+        value: 'Credit Card'
+      },
+      demand: {
+        value: 'Demand Draft'
+      },
+      mobilepayment: {
+        value: 'Cash Payment by Mobile'
+      },
+      onlinepayment: {
+        value: 'Online Payment'
+      },
+      upi: {
+        value: 'UPI'
+      }
+    },
+  }
 }

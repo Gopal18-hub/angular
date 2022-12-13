@@ -21,6 +21,7 @@ import {
 import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
 import { Router } from "@angular/router";
 import { OpOrderRequestService } from "../../../../../op-order-request/op-order-request.service";
+import { SpecializationService } from "@modules/billing/submodules/billing/specialization.service";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -124,7 +125,8 @@ export class OrderProcedureOtherComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     public dialog: MatDialog,
     private router: Router,
-    public opOrderrequestService: OpOrderRequestService
+    public opOrderrequestService: OpOrderRequestService,
+    private specializationService: SpecializationService,
   ) {}
 
   ngOnInit(): void {
@@ -241,26 +243,14 @@ export class OrderProcedureOtherComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          this.locationid
-          //67
-          // Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getDoctorsOnSpecialization(
+        clinicSpecializationId
+      );
   }
 
   getOtherService() {

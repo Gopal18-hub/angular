@@ -1444,6 +1444,38 @@ export class BillDetailComponent implements OnInit {
       return item.name === control.value;
     });
   }
+  clearCoPay() {
+    if (this.miscServBillForm.controls["coPay"].value == 0) {
+      this.miscServBillForm.controls["coPay"].setValue("");
+    }
+  }
+
+  unClearCoPay() {
+    if (this.miscServBillForm.controls["coPay"].value == "") {
+      this.miscServBillForm.controls["coPay"].setValue("0");
+    }
+  }
+  clearCredit() {
+    if (this.miscServBillForm.controls["credLimit"].value == 0) {
+      this.miscServBillForm.controls["credLimit"].setValue("");
+    }
+  }
+  unClearCredit() {
+    if (this.miscServBillForm.controls["credLimit"].value == "") {
+      this.miscServBillForm.controls["credLimit"].setValue("0");
+    }
+  }
+  clearDis() {
+    if (this.miscServBillForm.controls["dipositAmtEdit"].value == 0) {
+      this.miscServBillForm.controls["dipositAmtEdit"].setValue("");
+    }
+  }
+  unClearDis() {
+    if (this.miscServBillForm.controls["dipositAmtEdit"].value == "") {
+      this.miscServBillForm.controls["dipositAmtEdit"].setValue("0");
+    }
+  }
+
   //Clear
   clearDraftedService() {
     this.miscServBillForm.controls["item"].reset();
@@ -1678,9 +1710,7 @@ export class BillDetailComponent implements OnInit {
               this.miscServBillForm.controls["dipositAmt"].setValue(
                 this.depodialogTotal.toFixed(2)
               );
-              this.miscServBillForm.controls["dipositAmtEdit"].setValue(
-                0 + ".00"
-              );
+              this.miscServBillForm.controls["dipositAmtEdit"].setValue("");
               this.miscServBillForm.controls["dipositAmtEdit"].enable();
               this.question[27].readonly = false;
               this.question[27].disable = false;
