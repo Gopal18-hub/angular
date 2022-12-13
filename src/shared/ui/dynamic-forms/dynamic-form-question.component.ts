@@ -104,7 +104,12 @@ export class DynamicFormQuestionComponent
     }
   }
 
-  excuteCondition(conditions: any, self: any, formValue: any) {
+  excuteCondition(
+    conditions: any,
+    self: any,
+    formValue: any,
+    focusvalue: any = 0
+  ) {
     conditions.forEach((conditionParam: any) => {
       switch (conditionParam.type) {
         case "value":
@@ -152,10 +157,20 @@ export class DynamicFormQuestionComponent
           break;
         case "dateMin":
           let dateTempValue: any = eval(conditionParam.expression);
+          console.log(conditions);
           let datequestionIndex = this.questions.findIndex(
             (it) => it.key == conditionParam.controlKey
           );
+          let fromdatetemp: any = conditions.filter((i: any) => {
+            return i.type == "dateMaxWithDays";
+          });
+          let datequestionfortodate = this.questions.findIndex(
+            (it) => it.key == fromdatetemp[0].controlKey
+          );
           this.questions[datequestionIndex].minimum = dateTempValue;
+          if (focusvalue == 1) {
+            this.questions[datequestionfortodate].elementRef.focus();
+          }
           break;
         case "dateMax":
           let dateMaxTempValue: any = eval(conditionParam.expression);
@@ -228,12 +243,14 @@ export class DynamicFormQuestionComponent
         this.excuteCondition(
           this.question.conditions,
           this.question.defaultValue,
-          this.form.value
+          this.form.value,
+          0
         );
       }
-      this.form.controls[this.question.key].valueChanges.subscribe((value) => {
-        this.excuteCondition(this.question.conditions, value, this.form.value);
-      });
+
+      // this.form.controls[this.question.key].valueChanges.subscribe((value) => {
+      //   this.excuteCondition(this.question.conditions, value, this.form.value);
+      // });
     }
 
     if (
@@ -294,6 +311,17 @@ export class DynamicFormQuestionComponent
   }
 
   ngAfterViewInit(): void {
+    this.form.controls[this.question.key].valueChanges.subscribe(
+      (value: any) => {
+        console.log(value);
+        this.excuteCondition(
+          this.question.conditions,
+          value,
+          this.form.value,
+          1
+        );
+      }
+    );
     if (this.element) {
       this.question.elementRef = this.element.nativeElement;
     }

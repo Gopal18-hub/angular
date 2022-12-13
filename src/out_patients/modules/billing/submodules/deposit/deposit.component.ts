@@ -31,6 +31,7 @@ import { Form60YesOrNoComponent } from "./form60-dialog/form60-yes-or-no.compone
 import { BillingApiConstants } from "../billing/BillingApiConstant";
 import * as moment from "moment";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { PermissionService } from "@shared/services/permission.service";
 
 @Component({
   selector: "out-patients-deposit",
@@ -52,6 +53,7 @@ export class DepositComponent implements OnInit {
     private patientService: PatientService,
     private lookupService: LookupService,
     private snackbar: MaxHealthSnackBarService,
+    private permissionservice: PermissionService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -126,7 +128,7 @@ export class DepositComponent implements OnInit {
               const dialogRef = this.messageDialogService.error(
                 "Patient is an Expired Patient!"
               );
-              await  dialogRef.afterClosed().toPromise();
+              await dialogRef.afterClosed().toPromise();
               this.expiredpatientexists = true;
               this.questions[0].readonly = false;
               this.questions[0].elementRef.focus();
@@ -354,7 +356,7 @@ export class DepositComponent implements OnInit {
   tableselectionexists: boolean = false;
   expiredpatientexists: boolean = false;
   moment = moment;
-  apiProcessing:boolean = false;
+  apiProcessing: boolean = false;
 
   depositForm!: FormGroup;
   questions: any;
@@ -364,7 +366,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string = "";
-  hspLocationid: any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -450,36 +452,39 @@ export class DepositComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if ("type" in result) {
-        if (result.type == "yes") {
-        const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-          width: "80vw",
-          height: "96vh",
-          data: {
-            servicetype: this.patientservicetype,
-            deposittype: this.patientdeposittype,
-            patientinfo: {
-              emailId: this.patientpersonaldetails[0]?.pEMail,
-              mobileno: this.patientpersonaldetails[0]?.pcellno,
-              panno: this.patientpersonaldetails[0]?.paNno,
-              registrationno: this.regNumber,
-              iacode: this.iacode,
-            },
-          },
-        });
+          if (result.type == "yes") {
+            const DepositDialogref = this.matDialog.open(
+              DepositDialogComponent,
+              {
+                width: "80vw",
+                height: "96vh",
+                data: {
+                  servicetype: this.patientservicetype,
+                  deposittype: this.patientdeposittype,
+                  patientinfo: {
+                    emailId: this.patientpersonaldetails[0]?.pEMail,
+                    mobileno: this.patientpersonaldetails[0]?.pcellno,
+                    panno: this.patientpersonaldetails[0]?.paNno,
+                    registrationno: this.regNumber,
+                    iacode: this.iacode,
+                  },
+                },
+              }
+            );
 
-        DepositDialogref.afterClosed()
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((result) => {
-            this.MaxIDdepositExist = false;
-            this.tableselectionexists = false;
-            this.deposittable.selection.clear();
-            if (result == "Success") {
-              this.getPatientPreviousDepositDetails();
-            }
-          });
-      }
-    }
-  });
+            DepositDialogref.afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                this.MaxIDdepositExist = false;
+                this.tableselectionexists = false;
+                this.deposittable.selection.clear();
+                if (result == "Success") {
+                  this.getPatientPreviousDepositDetails();
+                }
+              });
+          }
+        }
+      });
   }
 
   openinitiatedeposit() {
@@ -509,7 +514,7 @@ export class DepositComponent implements OnInit {
               this.iacode != "0" &&
               this.regNumber != 0 &&
               !Number.isNaN(Number(this.regNumber))
-            ) {              
+            ) {
               this.apiProcessing = true;
               const expiredStatus = await this.checkPatientExpired(
                 this.iacode,
@@ -519,17 +524,17 @@ export class DepositComponent implements OnInit {
                 const dialogRef = this.messageDialogService.error(
                   "Patient is an Expired Patient!"
                 );
-               await dialogRef.afterClosed().toPromise();
-                
+                await dialogRef.afterClosed().toPromise();
+
                 this.questions[0].readonly = false;
                 this.questions[0].elementRef.focus();
                 this.expiredpatientexists = true;
               }
               this.getDepositType();
-              this.getPatientDetailsForDeposit();              
+              this.getPatientDetailsForDeposit();
               this.apiProcessing = false;
             } else {
-              this.snackbar.open('Invalid Max ID', 'error');
+              this.snackbar.open("Invalid Max ID", "error");
               // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
               // this.questions[0].customErrorMessage = "Invalid Max ID";
             }
@@ -540,26 +545,22 @@ export class DepositComponent implements OnInit {
 
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       console.log(event);
-      if (event.key === "Enter") {       
-        if(this.depositForm.controls["mobileno"].valid)
-        {
+      if (event.key === "Enter") {
+        if (this.depositForm.controls["mobileno"].valid) {
           this.mobilechange();
+        } else {
+          this.snackbar.open("Invalid Mobile No", "error");
         }
-        else
-        {
-          this.snackbar.open('Invalid Mobile No', 'error');
-        }
-        
       }
     });
 
     this.questions[1].elementRef.addEventListener(
-      "blur",     
+      "blur",
       this.mobilechange.bind(this)
     );
 
     this.questions[1].elementRef.addEventListener(
-      "change",     
+      "change",
       this.resetPhoneFlag.bind(this)
     );
   }
@@ -589,7 +590,7 @@ export class DepositComponent implements OnInit {
             this.patientservicetype = resultData.getServiceType;
 
             if (this.patientpersonaldetails.length === 0) {
-              this.snackbar.open('Invalid Max ID', 'error');
+              this.snackbar.open("Invalid Max ID", "error");
               // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
               // this.questions[0].customErrorMessage = "Invalid Max ID";
             } else {
@@ -612,7 +613,7 @@ export class DepositComponent implements OnInit {
                 this.patientpersonaldetails[0]?.nationalityName;
               this.ssn = this.patientpersonaldetails[0]?.ssn;
 
-              if(!this.expiredpatientexists){
+              if (!this.expiredpatientexists) {
                 this.questions[0].readonly = true;
               }
 
@@ -650,7 +651,7 @@ export class DepositComponent implements OnInit {
               this.depositForm.controls["maxid"].setValue(
                 this.iacode + "." + this.regNumber
               );
-              this.snackbar.open('Invalid Max ID', 'error');
+              this.snackbar.open("Invalid Max ID", "error");
               // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
               // this.questions[0].customErrorMessage = "Invalid Max ID";
             }
@@ -674,31 +675,32 @@ export class DepositComponent implements OnInit {
         ApiConstants.getpatientdetailsfordeposit(this.regNumber, this.iacode)
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData) => {
-        if (resultData == CheckPatientDetails.Inpatient) {
-          this.messageDialogService.error("This Patient is an InPatient");
-        } else if (resultData == CheckPatientDetails.PatientNotReg) {
-          this.messageDialogService.error(
-            "This is not a valid Registration Number"
-          );
-        } else if (resultData == CheckPatientDetails.NoDeposit) {
-          this.getPatientDetailsByMaxId();
-          this.getPatientPreviousDepositDetails();
-        } else if (resultData == CheckPatientDetails.HaveDeposit) {
-          this.getPatientDetailsByMaxId();
-          this.getPatientPreviousDepositDetails();
-        }
-        else if(resultData == null){
-          this.snackbar.open('Invalid Max ID', 'error');
+      .subscribe(
+        (resultData) => {
+          if (resultData == CheckPatientDetails.Inpatient) {
+            this.messageDialogService.error("This Patient is an InPatient");
+          } else if (resultData == CheckPatientDetails.PatientNotReg) {
+            this.messageDialogService.error(
+              "This is not a valid Registration Number"
+            );
+          } else if (resultData == CheckPatientDetails.NoDeposit) {
+            this.getPatientDetailsByMaxId();
+            this.getPatientPreviousDepositDetails();
+          } else if (resultData == CheckPatientDetails.HaveDeposit) {
+            this.getPatientDetailsByMaxId();
+            this.getPatientPreviousDepositDetails();
+          } else if (resultData == null) {
+            this.snackbar.open("Invalid Max ID", "error");
+            // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
+            // this.questions[0].customErrorMessage = "Invalid Max ID";
+          }
+        },
+        (error) => {
+          this.snackbar.open("Invalid Max ID", "error");
           // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
           // this.questions[0].customErrorMessage = "Invalid Max ID";
         }
-      },
-      (error) => {
-        this.snackbar.open('Invalid Max ID', 'error');
-        // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-        // this.questions[0].customErrorMessage = "Invalid Max ID";
-      });
+      );
   }
 
   getPatientPreviousDepositDetails() {
@@ -721,9 +723,9 @@ export class DepositComponent implements OnInit {
           this.totalrefund = resultData
             .filter((dp) => dp.depositRefund == "Refund")
             .map((t) => t.refund)
-            .reduce((acc, value) => acc + value, 0);            
+            .reduce((acc, value) => acc + value, 0);
 
-            this.avalaibleamount = resultData
+          this.avalaibleamount = resultData
             .filter((dp) => dp.depositRefund == "Deposit")
             .map((t) => t.balance)
             .reduce((acc, value) => acc + value, 0);
@@ -839,24 +841,25 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["totaldeposit"].setValue("0.00");
     this.depositForm.controls["totalrefund"].setValue("0.00");
     this.depositForm.controls["avalaibledeposit"].setValue("0.00");
+    this.similarContactPatientList = [];
   }
 
- //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
- similarSoundListPresent(): boolean {
-  return this.similarContactPatientList.length > 0 ? true : false;
-}
+  //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
+  similarSoundListPresent(): boolean {
+    return this.similarContactPatientList.length > 0 ? true : false;
+  }
 
-getSimilarPatientDetails() {
-  this.matDialog.closeAll();
-  console.log(this.similarContactPatientList.length);
-  this.http
-    .post(ApiConstants.similarSoundPatientDetail, {
-      phone: this.depositForm.value.mobileno,
-    })
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultData: SimilarSoundPatientResponse[]) => {
-        this.similarContactPatientList = resultData;         
+  getSimilarPatientDetails() {
+    this.matDialog.closeAll();
+    console.log(this.similarContactPatientList.length);
+    this.http
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.depositForm.value.mobileno,
+      })
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: SimilarSoundPatientResponse[]) => {
+          this.similarContactPatientList = resultData;
           if (this.similarContactPatientList.length > 1) {
             const similarSoundDialogref = this.matDialog.open(
               SimilarPatientDialog,
@@ -898,7 +901,7 @@ getSimilarPatientDetails() {
                 }
                 this.similarContactPatientList = [];
               });
-          } else if ((this.similarContactPatientList.length == 1)) {
+          } else if (this.similarContactPatientList.length == 1) {
             console.log(resultData);
             let maxID = resultData[0].maxid;
             this.depositForm.controls["maxid"].setValue(maxID);
@@ -907,7 +910,7 @@ getSimilarPatientDetails() {
 
             this.getPatientDetailsByMaxId();
           } else {
-            this.snackbar.open('Invalid Mobile No', 'error');
+            this.snackbar.open("Invalid Mobile No", "error");
             // this.depositForm.controls["mobile"].setErrors({
             //   incorrect: true,
             // });
@@ -915,17 +918,16 @@ getSimilarPatientDetails() {
 
             console.log("no data found");
           }
-      },
-      (error) => {
-        console.log(error);
-        this.messageDialogService.info(error.error);
-      }
-    );
+        },
+        (error) => {
+          console.log(error);
+          this.messageDialogService.info(error.error);
+        }
+      );
+  }
 
-}
-
-mobilechange() {
-    if (this.depositForm.controls["mobileno"].valid &&  !this.phoneNumberFlag){
+  mobilechange() {
+    if (this.depositForm.controls["mobileno"].valid && !this.phoneNumberFlag) {
       if (!this.similarSoundListPresent()) {
         this.getSimilarPatientDetails();
       }
@@ -938,10 +940,10 @@ mobilechange() {
 
     if (this.deposittable.selection.selected[0]) {
       let billno = this.deposittable.selection.selected[0].receiptno;
-      if(this.containsSpecialChars(billno)){
+      if (this.containsSpecialChars(billno)) {
         billno = billno.replaceAll("/", "-");
       }
-     
+
       this.http
         .get(ApiConstants.getform60(this.hspLocationid, billno, iacode, regno))
         .pipe(takeUntil(this._destroying$))
@@ -972,18 +974,22 @@ mobilechange() {
           }
         );
     } else {
+      const accessControls: any = this.permissionservice.getAccessControls();
+      const exist: any = accessControls[2][7][534][1436];
+      console.log(exist);
       let refundreceiptno;
       this.deposittable.childTable.map((r: any) => {
-        r.selection.selected.map((res: any) => {         
+        r.selection.selected.map((res: any) => {
           if (res) {
-            if(this.containsSpecialChars(res.receiptno)){
-              refundreceiptno = res.receiptno.replaceAll("/","-");
-           }else{
-            refundreceiptno = res.receiptno;
-           } 
+            if (this.containsSpecialChars(res.receiptno)) {
+              refundreceiptno = res.receiptno.replaceAll("/", "-");
+            } else {
+              refundreceiptno = res.receiptno;
+            }
             this.reportService.openWindow("rptRefund", "rptRefund", {
               receiptno: refundreceiptno,
               locationID: this.hspLocationid,
+              exportflagEnable: exist,
             });
           }
         });
@@ -993,16 +999,20 @@ mobilechange() {
     console.log(this.deposittable.selection.selected);
   }
   depositreport() {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    const exist: any = accessControls[2][7][534][1436];
+    console.log(exist);
     let receiptno;
     this.deposittable.selection.selected.map((s: any) => {
-      if(this.containsSpecialChars(s.receiptno)){
-         receiptno = s.receiptno.replaceAll("/","-");
-      }else{
+      if (this.containsSpecialChars(s.receiptno)) {
+        receiptno = s.receiptno.replaceAll("/", "-");
+      } else {
         receiptno = s.receiptno;
-      }     
+      }
       this.reportService.openWindow("DepositReport", "DepositReport", {
         receiptnumber: receiptno,
         locationID: this.hspLocationid,
+        exportflagEnable: exist,
       });
     });
   }
@@ -1010,9 +1020,9 @@ mobilechange() {
     let regno = Number(this.depositForm.value.maxid.split(".")[1]);
     let iacode = this.depositForm.value.maxid.split(".")[0];
     let billno = this.deposittable.selection.selected[0].receiptno;
-    if(this.containsSpecialChars(billno)){
-      billno = billno.replaceAll("/","-");
-   } 
+    if (this.containsSpecialChars(billno)) {
+      billno = billno.replaceAll("/", "-");
+    }
     this.reportService.openWindow(
       "FormSixty",
       "FormSixty",
@@ -1071,9 +1081,9 @@ mobilechange() {
         )
       )
       .toPromise()
-     .catch(() => {
-       return;
-     } );
+      .catch(() => {
+        return;
+      });
     if (res == null || res == undefined) {
       return false;
     }
@@ -1084,9 +1094,8 @@ mobilechange() {
     }
     return false;
   }
-   containsSpecialChars(str:any) {
-    const specialChars =
-      /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  containsSpecialChars(str: any) {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     return specialChars.test(str);
   }
 }

@@ -225,7 +225,41 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     });
   }
+  clearCoPay(){
+   
+    if(this.formGroup.controls["coPay"].value==0){
+      this.formGroup.controls["coPay"].setValue('')
+    }
+  }
 
+  unClearCoPay(){
+    
+    if(this.formGroup.controls["coPay"].value==''){
+      this.formGroup.controls["coPay"].setValue('0')
+    }
+  }
+  clearCredit(){
+    
+    if(this.formGroup.controls["credLimit"].value==0){
+      this.formGroup.controls["credLimit"].setValue('')
+    }
+  }
+  unClearCredit(){
+    if(this.formGroup.controls["credLimit"].value==''){
+      this.formGroup.controls["credLimit"].setValue('0')
+    }
+  }
+  clearDis(){
+    
+    if(this.formGroup.controls["dipositAmtEdit"].value==0){
+      this.formGroup.controls["dipositAmtEdit"].setValue('')
+    }
+  }
+  unClearDis(){
+    if(this.formGroup.controls["dipositAmtEdit"].value==''){
+      this.formGroup.controls["dipositAmtEdit"].setValue('0')
+    }
+  }
   rowRwmove($event: any) {
     this.billingservice.deleteFromService(
       this.billingservice.billItems[$event.index]
@@ -243,6 +277,7 @@ export class BillComponent implements OnInit, OnDestroy {
     );
 
     this.refreshTable();
+    this.resetDiscount();
     this.refreshForm();
   }
 
@@ -430,7 +465,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
-        this.formGroup.controls["dipositAmtEdit"].setValue(0);
+        this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
         );
@@ -464,7 +499,7 @@ export class BillComponent implements OnInit, OnDestroy {
           this.formGroup.controls["dipositAmt"].setValue(
             this.totalDeposit.toFixed(2)
           );
-          this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+          this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
@@ -551,10 +586,15 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
+    /////GAV-1427
+    this.billingservice.makeBillPayload.tab_o_opDiscount = [];
     this.billTypeChange(this.formGroup.value.paymentMode);
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
+    this.formGroup.controls["discAmtCheck"].setValue(false, {
+      emitEvent: false,
+    });
     this.applyCreditLimit();
   }
 
@@ -685,7 +725,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.getAmountPayByPatient()
       );
     } else if (this.formGroup.value.dipositAmtEdit <= 0) {
-      this.formGroup.controls["dipositAmtEdit"].setValue("0.00");
+      this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
@@ -977,57 +1017,119 @@ export class BillComponent implements OnInit, OnDestroy {
       `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     successInfo.afterClosed().subscribe(async () => {
-      if (
-        this.billingservice.ConsumableItems &&
-        this.billingservice.ConsumableItems.length > 0
-      ) {
-        const consumablespopup = this.messageDialogService.confirm(
-          "",
-          "Do you want to view Consumable Entry details"
+      // var complexflag = 0;
+      var res = await this.http.get(BillingApiConstants.fectchpatientiscomplexcare(
+        this.billingservice.activeMaxId.iacode,
+        Number(this.billingservice.activeMaxId.regNumber),
+        Number(this.cookie.get('HSPLocationId')))).toPromise();
+        let complexflag = 0
+        if(res)
+        {
+          if(res.complexCareTable1)
+          {
+            if(res.complexCareTable1.length > 0)
+            {
+              complexflag = res.complexCareTable1[0].flag;
+            }
+          }
+        }
+      console.log(complexflag);
+      console.log(res);
+      console.log(complexflag);
+      if(complexflag == 1)
+      {
+        const complexdialog = this.messageDialogService.confirm(
+          '',
+          'Do You want to print Complex Care Patient Form?'
         );
-        consumablespopup.afterClosed().subscribe(async (result: any) => {
-          console.log(result);
-          if (result.type == "yes") {
+        complexdialog.afterClosed().subscribe((res: any) => {
+          if(res && res.type == 'yes')
+          {
+            //report code
             this.reportService.openWindow(
-              "Consumable Entry details Report - " + this.billNo,
-              "ConsumabaleEntryDetailsReport",
+              "Complex Care Patient Form - " + this.billNo,
+              "ComplexCareReport",
               {
-                billno: this.billingservice.billNo,
-                locationID: this.cookie.get("HSPLocationId"),
-                MAXID: this.billingservice.activeMaxId.maxId,
+                maxid: this.billingservice.activeMaxId.maxId,
+                locationID: Number(this.cookie.get('HSPLocationId')),
+                firstName: this.billingservice.patientDetailsInfo.firstname,
+                lastName: this.billingservice.patientDetailsInfo.lastname,
+                age: this.billingservice.patientDetailsInfo.age,
+                cmbyear: this.billingservice.patientDetailsInfo.ageTypeName,
+                cmbsex: this.billingservice.patientDetailsInfo.genderName,
+                regid: this.billingservice.patientDetailsInfo.registrationno
               }
             );
-            this.mailapicheck();
             setTimeout(() => {
-              if (this.mailflag == true) {
-                this.maildialogopen();
-              } else {
-                this.dialogopen();
-              }
-            }, 500);
-          } else {
-            this.mailapicheck();
-            setTimeout(() => {
-              if (this.mailflag == true) {
-                this.maildialogopen();
-              } else {
-                this.dialogopen();
-              }
+              this.consumablepopupinit();
             }, 500);
           }
-        });
-      } else {
-        this.mailapicheck();
-        setTimeout(() => {
-          if (this.mailflag == true) {
-            this.maildialogopen();
-          } else {
-            this.dialogopen();
+          else{
+            this.consumablepopupinit();
           }
-        }, 500);
+        })
       }
+      else
+      {
+        this.consumablepopupinit();
+      }
+      
     });
   }
+
+  consumablepopupinit()
+  {
+    if (
+      this.billingservice.ConsumableItems &&
+      this.billingservice.ConsumableItems.length > 0
+    ) {
+      const consumablespopup = this.messageDialogService.confirm(
+        "",
+        "Do you want to view Consumable Entry details"
+      );
+      consumablespopup.afterClosed().subscribe(async (result: any) => {
+        console.log(result);
+        if (result.type == "yes") {
+          this.reportService.openWindow(
+            "Consumable Entry details Report - " + this.billNo,
+            "ConsumabaleEntryDetailsReport",
+            {
+              billno: this.billingservice.billNo,
+              locationID: this.cookie.get("HSPLocationId"),
+              MAXID: this.billingservice.activeMaxId.maxId,
+            }
+          );
+          this.mailapicheck();
+          setTimeout(() => {
+            if (this.mailflag == true) {
+              this.maildialogopen();
+            } else {
+              this.dialogopen();
+            }
+          }, 500);
+        } else {
+          this.mailapicheck();
+          setTimeout(() => {
+            if (this.mailflag == true) {
+              this.maildialogopen();
+            } else {
+              this.dialogopen();
+            }
+          }, 500);
+        }
+      });
+    } else {
+      this.mailapicheck();
+      setTimeout(() => {
+        if (this.mailflag == true) {
+          this.maildialogopen();
+        } else {
+          this.dialogopen();
+        }
+      }, 500);
+    }
+  }
+
   mailflag: boolean = false;
   mailapicheck() {
     if (
@@ -1192,7 +1294,7 @@ export class BillComponent implements OnInit, OnDestroy {
   duplicateflag: boolean = true;
   makePrint() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1430];
+    const exist: any = accessControls[2][7][534][1436];
     console.log(exist);
 
     this.reportService.openWindow(
@@ -1200,24 +1302,10 @@ export class BillComponent implements OnInit, OnDestroy {
       "billingreport",
       {
         opbillid: this.billId,
-
         locationID: this.cookie.get("HSPLocationId"),
+        enableexport: exist,
       }
     );
-    // setTimeout(() => {
-    //   if (this.duplicateflag == true) {
-    //     this.http
-    //       .post(
-    //         BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
-    //         ""
-    //       )
-    //       .subscribe((res) => {
-    //         if (res.success == true) {
-    //           this.duplicateflag = false;
-    //         }
-    //       });
-    //   }
-    // }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1293,7 +1381,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
-        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+        this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
@@ -1327,7 +1415,7 @@ export class BillComponent implements OnInit, OnDestroy {
             this.formGroup.controls["dipositAmt"].setValue(
               this.totalDeposit.toFixed(2)
             );
-            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
             this.formGroup.controls["dipositAmtEdit"].enable();
             this.question[20].readonly = false;
             this.question[20].disable = false;

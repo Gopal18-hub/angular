@@ -72,4 +72,26 @@ export class SpecializationService {
       return this.allDoctorsList[specializationId.toString()];
     }
   }
+
+  ///GAV-1381 -  for all doctors even price is not defined for those doctors
+  async getDoctorsOnSpecialization(specializationId: number) {
+    if (!specializationId) return;
+    if (this.specializationDocotorsList[specializationId.toString()]) {
+      return this.specializationDocotorsList[specializationId.toString()];
+    } else {
+      const res = await this.http
+        .get(
+          BillingApiConstants.getDoctorsonSpecialization(
+            specializationId,
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .toPromise();
+      let options = res.map((r: any) => {
+        return { title: r.doctorName, value: r.doctorId };
+      });
+      this.specializationDocotorsList[specializationId.toString()] = options;
+      return options;
+    }
+  }
 }

@@ -211,6 +211,8 @@
                   [questions]="question[20]"
                   class="w-5/9 mb-1 couponcnt"
                   [index]="20"
+                  (click)="clearDis()"
+                  (focusout)="unClearDis()"
                 >
             </maxhealth-question>
             
@@ -227,6 +229,8 @@
                   [questions]="question[13]"
                   class="w-1/2 copay"
                   [index]="13"
+                  (click) = "clearCoPay()"
+                  (focusout)="unClearCoPay()"
                 >
                 </maxhealth-question>
               </div>
@@ -241,6 +245,8 @@
                   [questions]="question[14]"
                   class="w-1/2"
                   [index]="14"
+                  (click)="clearCredit()"
+                  (focusout)="unClearCredit()"
                 >
                 </maxhealth-question>
               </div>
@@ -294,7 +300,7 @@
                     [form]="formGroup"
                     [questions]="question[12]"
                     class="w-full ml-2"
-                    [index]="12"
+                    [index]="12"                  
                   >
                   </maxhealth-question>
                   <div class="ml-2 check absolute right-0">

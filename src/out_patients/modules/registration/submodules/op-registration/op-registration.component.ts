@@ -207,11 +207,10 @@ export class OpRegistrationComponent implements OnInit {
         options: this.titleList,
       },
       firstName: {
-        type: "string",
+        type: "pattern_string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
-        //onlyKeyPressAlpha: true,
+        pattern: "^[a-zA-Z0-9 .]*$",
         capitalizeText: true,
       },
       middleName: {
@@ -781,7 +780,7 @@ export class OpRegistrationComponent implements OnInit {
     // nationality value chnage event to enable foreigner
     this.questions[28].elementRef.addEventListener(
       "blur",
-      this.onNationalityModify.bind(this)
+      // this.onNationalityModify.bind(this)
     );
 
     //ON MAXID CHANGE
@@ -817,7 +816,13 @@ export class OpRegistrationComponent implements OnInit {
     //unfreeze foreigner checkbox
     this.OPRegForm.controls["nationality"].valueChanges
       .pipe(takeUntil(this._destroying$))
-      .subscribe(() => {
+      .subscribe((res) => {
+        console.log(res);
+        //added for - able to save by don't lose focus of the nationality element
+        if(res.title && res.value)
+        {
+          this.onNationalityModify();
+        }
         this.disableforeigner = false;
       });
 
@@ -910,6 +915,23 @@ export class OpRegistrationComponent implements OnInit {
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
           }
+          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') != 
+          //   this.datepipe.transform(this.patientDetails?.dateOfBirth, 'dd/mm/yyyy'))
+          //   {
+          //     if (!this.maxIDChangeCall) {
+          //       if (this.checkForModifiedPatientDetail()) {
+          //         this.modfiedPatiendDetails.dateOfBirth =
+          //           this.OPRegForm.value.dob;
+          //         this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+          //         this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
+          //       }
+          //     }
+          //   }
+          //   else
+          //   {
+          //     this.isPatientdetailModified = false;
+          //   }
+          
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -942,7 +964,7 @@ export class OpRegistrationComponent implements OnInit {
             if (!this.maxIDChangeCall) {
               if (this.checkForModifiedPatientDetail()) {
                 this.modfiedPatiendDetails.dateOfBirth =
-                  this.OPRegForm.value.dateOfBirth;
+                  this.OPRegForm.value.dob;
                 this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
                 this.modfiedPatiendDetails.agetype =
                   this.OPRegForm.value.ageType;
@@ -966,7 +988,7 @@ export class OpRegistrationComponent implements OnInit {
           if (!this.maxIDChangeCall) {
             if (this.checkForModifiedPatientDetail()) {
               this.modfiedPatiendDetails.dateOfBirth =
-                this.OPRegForm.value.dateOfBirth;
+                this.OPRegForm.value.dob;
               this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
@@ -1015,6 +1037,7 @@ export class OpRegistrationComponent implements OnInit {
             this.disttList = [];
             this.localityList = [];
             this.OPRegForm.controls["pincode"].setErrors(null);
+            this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
@@ -1079,6 +1102,7 @@ export class OpRegistrationComponent implements OnInit {
           // this.OPRegForm.controls["city"].setErrors(null);
           // this.OPRegForm.controls["state"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["locality"].setErrors(null);
 
           this.questions[21].required = false;
           this.questions[22].required = false;
@@ -1107,6 +1131,7 @@ export class OpRegistrationComponent implements OnInit {
         if (this.OPRegForm.value.country.value != 1) {
           this.OPRegForm.controls["pincode"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["locality"].setErrors(null);
           this.questions[21].required = false;
           this.questions[22].required = false;
           this.questions[23].required = false;
@@ -1151,6 +1176,7 @@ export class OpRegistrationComponent implements OnInit {
                 if (this.OPRegForm.value.country.value != 1) {
                   this.OPRegForm.controls["pincode"].setErrors(null);
                   this.OPRegForm.controls["district"].setErrors(null);
+                  this.OPRegForm.controls["locality"].setErrors(null);
                   this.questions[21].required = false;
                   this.questions[22].required = false;
                   this.questions[23].required = false;
@@ -1172,6 +1198,7 @@ export class OpRegistrationComponent implements OnInit {
           if (this.OPRegForm.value.country.value != 1) {
             this.OPRegForm.controls["pincode"].setErrors(null);
             this.OPRegForm.controls["district"].setErrors(null);
+            this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[21].required = false;
             this.questions[22].required = false;
             this.questions[23].required = false;
@@ -1189,18 +1216,6 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(async (value: any) => {
         if (!this.maxIDChangeCall && this.countrybasedflow) {
           this.OPRegForm.controls["pincode"].setValue("");
-        }
-        if (this.OPRegForm.value.country.value != 1) {
-          this.OPRegForm.controls["pincode"].setErrors(null);
-          this.OPRegForm.controls["district"].setErrors(null);
-
-          this.questions[21].required = false;
-          this.questions[22].required = false;
-          this.questions[23].required = false;
-          this.questions[24].required = true;
-          this.questions[25].required = false;
-          this.questions[26].required = true;
-          this.questions = { ...this.questions };
         }
         if (
           (this.OPRegForm.value.pincode == "" ||
@@ -1273,6 +1288,19 @@ export class OpRegistrationComponent implements OnInit {
             this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[22].customErrorMessage = "";
           }
+        }
+
+        if (this.OPRegForm.value.country.value != 1) {
+          this.OPRegForm.controls["pincode"].setErrors(null);
+          this.OPRegForm.controls["district"].setErrors(null);
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.questions[21].required = false;
+          this.questions[22].required = false;
+          this.questions[23].required = false;
+          this.questions[24].required = true;
+          this.questions[25].required = false;
+          this.questions[26].required = true;
+          this.questions = { ...this.questions };
         }
         console.log(this.OPRegForm);
       });
@@ -2120,6 +2148,7 @@ export class OpRegistrationComponent implements OnInit {
     }
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["district"].setErrors(null);
+      this.OPRegForm.controls["locality"].setErrors(null);
       this.questions[21].required = false;
       this.questions[22].required = false;
       this.questions[23].required = false;
@@ -2163,6 +2192,7 @@ export class OpRegistrationComponent implements OnInit {
     if (this.OPRegForm.value.country.value != 1) {
       this.OPRegForm.controls["pincode"].setErrors(null);
       this.OPRegForm.controls["district"].setErrors(null);
+      this.OPRegForm.controls["locality"].setErrors(null);
       this.OPRegForm.controls["state"].setErrors({ incorrect: true });
       this.OPRegForm.controls["city"].setErrors({ incorrect: true });
       this.questions[21].required = false;
@@ -2658,12 +2688,22 @@ export class OpRegistrationComponent implements OnInit {
 
       if (passportdetailspresent || this.isPatientdetailModified) {
         this.onUpdatePatientDetail();
-
-        if (this.isPatientdetailModified || this.nationalityChanged) {
+      
+        // if (this.isPatientdetailModified || this.nationalityChanged) {
+          
+        //   this.modifyDialogg();
+        // }
+        if(this.modificationCheckForMandatoryControls())
+        {
           this.modifyDialogg();
         }
       } else {
         this.onUpdatePatientDetail();
+
+        if(this.modificationCheckForMandatoryControls())
+        {
+          this.modifyDialogg();
+        }
       }
     }
   }
@@ -2723,10 +2763,21 @@ export class OpRegistrationComponent implements OnInit {
           this.populateUpdatePatientDetail(resultData);
           this.apiProcessing = false;
           this.savePatientImage();
-          if (!this.isPatientdetailModified && !this.nationalityChanged) {
+          // if (!this.isPatientdetailModified && !this.nationalityChanged) {
+          //   const successdialog = this.messageDialogService.success(
+          //     "Patient Details has been modified"
+          //   );
+
+          //   successdialog.afterClosed().subscribe(() => {
+          //     this.getPatientDetailsByMaxId();
+          //   });
+          // }
+
+          if (!this.modificationCheckForMandatoryControls()) {
             const successdialog = this.messageDialogService.success(
               "Patient Details has been modified"
             );
+            
             successdialog.afterClosed().subscribe(() => {
               this.getPatientDetailsByMaxId();
             });
@@ -3289,10 +3340,10 @@ export class OpRegistrationComponent implements OnInit {
           ? this.OPRegForm.value.locality
             ? this.OPRegForm.value.locality
             : ""
-          : ""
+          : this.OPRegForm.value.locality
         : this.OPRegForm.value.locality.title == undefined ||
           this.OPRegForm.value.locality.title == ""
-        ? this.OPRegForm.value.locality.title || ""
+        ? this.OPRegForm.value.locality.title || this.OPRegForm.value.localityTxt
         : this.OPRegForm.value.locality.title,
       this.OPRegForm.value.sourceOfInput == null ||
       this.OPRegForm.value.sourceOfInput == undefined
@@ -4656,7 +4707,38 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
+  modificationCheckForMandatoryControls()
+  {
+    this.modfiedPatiendDetailsForPopUp = this.getModifiedPatientDetailObj();
+    console.log(this.OPRegForm.controls);
+    console.log(this.patientDetails);
+    console.log(this.modfiedPatiendDetailsForPopUp);
+    console.log(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname,
+      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName,
+      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName,
+      this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex,
+      this.patientDetails.dateOfBirth != this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+      this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail,
+      this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone,
+      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title); 
 
+    if(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname || 
+      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName ||
+      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName ||
+      this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex ||
+      this.datepipe.transform(this.patientDetails.dateOfBirth, 'dd/mm/yyyy') != this.datepipe.transform(this.modfiedPatiendDetailsForPopUp.dateOfBirth, 'dd/mm/yyyy') ||
+      this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail ||
+      this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone ||
+      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title
+    )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
   passportDetailsdialog(hcfMasterList: { title: string; value: number }[]) {
     let hcfTitle;
     if (
