@@ -258,6 +258,7 @@ export class CashScrollNewComponent implements OnInit {
       compName: {
         title: "Company Name",
         type: "string",
+        tooltipColumn:"compName",
         style: {
           width: "10rem",
         },
@@ -546,6 +547,7 @@ export class CashScrollNewComponent implements OnInit {
     this.fromdatedisable = true;
     this.cashscrollnewForm.controls["scrollno"].setValue("");
     this.scrolldetailsList = [];
+    this.tableFooterData = [];
     this.formint();
   }
   savecashscrollDetails: savecashscroll | undefined;
@@ -753,6 +755,7 @@ export class CashScrollNewComponent implements OnInit {
           item.cash = Number(item.cash).toFixed(2);
           item.cheque = Number(item.cheque).toFixed(2);
           item.dd = Number(item.dd).toFixed(2);
+          item.dues= Number(item.dues).toFixed(2);
           item.creditcard =
             item.creditcard == undefined
               ? "0.000"
@@ -782,7 +785,7 @@ export class CashScrollNewComponent implements OnInit {
           return item;
         });
 
-        this.scrolldetailsList.push({
+        this.tableFooterData = {
           sno: "",
           receiptNo: "TOTAL",
           billamount: this.billamount.toFixed(2),
@@ -798,14 +801,14 @@ export class CashScrollNewComponent implements OnInit {
           creditcard: this.creditcard.toFixed(2),
           mobilePayment: this.mobilePayment.toFixed(2),
           onlinePayment: this.OnlinePayment.toFixed(2),
-          dues: this.dues,
+          dues: this.dues.toFixed(2),
           tdsamount: this.tdsamount.toFixed(2),
           upiamount: this.UPIAmt.toFixed(2),
           donation: this.DonationAmount.toFixed(2),
           totalamount: (
             Number(this.billamount) + Number(this.DonationAmount)
           ).toFixed(2),
-        });
+        };
       });
   }
 }
