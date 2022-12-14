@@ -547,8 +547,8 @@ export class OpRegistrationComponent implements OnInit {
         });
         this.OPRegForm.controls["firstName"].setValue(res[0]?.firstName);
         this.OPRegForm.controls["lastName"].setValue(res[0]?.lastName);
-        this.OPRegForm.controls["age"].setValue(res[0]?.age);
-        this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
+        // this.OPRegForm.controls["age"].setValue(res[0]?.age);
+        // this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
         this.OPRegForm.controls["address"].setValue(res[0]?.houseNo);
         // this.OPRegForm.controls["pincode"].setValue(
         //   patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
