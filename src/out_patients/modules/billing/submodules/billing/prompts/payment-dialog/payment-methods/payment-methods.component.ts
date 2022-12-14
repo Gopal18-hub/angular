@@ -24,6 +24,8 @@ import { OnlinePaymentPaidPatientComponent } from "../../online-payment-paid-pat
 import { AppointmentSearchComponent } from "../../appointment-search/appointment-search.component";
 import { BillingService } from "../../../billing.service";
 import { MaxHealthStorage } from "@shared/services/storage";
+import { CookieService } from "@shared/services/cookie.service";
+import { PaytmRedirectionService } from "@core/services/paytm-redirection.service";
 
 @Component({
   selector: "billing-payment-methods",
@@ -62,7 +64,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
     private paymentService: PaymentService,
     private calculateBillService: CalculateBillService,
     private matdialog: MatDialog,
-    private BillingService: BillingService
+    private BillingService: BillingService,
+    private cookie: CookieService,
+    private paytmRedirectionService: PaytmRedirectionService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -131,7 +135,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
             if (Number(res) < 0) {
               this.messageDialogService.warning("Amount Cannot be Negative");
               this.paymentForm[method].controls["price"].setValue(
-                Math.abs(res).toFixed(2)
+                // Math.abs(res).toFixed(2)
+                '0.00'
               );
             } else {
               this.tabPrices[index] = Number(res);
@@ -140,6 +145,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
                 0
               );
               this.remainingAmount = parseFloat(this.totalAmount) - sum;
+              if(this.remainingAmount < 0)
+              {
+                this.messageDialogService.warning("Entered Amount Cannot be Greater than Bill Amount");
+                this.paymentForm[method].controls["price"].setValue('0.00');
+                this.paymentForm[method].controls["price"].setValue(this.remainingAmount);
+              } 
             }
           }
         );
@@ -152,8 +163,20 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
+    //PayTm Integration
+    if (this.activeTab.key == "mobilepayment") {
+      //this.paytmRedirectionService.redirectToPayTmDownloadHomeScreen();
+      this.paytmRedirectionService.redirectToPayTmHomeScreen();
+    }
+
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
+        if (this.activeTab.key != "onlinepayment") {
+          this.paymentForm[this.activeTab.key].controls["price"].setValue(
+            Number(this.paymentForm[this.activeTab.key].value.price) +
+              this.remainingAmount
+          );
+        }
       } else {
         if (this.activeTab.key == "onlinepayment") {
           if (this.config.formData && this.config.formData.bookingId) {
@@ -185,8 +208,15 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   clearTabForm(tab: any) {
     console.log(tab);
+    console.log(this.paymentForm[tab.key]);
+    let hiddenmode: any = PaymentMethods.modeofpaymentHiddenValue.properties;
+    
     this.paymentForm[tab.key].reset();
     this.paymentForm[tab.key].controls["price"].setValue("0.00");
+    
+    //added for setting hidden control Mode of Payment
+    this.paymentForm[tab.key].controls['modeOfPayment'].setValue(hiddenmode[tab.key].value);
+    console.log(this.paymentForm[tab.key])
     let existingPrice: any = 0;
     this.tabs.forEach((tabValue: any, tabIndex: any) => {
       if (
@@ -296,6 +326,41 @@ export class BillingPaymentMethodsComponent implements OnInit {
         );
         await errorDialogRef.afterClosed().toPromise();
         return;
+      }
+    } else if (button.type == "paytmPaymentInit") {
+      if (payloadData.price > 0) {
+        let res = await this.paymentService.paytmPaymentInit(
+          payloadData,
+          module,
+          this.BillingService.activeMaxId.maxId
+        );
+
+        if (res && res.order_id) {
+          this.paytmRedirectionService.redirectToPayTmDisplayTxn(
+            res.order_id,
+            res.order_amount,
+            res.qrCodeId
+          );
+        }
+      }
+    } else if (button.type == "paytmPaymentTxnValidate") {
+      if (payloadData.price > 0) {
+        let res = await this.paymentService.paytmPaymentTxnValidate(
+          payloadData,
+          module,
+          this.BillingService.activeMaxId.maxId
+        );
+
+        if (res && res.order_id) {
+          this.paymentForm[button.paymentKey].controls[
+            "paytmorderid"
+          ].patchValue(res.order_id);
+
+          this.paytmRedirectionService.redirectToPayTmSuccessScreen(
+            res.order_id,
+            res.order_amount
+          );
+        }
       }
     }
   }

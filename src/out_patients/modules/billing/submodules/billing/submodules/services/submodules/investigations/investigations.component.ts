@@ -324,16 +324,22 @@ export class InvestigationsComponent implements OnInit {
               precaution: r.precaution,
               popuptext: r.popuptext,
               profileid: r.profileid,
-              ngStyle: {
-                color: r.outsourceColor == 2 ? "red" : "",
-              },
+              ngStyle: this.getOutSourceColor(r),
             };
           });
           this.questions[1] = { ...this.questions[1] };
         }
       });
   }
-
+  getOutSourceColor(r: any): any {
+    let color = "";
+    if (r.outsourceColor == 2) {
+      color = "red";
+    } else if (r.outsourceTest == 1) {
+      color = "orange";
+    }
+    return { color: color };
+  }
   checkTableValidation() {
     this.zeroPriceExist = false;
 
@@ -425,9 +431,10 @@ export class InvestigationsComponent implements OnInit {
             popuptext: r.popuptext,
             precaution: r.precaution,
             profileid: r.profileid,
-            ngStyle: {
-              color: r.outsourceColor == 2 ? "red" : "",
-            },
+            //ngStyle: {
+            //  color: r.outsourceColor == 2 ? "red" : "",
+            //},
+            ngStyle: this.getOutSourceColor(r),
           };
         });
         this.questions[1] = { ...this.questions[1] };

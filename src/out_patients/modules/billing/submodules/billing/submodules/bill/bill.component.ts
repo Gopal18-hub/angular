@@ -465,7 +465,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
-        this.formGroup.controls["dipositAmtEdit"].setValue(0);
+        this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
         );
@@ -499,7 +499,7 @@ export class BillComponent implements OnInit, OnDestroy {
           this.formGroup.controls["dipositAmt"].setValue(
             this.totalDeposit.toFixed(2)
           );
-          this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+          this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
@@ -725,7 +725,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.getAmountPayByPatient()
       );
     } else if (this.formGroup.value.dipositAmtEdit <= 0) {
-      this.formGroup.controls["dipositAmtEdit"].setValue("0.00");
+      this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
       this.formGroup.controls["amtPayByPatient"].setValue(
         this.getAmountPayByPatient()
       );
@@ -1050,7 +1050,7 @@ export class BillComponent implements OnInit, OnDestroy {
               "Complex Care Patient Form - " + this.billNo,
               "ComplexCareReport",
               {
-                maxid: this.billingservice.activeMaxId,
+                maxid: this.billingservice.activeMaxId.maxId,
                 locationID: Number(this.cookie.get('HSPLocationId')),
                 firstName: this.billingservice.patientDetailsInfo.firstname,
                 lastName: this.billingservice.patientDetailsInfo.lastname,
@@ -1294,7 +1294,7 @@ export class BillComponent implements OnInit, OnDestroy {
   duplicateflag: boolean = true;
   makePrint() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1430];
+    const exist: any = accessControls[2][7][534][1436];
     console.log(exist);
 
     this.reportService.openWindow(
@@ -1302,24 +1302,10 @@ export class BillComponent implements OnInit, OnDestroy {
       "billingreport",
       {
         opbillid: this.billId,
-
         locationID: this.cookie.get("HSPLocationId"),
+        enableexport: exist,
       }
     );
-    // setTimeout(() => {
-    //   if (this.duplicateflag == true) {
-    //     this.http
-    //       .post(
-    //         BillingApiConstants.updateopprintbillduplicate(Number(this.billId)),
-    //         ""
-    //       )
-    //       .subscribe((res) => {
-    //         if (res.success == true) {
-    //           this.duplicateflag = false;
-    //         }
-    //       });
-    //   }
-    // }, 3000);
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1395,7 +1381,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
-        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+        this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
@@ -1429,7 +1415,7 @@ export class BillComponent implements OnInit, OnDestroy {
             this.formGroup.controls["dipositAmt"].setValue(
               this.totalDeposit.toFixed(2)
             );
-            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            this.formGroup.controls["dipositAmtEdit"].setValue("");// for ticket GAV -1432
             this.formGroup.controls["dipositAmtEdit"].enable();
             this.question[20].readonly = false;
             this.question[20].disable = false;

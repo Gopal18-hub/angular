@@ -142,9 +142,18 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
     }
 
     public capture() {
-      const context = this.canvas.nativeElement.getContext("2d").drawImage(this.video.nativeElement, 0, 0, 640, 480);
-      let data = this.canvas.nativeElement.toDataURL("image/png");
-      this.identityImage = data;
+      let self = this;
+      let enumeratorPromise = navigator.mediaDevices.enumerateDevices().then(function (devices) {
+        let cam = devices.find(function (device) {
+          return device.kind === "videoinput";
+        });
+        if (cam) {
+          const context = self.canvas.nativeElement.getContext("2d").drawImage(self.video.nativeElement, 0, 0, 640, 480);
+          let data = self.canvas.nativeElement.toDataURL("image/png");
+          self.identityImage = data;
+          self.submitClicked = false;
+        }
+      });
     }
 
     public webCameraOff(){

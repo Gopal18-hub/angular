@@ -615,6 +615,7 @@ export class DepositComponent implements OnInit {
 
               if (!this.expiredpatientexists) {
                 this.questions[0].readonly = true;
+                this.questions[1].readonly = true;
               }
 
               this.depositForm.controls["panno"].setValue(
@@ -816,8 +817,10 @@ export class DepositComponent implements OnInit {
   clearDepositpage() {
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.depositForm.reset();
+    this.depositForm.reset();    
+    this.similarContactPatientList = [];
     this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
     this.depositForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );

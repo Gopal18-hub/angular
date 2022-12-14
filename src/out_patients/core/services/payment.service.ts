@@ -3,7 +3,6 @@ import { HttpService } from "@shared/services/http.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { Subject, takeUntil } from "rxjs";
 import { PaymentApiConstants } from "../constants/PaymentApiConstants";
-import { AnyARecord } from "dns";
 
 @Injectable({
   providedIn: "root",
@@ -31,7 +30,9 @@ export class PaymentService {
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
-      allowedPaymentMode: 1,
+      allowedPaymentMode: payloadData.modeOfPayment.includes("Credit Card")
+        ? 1
+        : Number(this.cookie.get("UPIAllowedPaymentMode")),
       loginUserId: Number(this.cookie.get("UserId")),
       hsplocationId: Number(this.cookie.get("HSPLocationId")),
       stationId: Number(this.cookie.get("StationId")),
@@ -60,7 +61,9 @@ export class PaymentService {
       securityToken: this.cookie.get("SecurityToken"),
       apiUrlPineLab: this.cookie.get("PineLabApiUrl"),
       module: module,
-      allowedPaymentMode: 1,
+      allowedPaymentMode: payloadData.modeOfPayment.includes("Credit Card")
+        ? 1
+        : Number(this.cookie.get("UPIAllowedPaymentMode")),
       loginUserId: Number(this.cookie.get("UserId")),
       hsplocationId: Number(this.cookie.get("HSPLocationId")),
       stationId: Number(this.cookie.get("StationId")),
@@ -72,4 +75,44 @@ export class PaymentService {
   }
 
   manualEntry() {}
+
+  async paytmPaymentInit(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
+    return await this.http
+      .post(
+        PaymentApiConstants.paytmPaymentInit(
+          payloadData.price,
+          Number(this.cookie.get("HSPLocationId")),
+          Number(this.cookie.get("UserId")),
+          Number(this.cookie.get("StationId")),
+          maxId,
+          this.cookie.get("PayTmMachinePOSId")
+        ),
+        {}
+      )
+      .toPromise();
+  }
+
+  async paytmPaymentTxnValidate(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
+    return await this.http
+      .post(
+        PaymentApiConstants.paytmPaymentTxnValidate(
+          payloadData.price,
+          Number(this.cookie.get("HSPLocationId")),
+          Number(this.cookie.get("UserId")),
+          Number(this.cookie.get("StationId")),
+          maxId,
+          this.cookie.get("PayTmMachinePOSId")
+        ),
+        {}
+      )
+      .toPromise();
+  }
 }
