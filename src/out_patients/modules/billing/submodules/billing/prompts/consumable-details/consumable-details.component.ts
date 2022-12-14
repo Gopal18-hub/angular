@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { CookieService } from "@shared/services/cookie.service";
+import { PermissionService } from "@shared/services/permission.service";
 import { ReportService } from "@shared/services/report.service";
 import { BillingService } from "../../billing.service";
 
@@ -68,7 +69,8 @@ export class ConsumableDetailsComponent implements OnInit {
     public billingservice: BillingService,
     private cookie: CookieService,
     public dialogRef: MatDialogRef<ConsumableDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private permissionservice: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -138,15 +140,18 @@ export class ConsumableDetailsComponent implements OnInit {
     this.itemsData = [...this.itemsData];
   }
   ConsumableBill() {
-    if (this.billingservice.activeMaxId && this.billingservice.billNo) {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    const exist: any = accessControls[2][7][534][1436];
+    if (this.billingservice.activeMaxId) {
       this.dialogRef.close({ data: this.tableRows.selection.selected });
       this.reportService.openWindow(
-        this.billno + "- Consumable Report",
+        "- Consumable Report",
         "ConsumabaleEntryDetailsReport",
         {
           MAXID: this.billingservice.activeMaxId.maxId,
-          billno: this.billingservice.billNo,
+          billno: this.billingservice.billNo || '',
           locationId: this.LocationID,
+          exportflagEnable: exist,
         }
       );
     }
