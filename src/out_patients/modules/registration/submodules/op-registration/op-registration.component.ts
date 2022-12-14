@@ -171,6 +171,7 @@ export class OpRegistrationComponent implements OnInit {
   vipdb!: string;
   noteRemarkdb!: string;
   hwcRemarkdb!: string;
+  onlineId: number = 0;
   ewsDetailsdb: {
     bplCardNo: string;
     bplCardAddress: string;
@@ -518,6 +519,7 @@ export class OpRegistrationComponent implements OnInit {
         }
         if (value["id"]) {
           this.apiProcessing = true;
+          this.onlineId = value["id"];
           this.getappointmentpatientssearchbyid(value["id"]);
         }
       });
@@ -545,8 +547,8 @@ export class OpRegistrationComponent implements OnInit {
         });
         this.OPRegForm.controls["firstName"].setValue(res[0]?.firstName);
         this.OPRegForm.controls["lastName"].setValue(res[0]?.lastName);
-        this.OPRegForm.controls["age"].setValue(res[0]?.age);
-        this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
+        // this.OPRegForm.controls["age"].setValue(res[0]?.age);
+        // this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
         this.OPRegForm.controls["address"].setValue(res[0]?.houseNo);
         // this.OPRegForm.controls["pincode"].setValue(
         //   patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
@@ -720,7 +722,6 @@ export class OpRegistrationComponent implements OnInit {
       }
     });
 
-
     //ENTER EVENT ON PHONE NUMBER
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -791,7 +792,7 @@ export class OpRegistrationComponent implements OnInit {
 
     // nationality value chnage event to enable foreigner
     this.questions[28].elementRef.addEventListener(
-      "blur",
+      "blur"
       // this.onNationalityModify.bind(this)
     );
 
@@ -800,7 +801,6 @@ export class OpRegistrationComponent implements OnInit {
       "change",
       this.MarkasMaxIDChange.bind(this)
     );
-
 
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -819,14 +819,12 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((res) => {
         console.log(res, typeof res);
         //added for - able to save by don't lose focus of the nationality element
-        if(res.title && res.value && typeof res == 'object')
-        {
+        if (res.title && res.value && typeof res == "object") {
           this.OPRegForm.controls["nationality"].setErrors(null);
           this.onNationalityModify();
         }
-        if(typeof res == 'string')
-        {
-          this.OPRegForm.controls["nationality"].setErrors({'incorrect': true});
+        if (typeof res == "string") {
+          this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
         }
         this.disableforeigner = false;
       });
@@ -920,7 +918,7 @@ export class OpRegistrationComponent implements OnInit {
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
           }
-          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') != 
+          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') !=
           //   this.datepipe.transform(this.patientDetails?.dateOfBirth, 'dd/mm/yyyy'))
           //   {
           //     if (!this.maxIDChangeCall) {
@@ -936,7 +934,6 @@ export class OpRegistrationComponent implements OnInit {
           //   {
           //     this.isPatientdetailModified = false;
           //   }
-          
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -992,8 +989,7 @@ export class OpRegistrationComponent implements OnInit {
           this.getSimilarpatientlistonagetype();
           if (!this.maxIDChangeCall) {
             if (this.checkForModifiedPatientDetail()) {
-              this.modfiedPatiendDetails.dateOfBirth =
-                this.OPRegForm.value.dob;
+              this.modfiedPatiendDetails.dateOfBirth = this.OPRegForm.value.dob;
               this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
@@ -1422,13 +1418,13 @@ export class OpRegistrationComponent implements OnInit {
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.disableforeigner = false;
     setTimeout(() => {
-      this.OPRegForm.controls['nationality'].setErrors(null);
-      this.OPRegForm.controls['nationality'].setValue({
-      title: "Indian",
-      value: 149,
-     })
+      this.OPRegForm.controls["nationality"].setErrors(null);
+      this.OPRegForm.controls["nationality"].setValue({
+        title: "Indian",
+        value: 149,
+      });
     }, 20);
-    console.log(this.OPRegForm.controls['nationality'])
+    console.log(this.OPRegForm.controls["nationality"]);
   }
 
   flushAllObjects() {
@@ -2692,20 +2688,18 @@ export class OpRegistrationComponent implements OnInit {
 
       if (passportdetailspresent || this.isPatientdetailModified) {
         this.onUpdatePatientDetail();
-      
+
         // if (this.isPatientdetailModified || this.nationalityChanged) {
-          
+
         //   this.modifyDialogg();
         // }
-        if(this.modificationCheckForMandatoryControls())
-        {
+        if (this.modificationCheckForMandatoryControls()) {
           this.modifyDialogg();
         }
       } else {
         this.onUpdatePatientDetail();
 
-        if(this.modificationCheckForMandatoryControls())
-        {
+        if (this.modificationCheckForMandatoryControls()) {
           this.modifyDialogg();
         }
       }
@@ -2781,7 +2775,7 @@ export class OpRegistrationComponent implements OnInit {
             const successdialog = this.messageDialogService.success(
               "Patient Details has been modified"
             );
-            
+
             successdialog.afterClosed().subscribe(() => {
               this.getPatientDetailsByMaxId();
             });
@@ -3144,8 +3138,7 @@ export class OpRegistrationComponent implements OnInit {
 
     if (patientDetails?.ppinCode != 0) {
       this.questions[27].readonly = true;
-    }
-    else{
+    } else {
       //added for make readonly as false in case there is no pincode(Foreign country) by deena
       this.questions[24].readonly = false;
       this.questions[25].readonly = false;
@@ -3339,7 +3332,8 @@ export class OpRegistrationComponent implements OnInit {
           : this.OPRegForm.value.locality
         : this.OPRegForm.value.locality.title == undefined ||
           this.OPRegForm.value.locality.title == ""
-        ? this.OPRegForm.value.locality.title || this.OPRegForm.value.localityTxt
+        ? this.OPRegForm.value.locality.title ||
+          this.OPRegForm.value.localityTxt
         : this.OPRegForm.value.locality.title,
       this.OPRegForm.value.sourceOfInput == null ||
       this.OPRegForm.value.sourceOfInput == undefined
@@ -3599,7 +3593,6 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
 
-
     if (!validationerror) {
       if (this.OPRegForm.value.note) {
         if (this.noteRemark.trim() == "") {
@@ -3792,7 +3785,7 @@ export class OpRegistrationComponent implements OnInit {
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
-      0,
+      this.onlineId || 0,
       this.ewsDetails.bplCardNo,
       this.OPRegForm.value.hotlist || false,
       "",
@@ -4701,35 +4694,47 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
-  modificationCheckForMandatoryControls()
-  {
+  modificationCheckForMandatoryControls() {
     this.modfiedPatiendDetailsForPopUp = this.getModifiedPatientDetailObj();
     console.log(this.OPRegForm.controls);
     console.log(this.patientDetails);
     console.log(this.modfiedPatiendDetailsForPopUp);
-    console.log(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname,
-      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName,
-      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName,
+    console.log(
+      this.patientDetails.firstname !=
+        this.modfiedPatiendDetailsForPopUp.firstname,
+      this.patientDetails.middleName !=
+        this.modfiedPatiendDetailsForPopUp.middleName,
+      this.patientDetails.lastName !=
+        this.modfiedPatiendDetailsForPopUp.lastName,
       this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex,
-      this.patientDetails.dateOfBirth != this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+      this.patientDetails.dateOfBirth !=
+        this.modfiedPatiendDetailsForPopUp.dateOfBirth,
       this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail,
       this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone,
-      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title); 
+      this.patientDetails.nationalityName !=
+        this.OPRegForm.value.nationality.title
+    );
 
-    if(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname || 
-      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName ||
-      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName ||
+    if (
+      this.patientDetails.firstname !=
+        this.modfiedPatiendDetailsForPopUp.firstname ||
+      this.patientDetails.middleName !=
+        this.modfiedPatiendDetailsForPopUp.middleName ||
+      this.patientDetails.lastName !=
+        this.modfiedPatiendDetailsForPopUp.lastName ||
       this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex ||
-      this.datepipe.transform(this.patientDetails.dateOfBirth, 'dd/mm/yyyy') != this.datepipe.transform(this.modfiedPatiendDetailsForPopUp.dateOfBirth, 'dd/mm/yyyy') ||
+      this.datepipe.transform(this.patientDetails.dateOfBirth, "dd/mm/yyyy") !=
+        this.datepipe.transform(
+          this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+          "dd/mm/yyyy"
+        ) ||
       this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail ||
       this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone ||
-      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title
-    )
-    {
+      this.patientDetails.nationalityName !=
+        this.OPRegForm.value.nationality.title
+    ) {
       return true;
-    }
-    else
-    {
+    } else {
       return false;
     }
   }
