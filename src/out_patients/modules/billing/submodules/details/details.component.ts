@@ -1209,7 +1209,7 @@ export class DetailsComponent implements OnInit {
       );
     } else if (btnname == "ConsumabaleEntryDetailsReport") {
       const accessControls: any = this.permissionservice.getAccessControls();
-      const exist: any = accessControls[2][7][534][1430];
+      const exist: any = accessControls[2][7][534][1436];
       console.log(exist);
 
       this.reportService.openWindow(

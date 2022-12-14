@@ -171,6 +171,7 @@ export class OpRegistrationComponent implements OnInit {
   vipdb!: string;
   noteRemarkdb!: string;
   hwcRemarkdb!: string;
+  onlineId: number = 0;
   ewsDetailsdb: {
     bplCardNo: string;
     bplCardAddress: string;
@@ -518,6 +519,7 @@ export class OpRegistrationComponent implements OnInit {
         }
         if (value["id"]) {
           this.apiProcessing = true;
+          this.onlineId = value["id"];
           this.getappointmentpatientssearchbyid(value["id"]);
         }
       });
@@ -545,8 +547,8 @@ export class OpRegistrationComponent implements OnInit {
         });
         this.OPRegForm.controls["firstName"].setValue(res[0]?.firstName);
         this.OPRegForm.controls["lastName"].setValue(res[0]?.lastName);
-        this.OPRegForm.controls["age"].setValue(res[0]?.age);
-        this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
+        // this.OPRegForm.controls["age"].setValue(res[0]?.age);
+        // this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
         this.OPRegForm.controls["address"].setValue(res[0]?.houseNo);
         // this.OPRegForm.controls["pincode"].setValue(
         //   patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
@@ -709,6 +711,17 @@ export class OpRegistrationComponent implements OnInit {
       this.onPhoneModify.bind(this)
     );
 
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        this.maxIDSearch = true;
+        this.getPatientDetailsByMaxId();
+      }
+    });
+
     //ENTER EVENT ON PHONE NUMBER
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -779,7 +792,7 @@ export class OpRegistrationComponent implements OnInit {
 
     // nationality value chnage event to enable foreigner
     this.questions[28].elementRef.addEventListener(
-      "blur",
+      "blur"
       // this.onNationalityModify.bind(this)
     );
 
@@ -788,19 +801,6 @@ export class OpRegistrationComponent implements OnInit {
       "change",
       this.MarkasMaxIDChange.bind(this)
     );
-
-    //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
-      if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
-        event.preventDefault();
-        this.maxIDSearch = true;
-        this.getPatientDetailsByMaxId();
-      }
-    });
 
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -817,11 +817,14 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["nationality"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
-        console.log(res);
+        console.log(res, typeof res);
         //added for - able to save by don't lose focus of the nationality element
-        if(res.title && res.value)
-        {
+        if (res.title && res.value && typeof res == "object") {
+          this.OPRegForm.controls["nationality"].setErrors(null);
           this.onNationalityModify();
+        }
+        if (typeof res == "string") {
+          this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
         }
         this.disableforeigner = false;
       });
@@ -915,7 +918,7 @@ export class OpRegistrationComponent implements OnInit {
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
           }
-          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') != 
+          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') !=
           //   this.datepipe.transform(this.patientDetails?.dateOfBirth, 'dd/mm/yyyy'))
           //   {
           //     if (!this.maxIDChangeCall) {
@@ -931,7 +934,6 @@ export class OpRegistrationComponent implements OnInit {
           //   {
           //     this.isPatientdetailModified = false;
           //   }
-          
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -987,8 +989,7 @@ export class OpRegistrationComponent implements OnInit {
           this.getSimilarpatientlistonagetype();
           if (!this.maxIDChangeCall) {
             if (this.checkForModifiedPatientDetail()) {
-              this.modfiedPatiendDetails.dateOfBirth =
-                this.OPRegForm.value.dob;
+              this.modfiedPatiendDetails.dateOfBirth = this.OPRegForm.value.dob;
               this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
@@ -1416,6 +1417,14 @@ export class OpRegistrationComponent implements OnInit {
     this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.disableforeigner = false;
+    setTimeout(() => {
+      this.OPRegForm.controls["nationality"].setErrors(null);
+      this.OPRegForm.controls["nationality"].setValue({
+        title: "Indian",
+        value: 149,
+      });
+    }, 20);
+    console.log(this.OPRegForm.controls["nationality"]);
   }
 
   flushAllObjects() {
@@ -2385,7 +2394,6 @@ export class OpRegistrationComponent implements OnInit {
   cityListByState: CityModel[] = [];
   //CITY LIST FOR STATEID
   getCityListByState(state: any) {
-    console.log(state);
     if (state.value != undefined && state.value != null && state.value != "") {
       this.http
         .get(ApiConstants.cityByStateID(state.value))
@@ -2419,7 +2427,6 @@ export class OpRegistrationComponent implements OnInit {
 
   //locality by city
   getLocalityByCity(city: any) {
-    console.log(city.value);
     this.localitybyCityList = [];
     if (city.value != undefined && city.value != null && city.value != "") {
       this.http
@@ -2444,7 +2451,6 @@ export class OpRegistrationComponent implements OnInit {
         .get(ApiConstants.addressByCityID(city.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
-          console.log(resultData);
           this.addressByCity = resultData;
           if (this.addressByCity.length > 0) {
             this.OPRegForm.controls["state"].setValue({
@@ -2469,16 +2475,13 @@ export class OpRegistrationComponent implements OnInit {
       country.value != null &&
       country.value != ""
     ) {
-      console.log(country.value);
       this.stateList = [];
       // this.questions[26].options = [];
       this.http
         .get(ApiConstants.stateByCountryId(country.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
-          console.log(resultData);
           this.stateList = resultData;
-          // console.log(this.localityListByPin);
           this.questions[26].options = this.stateList.map((l) => {
             return { title: l.stateName, value: l.id };
           });
@@ -2501,7 +2504,6 @@ export class OpRegistrationComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.cityList = resultData;
-          // console.log(this.localityListByPin);
           this.questions[24].options = this.cityList.map((l) => {
             return { title: l.cityName, value: l.id };
           });
@@ -2514,7 +2516,6 @@ export class OpRegistrationComponent implements OnInit {
   async getPatientDetailsByMaxId() {
     this.apiProcessing = true;
     this.maxIDChangeCall = true;
-    console.log(this.OPRegForm.value.maxid);
 
     let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
 
@@ -2599,7 +2600,6 @@ export class OpRegistrationComponent implements OnInit {
                   this.patientDetails
                 );
               this.MaxIDExist = true;
-              console.log(this.categoryIcons);
               this.checkForMaxID();
               //RESOPONSE DATA BINDING WITH CONTROLS
 
@@ -2688,20 +2688,18 @@ export class OpRegistrationComponent implements OnInit {
 
       if (passportdetailspresent || this.isPatientdetailModified) {
         this.onUpdatePatientDetail();
-      
+
         // if (this.isPatientdetailModified || this.nationalityChanged) {
-          
+
         //   this.modifyDialogg();
         // }
-        if(this.modificationCheckForMandatoryControls())
-        {
+        if (this.modificationCheckForMandatoryControls()) {
           this.modifyDialogg();
         }
       } else {
         this.onUpdatePatientDetail();
 
-        if(this.modificationCheckForMandatoryControls())
-        {
+        if (this.modificationCheckForMandatoryControls()) {
           this.modifyDialogg();
         }
       }
@@ -2777,7 +2775,7 @@ export class OpRegistrationComponent implements OnInit {
             const successdialog = this.messageDialogService.success(
               "Patient Details has been modified"
             );
-            
+
             successdialog.afterClosed().subscribe(() => {
               this.getPatientDetailsByMaxId();
             });
@@ -2786,7 +2784,6 @@ export class OpRegistrationComponent implements OnInit {
           //   this.getPatientDetailsByMaxId();
           // }
           this.maxIDChangeCall = false;
-          console.log(resultData);
         },
         (error) => {
           console.log(error);
@@ -2814,7 +2811,6 @@ export class OpRegistrationComponent implements OnInit {
           this.MaxIDExist = true;
           this.maxIDSearch = false;
           this.checkForMaxID();
-          console.log(resultData);
           this.maxIDChangeCall = false;
           this.lastupdatedDate =
             this.datepipe.transform(
@@ -2910,7 +2906,6 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   setHotlistDetails(patientDetail: PatientDetails) {
-    console.log(patientDetail);
     this.hotlistReason.title = patientDetail.hotlistreason;
 
     this.hotlistRemark = patientDetail.hotlistcomments;
@@ -2918,7 +2913,6 @@ export class OpRegistrationComponent implements OnInit {
       this.hotlistReasondb.title = patientDetail.hotlistreason;
       this.hotlistRemarkdb = patientDetail.hotlistcomments;
     }
-    console.log(this.hotlistReason);
   }
 
   // commented as UAT requirement change
@@ -3144,8 +3138,7 @@ export class OpRegistrationComponent implements OnInit {
 
     if (patientDetails?.ppinCode != 0) {
       this.questions[27].readonly = true;
-    }
-    else{
+    } else {
       //added for make readonly as false in case there is no pincode(Foreign country) by deena
       this.questions[24].readonly = false;
       this.questions[25].readonly = false;
@@ -3277,10 +3270,6 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
         ? false
         : true;
-    console.log(this.OPRegForm.value.locality);
-    console.log(this.OPRegForm.value.locality.value);
-    console.log(this.OPRegForm.value.locality.title);
-    console.log(this.OPRegForm.value.localityTxt);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
@@ -3343,7 +3332,8 @@ export class OpRegistrationComponent implements OnInit {
           : this.OPRegForm.value.locality
         : this.OPRegForm.value.locality.title == undefined ||
           this.OPRegForm.value.locality.title == ""
-        ? this.OPRegForm.value.locality.title || this.OPRegForm.value.localityTxt
+        ? this.OPRegForm.value.locality.title ||
+          this.OPRegForm.value.localityTxt
         : this.OPRegForm.value.locality.title,
       this.OPRegForm.value.sourceOfInput == null ||
       this.OPRegForm.value.sourceOfInput == undefined
@@ -3387,7 +3377,6 @@ export class OpRegistrationComponent implements OnInit {
   // registationFormSubmit()
   // {}
   async registationFormSubmit() {
-    console.log(this.maxIDSearch);
     let isFormValid = await this.validateForm();
     if (!isFormValid) {
       //validateForm return boolean variable if validation error present or not
@@ -3401,7 +3390,6 @@ export class OpRegistrationComponent implements OnInit {
       if (this.maxIDSearch) {
         if (this.OPRegForm.value.maxid) {
           let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
-
           //HANDLING IF MAX ID IS NOT PRESENT
           if (regNumber != 0) {
             let iacode = this.OPRegForm.value.maxid.split(".")[0];
@@ -3604,6 +3592,7 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
     if (!validationerror) {
       if (this.OPRegForm.value.note) {
         if (this.noteRemark.trim() == "") {
@@ -3699,7 +3688,6 @@ export class OpRegistrationComponent implements OnInit {
     return validationerror;
   }
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
 
@@ -3797,7 +3785,7 @@ export class OpRegistrationComponent implements OnInit {
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
-      0,
+      this.onlineId || 0,
       this.ewsDetails.bplCardNo,
       this.OPRegForm.value.hotlist || false,
       "",
@@ -4321,7 +4309,6 @@ export class OpRegistrationComponent implements OnInit {
           this.vip = "";
           this.OPRegForm.controls["vip"].setValue(false);
         }
-
         console.log("openVipNotes dialog was closed");
       });
   }
@@ -4707,35 +4694,47 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
-  modificationCheckForMandatoryControls()
-  {
+  modificationCheckForMandatoryControls() {
     this.modfiedPatiendDetailsForPopUp = this.getModifiedPatientDetailObj();
     console.log(this.OPRegForm.controls);
     console.log(this.patientDetails);
     console.log(this.modfiedPatiendDetailsForPopUp);
-    console.log(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname,
-      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName,
-      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName,
+    console.log(
+      this.patientDetails.firstname !=
+        this.modfiedPatiendDetailsForPopUp.firstname,
+      this.patientDetails.middleName !=
+        this.modfiedPatiendDetailsForPopUp.middleName,
+      this.patientDetails.lastName !=
+        this.modfiedPatiendDetailsForPopUp.lastName,
       this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex,
-      this.patientDetails.dateOfBirth != this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+      this.patientDetails.dateOfBirth !=
+        this.modfiedPatiendDetailsForPopUp.dateOfBirth,
       this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail,
       this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone,
-      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title); 
+      this.patientDetails.nationalityName !=
+        this.OPRegForm.value.nationality.title
+    );
 
-    if(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname || 
-      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName ||
-      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName ||
+    if (
+      this.patientDetails.firstname !=
+        this.modfiedPatiendDetailsForPopUp.firstname ||
+      this.patientDetails.middleName !=
+        this.modfiedPatiendDetailsForPopUp.middleName ||
+      this.patientDetails.lastName !=
+        this.modfiedPatiendDetailsForPopUp.lastName ||
       this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex ||
-      this.datepipe.transform(this.patientDetails.dateOfBirth, 'dd/mm/yyyy') != this.datepipe.transform(this.modfiedPatiendDetailsForPopUp.dateOfBirth, 'dd/mm/yyyy') ||
+      this.datepipe.transform(this.patientDetails.dateOfBirth, "dd/mm/yyyy") !=
+        this.datepipe.transform(
+          this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+          "dd/mm/yyyy"
+        ) ||
       this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail ||
       this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone ||
-      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title
-    )
-    {
+      this.patientDetails.nationalityName !=
+        this.OPRegForm.value.nationality.title
+    ) {
       return true;
-    }
-    else
-    {
+    } else {
       return false;
     }
   }
