@@ -709,6 +709,18 @@ export class OpRegistrationComponent implements OnInit {
       this.onPhoneModify.bind(this)
     );
 
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        this.maxIDSearch = true;
+        this.getPatientDetailsByMaxId();
+      }
+    });
+
+
     //ENTER EVENT ON PHONE NUMBER
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -789,18 +801,6 @@ export class OpRegistrationComponent implements OnInit {
       this.MarkasMaxIDChange.bind(this)
     );
 
-    //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
-      if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
-        event.preventDefault();
-        this.maxIDSearch = true;
-        this.getPatientDetailsByMaxId();
-      }
-    });
 
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -2390,7 +2390,6 @@ export class OpRegistrationComponent implements OnInit {
   cityListByState: CityModel[] = [];
   //CITY LIST FOR STATEID
   getCityListByState(state: any) {
-    console.log(state);
     if (state.value != undefined && state.value != null && state.value != "") {
       this.http
         .get(ApiConstants.cityByStateID(state.value))
@@ -2424,7 +2423,6 @@ export class OpRegistrationComponent implements OnInit {
 
   //locality by city
   getLocalityByCity(city: any) {
-    console.log(city.value);
     this.localitybyCityList = [];
     if (city.value != undefined && city.value != null && city.value != "") {
       this.http
@@ -2449,7 +2447,6 @@ export class OpRegistrationComponent implements OnInit {
         .get(ApiConstants.addressByCityID(city.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
-          console.log(resultData);
           this.addressByCity = resultData;
           if (this.addressByCity.length > 0) {
             this.OPRegForm.controls["state"].setValue({
@@ -2474,16 +2471,13 @@ export class OpRegistrationComponent implements OnInit {
       country.value != null &&
       country.value != ""
     ) {
-      console.log(country.value);
       this.stateList = [];
       // this.questions[26].options = [];
       this.http
         .get(ApiConstants.stateByCountryId(country.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
-          console.log(resultData);
           this.stateList = resultData;
-          // console.log(this.localityListByPin);
           this.questions[26].options = this.stateList.map((l) => {
             return { title: l.stateName, value: l.id };
           });
@@ -2506,7 +2500,6 @@ export class OpRegistrationComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.cityList = resultData;
-          // console.log(this.localityListByPin);
           this.questions[24].options = this.cityList.map((l) => {
             return { title: l.cityName, value: l.id };
           });
@@ -2519,7 +2512,6 @@ export class OpRegistrationComponent implements OnInit {
   async getPatientDetailsByMaxId() {
     this.apiProcessing = true;
     this.maxIDChangeCall = true;
-    console.log(this.OPRegForm.value.maxid);
 
     let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
 
@@ -2604,7 +2596,6 @@ export class OpRegistrationComponent implements OnInit {
                   this.patientDetails
                 );
               this.MaxIDExist = true;
-              console.log(this.categoryIcons);
               this.checkForMaxID();
               //RESOPONSE DATA BINDING WITH CONTROLS
 
@@ -2791,7 +2782,6 @@ export class OpRegistrationComponent implements OnInit {
           //   this.getPatientDetailsByMaxId();
           // }
           this.maxIDChangeCall = false;
-          console.log(resultData);
         },
         (error) => {
           console.log(error);
@@ -2819,7 +2809,6 @@ export class OpRegistrationComponent implements OnInit {
           this.MaxIDExist = true;
           this.maxIDSearch = false;
           this.checkForMaxID();
-          console.log(resultData);
           this.maxIDChangeCall = false;
           this.lastupdatedDate =
             this.datepipe.transform(
@@ -2915,7 +2904,6 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   setHotlistDetails(patientDetail: PatientDetails) {
-    console.log(patientDetail);
     this.hotlistReason.title = patientDetail.hotlistreason;
 
     this.hotlistRemark = patientDetail.hotlistcomments;
@@ -2923,7 +2911,6 @@ export class OpRegistrationComponent implements OnInit {
       this.hotlistReasondb.title = patientDetail.hotlistreason;
       this.hotlistRemarkdb = patientDetail.hotlistcomments;
     }
-    console.log(this.hotlistReason);
   }
 
   // commented as UAT requirement change
@@ -3282,10 +3269,6 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
         ? false
         : true;
-    console.log(this.OPRegForm.value.locality);
-    console.log(this.OPRegForm.value.locality.value);
-    console.log(this.OPRegForm.value.locality.title);
-    console.log(this.OPRegForm.value.localityTxt);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
@@ -3392,7 +3375,6 @@ export class OpRegistrationComponent implements OnInit {
   // registationFormSubmit()
   // {}
   async registationFormSubmit() {
-    console.log(this.maxIDSearch);
     let isFormValid = await this.validateForm();
     if (!isFormValid) {
       //validateForm return boolean variable if validation error present or not
@@ -3406,7 +3388,6 @@ export class OpRegistrationComponent implements OnInit {
       if (this.maxIDSearch) {
         if (this.OPRegForm.value.maxid) {
           let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
-
           //HANDLING IF MAX ID IS NOT PRESENT
           if (regNumber != 0) {
             let iacode = this.OPRegForm.value.maxid.split(".")[0];
@@ -3609,6 +3590,8 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
+
     if (!validationerror) {
       if (this.OPRegForm.value.note) {
         if (this.noteRemark.trim() == "") {
@@ -3704,7 +3687,6 @@ export class OpRegistrationComponent implements OnInit {
     return validationerror;
   }
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
 
@@ -4326,7 +4308,6 @@ export class OpRegistrationComponent implements OnInit {
           this.vip = "";
           this.OPRegForm.controls["vip"].setValue(false);
         }
-
         console.log("openVipNotes dialog was closed");
       });
   }
