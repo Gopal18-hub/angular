@@ -16,6 +16,7 @@ import {
   finalize,
   distinctUntilChanged,
   filter,
+  catchError,
 } from "rxjs/operators";
 import { of } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -177,14 +178,15 @@ export class HealthCheckupsComponent implements OnInit {
 
     this.formGroup.controls["healthCheckup"].valueChanges
       .pipe(
-        filter((res) => {
-          return res !== null && res.length >= 3;
-        }),
+        // filter((res) => {
+        //   return res !== null && res.length >= 3;
+        // }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
         switchMap((value) => {
           if (
+            (value == null || value.length <= 3) &&
             this.formGroup.value.department &&
             this.formGroup.value.department.value
           ) {
@@ -197,23 +199,40 @@ export class HealthCheckupsComponent implements OnInit {
                   value
                 )
               )
-              .pipe(finalize(() => {}));
+              .pipe(
+                catchError((err) => {
+                  //console.log("err", err);
+                  //console.log("err message", err.error);
+                  //this.messageDialogService.error(err.error);
+                  return of([]);
+                }),
+                finalize(() => {})
+              );
           }
         })
       )
-      .subscribe((data: any) => {
-        if (data.length > 0) {
-          this.questions[1].options = data.map((r: any) => {
-            return {
-              title: r.nameWithDepartment || r.name,
-              value: r.id,
-              originalTitle: r.name,
-              popuptext: r.popuptext,
-            };
-          });
+      .subscribe(
+        (data: any) => {
+          if (data.length > 0) {
+            this.questions[1].options = data.map((r: any) => {
+              return {
+                title: r.nameWithDepartment || r.name,
+                value: r.id,
+                originalTitle: r.name,
+                popuptext: r.popuptext,
+              };
+            });
+            this.questions[1] = { ...this.questions[1] };
+          } else {
+            this.questions[1].options = [];
+            this.questions[1] = { ...this.questions[1] };
+          }
+        },
+        (err: any) => {
+          this.questions[1].options = [];
           this.questions[1] = { ...this.questions[1] };
         }
-      });
+      );
   }
 
   getDepartments() {
