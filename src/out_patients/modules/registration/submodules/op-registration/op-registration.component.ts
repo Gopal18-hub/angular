@@ -1421,6 +1421,14 @@ export class OpRegistrationComponent implements OnInit {
     this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.disableforeigner = false;
+    setTimeout(() => {
+      this.OPRegForm.controls['nationality'].setErrors(null);
+      this.OPRegForm.controls['nationality'].setValue({
+      title: "Indian",
+      value: 149,
+     })
+    }, 20);
+    console.log(this.OPRegForm.controls['nationality'])
   }
 
   flushAllObjects() {
