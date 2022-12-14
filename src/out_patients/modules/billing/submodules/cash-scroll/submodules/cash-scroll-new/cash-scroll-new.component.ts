@@ -401,6 +401,7 @@ export class CashScrollNewComponent implements OnInit {
           this.scrolldetailsList = resultdata as CashScrollNewDetail[];
           if (this.scrolldetailsList.length == 0) {
             this.scrolldetailsList = [];
+            this.apiProcessing = false;
           } else {
             this.scrolldetailsexists = false;
             this.todatedisable = true;
@@ -467,43 +468,40 @@ export class CashScrollNewComponent implements OnInit {
               .reduce((acc: any, value: any) => acc + value, 0);
 
             this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
-              item.billamount = Number(item.billamount).toFixed(2);
-              item.refund = Number(item.refund).toFixed(2);
-              item.depositamount = Number(item.depositamount).toFixed(2);
-              item.planamount = Number(item.planamount).toFixed(2);
-              item.discountamount = Number(item.discountamount).toFixed(2);
-              item.plandiscount = Number(item.plandiscount).toFixed(2);
-              item.netamount = Number(item.netamount).toFixed(2);
-              item.cash = Number(item.cash).toFixed(2);
-              item.cheque = Number(item.cheque).toFixed(2);
-              item.dd = Number(item.dd).toFixed(2);
+              item.billamount = parseFloat(item.billamount).toFixed(2);
+              item.refund = parseFloat(item.refund).toFixed(2);
+              item.depositamount = parseFloat(item.depositamount).toFixed(2);
+              item.planamount = parseFloat(item.planamount).toFixed(2);
+              item.discountamount = parseFloat(item.discountamount).toFixed(2);
+              item.plandiscount = parseFloat(item.plandiscount).toFixed(2);
+              item.netamount = parseFloat(item.netamount).toFixed(2);
+              item.cash = parseFloat(item.cash).toFixed(2);
+              item.cheque = parseFloat(item.cheque).toFixed(2);
+              item.dd = parseFloat(item.dd).toFixed(2);
               item.creditcard =
                 item.creditcard == undefined
-                  ? "0.000"
-                  : Number(item.creditcard).toFixed(2);
+                  ? "0.00"
+                  : parseFloat(item.creditcard).toFixed(2);
               item.mobilePayment =
                 item.mobilePayment == undefined
                   ? "0.00"
-                  : Number(item.mobilePayment).toFixed(2);
+                  : parseFloat(item.mobilePayment).toFixed(2);
               item.onlinePayment =
                 item.onlinePayment == undefined
                   ? "0.00"
-                  : Number(item.onlinePayment).toFixed(2);
-              item.tdsamount = Number(item.tdsamount).toFixed(2);
+                  : parseFloat(item.onlinePayment).toFixed(2);
+              item.tdsamount = parseFloat(item.tdsamount).toFixed(2);
               item.dues =
-                item.dues == undefined ? "0" : Number(item.dues).toFixed(2);
+                item.dues == undefined ? "0" : parseFloat(item.dues).toFixed(2);
               item.donation =
                 item.donation == undefined
                   ? "0.00"
-                  : Number(item.donation).toFixed(2);
+                  : parseFloat(item.donation).toFixed(2);
               item.upiamount =
                 item.upiamount == undefined
                   ? "0.00"
-                  : Number(item.upiamount).toFixed(2);
-              item.totalamount =
-                item.totalamount == undefined
-                  ? "0.00"
-                  : Number(item.totalamount).toFixed(2);
+                  : parseFloat(item.upiamount).toFixed(2);
+              item.totalamount = (parseFloat(item.billamount) + parseFloat(item.donation)).toFixed(2);
               item.rowhighlight = "";
               return item;
             });
@@ -529,7 +527,7 @@ export class CashScrollNewComponent implements OnInit {
               upiamount: this.UPIAmt.toFixed(2),
               donation: this.DonationAmount.toFixed(2),
               totalamount: (
-                Number(this.billamount) + Number(this.DonationAmount)
+                this.billamount + this.DonationAmount
               ).toFixed(2),
               rowhighlight: "highlight",
             };
@@ -745,42 +743,42 @@ export class CashScrollNewComponent implements OnInit {
           .reduce((acc: any, value: any) => acc + value, 0);
 
         this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
-          item.billamount = Number(item.billamount).toFixed(2);
-          item.refund = Number(item.refund).toFixed(2);
-          item.depositamount = Number(item.depositamount).toFixed(2);
-          item.planamount = Number(item.planamount).toFixed(2);
-          item.discountamount = Number(item.discountamount).toFixed(2);
-          item.plandiscount = Number(item.plandiscount).toFixed(2);
-          item.netamount = Number(item.netamount).toFixed(2);
-          item.cash = Number(item.cash).toFixed(2);
-          item.cheque = Number(item.cheque).toFixed(2);
-          item.dd = Number(item.dd).toFixed(2);
-          item.dues= Number(item.dues).toFixed(2);
+          item.billamount = parseFloat(item.billamount).toFixed(2);
+          item.refund = parseFloat(item.refund).toFixed(2);
+          item.depositamount = parseFloat(item.depositamount).toFixed(2);
+          item.planamount = parseFloat(item.planamount).toFixed(2);
+          item.discountamount = parseFloat(item.discountamount).toFixed(2);
+          item.plandiscount = parseFloat(item.plandiscount).toFixed(2);
+          item.netamount = parseFloat(item.netamount).toFixed(2);
+          item.cash = parseFloat(item.cash).toFixed(2);
+          item.cheque = parseFloat(item.cheque).toFixed(2);
+          item.dd = parseFloat(item.dd).toFixed(2);
+          item.dues= parseFloat(item.dues).toFixed(2);
           item.creditcard =
             item.creditcard == undefined
-              ? "0.000"
-              : Number(item.creditcard).toFixed(2);
+              ? "0.00"
+              : parseFloat(item.creditcard).toFixed(2);
           item.mobilePayment =
             item.mobilePayment == undefined
               ? "0.00"
-              : Number(item.mobilePayment).toFixed(2);
+              : parseFloat(item.mobilePayment).toFixed(2);
           item.onlinePayment =
             item.onlinePayment == undefined
               ? "0.00"
-              : Number(item.onlinePayment).toFixed(2);
-          item.tdsamount = Number(item.tdsamount).toFixed(2);
+              : parseFloat(item.onlinePayment).toFixed(2);
+          item.tdsamount = parseFloat(item.tdsamount).toFixed(2);
           item.donation =
             item.donation == undefined
               ? "0.00"
-              : Number(item.donation).toFixed(2);
+              : parseFloat(item.donation).toFixed(2);
           item.upiamount =
             item.upiamount == undefined
               ? "0.00"
-              : Number(item.upiamount).toFixed(2);
+              : parseFloat(item.upiamount).toFixed(2);
           item.totalamount =
             item.totalamount == undefined
               ? "0.00"
-              : Number(item.totalamount).toFixed(2);
+              : parseFloat(item.totalamount).toFixed(2);
 
           return item;
         });
@@ -806,7 +804,7 @@ export class CashScrollNewComponent implements OnInit {
           upiamount: this.UPIAmt.toFixed(2),
           donation: this.DonationAmount.toFixed(2),
           totalamount: (
-            Number(this.billamount) + Number(this.DonationAmount)
+            this.billamount + this.DonationAmount
           ).toFixed(2),
         };
       });
