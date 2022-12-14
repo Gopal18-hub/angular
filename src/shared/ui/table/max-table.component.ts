@@ -57,6 +57,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() data: any = [];
 
+  @Input() footerData: any = {};
+
   @Input() childTableRefId: any = -1;
 
   @Input() parentTable: any = null;

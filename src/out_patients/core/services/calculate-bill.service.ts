@@ -35,6 +35,7 @@ export class CalculateBillService {
   depositDetailsData: any = [];
 
   discountForm: any;
+  infoDialog: any;
 
   validCoupon: boolean = false;
 
@@ -152,57 +153,59 @@ export class CalculateBillService {
 
   async CheckOutSourceTest(item: any) {
     ////GAV-1355  -SRF
+    // if (
+    //   !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+    //     .srfID ||
+    //   this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+    //    .srfID == 0
+    //) {
+    const checkResult = await this.http
+      .post(
+        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
+        [{ id: item.itemId }]
+      )
+      .toPromise()
+      .catch((error: any) => {
+        if (error.status == 200) {
+          return error.error.text;
+        }
+      });
+
+    console.log(checkResult);
     if (
-      !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
-        .srfID ||
-      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
-        .srfID == 0
+      !(this.infoDialog && this.infoDialog.componentInstance) &&
+      checkResult &&
+      checkResult.length > 0
     ) {
-      const checkResult = await this.http
-        .post(
-          BillingApiConstants.checkoutsourcetest(
-            this.billingServiceRef.company
-          ),
-          [{ id: item.itemId }]
-        )
-        .toPromise()
-        .catch((error: any) => {
-          if (error.status == 200) {
-            return error.error.text;
-          }
+      this.infoDialog = await this.messageDialogService.confirm(
+        "",
+        "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
+      );
+
+      const infoDialogRes = await this.infoDialog.afterClosed().toPromise();
+      if (
+        infoDialogRes &&
+        "type" in infoDialogRes &&
+        infoDialogRes.type == "yes"
+      ) {
+        const srfDialogref = this.matDialog.open(SrfReasonComponent, {
+          width: "28vw",
+          height: "25vh",
+          disableClose: true,
         });
 
-      console.log(checkResult);
-      if (checkResult && checkResult.length > 0) {
-        const infoDialog = await this.messageDialogService.confirm(
-          "",
-          "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
-        );
+        let res = await srfDialogref
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .toPromise();
 
-        const infoDialogRes = await infoDialog.afterClosed().toPromise();
-        if (
-          infoDialogRes &&
-          "type" in infoDialogRes &&
-          infoDialogRes.type == "yes"
-        ) {
-          const srfDialogref = this.matDialog.open(SrfReasonComponent, {
-            width: "28vw",
-            height: "25vh",
-            disableClose: true,
-          });
-
-          let res = await srfDialogref
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .toPromise();
-
-          if (res && res.data && res.data.reason) {
-            this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
-              res.data.reason;
-          }
+        if (res && res.data && res.data.reason) {
+          this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
+            res.data.reason;
         }
       }
     }
+    //}
   }
 
   async getinteraction() {
@@ -317,9 +320,11 @@ export class CalculateBillService {
               });
             }
           } else if (ditem.discTypeId == 4) {
-            formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+            formGroup.controls["patientDisc"].setValue(
+              ditem.discAmt.toFixed(2)
+            );
           } else if (ditem.discTypeId == 5) {
-            formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["compDisc"].setValue(ditem.discAmt.toFixed(2));
             formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
@@ -418,7 +423,7 @@ export class CalculateBillService {
       this.calculateDiscount();
     }
 
-    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
+    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt.toFixed(2));
     componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {

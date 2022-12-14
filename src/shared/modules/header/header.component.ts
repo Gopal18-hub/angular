@@ -12,6 +12,7 @@ import { ChangelocationComponent } from "./changelocation/changelocation.compone
 import { Subject, takeUntil } from "rxjs";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
 import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
+import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
 
 @Component({
   selector: "maxhealth-header",
@@ -213,7 +214,7 @@ export class HeaderComponent implements OnInit {
           type: "object",
           properties: {
             imei: {
-              type: "autocomplete",
+              type: "dropdown",
               title: "POS IMEI",
               required: true,
             },
@@ -225,6 +226,38 @@ export class HeaderComponent implements OnInit {
     });
 
     changePasswordDialoref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          window.location.reload();
+        }
+      });
+  }
+
+  openPayTmDialog() {
+    const paytmDialoref = this.matDialog.open(PaytmMachineComponent, {
+      width: "25vw",
+      height: "33vh",
+      data: {
+        title: "Select PayTm Machine",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            posId: {
+              type: "dropdown",
+              title: "PayTm Machine",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+
+    paytmDialoref
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {

@@ -315,7 +315,7 @@ export class InvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
-              docRequired: r.docRequired,
+              docRequired: r.procedureDoctor, ////GAV-1423
               patient_Instructions: r.patient_Instructions,
               item_Instructions:
                 BillingStaticConstants.investigationItemBasedInstructions[
@@ -324,16 +324,22 @@ export class InvestigationsComponent implements OnInit {
               precaution: r.precaution,
               popuptext: r.popuptext,
               profileid: r.profileid,
-              ngStyle: {
-                color: r.outsourceColor == 2 ? "red" : "",
-              },
+              ngStyle: this.getOutSourceColor(r),
             };
           });
           this.questions[1] = { ...this.questions[1] };
         }
       });
   }
-
+  getOutSourceColor(r: any): any {
+    let color = "";
+    if (r.outsourceColor == 2) {
+      color = "red";
+    } else if (r.outsourceTest == 1) {
+      color = "orange";
+    }
+    return { color: color };
+  }
   checkTableValidation() {
     this.zeroPriceExist = false;
 
@@ -375,8 +381,9 @@ export class InvestigationsComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    ////GAV-1381 -
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }
@@ -414,7 +421,7 @@ export class InvestigationsComponent implements OnInit {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
-            docRequired: r.docRequired,
+            docRequired: r.procedureDoctor, ////GAV-1423
             patient_Instructions: r.patient_Instructions,
             item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[
@@ -424,9 +431,10 @@ export class InvestigationsComponent implements OnInit {
             popuptext: r.popuptext,
             precaution: r.precaution,
             profileid: r.profileid,
-            ngStyle: {
-              color: r.outsourceColor == 2 ? "red" : "",
-            },
+            //ngStyle: {
+            //  color: r.outsourceColor == 2 ? "red" : "",
+            //},
+            ngStyle: this.getOutSourceColor(r),
           };
         });
         this.questions[1] = { ...this.questions[1] };
