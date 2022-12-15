@@ -412,6 +412,23 @@ export class RefundDialogComponent implements OnInit {
     this._destroying$.next(undefined);
     this._destroying$.complete();
   }
+
+  checkmandatoryRefund(){
+    let tabForms = true;
+    if(this.paymentdepositcashMode){
+      if(this.paymentdepositcashMode.activeTab == "Cash" && this.paymentdepositcashMode.refundform.value.cashamount <= 0){
+        tabForms = false;
+       }
+       else if(this.paymentdepositcashMode.activeTab == "Cheque" && !this.paymentdepositcashMode.chequemandatoryfields()){
+        tabForms = false;
+       }
+    }
+    if(!tabForms){
+      return false;
+    }else{
+      return true;
+    }
+  }
 }
 
 
