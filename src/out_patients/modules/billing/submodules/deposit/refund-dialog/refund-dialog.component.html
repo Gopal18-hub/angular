@@ -104,7 +104,7 @@
 
     <!-- button -->
     <div class="flex float-right refunddepositbutton right-0 absolute">       
-            <button mat-raised-button color="primary" type="submit" (click)="saverefunddialog()">Submit</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!checkmandatoryRefund()" (click)="saverefunddialog()">Submit</button>
      
             <button mat-raised-button color="primary" type="submit" class="ml-3" (click)="clear()">Clear</button>
       
