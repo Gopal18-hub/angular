@@ -20,7 +20,7 @@ import {
 } from "rxjs/operators";
 import { of } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
-
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 @Component({
   selector: "out-patients-health-checkups",
   templateUrl: "./health-checkups.component.html",
@@ -45,6 +45,7 @@ export class HealthCheckupsComponent implements OnInit {
   };
   formGroup!: FormGroup;
   questions: any;
+  snackbarHealthCheckup: any = true;
 
   @ViewChild("table") tableRows: any;
   data: any = [];
@@ -87,7 +88,8 @@ export class HealthCheckupsComponent implements OnInit {
     public matDialog: MatDialog,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackbar: MaxHealthSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -185,29 +187,31 @@ export class HealthCheckupsComponent implements OnInit {
         debounceTime(1000),
         tap(() => {}),
         switchMap((value) => {
-          if (
-            (value == null || value.length <= 3) &&
-            this.formGroup.value.department &&
-            this.formGroup.value.department.value
-          ) {
-            return of([]);
-          } else {
-            return this.http
-              .get(
-                BillingApiConstants.gethealthcheckupsonsearch(
-                  Number(this.cookie.get("HSPLocationId")),
-                  value
+          if (value !== null && value.length >= 3) {
+            if (
+              this.formGroup.value.department &&
+              this.formGroup.value.department.value
+            ) {
+              console.log("department if for value", value);
+              return of([]);
+            } else {
+              return this.http
+                .get(
+                  BillingApiConstants.gethealthcheckupsonsearch(
+                    Number(this.cookie.get("HSPLocationId")),
+                    value
+                  )
                 )
-              )
-              .pipe(
-                catchError((err) => {
-                  //console.log("err", err);
-                  //console.log("err message", err.error);
-                  //this.messageDialogService.error(err.error);
-                  return of([]);
-                }),
-                finalize(() => {})
-              );
+                .pipe(
+                  catchError((err) => {
+                    this.openSnackbarHealthCheckup(err.error);
+                    return of([]);
+                  }),
+                  finalize(() => {})
+                );
+            }
+          } else {
+            return of([]);
           }
         })
       )
@@ -276,11 +280,25 @@ export class HealthCheckupsComponent implements OnInit {
           this.questions[1] = { ...this.questions[1] };
         },
         (error) => {
+          this.openSnackbarHealthCheckup(
+            "Health Checkup's Not available for " +
+              this.formGroup.value.department.title
+          );
           this.formGroup.controls["healthCheckup"].reset();
           this.questions[1].options = [];
           this.questions[1] = { ...this.questions[1] };
         }
       );
+  }
+
+  openSnackbarHealthCheckup(msg: string) {
+    if (this.snackbarHealthCheckup) {
+      this.snackbarHealthCheckup = false;
+      this.snackbarHealthCheckup = this.snackbar.open(msg, "error");
+      setTimeout(() => {
+        this.snackbarHealthCheckup = true;
+      }, 4000);
+    }
   }
 
   checkPatientSex(
