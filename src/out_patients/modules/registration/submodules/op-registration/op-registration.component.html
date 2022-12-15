@@ -682,10 +682,9 @@
                 <img width="100%" [src]="patientImage" class="imgHeight cursor-pointer" (click)="openImageUploadDialog()"
                  *ngIf="patientImage != undefined && patientImage != null && patientImage != ''">
             </div>
-            <div class="img-banner-bottom" *ngIf="isNoImage" >
+            <div class="img-banner-bottom" *ngIf="isNoImage">
               &nbsp;&nbsp;&nbsp;
-              <a class="cursor-pointer click-here-link " (click)="openImageUploadDialog()" >Click here</a> 
-              <span *ngIf="isNoImage" class="font-click-here"> to capture photo</span>
+              <a class="cursor-pointer click-here-link" (click)="openImageUploadDialog()">Capture Photo</a> 
             </div>
         </div>
         </div>
