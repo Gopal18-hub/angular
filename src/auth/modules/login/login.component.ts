@@ -13,6 +13,8 @@ import { environment } from "@environments/environment";
 import { ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ApplicationLogicService } from "@shared/services/applogic.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ClearExistingLoginDialogComponent } from "./clear-existing-login-dialog/clear-existing-login-dialog.component";
 @Component({
   selector: "auth-login",
   templateUrl: "./login.component.html",
@@ -31,6 +33,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   Authentication: boolean = true;
   userValidationError: string = "";
   public name: string = "";
+  redirectUrl:any;
 
   loginFormData = {
     title: "",
@@ -74,6 +77,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private adauth: ADAuthService,
     private cookie: CookieService,
     private authService: AuthService,
+    public matdialog: MatDialog,
     private route: ActivatedRoute,
     private messageDialogService: MessageDialogService,
     private appLogicService: ApplicationLogicService
@@ -211,7 +215,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
               });
             }
 
-            console.log(this.questions);
 
             this.userId = Number(this.userlocationandstation.userId);
             this.name = this.userlocationandstation.name;
@@ -264,6 +267,53 @@ export class LoginComponent implements OnInit, AfterViewInit {
       );
   }
 
+  clearExistingLogin() {
+    const dialogref = this.matdialog.open(ClearExistingLoginDialogComponent, {
+      width: "33vw",
+      height: "30vh",
+      data: {
+        message:
+          "You have logged in another session. Do you want to delete other active session?",
+      },
+    });
+
+    dialogref.afterClosed().subscribe((res) => {
+      if (res.data == "Y") {
+        this.adauth
+          .ClearExistingLogin(this.userId)
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(async (resdata: any) => {
+
+            this.authStatus = true;
+              this.cookie.set("UserName", this.username);
+              this.cookie.set("UserId", this.userId.toString());
+              this.cookie.set("Name", this.name);
+              this.cookie.set("LocationIACode", this.locationdetail!.iaCode);
+              this.cookie.set(
+                "HSPLocationId",
+                this.locationdetail!.hspLocationId.toString()
+              );
+              this.cookie.set(
+                "Location",
+                this.locationdetail!.organizationName
+              );
+              this.cookie.set("Station", this.stationdetail!.stationName);
+              this.cookie.set(
+                "StationId",
+                this.stationdetail!.stationid.toString()
+              );
+              this.appLogicService.getGSTVistaLiveFlag();
+              window.location = this.redirectUrl;
+              this.Authentication = true;
+            //return false;
+          });
+      } else {
+        this.loginForm.reset();
+        //return false;
+      }
+    });
+  }
+
   loginSubmit() {
     let status;
     if (this.loginForm.valid) {
@@ -296,6 +346,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.stationdetail!.stationid.toString()
               );
               this.appLogicService.getGSTVistaLiveFlag();
+              this.redirectUrl=data["redirectUrl"];
               window.location = data["redirectUrl"];
               this.Authentication = true;
             } else if (status == "InvalidUser") {
@@ -306,21 +357,25 @@ export class LoginComponent implements OnInit, AfterViewInit {
               if (data.userData) {
                 if (data.userData["error"]) {
                   console.log(data.userData["error"]);
-                  if ((data.userData.user.logged = "Y")) {
+                  if (data.userData["error"] == "User Already Logged in to the system.")
+                      this.clearExistingLogin();
+                  else if ((data.userData.user.logged = "Y")) {
                     const errorDialogRef = this.messageDialogService.warning(
                       data.userData["error"]
                     );
                     await errorDialogRef.afterClosed().toPromise();
+                    this.loginForm.reset();
                     //Delete ActiveSession
                   } else {
                     this.messageDialogService.warning(data.userData["error"]);
+                    this.loginForm.reset();
                     // this.Authentication = false;
                     // this.authStatus = false;
                     // this.userValidationError = data.userData["error"];
                   }
                 }
               }
-              this.loginForm.reset();
+              
             } else {
               this.authStatus = false;
               this.Authentication = false;
