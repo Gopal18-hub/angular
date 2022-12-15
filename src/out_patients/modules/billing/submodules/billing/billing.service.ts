@@ -71,6 +71,7 @@ export class BillingService {
   consultationItemsAdded = new Subject<boolean>();
 
   referralDoctor: any;
+  isNeedToCheckSRF: any = 0;
   twiceConsultationReason: any = "";
 
   companyChangeEvent = new Subject<any>();
@@ -122,6 +123,15 @@ export class BillingService {
     );
   }
 
+  //check For approval or SRF GAV-1355
+  checkApprovalSRF() {
+    return (
+      this.isNeedToCheckSRF &&
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.srfID == 0 &&
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId != 0
+    );
+  }
+
   changeBillTabStatus(status: boolean) {
     this.disableBillTab = status;
     this.disableBillTabChange.next(status);
@@ -148,6 +158,7 @@ export class BillingService {
     this.unbilledInvestigations = false;
     this.billingFormGroup = { form: "", questions: [] };
     this.referralDoctor = null;
+    this.isNeedToCheckSRF = 0;
     this.iomMessage = "";
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
@@ -365,6 +376,10 @@ export class BillingService {
         ].setValue("0.00");
     }
     if (res === "" || res == null) {
+      // Clear SRF values
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
+      this.isNeedToCheckSRF = 0;
+
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
@@ -937,8 +952,7 @@ export class BillingService {
   getconfigurationservice() {
     return this.configurationservice;
   }
-  setPatientChannelDetail(channeldetail: any)
-  {
+  setPatientChannelDetail(channeldetail: any) {
     this.channelDetail = channeldetail;
   }
 

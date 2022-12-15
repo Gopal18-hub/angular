@@ -740,129 +740,135 @@ export class BillComponent implements OnInit, OnDestroy {
       await referralErrorRef.afterClosed().toPromise();
       return;
     }
-    //CGHS Beneficiary check
-    await this.calculateBillService.checkCGHSBeneficiary();
 
-    ////GAV-910 - Domestic Tarrif check
-    await this.calculateBillService.checkDoemsticTarrif();
+    //check For approval or SRF GAV-1355
+    if (this.billingservice.checkApprovalSRF()) {
+      this.billingservice.calculateBill(this.formGroup, this.question);
+    } else {
+      //CGHS Beneficiary check
+      await this.calculateBillService.checkCGHSBeneficiary();
 
-    if (
-      !this.billingservice.referralDoctor ||
-      this.billingservice.referralDoctor.id === 0
-    ) {
-      const referralErrorRef = this.messageDialogService.error(
-        "Please select Referral Doctor"
-      );
-      await referralErrorRef.afterClosed().toPromise();
-      return;
-    }
-    const consulatationStatus =
-      await this.calculateBillService.checkForConsultation();
-    if (!consulatationStatus) {
-      return;
-    }
+      ////GAV-910 - Domestic Tarrif check
+      await this.calculateBillService.checkDoemsticTarrif();
 
-    //Credit Limit check for Billtype Credit
-    if (
-      this.formGroup.value.paymentMode == 3 &&
-      this.billingservice.company &&
-      this.formGroup.value.credLimit <= 0
-    ) {
-      const credLimitStatus = await this.checkForCreditLimit();
-      if (!credLimitStatus) {
+      if (
+        !this.billingservice.referralDoctor ||
+        this.billingservice.referralDoctor.id === 0
+      ) {
+        const referralErrorRef = this.messageDialogService.error(
+          "Please select Referral Doctor"
+        );
+        await referralErrorRef.afterClosed().toPromise();
         return;
       }
-    }
+      const consulatationStatus =
+        await this.calculateBillService.checkForConsultation();
+      if (!consulatationStatus) {
+        return;
+      }
 
-    const dialogRef = this.messageDialogService.confirm(
-      "",
-      `Do you want to make the Bill?`
-    );
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(async (result: any) => {
-        if (result && "type" in result) {
-          if (result.type == "yes") {
-            if (Number(this.formGroup.value.amtPayByPatient) > 0) {
-              if (
-                this.calculateBillService.depositDetailsData.length > 0 &&
-                this.totalDeposit == 0
-              ) {
-                const availDepositsPopup = this.messageDialogService.confirm(
-                  "",
-                  `Do you want to avail Deposits?`
-                );
-                const availDepositResult = await availDepositsPopup
-                  .afterClosed()
-                  .toPromise();
-                if (availDepositResult) {
-                  if (availDepositResult.type == "yes") {
-                    this.depositdetails();
-                  } else {
-                    //GAV-1053 Paid Online appointment
-                    this.onlinePaymentConfirmation();
+      //Credit Limit check for Billtype Credit
+      if (
+        this.formGroup.value.paymentMode == 3 &&
+        this.billingservice.company &&
+        this.formGroup.value.credLimit <= 0
+      ) {
+        const credLimitStatus = await this.checkForCreditLimit();
+        if (!credLimitStatus) {
+          return;
+        }
+      }
+
+      const dialogRef = this.messageDialogService.confirm(
+        "",
+        `Do you want to make the Bill?`
+      );
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(async (result: any) => {
+          if (result && "type" in result) {
+            if (result.type == "yes") {
+              if (Number(this.formGroup.value.amtPayByPatient) > 0) {
+                if (
+                  this.calculateBillService.depositDetailsData.length > 0 &&
+                  this.totalDeposit == 0
+                ) {
+                  const availDepositsPopup = this.messageDialogService.confirm(
+                    "",
+                    `Do you want to avail Deposits?`
+                  );
+                  const availDepositResult = await availDepositsPopup
+                    .afterClosed()
+                    .toPromise();
+                  if (availDepositResult) {
+                    if (availDepositResult.type == "yes") {
+                      this.depositdetails();
+                    } else {
+                      //GAV-1053 Paid Online appointment
+                      this.onlinePaymentConfirmation();
+                    }
                   }
+                } else {
+                  //GAV-530 Paid Online appointment
+                  this.onlinePaymentConfirmation();
                 }
               } else {
-                //GAV-530 Paid Online appointment
-                this.onlinePaymentConfirmation();
-              }
-            } else {
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
-                Number(this.formGroup.value.dipositAmtEdit) || 0;
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
-                Number(this.formGroup.value.discAmt) || 0;
-              this.billingservice.makeBillPayload.cmbInteraction =
-                Number(this.formGroup.value.interactionDetails) || 0;
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
-                Number(this.formGroup.value.paymentMode);
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
+                  Number(this.formGroup.value.dipositAmtEdit) || 0;
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
+                  Number(this.formGroup.value.discAmt) || 0;
+                this.billingservice.makeBillPayload.cmbInteraction =
+                  Number(this.formGroup.value.interactionDetails) || 0;
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+                  Number(this.formGroup.value.paymentMode);
 
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
-                parseFloat(this.formGroup.value.credLimit) || 0;
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
-                parseFloat(this.formGroup.value.amtPayByComp) || 0;
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
+                  parseFloat(this.formGroup.value.credLimit) || 0;
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
+                  parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planAmount =
-                parseFloat(this.formGroup.value.planAmt) || 0;
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planAmount =
+                  parseFloat(this.formGroup.value.planAmt) || 0;
 
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planId =
-                this.billingservice.selectedOtherPlan
-                  ? this.billingservice.selectedOtherPlan.planId
-                  : 0;
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId =
-                this.billingservice.patientDetailsInfo
-                  ? this.billingservice.patientDetailsInfo.peMail
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planId =
+                  this.billingservice.selectedOtherPlan
+                    ? this.billingservice.selectedOtherPlan.planId
+                    : 0;
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId =
+                  this.billingservice.patientDetailsInfo
                     ? this.billingservice.patientDetailsInfo.peMail
-                    : "info@maxhealthcare.com"
-                  : "info@maxhealthcare.com";
+                      ? this.billingservice.patientDetailsInfo.peMail
+                      : "info@maxhealthcare.com"
+                    : "info@maxhealthcare.com";
 
-              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.BookingNo =
-                (this.billingservice.PaidAppointments
-                  ? this.billingservice.PaidAppointments.bookingid
-                  : this.billingservice.billingFormGroup.form.value
-                      .bookingId) || "";
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.BookingNo =
+                  (this.billingservice.PaidAppointments
+                    ? this.billingservice.PaidAppointments.bookingid
+                    : this.billingservice.billingFormGroup.form.value
+                        .bookingId) || "";
 
-              const res = await this.billingservice.makeBill();
-              if (res.length > 0) {
-                if (res[0].billNo) {
-                  this.processBillNo(res[0]);
-                } else {
-                  if (!res[0].successFlag) {
-                    this.calculateBillService.blockActions.next(false);
-                    const messageRef = this.messageDialogService.error(
-                      res[0].returnMessage
-                    );
-                    await messageRef.afterClosed().toPromise();
-                    return;
+                const res = await this.billingservice.makeBill();
+                if (res.length > 0) {
+                  if (res[0].billNo) {
+                    this.processBillNo(res[0]);
+                  } else {
+                    if (!res[0].successFlag) {
+                      this.calculateBillService.blockActions.next(false);
+                      const messageRef = this.messageDialogService.error(
+                        res[0].returnMessage
+                      );
+                      await messageRef.afterClosed().toPromise();
+                      return;
+                    }
                   }
                 }
               }
+            } else {
             }
-          } else {
           }
-        }
-      });
+        });
+    }
   }
 
   makereceipt(ispaid = false) {
@@ -1019,8 +1025,8 @@ export class BillComponent implements OnInit, OnDestroy {
     successInfo.afterClosed().subscribe(async () => {
       // var complexflag = 0;
       var res = await this.http.get(BillingApiConstants.fectchpatientiscomplexcare(
-        this.billingservice.activeMaxId.iacode,
-        Number(this.billingservice.activeMaxId.regNumber),
+            this.billingservice.activeMaxId.iacode,
+            Number(this.billingservice.activeMaxId.regNumber),
         Number(this.cookie.get('HSPLocationId')))).toPromise();
         let complexflag = 0
         if(res)
@@ -1029,10 +1035,10 @@ export class BillComponent implements OnInit, OnDestroy {
           {
             if(res.complexCareTable1.length > 0)
             {
-              complexflag = res.complexCareTable1[0].flag;
-            }
+            complexflag = res.complexCareTable1[0].flag;
           }
         }
+      }
       console.log(complexflag);
       console.log(res);
       console.log(complexflag);
