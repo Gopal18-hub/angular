@@ -72,16 +72,16 @@ export class HeaderComponent implements OnInit {
       if (response.postLogoutRedirectUri) {
           window.location = response.postLogoutRedirectUri;
       }
-      localStorage.clear();
-      this.cookieService.deleteAll();
-      this.cookieService.deleteAll("/", environment.cookieUrl, true);
-      this.dbService.cachedResponses.clear();
       this.adauth
           .ClearExistingLogin(Number(this.cookieService.get("UserId")))
           .pipe(takeUntil(this._destroying$))
           .subscribe(async (resdata: any) => {
             console.log(resdata);
           });
+      localStorage.clear();
+      this.cookieService.deleteAll();
+      this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.dbService.cachedResponses.clear();
       window.location.href = window.location.origin + "/login";
     });
   }
