@@ -11,9 +11,10 @@ export namespace PaymentApiConstants {
     userId: number,
     stationId: number,
     maxId: any,
-    posId: any
+    posId: any,
+    module: any
   ) => {
-    return `${environment.BillingApiUrl}api/outpatientbilling/paytmpaymentinit/${amount}/${locationId}/${userId}/${stationId}/${maxId}/${posId}`;
+    return `${environment.BillingApiUrl}api/outpatientbilling/paytmpaymentinit/${amount}/${locationId}/${userId}/${stationId}/${maxId}/${posId}/${module}`;
   };
 
   export const paytmPaymentTxnValidate = (
