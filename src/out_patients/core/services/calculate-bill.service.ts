@@ -153,59 +153,60 @@ export class CalculateBillService {
 
   async CheckOutSourceTest(item: any) {
     ////GAV-1355  -SRF
-    // if (
-    //   !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
-    //     .srfID ||
-    //   this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
-    //    .srfID == 0
-    //) {
-    const checkResult = await this.http
-      .post(
-        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
-        [{ id: item.itemId }]
-      )
-      .toPromise()
-      .catch((error: any) => {
-        if (error.status == 200) {
-          return error.error.text;
-        }
-      });
-
-    console.log(checkResult);
     if (
-      !(this.infoDialog && this.infoDialog.componentInstance) &&
-      checkResult &&
-      checkResult.length > 0
+      !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID ||
+      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID == 0
     ) {
-      this.infoDialog = await this.messageDialogService.confirm(
-        "",
-        "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
-      );
-
-      const infoDialogRes = await this.infoDialog.afterClosed().toPromise();
-      if (
-        infoDialogRes &&
-        "type" in infoDialogRes &&
-        infoDialogRes.type == "yes"
-      ) {
-        const srfDialogref = this.matDialog.open(SrfReasonComponent, {
-          width: "28vw",
-          height: "25vh",
-          disableClose: true,
+      const checkResult = await this.http
+        .post(
+        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
+          [{ id: item.itemId }]
+        )
+        .toPromise()
+        .catch((error: any) => {
+          if (error.status == 200) {
+            return error.error.text;
+          }
         });
 
-        let res = await srfDialogref
-          .afterClosed()
-          .pipe(takeUntil(this._destroying$))
-          .toPromise();
+      console.log(checkResult);
+      if (
+        !(this.infoDialog && this.infoDialog.componentInstance) &&
+        checkResult &&
+        checkResult.length > 0
+      ) {
+        this.billingServiceRef.isNeedToCheckSRF = 1;
+        this.infoDialog = await this.messageDialogService.confirm(
+          "",
+          "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
+        );
 
-        if (res && res.data && res.data.reason) {
-          this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
-            res.data.reason;
+        const infoDialogRes = await this.infoDialog.afterClosed().toPromise();
+        if (
+          infoDialogRes &&
+          "type" in infoDialogRes &&
+          infoDialogRes.type == "yes"
+        ) {
+          const srfDialogref = this.matDialog.open(SrfReasonComponent, {
+            width: "28vw",
+            height: "25vh",
+            disableClose: true,
+          });
+
+          let res = await srfDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .toPromise();
+
+          if (res && res.data && res.data.reason) {
+            this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
+              res.data.reason;
+          }
         }
       }
     }
-    //}
   }
 
   async getinteraction() {
