@@ -192,6 +192,7 @@ export namespace BillingStaticConstants {
     employeeNo: "",
     reasonForAllowingCredit: "",
     notes: "",
+    isIndivisualOrCorporate: false
   };
 
   export const billingPageTabs: any = [

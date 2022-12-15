@@ -147,7 +147,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
               this.remainingAmount = parseFloat(this.totalAmount) - sum;
               if(this.remainingAmount < 0)
               {
-                this.messageDialogService.warning("Entered Amount Cannot be Greater than Bill Amount");
+                this.messageDialogService.warning("Total of Receipt Amount Cannot be Greater than Bill Amount.");
                 this.paymentForm[method].controls["price"].setValue('0.00');
                 this.paymentForm[method].controls["price"].setValue(this.remainingAmount);
               } 
