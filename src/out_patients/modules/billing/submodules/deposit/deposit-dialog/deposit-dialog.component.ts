@@ -52,8 +52,6 @@ export class DepositDialogComponent implements OnInit {
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
-  proceedToDeposit:boolean = true;
-
   private readonly _destroying$ = new Subject<void>();
 
   onDepositpage: boolean = true;
@@ -315,11 +313,17 @@ export class DepositDialogComponent implements OnInit {
       tabForms = false;
      } 
     }
+
+    if(tabForms && this.depositpatientidentity){
+       if(this.depositpatientidentity.patientidentityform.value.panno && this.depositpatientidentityinfo.mainradio == "pancardno"){
+         if(!this.depositpatientidentity.validatepanncardno()){
+          tabForms = false;
+         }
+       }
+    }
     if(!tabForms){
-      this.proceedToDeposit = false;
       return false;
     }else{
-      this.proceedToDeposit = true;
       return true;
     }
   }
