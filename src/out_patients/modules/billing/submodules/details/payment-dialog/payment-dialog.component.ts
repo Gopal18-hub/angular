@@ -1279,4 +1279,48 @@ export class PaymentDialogComponent implements OnInit {
     this.formsixtysubmit = event;
   }
 
+  formvalidate()
+  {
+    let price = form.amount;
+    let flag: boolean = false;
+    price.forEach((e: any) => {
+      console.log(parseFloat(this.dueform.controls[e].value))
+      if(parseFloat(this.dueform.controls[e].value) > 0)
+      {
+        let controls: any = form.form[e];
+        console.log(form[controls]);
+        form[controls].forEach( (i: any) => {
+          if(!this.dueform.controls[i].valid)
+          {
+            flag = true;
+          }
+          else{
+            flag = false;
+          }
+        })
+        return;
+      }
+    });
+  if(flag)
+    return true;
+  else  
+    return false;
+  }
+   
+}
+
+export const form: any = {
+  form: {
+    'cashamount': 'cashform',
+    'chequeamount': 'chequeform',
+    'creditamount': 'creditform',
+    'demandamount': 'demandform',
+    'onlineamount': 'onlineform',    
+  },
+  cashform: ['cashamount'],
+  chequeform: ['chequeamount', 'chequeno', 'chequeissuedate', 'chequevalidity', 'chequebankname', 'chequebranchname'],
+  creditform: ['creditamount', 'creditcardno', 'creditcardholdername', 'creditbankname', 'creditbatchno', 'creditapprovalno', 'creditterminalid', 'creditacquiringbank', 'posimei', 'transactionid', 'creditvalidity', 'banktid'],
+  demandform: ['demandamount', 'demandddno', 'demandissuedate', 'demandvalidity', 'demandbankname', 'demandbranchname'],
+  onlineform: ['onlineamount', 'onlinetransacid', 'onlinebookingid', 'onlinecardvalidate', 'onlinecontact'],
+  amount: ['cashamount', 'chequeamount', 'creditamount', 'demandamount', 'onlineamount']
 }

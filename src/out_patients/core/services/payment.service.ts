@@ -89,7 +89,8 @@ export class PaymentService {
           Number(this.cookie.get("UserId")),
           Number(this.cookie.get("StationId")),
           maxId,
-          this.cookie.get("PayTmMachinePOSId")
+          this.cookie.get("PayTmMachinePOSId"),
+          module
         ),
         {}
       )
