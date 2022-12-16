@@ -211,7 +211,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "pattern_string",
         title: "First Name",
         required: true,
-        pattern: "^[a-zA-Z0-9 .]*$",
+        pattern: "^[a-zA-Z0-9 ]*$",
         capitalizeText: true,
       },
       middleName: {
