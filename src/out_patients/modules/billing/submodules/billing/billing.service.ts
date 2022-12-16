@@ -424,8 +424,9 @@ export class BillingService {
             if (result.data == "corporate") {
               this.makeBillPayload.isIndivisualOrCorporate = true;
               formGroup.controls["corporate"].enable();
-              formGroup.controls["corporate"].setValue(null);
-              this.corporateChangeEvent.next({ corporate: null, from });
+              //reseting value even value is available - GAV-1406
+              // formGroup.controls["corporate"].setValue(null);
+              // this.corporateChangeEvent.next({ corporate: null, from });
               this.disablecorporatedropdown = true;
             } else {
               formGroup.controls["corporate"].setValue(null);
