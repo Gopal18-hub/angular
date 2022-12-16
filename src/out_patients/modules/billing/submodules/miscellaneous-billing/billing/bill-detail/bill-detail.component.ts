@@ -1790,6 +1790,7 @@ export class BillDetailComponent implements OnInit {
     if (credLimitWarning) {
       if (credLimitWarning.type == "yes") {
         this.question[22].elementRef.focus();
+        this.miscServBillForm.controls["credLimit"].setValue("");
         return false;
       } else {
         this.miscServBillForm.controls["paymentMode"].setValue("1");
