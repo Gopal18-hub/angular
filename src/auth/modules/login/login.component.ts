@@ -33,7 +33,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   Authentication: boolean = true;
   userValidationError: string = "";
   public name: string = "";
-  redirectUrl:any;
 
   loginFormData = {
     title: "",
@@ -303,7 +302,22 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.stationdetail!.stationid.toString()
               );
               this.appLogicService.getGSTVistaLiveFlag();
-              window.location = this.redirectUrl;
+                this.adauth
+                .authenticate(
+                  this.loginForm.value.username,
+                  this.loginForm.value.password
+                )
+                .pipe(takeUntil(this._destroying$))
+                .subscribe(
+                  async (data) => {
+                    window.location = data["redirectUrl"];
+                  },
+                  (error) => {
+                    this.authStatus = false;
+                    this.Authentication = false;
+                    this.loginForm.reset();
+                  }
+                );
               this.Authentication = true;
             //return false;
           });
@@ -346,7 +360,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.stationdetail!.stationid.toString()
               );
               this.appLogicService.getGSTVistaLiveFlag();
-              this.redirectUrl=data["redirectUrl"];
               window.location = data["redirectUrl"];
               this.Authentication = true;
             } else if (status == "InvalidUser") {

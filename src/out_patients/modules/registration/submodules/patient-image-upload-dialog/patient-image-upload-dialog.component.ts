@@ -150,8 +150,8 @@ export class PatientImageUploadDialogComponent implements OnInit, AfterViewInit 
         if (cam) {
           const context = self.canvas.nativeElement.getContext("2d").drawImage(self.video.nativeElement, 0, 0, 640, 480);
           let data = self.canvas.nativeElement.toDataURL("image/png");
-          // self.identityImage = data;
-          self.identityImage = self.domSanitizer.bypassSecurityTrustUrl(data);
+          self.identityImage = data;
+          self.patientImage = data;
           self.submitClicked = false;
         }
       });

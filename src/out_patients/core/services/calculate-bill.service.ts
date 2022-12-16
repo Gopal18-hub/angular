@@ -161,7 +161,9 @@ export class CalculateBillService {
     ) {
       const checkResult = await this.http
         .post(
-        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
+          BillingApiConstants.checkoutsourcetest(
+            this.billingServiceRef.company
+          ),
           [{ id: item.itemId }]
         )
         .toPromise()
@@ -1234,7 +1236,10 @@ export class CalculateBillService {
             this.billingServiceRef.patientDetailsInfo.adhaarID || ""
           )
         )
-        .toPromise();
+        .toPromise()
+        .catch((error: any) => {
+          return [];
+        });
 
       if (cghsBeneficiary) {
         if (
