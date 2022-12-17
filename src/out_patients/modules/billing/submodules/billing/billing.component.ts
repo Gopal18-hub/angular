@@ -515,7 +515,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (resultData) {
             this.patientDetails = resultData;
 
-            this.setValuesToForm(this.patientDetails);
+          this.billingService.setPatientDetails(
+            this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+          );  
+          this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
                 "Today is Patient’s birthday"
@@ -548,9 +551,6 @@ export class BillingComponent implements OnInit, OnDestroy {
                   });
                 }
               }
-              this.billingService.setPatientDetails(
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-              );
 
               this.billingService.setPatientChannelDetail(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]
