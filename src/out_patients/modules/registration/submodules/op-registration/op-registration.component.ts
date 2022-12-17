@@ -1148,7 +1148,11 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         console.log(value);
-        if (value) {
+        if(typeof value != 'object')
+        {
+          this.OPRegForm.controls["city"].setErrors({ incorrect: true });
+        }
+        else if (typeof value == 'object') {
           if (value.value > 0) {
             if (
               (this.OPRegForm.value.locality.value == undefined ||
