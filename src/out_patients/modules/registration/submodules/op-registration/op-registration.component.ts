@@ -1219,9 +1219,9 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["locality"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (value: any) => {
-        if (!this.maxIDChangeCall && this.countrybasedflow) {
-          this.OPRegForm.controls["pincode"].setValue("");
-        }
+        //if (!this.maxIDChangeCall && this.countrybasedflow) {
+        //  this.OPRegForm.controls["pincode"].setValue("");
+        //}
         if (
           (this.OPRegForm.value.pincode == "" ||
             this.OPRegForm.value.pincode == undefined ||
@@ -1250,7 +1250,7 @@ export class OpRegistrationComponent implements OnInit {
               }
             }
           }
-
+          
           if (this.localitybyCityList) {
             if (value.value && this.localitybyCityList.length > 0) {
               let pincode = this.localitybyCityList.filter(
@@ -1263,19 +1263,19 @@ export class OpRegistrationComponent implements OnInit {
               this.citybasedflow = false;
               this.addressByLocalityID(value);
             }
-            // else if(value && value.value)
-            // {
-            //   this.OPRegForm.controls["locality"].setErrors(null);
-            //   this.questions[22].customErrorMessage = "";
-            //   this.addressByLocalityID(value);
-            // }
+            else if(value && value.value)
+            {
+              this.OPRegForm.controls["locality"].setErrors(null);
+              this.questions[22].customErrorMessage = "";
+              this.addressByLocalityID(value);
+            }
           }
-          // else if(value && value.value)
-          // {
-          //   this.OPRegForm.controls["locality"].setErrors(null);
-          //   this.questions[22].customErrorMessage = "";
-          //   this.addressByLocalityID(value);
-          // }
+          else if(value && value.value)
+          {
+            this.OPRegForm.controls["locality"].setErrors(null);
+            this.questions[22].customErrorMessage = "";
+            this.addressByLocalityID(value);
+          }
         } else if (
           value.value > 0 &&
           value.value != undefined &&
@@ -2333,7 +2333,10 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[25].readonly = true;
             this.questions[26].readonly = true;
             this.questions[27].readonly = true;
-
+            this.OPRegForm.controls["pincode"].setValue(
+              this.AddressonLocalityModellst.pinCode,
+              { emitEvent: false }
+            );
             this.OPRegForm.controls["country"].setValue({
               title: this.AddressonLocalityModellst.countryName,
               value: this.AddressonLocalityModellst.countryid,
@@ -3688,6 +3691,48 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.value.idenityValue = "";
       }
     }
+
+    
+    // Check City validation
+    if (!validationerror) {
+      if (this.OPRegForm.controls["city"] && this.OPRegForm.value.city && this.OPRegForm.controls["city"].value) {
+         if (!this.OPRegForm.value.city.value && this.OPRegForm.value.city.value !== 0 && this.OPRegForm.value.city.trim() == "") {
+          validationerror = true;
+        } else if (Number(this.OPRegForm.value.city.value) == 0) {
+          validationerror = true;
+        } else{
+          validationerror = false;
+        }
+      } else {
+        validationerror = true;
+      }
+
+      if(validationerror){
+        this.OPRegForm.controls["city"].setValue("");
+        this.OPRegForm.controls["city"].markAsTouched();
+      }
+    }
+
+     // Check State validation
+    if (!validationerror) {
+      if (this.OPRegForm.controls["state"] && this.OPRegForm.value.state && this.OPRegForm.controls["state"].value) {
+         if (!this.OPRegForm.value.state.value && this.OPRegForm.value.state.value !== 0 && this.OPRegForm.value.state.trim() == "") {
+          validationerror = true;
+        } else if (Number(this.OPRegForm.value.state.value) == 0) {
+          validationerror = true;
+        } else{
+          validationerror = false;
+        }
+      } else {
+        validationerror = true;
+      }
+
+      if(validationerror){
+        this.OPRegForm.controls["state"].setValue("");
+        this.OPRegForm.controls["state"].markAsTouched();
+      }
+    }
+
 
     return validationerror;
   }
