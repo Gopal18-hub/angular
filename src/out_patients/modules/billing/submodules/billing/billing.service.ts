@@ -376,10 +376,6 @@ export class BillingService {
         ].setValue("0.00");
     }
     if (res === "" || res == null) {
-      // Clear SRF values
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
-      this.isNeedToCheckSRF = 0;
-
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
@@ -1075,7 +1071,7 @@ export class BillingService {
         ) -
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
-          ) +
+        ) +
           // parseFloat(
           //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
           // ) +
@@ -1990,5 +1986,18 @@ export class BillingService {
         docid: "",
       },
     });
+  }
+//gav 1428
+  checkValidItems() {
+    let nonPricedItems = [];
+    nonPricedItems = this.billItems.filter((e: any) => e.price == 0);
+    if (nonPricedItems.length > 0) {
+      this.messageDialogService.error(
+        "Please remove Non Priced Items in the list to proceed billing"
+      );
+      return false;
+    } else {
+      return true;
+    }
   }
 }
