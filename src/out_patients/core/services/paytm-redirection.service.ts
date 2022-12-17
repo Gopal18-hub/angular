@@ -55,7 +55,7 @@ export class PaytmRedirectionService {
       this.PosId;
   }
 
-  redirectToPayTmDisplayTxn(orderId: any, order_amount: any, qrcode_id: any) {
+  redirectToPayTmDisplayTxn(orderId: any, order_amount: any, qrData: any) {
     window.location.href =
       "PaytmPayments:?requestId=123;method=displayTxnQr;mid=" +
       this.Mid +
@@ -74,7 +74,7 @@ export class PaytmRedirectionService {
       ";order_amount=" +
       order_amount +
       ";qrcode_id=" +
-      qrcode_id +
+      qrData +
       ";currencySign=null;debugMode=1;posid=" +
       this.PosId;
 

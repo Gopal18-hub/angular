@@ -134,16 +134,21 @@ export class PaymentMethodsComponent implements OnInit {
         this.Refundavalaiblemaount.type == "Refund"
       ) {
         this.messageDialogService.info(
-          "Refund Amount must be less then available amount"
+          "Refund Amount must be less than available amount"
         );
+        if(this.PaymentType == 1){
+             this.refundform.controls["cashamount"].setValue("");
+        }else if(this.PaymentType == 2){
+          this.refundform.controls["chequeamount"].setValue("");
+        }
       } else if (
         Number(this.depositamount) > Number(cashlimit[0].cashLimit) &&
         this.PaymentType == 1
       ) {
         this.messageDialogService.info(
-          "Refund through Cash Cannot be more then Rs 10000"
+          "Refund through Cash Cannot be more than Rs 10000"
         );
-        this.refundform.controls["cashamount"].setErrors({ incorrect: true });  
+        this.refundform.controls["cashamount"].setValue(""); 
       } else if (Number(this.depositamount <= 0)) {
         this.messageDialogService.info(
           "Refund Amount must not be Zero or Negative number"

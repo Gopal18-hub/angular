@@ -335,7 +335,7 @@ export class InvestigationsComponent implements OnInit {
     let color = "";
     if (r.outsourceColor == 2) {
       color = "red";
-    } else if (r.outsourceTest == 1) {
+    } else if (r.outsourceColor == 1) {
       color = "orange";
     }
     return { color: color };
