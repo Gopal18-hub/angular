@@ -376,10 +376,6 @@ export class BillingService {
         ].setValue("0.00");
     }
     if (res === "" || res == null) {
-      // Clear SRF values
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
-      this.isNeedToCheckSRF = 0;
-
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
