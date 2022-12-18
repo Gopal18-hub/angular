@@ -11,6 +11,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
 import { DatePipe } from "@angular/common";
+import { HeaderModule } from "@shared/modules/header";
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,6 +22,7 @@ import { DatePipe } from "@angular/common";
     AppRoutingModule,
     HttpClientModule,
     MaxHealthMessageDialogModule,
+    HeaderModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

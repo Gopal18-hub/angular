@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { AuthService } from "@shared/services/auth.service";
 
 @Component({
   selector: "all-root",
@@ -8,7 +9,11 @@ import { Component } from "@angular/core";
 export class AppComponent {
   title = "all tenents";
 
-  constructor() {}
+  isAuthenticated: boolean = false;
 
-  ngOnInit(): void {}
+  constructor(private auth: AuthService) {}
+
+  ngOnInit(): void {
+    this.isAuthenticated = this.auth.isAuthenticated();
+  }
 }
