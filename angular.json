@@ -1621,7 +1621,15 @@
             "polyfills": "src/all/src/polyfills.ts",
             "tsConfig": "src/all/tsconfig.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/all/src/favicon.ico", "src/all/src/assets"],
+            "assets": [
+              "src/all/src/favicon.ico",
+              "src/all/src/assets",
+              {
+                "glob": "*",
+                "input": "src/out_patients/src/assets",
+                "output": "assets/"
+              }
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/all/src/styles.scss"

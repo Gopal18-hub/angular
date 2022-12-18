@@ -1,32 +1,34 @@
 import { NgModule, ModuleWithProviders } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
-import { AppRoutingModule } from "./app-routing.module";
+import {
+  AppRoutingModule,
+  OutPatientRoutingModule,
+} from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HeaderModule } from "../../../shared/modules/header";
+import { HeaderModule } from "@shared/modules/header";
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
 import { PatientHistoryModule } from "@modules/patient-history";
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
 import { QmsModule } from "@modules/qms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
-import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
+import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
+import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
 import { DatePipe } from "@angular/common";
 import { APP_BASE_HREF } from "@angular/common";
-import { AuthService } from "../../../shared/services/auth.service";
-import { HttpService } from "../../../shared/services/http.service";
-import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
-import { SearchService } from "../../../shared/services/search.service";
-import { CookieService } from "../../../shared/services/cookie.service";
+import { AuthService } from "@shared/services/auth.service";
+import { HttpService } from "@shared/services/http.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from "@shared/services/search.service";
+import { CookieService } from "@shared/services/cookie.service";
 import { AcdModule } from "@modules/acd";
 import { StaffDeptModule } from "@modules/staff-dept";
 import { ReportsModule } from "@modules/reports";
 import { ConfigureModule } from "@modules/configure";
 
 const importModules = [
-  BrowserAnimationsModule,
   HeaderModule,
   BillingModule,
   RegistrationModule,
@@ -40,36 +42,40 @@ const importModules = [
   StaffDeptModule,
   ReportsModule,
   ConfigureModule,
-  AppRoutingModule,
+];
+
+const providers = [
+  DatePipe,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptor,
+    multi: true,
+  },
+  AuthService,
+  HttpService,
+  MessageDialogService,
+  SearchService,
+  CookieService,
 ];
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, ...importModules],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    ...importModules,
+    AppRoutingModule,
+  ],
   providers: [
-    DatePipe,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true,
-    },
-    AuthService,
-    HttpService,
-    MessageDialogService,
-    SearchService,
-    CookieService,
+    ...providers,
     { provide: APP_BASE_HREF, useValue: "/out-patients" },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
 
-@NgModule()
-export class OutPatientModule {
-  static forRoot(): ModuleWithProviders<AppModule> {
-    return {
-      ngModule: AppModule,
-      providers: [],
-    };
-  }
-}
+@NgModule({
+  imports: [...importModules, OutPatientRoutingModule],
+  providers: [...providers],
+})
+export class OutPatientModule {}

@@ -7,6 +7,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { CommonModule } from "@angular/common";
 
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+
+import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
+import { DatePipe } from "@angular/common";
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -14,8 +19,10 @@ import { CommonModule } from "@angular/common";
     BrowserAnimationsModule,
     CommonModule,
     AppRoutingModule,
+    HttpClientModule,
+    MaxHealthMessageDialogModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
