@@ -9,6 +9,9 @@
       "@auth/modules/*":[
           "../auth/modules/*"
       ],
+       "@auth/core/*":[
+          "../auth/core/*"
+      ],
       "@modules/*": [
         "../out_patients/modules/*"
       ],
