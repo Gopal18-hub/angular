@@ -3,7 +3,6 @@ import { HttpService } from "@shared/services/http.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { Subject, takeUntil } from "rxjs";
 import { PaymentApiConstants } from "../constants/PaymentApiConstants";
-import { AnyARecord } from "dns";
 
 @Injectable({
   providedIn: "root",
@@ -76,4 +75,45 @@ export class PaymentService {
   }
 
   manualEntry() {}
+
+  async paytmPaymentInit(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
+    return await this.http
+      .post(
+        PaymentApiConstants.paytmPaymentInit(
+          payloadData.price,
+          Number(this.cookie.get("HSPLocationId")),
+          Number(this.cookie.get("UserId")),
+          Number(this.cookie.get("StationId")),
+          maxId,
+          this.cookie.get("PayTmMachinePOSId"),
+          module
+        ),
+        {}
+      )
+      .toPromise();
+  }
+
+  async paytmPaymentTxnValidate(
+    payloadData: any,
+    module: any,
+    maxId: any
+  ): Promise<any> {
+    return await this.http
+      .post(
+        PaymentApiConstants.paytmPaymentTxnValidate(
+          payloadData.price,
+          Number(this.cookie.get("HSPLocationId")),
+          Number(this.cookie.get("UserId")),
+          Number(this.cookie.get("StationId")),
+          maxId,
+          this.cookie.get("PayTmMachinePOSId")
+        ),
+        {}
+      )
+      .toPromise();
+  }
 }

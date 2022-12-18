@@ -35,6 +35,7 @@ export class CalculateBillService {
   depositDetailsData: any = [];
 
   discountForm: any;
+  infoDialog: any;
 
   validCoupon: boolean = false;
 
@@ -173,13 +174,18 @@ export class CalculateBillService {
         });
 
       console.log(checkResult);
-      if (checkResult && checkResult.length > 0) {
-        const infoDialog = await this.messageDialogService.confirm(
+      if (
+        !(this.infoDialog && this.infoDialog.componentInstance) &&
+        checkResult &&
+        checkResult.length > 0
+      ) {
+        this.billingServiceRef.isNeedToCheckSRF = 1;
+        this.infoDialog = await this.messageDialogService.confirm(
           "",
           "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
         );
 
-        const infoDialogRes = await infoDialog.afterClosed().toPromise();
+        const infoDialogRes = await this.infoDialog.afterClosed().toPromise();
         if (
           infoDialogRes &&
           "type" in infoDialogRes &&
@@ -1230,7 +1236,10 @@ export class CalculateBillService {
             this.billingServiceRef.patientDetailsInfo.adhaarID || ""
           )
         )
-        .toPromise();
+        .toPromise()
+        .catch((error: any) => {
+          return [];
+        });
 
       if (cghsBeneficiary) {
         if (

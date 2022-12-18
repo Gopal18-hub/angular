@@ -286,6 +286,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
       if (res && res.value) {
         console.log(res);
+        // Clear SRF values
+        this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
+        this.billingService.isNeedToCheckSRF = 0;
         if (this.billingService.billtype == 3 && res.company.id > 0) {
           this.billingService.checkcreditcompany(
             res.value,
@@ -716,9 +719,9 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {

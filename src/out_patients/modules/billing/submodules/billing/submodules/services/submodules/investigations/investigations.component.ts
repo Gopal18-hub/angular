@@ -335,7 +335,7 @@ export class InvestigationsComponent implements OnInit {
     let color = "";
     if (r.outsourceColor == 2) {
       color = "red";
-    } else if (r.outsourceTest == 1) {
+    } else if (r.outsourceColor == 1) {
       color = "orange";
     }
     return { color: color };
@@ -565,9 +565,11 @@ export class InvestigationsComponent implements OnInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }

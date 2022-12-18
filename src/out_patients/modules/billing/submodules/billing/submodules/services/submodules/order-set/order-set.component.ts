@@ -54,8 +54,7 @@ export class OrderSetComponent implements OnInit {
       "doctorName",
       "price",
       "precaution",
-      "priority",    
-      
+      "priority",
     ],
     columnsInfo: {
       sno: {
@@ -125,7 +124,6 @@ export class OrderSetComponent implements OnInit {
           width: "130px",
         },
       },
-      
     },
   };
 
@@ -256,7 +254,7 @@ export class OrderSetComponent implements OnInit {
   ) {
     console.log(index);
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }
@@ -489,9 +487,11 @@ export class OrderSetComponent implements OnInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }
