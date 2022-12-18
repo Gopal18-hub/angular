@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, ModuleWithProviders } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -24,26 +24,28 @@ import { AcdModule } from "@modules/acd";
 import { StaffDeptModule } from "@modules/staff-dept";
 import { ReportsModule } from "@modules/reports";
 import { ConfigureModule } from "@modules/configure";
+
+const importModules = [
+  BrowserAnimationsModule,
+  HeaderModule,
+  BillingModule,
+  RegistrationModule,
+  HttpClientModule,
+  //MaxHealthSnackBarModule,
+  EmployeeSponsorTaggingModule,
+  MaxHealthMessageDialogModule,
+  PatientHistoryModule,
+  QmsModule,
+  AcdModule,
+  StaffDeptModule,
+  ReportsModule,
+  ConfigureModule,
+  AppRoutingModule,
+];
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HeaderModule,
-    BillingModule,
-    RegistrationModule,
-    HttpClientModule,
-    //MaxHealthSnackBarModule,
-    EmployeeSponsorTaggingModule,
-    MaxHealthMessageDialogModule,
-    PatientHistoryModule,
-    QmsModule,
-    AcdModule,
-    StaffDeptModule,
-    ReportsModule,
-    ConfigureModule,
-    AppRoutingModule,
-  ],
+  imports: [BrowserModule, ...importModules],
   providers: [
     DatePipe,
     {
@@ -61,3 +63,13 @@ import { ConfigureModule } from "@modules/configure";
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+@NgModule()
+export class OutPatientModule {
+  static forRoot(): ModuleWithProviders<AppModule> {
+    return {
+      ngModule: AppModule,
+      providers: [],
+    };
+  }
+}

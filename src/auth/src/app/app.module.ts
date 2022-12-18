@@ -7,10 +7,10 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { LoginModule } from "@modules/login";
-import { SignupModule } from "@modules/signup";
-import { OpenIDModule } from "@modules/openid";
-import { DashboardModule } from "@modules/dashboard";
+import { LoginModule } from "@auth/modules/login";
+import { SignupModule } from "@auth/modules/signup";
+import { OpenIDModule } from "@auth/modules/openid";
+import { DashboardModule } from "@auth/modules/dashboard";
 
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
 import { ADAuthService } from "../../../auth/core/services/adauth.service";

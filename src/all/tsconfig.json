@@ -6,18 +6,21 @@
     "baseUrl": ".",
     "types": [],
     "paths": {
-        "@auth/modules/*": [
-          "./modules/*"
-        ],
-        "@auth/core/*": [
-          "./core/*"
-        ],
-        "@environments/*": [
-          "../environments/*"
-        ],
-        "@shared/*": [
-          "../shared/*"
-        ]
+      "@auth/modules/*":[
+          "../auth/modules/*"
+      ],
+      "@modules/*": [
+        "../out_patients/modules/*"
+      ],
+      "@core/*": [
+        "../out_patients/core/*"
+      ],
+      "@environments/*": [
+        "../environments/*"
+      ],
+      "@shared/*": [
+        "../shared/*"
+      ]
     }
   },
   "files": [
