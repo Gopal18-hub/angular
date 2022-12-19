@@ -172,6 +172,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
       this.paytmRedirectionService.redirectToPayTmHomeScreen();
     }
 
+    //auto populate for 'No' select in online appointment popup
+    if(this.activeTab.key == 'onlinepayment' && this.config.isonlinepaidappointment == true)
+    {
+      this.onlinePaymentAutoFill(this.config.formData.onlinepayment);
+    }
+
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
         if (this.activeTab.key != "onlinepayment") {
@@ -244,6 +250,31 @@ export class BillingPaymentMethodsComponent implements OnInit {
     }
   }
 
+  onlinePaymentAutoFill(res: any)
+  {
+    console.log(res);
+    this.tabs.forEach((i: any) => {
+      console.log(i);
+      this.paymentForm[i.key].controls["price"].setValue("0.00");
+      console.log(this.paymentForm[i.key].controls["price"]);
+    });
+    this.paymentForm.onlinepayment.controls["transactionId"].setValue(
+      res.transactionNo || res.transactionId 
+    );
+    this.paymentForm.onlinepayment.controls["bookingId"].setValue(
+      res.bookingNo || res.bookingId
+    );
+    this.questions.onlinepayment[1].readonly = true;
+    this.paymentForm.onlinepayment.controls["price"].setValue(
+      res.price || res.bookingAmount
+    );
+    this.paymentForm.onlinepayment.controls["onlineContact"].setValue(
+      res.mobile || res.onlineContact
+    );
+    this.paymentForm.onlinepayment.controls["cardValidation"].setValue(
+      "yes"
+    );
+  }
   async paymentButtonAction(button: any) {
     console.log(button);
     if (button.type == "onlinePaymentSearch") {
@@ -261,31 +292,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
       onlinedialog.afterClosed().subscribe((res) => {
         console.log(res);
         if (res) {
-          console.log(this.paymentForm);
-          this.tabs.forEach((i: any) => {
-            console.log(i);
-            // this.paymentForm[i.key].reset();
-            this.paymentForm[i.key].controls["price"].setValue("0.00");
-            console.log(this.paymentForm[i.key].controls["price"]);
-          });
-          this.paymentForm.onlinepayment.controls["transactionId"].setValue(
-            res.transactionNo
-          );
-          this.paymentForm.onlinepayment.controls["bookingId"].setValue(
-            res.bookingNo
-          );
-          this.questions.onlinepayment[1].readonly = true;
-          this.paymentForm.onlinepayment.controls["price"].setValue(
-            res.bookingAmount.toFixed(2)
-          );
-          this.paymentForm.onlinepayment.controls["onlineContact"].setValue(
-            res.mobile
-          );
-          this.paymentForm.onlinepayment.controls["cardValidation"].setValue(
-            "yes"
-          );
+          this.onlinePaymentAutoFill(res);
         }
-        console.log(this.paymentForm);
       });
     }
 
