@@ -173,9 +173,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
     }
 
     //auto populate for 'No' select in online appointment popup
-    if(this.activeTab.key == 'onlinepayment' && this.config.isonlinepaidappointment == true)
+    if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0)
     {
-      this.onlinePaymentAutoFill(this.config.formData.onlinepayment);
+      this.tabs.forEach((i: any) => {
+        this.paymentForm[i.key].controls["price"].setValue("0.00");
+      });
+      this.paymentForm['onlinepayment'].patchValue(this.config.formData['onlinepayment']);
+      this.questions.onlinepayment[1].readonly = true;
     }
 
     if (this.remainingAmount > 0) {
@@ -254,9 +258,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
   {
     console.log(res);
     this.tabs.forEach((i: any) => {
-      console.log(i);
       this.paymentForm[i.key].controls["price"].setValue("0.00");
-      console.log(this.paymentForm[i.key].controls["price"]);
     });
     this.paymentForm.onlinepayment.controls["transactionId"].setValue(
       res.transactionNo || res.transactionId 
