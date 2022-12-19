@@ -6,10 +6,10 @@
     "baseUrl": ".",
     "types": [],
     "paths": {
-        "@modules/*": [
+        "@auth/modules/*": [
           "./modules/*"
         ],
-        "@core/*": [
+        "@auth/core/*": [
           "./core/*"
         ],
         "@environments/*": [
