@@ -339,6 +339,7 @@ export class RefundAfterBillComponent implements OnInit {
           setTimeout(() => {
             this.tableRows.selection.deselect(i);
           }, 100);
+          return;
         })
       }
 
