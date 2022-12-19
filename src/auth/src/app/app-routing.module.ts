@@ -5,7 +5,7 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from "@angular/router";
-import { AuthCallbackComponent } from "../../../auth/modules/openid/auth-callback/auth-callback.component";
+import { AuthCallbackComponent } from "@auth/modules/openid/auth-callback/auth-callback.component";
 
 const routes: Routes = [
   {
@@ -25,3 +25,10 @@ const routes: Routes = [
   providers: [],
 })
 export class AppRoutingModule {}
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+  providers: [],
+})
+export class AuthRoutingModule {}

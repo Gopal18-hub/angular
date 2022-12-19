@@ -485,6 +485,8 @@ export class CashScrollModifyComponent implements OnInit {
   clearbtn: boolean = false;
   printbtn: boolean = false;
   makereadonly: boolean = false;
+
+  apiProcessing: boolean = false;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -512,6 +514,7 @@ export class CashScrollModifyComponent implements OnInit {
     })
     if(Number(scrollno) >= 0)
     {
+      this.apiProcessing = true;
       this.http
       .get(ApiConstants.getdetaileddataforoldscrollerp(scrollno, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
@@ -523,6 +526,9 @@ export class CashScrollModifyComponent implements OnInit {
           console.log(this.scrolldataObject);
           this.billList = this.scrolldataObject.getERPscrollDetailDto;
           this.filltable();
+          setTimeout(() => {
+            this.apiProcessing = false;
+          }, 500);
         }
         else
         {
@@ -530,10 +536,12 @@ export class CashScrollModifyComponent implements OnInit {
           this.modifybtn = true;
           this.clearbtn = true;
           this.printbtn = true;
+          this.apiProcessing = false;
         }
       },
       (error) => {
         console.log(error);
+        this.apiProcessing = false;
       });
     }
     else
@@ -542,6 +550,7 @@ export class CashScrollModifyComponent implements OnInit {
       this.modifybtn = true;
       this.clearbtn = true;
       this.printbtn = true;
+      this.apiProcessing = false;
     }
     
   }
@@ -681,7 +690,7 @@ export class CashScrollModifyComponent implements OnInit {
     this.openReportModal('CashScrollReport')
   }
   openReportModal(btnname: string) {
-      this.reportService.openWindow(btnname, btnname, {
+      this.reportService.openWindow('Cash Scroll Report', btnname, {
         Fromdate: this.scrolldataObject.getERPscrollMainDto[0].fromdatetime,
         Todate: this.scrolldataObject.getERPscrollMainDto[0].todatetime,
         Operatorid: this.scrolldataObject.getERPscrollMainDto[0].operatorid,
@@ -771,7 +780,8 @@ export class CashScrollModifyComponent implements OnInit {
       {
         if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
         {
-          var total = Number(item.depositamount) +  Math.abs(Number(item.discountamount)) + Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
+          //Number(item.depositamount) +  Math.abs(Number(item.discountamount)) + 
+          var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
           if(Number(total) == Number(item.netamount))
           {
 
@@ -795,6 +805,7 @@ export class CashScrollModifyComponent implements OnInit {
           Number(item.modifiedDonationAmount) > 0)
         {
           var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
+          console.log(Number(total), Number(item.netamount))
           if(Number(total) == Number(item.netamount))
           {
 
@@ -862,12 +873,14 @@ export class CashScrollModifyComponent implements OnInit {
       this.dialogservice.info('Online TransactionID Cannot Be Blank for Bill No: '+ billforonline);
     }
     else{
+      this.apiProcessing = true;
       this.http.post(ApiConstants.ackdetailsforscroll, this.modifyrequestbody())
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         console.log(res);
         if(res.success == true)
         {
+          this.apiProcessing = false;
           const dialogref = this.dialogservice.success(res.message);
           dialogref.afterClosed().subscribe(() => {
             this.ngOnInit();

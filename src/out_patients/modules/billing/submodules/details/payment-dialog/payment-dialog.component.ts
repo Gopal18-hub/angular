@@ -278,6 +278,8 @@ export class PaymentDialogComponent implements OnInit {
   approvalbtn: boolean = true;
 
   submitbtnflag: boolean = false;
+
+  apiProcessing: boolean = false;
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -1050,6 +1052,7 @@ export class PaymentDialogComponent implements OnInit {
     console.log(callflag, this.modeOfPayment);
     if(callflag == this.modeOfPayment.length)
     {
+      this.apiProcessing = true;
       console.log(this.modeOfPayment);
       this.duerequestbody();
       this.http.post(BillDetailsApiConstants.insertdueamount, this.duerequestbody())
@@ -1059,6 +1062,7 @@ export class PaymentDialogComponent implements OnInit {
           res: res,
           mop: this.modeOfPayment
         }
+        this.apiProcessing = false;
         let dialogref = this.messageDialogService.success(res[0].returnMessage);
         dialogref.afterClosed().subscribe(() => {
           this.dialogRef.close(data);

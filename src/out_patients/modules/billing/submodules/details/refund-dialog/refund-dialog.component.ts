@@ -224,6 +224,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   priority: any;
   transMode: any;
 
+  apiProcessing: boolean = false;
+
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -682,6 +684,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   }
   submitbtncall()
   {
+    this.cancelvisitrequestbody();
     if(this.dueform.controls['otp'].value.toString().length == 0){
       this.messageDialogService.info('Enter OTP');
     } 
@@ -693,7 +696,6 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       console.log('Before Ack');
       if(this.particularbillflag == 1 && this.singleitemflag == 0)
       {
-        this.cancelvisitrequestbody();
         var result = this.getpaymentmode();
         console.log(result);
         if(result.length == 1 && this.mop == 6)
@@ -704,6 +706,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
         }
         console.log('Full Bill');
+        this.apiProcessing = true;
         this.http.post(BillDetailsApiConstants.saverefunddetailsforparticularbill, this.fullbillrequestbody())
         .pipe(takeUntil(this._destroying$))
         .subscribe(res => {
@@ -712,6 +715,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           {
             if(res[0].successFlag == true)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.success(res[0].returnMessage);
               dialog.afterClosed().subscribe(res => {
               this.dialogRef.close('success');
@@ -719,6 +723,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
             }
             else if(res[0].successFlag == false)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.info(res[0].returnMessage);
             }
           }
@@ -741,6 +746,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       else if(this.singleitemflag == 1 && this.particularbillflag == 0)
       {
         console.log('Single Bill Item');
+        this.apiProcessing = true;
         this.http.post(BillDetailsApiConstants.billrefundforsingleitem, this.singlebillrequestbody())
         .pipe(takeUntil(this._destroying$))
         .subscribe(res => {
@@ -749,6 +755,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           {
             if(res[0].successFlag == true)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.success(res[0].returnMessage);
               dialog.afterClosed().subscribe(res => {
               this.dialogRef.close('success');
@@ -756,6 +763,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
             }
             else if(res[0].successFlag == false)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.info(res[0].returnMessage);
             }
           }
@@ -777,6 +785,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     else if(this.AckRefund == 1)
     {
       console.log('After Ack');
+      this.apiProcessing = true;
       if(this.particularbillflag == 1 && this.singleitemflag == 0)
       {
         console.log('Full Bill');
@@ -794,6 +803,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           {
             if(res[0].successFlag == true)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.success(res[0].returnMessage);
               dialog.afterClosed().subscribe(res => {
               this.dialogRef.close('success');
@@ -801,6 +811,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
             }
             else if(res[0].successFlag == false)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.info(res[0].returnMessage);
             }
           }
@@ -821,6 +832,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       else if(this.singleitemflag == 1 && this.particularbillflag == 0)
       {
         console.log('Single Bill Item');
+        this.apiProcessing = true;
         this.http.post(BillDetailsApiConstants.billrefundforsingleitemafteracknowledgement, this.singlebillrequestbody())
         .pipe(takeUntil(this._destroying$))
         .subscribe(res => {
@@ -829,6 +841,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           {
             if(res[0].successFlag == true)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.success(res[0].returnMessage);
               dialog.afterClosed().subscribe(res => {
               this.dialogRef.close('success');
@@ -836,6 +849,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
             }
             else if(res[0].successFlag == false)
             {
+              this.apiProcessing = false;
               var dialog =  this.messageDialogService.info(res[0].returnMessage);
             }
           }
@@ -995,11 +1009,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   cancelvisitrequestbody()
   {
     var dtlist: any = [];
-    this.billDetailService.sendforapproval.forEach((item: any) => {
-      console.log(item);
-      dtlist = this.billDetailService.serviceList.filter((i: any) => {
-        return i.itemid == item.itemid && item.serviceId == 25;
-      }) 
+    dtlist = this.billDetailService.sendforapproval.filter((item: any) => {
+      return item.serviceId == 25;
     });
     console.log(dtlist);
     this.cancelVisitNumberinRefundList.objVisitDataTable = [] as Array<objVisitDataTable>;
