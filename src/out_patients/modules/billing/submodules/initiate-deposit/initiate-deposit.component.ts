@@ -177,7 +177,10 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     });
 
   }
-
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
   ngAfterViewInit(): void {    
     this.expiredpatientexists = false;
     this.questions[0].elementRef.addEventListener("keypress", async (event: any) => {
@@ -246,6 +249,8 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
   }
   
   resetinitiatedeposit(){
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.name="";
     this.maxid="";
     this.initiatedepositForm.reset();
