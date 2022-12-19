@@ -150,7 +150,7 @@ export class OrderSetComponent implements OnInit {
     this.questions = formResult.questions;
     this.billingService.OrderSetItems.forEach((item: any, index: number) => {
       this.config.columnsInfo.doctorName.moreOptions[index] =
-        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+        this.getdoctorlistonSpecializationClinic(item.specialization, index);
     });
     this.data = this.billingService.OrderSetItems;
     if (this.data.length == 0) {
