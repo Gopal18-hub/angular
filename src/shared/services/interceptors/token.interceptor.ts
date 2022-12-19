@@ -14,6 +14,7 @@ import { ApiHeaders } from "../../constants/ApiHeaders";
 import { DbService } from "../db.service";
 import { mergeMap, tap, catchError } from "rxjs/operators";
 import { Observable, of, throwError, from } from "rxjs";
+import { environment } from "@environments/environment";
 
 const AllowInDB = [
   "MaxPermission/getpermissionmatrixrolewise",
@@ -42,7 +43,7 @@ export class TokenInterceptor implements HttpInterceptor {
       },
     });
 
-    if (request.url.endsWith("authenticate")) {
+   if (request.url.endsWith("authenticate")) {
       request = request.clone({
         setHeaders: {
           "Content-Type": "application/json",
@@ -50,7 +51,7 @@ export class TokenInterceptor implements HttpInterceptor {
         withCredentials: true,
       });
     }
-    if (
+    else if (
       request.url.includes("Logout") ||
       request.url.includes("MaxPermission")
     ) {
@@ -64,6 +65,19 @@ export class TokenInterceptor implements HttpInterceptor {
         });
       }
     }
+   else {
+     let urlAddressLength = request.url.indexOf("api");
+     if (urlAddressLength != -1) {
+       let urlIpAddress = request.url.substring(0, urlAddressLength);
+       if (urlIpAddress === environment.PatientApiUrl)
+         request = request.clone({
+           setHeaders: {
+             Authorization: `bearer ${this.auth.getToken()}`,
+             "Content-Type": "application/json",
+           },
+         });
+     }
+   }
 
     // Used to be accessible from the whole chain of observers
     let sharedCacheResponse: IHttpCacheResponse | null = null;
