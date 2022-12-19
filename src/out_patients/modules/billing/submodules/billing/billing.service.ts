@@ -376,10 +376,6 @@ export class BillingService {
         ].setValue("0.00");
     }
     if (res === "" || res == null) {
-      // Clear SRF values
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
-      this.isNeedToCheckSRF = 0;
-
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
@@ -424,8 +420,9 @@ export class BillingService {
             if (result.data == "corporate") {
               this.makeBillPayload.isIndivisualOrCorporate = true;
               formGroup.controls["corporate"].enable();
-              formGroup.controls["corporate"].setValue(null);
-              this.corporateChangeEvent.next({ corporate: null, from });
+              //reseting value even value is available - GAV-1406
+              // formGroup.controls["corporate"].setValue(null);
+              // this.corporateChangeEvent.next({ corporate: null, from });
               this.disablecorporatedropdown = true;
             } else {
               formGroup.controls["corporate"].setValue(null);
@@ -1074,7 +1071,7 @@ export class BillingService {
         ) -
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
-          ) +
+        ) +
           // parseFloat(
           //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
           // ) +
@@ -1989,5 +1986,18 @@ export class BillingService {
         docid: "",
       },
     });
+  }
+//gav 1428
+  checkValidItems() {
+    let nonPricedItems = [];
+    nonPricedItems = this.billItems.filter((e: any) => e.price == 0);
+    if (nonPricedItems.length > 0) {
+      this.messageDialogService.error(
+        "Please remove Non Priced Items in the list to proceed billing"
+      );
+      return false;
+    } else {
+      return true;
+    }
   }
 }

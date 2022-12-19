@@ -14,17 +14,21 @@ const routes: Routes = [
     redirectTo: "registration",
     pathMatch: "full",
   },
-  {
-    path: "**",
-    resolve: {
-      url: "externalUrlRedirectResolver",
-    },
-    component: RedirectComponent,
-  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot([
+      ...routes,
+      {
+        path: "**",
+        resolve: {
+          url: "externalUrlRedirectResolver",
+        },
+        component: RedirectComponent,
+      },
+    ]),
+  ],
   exports: [RouterModule],
   providers: [
     {
@@ -36,3 +40,10 @@ const routes: Routes = [
   ],
 })
 export class AppRoutingModule {}
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+  providers: [],
+})
+export class OutPatientRoutingModule {}
