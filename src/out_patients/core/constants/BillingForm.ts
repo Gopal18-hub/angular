@@ -270,6 +270,7 @@ export namespace BillingForm {
               type: "tel",
               required: true,
               title: "Mobile No.",
+              pattern: "^[1-9]{1}[0-9]{9}",
           },
           internetemail: {
               type: "string",
@@ -283,7 +284,7 @@ export namespace BillingForm {
               title: "Amount"
           },
 	        dueamount: {
-              type: "string",
+              type: "number",
               defaultValue: "0.00",
               title: "Amount"
           },

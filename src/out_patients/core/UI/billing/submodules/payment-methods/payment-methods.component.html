@@ -17,6 +17,7 @@
                             [form]="refundform"
                             [questions]="questions[0]"
                             [index]="0"
+                            (click)="clearamountvalue('cashamount')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -36,6 +37,7 @@
                             [form]="refundform"
                             [questions]="questions[11]"
                             [index]="7"
+                            (click)="clearamountvalue('creditamount')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -184,10 +186,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 w-full creditbuttonwidth">
-                        <!-- <div class="ml-6">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="Enablecreditfields()">Manual</button>
-                        </div> -->
+                    <div class="flex mt-3 w-full creditbuttonwidth">                      
                         <div class="ml-6 w-4/5">
                             <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="paymentupiapproval('credit')">Get Approval</button>
                         </div>
@@ -212,6 +211,7 @@
                             [form]="refundform"
                             [questions]="questions[5]"
                             [index]="1"
+                            (click)="clearamountvalue('chequeamount')"
                             ></maxhealth-question>
                         </div>
                      
@@ -311,7 +311,8 @@
                             [question]="questions[19]"
                             [form]="refundform"
                             [questions]="questions[19]"
-                            [index]="15"
+                            [index]="15" 
+                            (click)="clearamountvalue('demandamount')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -410,6 +411,7 @@
                             [form]="refundform"
                             [questions]="questions[21]"
                             [index]="21"
+                            (click)="clearamountvalue('mobilesendermobile')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -521,6 +523,7 @@
                             [form]="refundform"
                             [questions]="questions[33]"
                             [index]="29"
+                            (click)="clearamountvalue('onlineamount')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -592,7 +595,8 @@
                             [question]="questions[34]"
                             [form]="refundform"
                             [questions]="questions[34]"
-                            [index]="34"
+                            [index]="34" 
+                            (click)="clearamountvalue('paytmamount')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -702,6 +706,7 @@
                             [form]="refundform"
                             [questions]="questions[51]"
                             [index]="49"
+                            (click)="clearamountvalue('internetamount')"
                             ></maxhealth-question>
                         </div>
                     </div>
@@ -761,6 +766,7 @@
                             [form]="refundform"
                             [questions]="questions[44]"
                             [index]="41"
+                            (click)="clearamountvalue('upiamount')"
                             ></maxhealth-question>
                         </div>
                     </div>

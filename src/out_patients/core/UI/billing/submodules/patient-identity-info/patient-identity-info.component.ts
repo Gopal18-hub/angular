@@ -227,4 +227,12 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  validatepanncardno(){
+    if(!this.patientidentityform.controls["panno"].valid){
+     return false;
+    }else{
+      return true;
+    }
+  }
 }
