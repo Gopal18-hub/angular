@@ -136,6 +136,36 @@ export class AuthService {
       this.router.navigate(["dashboard"]);
     }
   }
+
+  public setRefreshedToken() {
+    //oidc.user:https://localhost/:hispwa
+    let storage = localStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    let tokenKey;
+    let accessToken = "";
+    if (storage != null && storage != undefined && storage != "") {
+      tokenKey = storage
+        ?.split(",")[2]
+        .split(":")[0]
+        .replace('"', "")
+        .replace('"', "");
+      if (tokenKey == "access_token") {
+        accessToken = storage
+          ?.split(",")[2]
+          .split(":")[1]
+          .replace('"', "")
+          .replace('"', "");
+      }
+    }
+
+    if (accessToken != "" && accessToken != null && accessToken != undefined) {
+      if (accessToken != this.cookieService.get("accessToken")) {
+        this.cookieService.delete("accessToken", "/");
+        this.cookieService.set("accessToken", accessToken, { path: "/" });
+      }
+    }
+  }
 }
 
 export function getClientSettings(): UserManagerSettings {

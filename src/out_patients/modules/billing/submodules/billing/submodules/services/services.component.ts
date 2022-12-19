@@ -113,7 +113,8 @@ export class ServicesComponent implements OnInit {
         this.tabs.forEach((tab: any) => {
           tab.disabled = false;
         });
-        this.tabChange(this.tabs[0]);
+        //GAV-1440
+        // this.tabChange(this.tabs[0]);
       } else if ("disableOrderSet" in res && res.disableOrderSet) {
         this.tabs[4].disabled = true;
       } else if ("goToTab" in res && res.goToTab) {
