@@ -42,7 +42,6 @@ import { SaveUpdateDialogComponent } from "./submodules/save-update-dialog/save-
     MaxHealthTableModule,
     MatSelectModule,
     ReactiveFormsModule,
-    BrowserModule,
     MatDatepickerModule,
     MatCheckboxModule,
     MatIconModule,

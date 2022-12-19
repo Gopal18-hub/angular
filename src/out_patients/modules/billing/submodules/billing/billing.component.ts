@@ -92,6 +92,8 @@ export class BillingComponent implements OnInit, OnDestroy {
   disableStopQueueBtn: boolean = true;
   queueId: number = 0;
   qmsSeqNo = "";
+  ////GAV-1442
+  clearQueryParams = 1;
 
   constructor(
     public matDialog: MatDialog,
@@ -144,6 +146,10 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(takeUntil(this._routingdestroying$))
       .subscribe((params: any) => {
+        ////GAV-1442
+        if (!params.maxId && !params.orderid) {
+          if (this.clearQueryParams > 0) this.clear(this.clearQueryParams);
+        }
         if (params.maxId) {
           this.formGroup.controls["maxid"].setValue(params.maxId);
           this.apiProcessing = true;
@@ -1365,12 +1371,14 @@ export class BillingComponent implements OnInit, OnDestroy {
     //   this.cookie.get("LocationIACode") + "."
     // );
     this.questions[0].elementRef.focus();
-    if (clearQueryParams == 1)
+    if (clearQueryParams == 1) {
       this.router.navigate(["services"], {
         queryParams: {},
         relativeTo: this.route,
       });
-    else {
+      ////GAV-1442
+      this.clearQueryParams = 0;
+    } else {
       this._routingdestroying$.next(undefined);
       this._routingdestroying$.complete();
     }

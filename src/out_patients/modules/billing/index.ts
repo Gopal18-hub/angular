@@ -270,7 +270,6 @@ import { SrfReasonComponent } from "./submodules/billing/prompts/srf-reason/srf-
     MatRadioModule,
     MatCheckboxModule,
     MatSelectModule,
-    BrowserModule,
     CommonModule,
     MatListModule,
     MatIconModule,
