@@ -9,7 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
 import { MatSelectModule } from "@angular/material/select";
-import { BrowserModule } from "@angular/platform-browser";
+import { CommonModule } from "@angular/common";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { DeletedialogComponent } from "./delete-dialog/delete-dialog.component";
@@ -23,7 +23,6 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CompanydialogComponent } from "./companydialog/companydialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatTooltipModule } from "@angular/material/tooltip";
-//import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 @NgModule({
   declarations: [
@@ -37,6 +36,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     //  DynamicFormQuestionComponent
   ],
   imports: [
+    CommonModule,
     EmployeeSponsorRoutingModule,
     MatTabsModule,
     //MatLabel,
@@ -46,7 +46,6 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MaxHealthTableModule,
     MatSelectModule,
     ReactiveFormsModule,
-    BrowserModule,
     MatDatepickerModule,
     MatCheckboxModule,
     MatIconModule,
