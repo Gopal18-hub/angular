@@ -240,37 +240,37 @@ export class DashboardComponent implements OnInit {
       });
 
 
-      //below code newly added to fix for the duplication login issue
-    //   this.browserRefresh = browserRefresh;
-    // if (!browserRefresh){
-    //   let tokenStorage:any = localStorage.getItem(
-    //     "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
-    //   );
-    //   const tokenJson = JSON.parse(tokenStorage);
-    //   let userId=Number(this.cookieService.get("UserId"));
-    //   let locationId=Number(this.cookieService.get("HSPLocationId"));
-    //   let stationId=Number(this.cookieService.get("StationId"));
-    //   let token=tokenJson['access_token'];
-    //   let moduleId=0;
-    //     if (token.trim() != ""){
-    //       this.adauth
-    //       .sessionCreation(
-    //         userId,
-    //         token,
-    //         locationId,
-    //         stationId,
-    //         moduleId
-    //       )
-    //       .pipe(takeUntil(this._destroying$))
-    //       .subscribe(
-    //         async (data) => {
-    //           //console.log('createSession-Data',data);
-    //         },
-    //         (error) => {
-    //         }
-    //       );
-    //     }
-    // }
+      //to insert session data wi
+      this.browserRefresh = browserRefresh;
+    if (!browserRefresh){
+      let tokenStorage:any = localStorage.getItem(
+        "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+      );
+      const tokenJson = JSON.parse(tokenStorage);
+      let userId=Number(this.cookieService.get("UserId"));
+      let locationId=Number(this.cookieService.get("HSPLocationId"));
+      let stationId=Number(this.cookieService.get("StationId"));
+      let token=tokenJson['access_token'];
+      let moduleId=0;
+        if (token.trim() != ""){
+          this.adauth
+          .sessionCreation(
+            userId,
+            token,
+            locationId,
+            stationId,
+            moduleId
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
+            async (data) => {
+              console.log('createSession-Data',data);
+            },
+            (error) => {
+            }
+          );
+        }
+    }
   }
 
   ngOnDestroy(): void {
