@@ -107,6 +107,11 @@ export class ConsumableDetailsComponent implements OnInit {
       );
       if (exist) {
         this.itemsData[index].procedure = exist.procedure;
+        this.config.columnsInfo.procedure.options.find((dataExist:any)=>{
+          if (exist.procedure.procedureName == dataExist.value.procedureName)
+            item.procedure= dataExist.value;
+        });
+        this.itemsData[index].reason=exist.reason
         this.tableRows.selection.select(item);
       }
     });
