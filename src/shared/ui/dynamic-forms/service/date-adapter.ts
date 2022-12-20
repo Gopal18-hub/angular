@@ -1,6 +1,8 @@
 import { NativeDateAdapter } from "@angular/material/core";
 import * as moment from "moment";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class MaxDateAdapter extends NativeDateAdapter {
   override format(date: Date): string {
     return moment(date).format("DD/MM/YYYY");
