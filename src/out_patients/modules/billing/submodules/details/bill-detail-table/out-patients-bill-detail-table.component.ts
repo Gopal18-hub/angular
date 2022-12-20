@@ -464,6 +464,7 @@ export class BillDetailTableComponent implements OnInit {
           setTimeout(() => {
             this.tableRows.selection.deselect(i);
           }, 100);
+          return;
         })
       }
 
@@ -491,7 +492,7 @@ export class BillDetailTableComponent implements OnInit {
         for(var i = 0; i < this.tableRows.selection.selected.length; i++)
         {
           var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-            return a.itemid == this.tableRows.selection.selected.itemid;
+            return a.itemid == this.tableRows.selection.selected[i].itemid;
           })
           console.log(list);
           for(var z = 0; z < list.length; z++)
@@ -503,6 +504,7 @@ export class BillDetailTableComponent implements OnInit {
               setTimeout(() => {
                 this.tableRows.selection.deselect(this.tableRows.selection.selected[0]);
               }, 100);
+              return;
             }
           }
             
