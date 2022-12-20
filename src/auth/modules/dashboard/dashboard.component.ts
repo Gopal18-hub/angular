@@ -15,7 +15,7 @@ import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-histo
 import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { browserRefresh } from './../../src/app/app.component';
+//import { browserRefresh } from './../../src/app/app.component';
 import { ADAuthService } from "../../../auth/core/services/adauth.service";
 
 @Component({
@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit {
     private cookieService: CookieService,
     public matDialog: MatDialog,
     private messageDialogService: MessageDialogService,
-    private adauth: ADAuthService,
+    private adauth: ADAuthService
   ) {}
 
   ngOnInit(): void {
@@ -177,11 +177,13 @@ export class DashboardComponent implements OnInit {
         resultData = resultData.map((item: any) => {
           item.fullname = item.firstName + " " + item.lastName;
           item.notereason = item.noteReason;
-          item.age= this.onageCalculator(item.dob);
+          item.age = this.onageCalculator(item.dob);
           return item;
         });
-         //Added line for restricting secondary id to display in list
-        this.patientList = resultData.filter((res:any) => res.parentMergeLinked == "");
+        //Added line for restricting secondary id to display in list
+        this.patientList = resultData.filter(
+          (res: any) => res.parentMergeLinked == ""
+        );
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
         );
@@ -239,38 +241,37 @@ export class DashboardComponent implements OnInit {
         await this.loadGrid(formdata);
       });
 
-
-      //below code newly added to fix for the duplication login issue
-      this.browserRefresh = browserRefresh;
-    if (!browserRefresh){
-      let tokenStorage:any = localStorage.getItem(
-        "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
-      );
-      const tokenJson = JSON.parse(tokenStorage);
-      let userId=Number(this.cookieService.get("UserId"));
-      let locationId=Number(this.cookieService.get("HSPLocationId"));
-      let stationId=Number(this.cookieService.get("StationId"));
-      let token=tokenJson['access_token'];
-      let moduleId=0;
-        if (token.trim() != ""){
-          this.adauth
-          .sessionCreation(
-            userId,
-            token,
-            locationId,
-            stationId,
-            moduleId
-          )
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(
-            async (data) => {
-              //console.log('createSession-Data',data);
-            },
-            (error) => {
-            }
-          );
-        }
-    }
+    //   //below code newly added to fix for the duplication login issue
+    //   this.browserRefresh = browserRefresh;
+    // if (!browserRefresh){
+    //   let tokenStorage:any = localStorage.getItem(
+    //     "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    //   );
+    //   const tokenJson = JSON.parse(tokenStorage);
+    //   let userId=Number(this.cookieService.get("UserId"));
+    //   let locationId=Number(this.cookieService.get("HSPLocationId"));
+    //   let stationId=Number(this.cookieService.get("StationId"));
+    //   let token=tokenJson['access_token'];
+    //   let moduleId=0;
+    //     if (token.trim() != ""){
+    //       this.adauth
+    //       .sessionCreation(
+    //         userId,
+    //         token,
+    //         locationId,
+    //         stationId,
+    //         moduleId
+    //       )
+    //       .pipe(takeUntil(this._destroying$))
+    //       .subscribe(
+    //         async (data) => {
+    //           //console.log('createSession-Data',data);
+    //         },
+    //         (error) => {
+    //         }
+    //       );
+    //     }
+    // }
   }
 
   ngOnDestroy(): void {
@@ -317,7 +318,7 @@ export class DashboardComponent implements OnInit {
                           " merged with these " +
                           lookupdata[0]["mergeLinked"]
                       );
-                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                    } else if (lookupdata[0]["parentMergeLinked"] != "") {
                       this.patientList = [];
                       this.messageDialogService.info(
                         "Max Id :" +
@@ -344,7 +345,7 @@ export class DashboardComponent implements OnInit {
                           " merged with these " +
                           lookupdata[0]["mergeLinked"]
                       );
-                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                    } else if (lookupdata[0]["parentMergeLinked"] != "") {
                       this.patientList = [];
                       this.messageDialogService.info(
                         "Max Id :" +
@@ -373,21 +374,21 @@ export class DashboardComponent implements OnInit {
       } else {
         this.processLookupData(lookupdata);
       }
-    }   
+    }
   }
 
   processLookupData(lookupdata: any) {
     const resultData = lookupdata.map((item: any) => {
       item.fullname = item.firstName + " " + item.lastName;
       item.notereason = item.noteReason;
-      item.age= this.onageCalculator(item.dob);
+      item.age = this.onageCalculator(item.dob);
       return item;
     });
-     //Added line for restricting secondary id to display in list
-    this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
-    this.patientList = this.patientServie.getAllCategoryIcons(
-      this.patientList
+    //Added line for restricting secondary id to display in list
+    this.patientList = resultData.filter(
+      (res: any) => res.parentMergeLinked == ""
     );
+    this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
     this.apiProcessing = true;
     this.showspinner = false;
     this.defaultUI = false;
@@ -450,7 +451,7 @@ export class DashboardComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-     
+
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
