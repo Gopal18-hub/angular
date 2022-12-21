@@ -721,9 +721,9 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    const exist: any = accessControls[2][7][534][1436];
     if (btnname == "DepositReport") {
-      const accessControls: any = this.permissionservice.getAccessControls();
-      const exist: any = accessControls[2][7][534][1436];
       console.log(exist);
       this.reportService.openWindow(
         "Deposit Report - " + this.billno,
@@ -735,8 +735,6 @@ export class PatientHistoryComponent implements OnInit {
         }
       );
     } else if (btnname == "rptRefund") {
-      const accessControls: any = this.permissionservice.getAccessControls();
-      const exist: any = accessControls[2][7][534][1436];
       console.log(exist);
       this.reportService.openWindow(
         "Deposit Refund Report - " + this.billno,
@@ -751,6 +749,7 @@ export class PatientHistoryComponent implements OnInit {
       this.reportService.openWindow("OPD Report - " + this.billno, btnname, {
         opbillid: this.billId,
         locationID: this.hsplocationId,
+        enableexport: exist,
       });
     } else if (btnname == "refundReport") {
       this.reportService.openWindow(

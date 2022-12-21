@@ -289,7 +289,11 @@ export class BillingComponent implements OnInit, OnDestroy {
     //       this.billingService.makeBillPayload.invoiceType = "B2C";
     //     }
     //   });
-    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
+
+    this.formGroup.controls["company"].valueChanges
+    .pipe(distinctUntilChanged())
+    .subscribe((res: any) => {
+      console.log(res);
       if (res && res.value) {
         console.log(res);
         // Clear SRF values
@@ -313,7 +317,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       } else {
         this.billingService.setCompnay(res, res, this.formGroup, "header");
       }
-    });
+    })
 
     this.formGroup.controls["corporate"].valueChanges.subscribe((res: any) => {
       if (res && res.value) {
