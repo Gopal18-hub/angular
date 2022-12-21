@@ -176,7 +176,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
     if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0 && Number(this.paymentForm['onlinepayment'].controls["price"].value) == 0)
     {
       this.tabs.forEach((i: any) => {
+        let hiddenmode: any = PaymentMethods.modeofpaymentHiddenValue.properties;
+        this.paymentForm[i.key].reset();
         this.paymentForm[i.key].controls["price"].setValue("0.00");
+        this.paymentForm[i.key].controls["modeOfPayment"].setValue(
+          hiddenmode[i.key].value
+        );
       });
       this.paymentForm['onlinepayment'].patchValue(this.config.formData['onlinepayment']);
       this.questions.onlinepayment[1].readonly = true;

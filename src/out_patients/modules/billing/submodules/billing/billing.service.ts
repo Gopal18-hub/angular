@@ -420,6 +420,15 @@ export class BillingService {
             if (result.data == "corporate") {
               this.makeBillPayload.isIndivisualOrCorporate = true;
               formGroup.controls["corporate"].enable();
+              const corporateExist: any = this.corporateData.find(
+                (c: any) => c.id == this.patientDetailsInfo.corporateid
+              );
+              if (corporateExist) {
+                formGroup.controls["corporate"].setValue({
+                  title: corporateExist.name,
+                  value: this.patientDetailsInfo.corporateid,
+                });
+              }
               //reseting value even value is available - GAV-1406
               // formGroup.controls["corporate"].setValue(null);
               // this.corporateChangeEvent.next({ corporate: null, from });
