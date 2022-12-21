@@ -114,8 +114,8 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill(formGroup: any, question: any) {
-    this.calculateBillService.initProcess(
+  async calculateBill(formGroup: any, question: any) {
+    await this.calculateBillService.initProcess(
       this.billItems,
       this,
       formGroup,
@@ -1987,7 +1987,7 @@ export class BillingService {
       },
     });
   }
-//gav 1428
+  //gav 1428
   checkValidItems() {
     let nonPricedItems = [];
     nonPricedItems = this.billItems.filter((e: any) => e.price == 0);
