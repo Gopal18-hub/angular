@@ -1261,7 +1261,7 @@ export class OpRegistrationComponent implements OnInit {
                 (l) => l.id === value.value
               )[0].pincode;
 
-              this.OPRegForm.controls["pincode"].setValue(pincode);
+              this.OPRegForm.controls["pincode"].setValue(Number(pincode));
               this.pincodebasedflow = true;
               this.countrybasedflow = false;
               this.citybasedflow = false;
@@ -2071,17 +2071,18 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.pincode > 0 &&
       this.OPRegForm.value.pincode != null
     ) {
+      let pinCodeLength = String(this.OPRegForm.value.pincode).length;
       if (this.OPRegForm.value.country.value == 1) {
-        if (this.OPRegForm.value.pincode.length == 6) {
+        if (pinCodeLength == 6) {
           isvalidpincode = true;
         } else {
           isvalidpincode = false;
         }
       } else {
         if (
-          this.OPRegForm.value.pincode.length == 6 ||
-          this.OPRegForm.value.pincode.length == 5 ||
-          this.OPRegForm.value.pincode.length == 4
+          pinCodeLength == 6 ||
+          pinCodeLength == 5 ||
+          pinCodeLength == 4
         ) {
           isvalidpincode = true;
         } else {
@@ -2368,7 +2369,7 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[26].readonly = true;
             this.questions[27].readonly = true;
             this.OPRegForm.controls["pincode"].setValue(
-              this.AddressonLocalityModellst.pinCode,
+              Number(this.AddressonLocalityModellst.pinCode),
               { emitEvent: false }
             );
             this.OPRegForm.controls["country"].setValue({
@@ -3144,7 +3145,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["healthId"].setValue("");
     this.OPRegForm.controls["address"].setValue(patientDetails?.address1);
     this.OPRegForm.controls["pincode"].setValue(
-      patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
+      Number(patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode)
     );
     this.OPRegForm.controls["state"].setValue({
       title: patientDetails?.stateName,
