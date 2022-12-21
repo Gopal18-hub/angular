@@ -143,7 +143,10 @@ export class BillComponent implements OnInit, OnDestroy {
 
     let popuptext: any = [];
 
-    this.billingservice.calculateBill(this.formGroup, this.question);
+    await this.billingservice.calculateBill(this.formGroup, this.question);
+
+    await this.calculateBillService.serviceBasedCheck();
+
     //GAV 1428
     let nonPricedItems = [];
     nonPricedItems = this.billingservice.billItems.filter(
@@ -749,7 +752,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     //check For approval or SRF GAV-1355
     if (this.billingservice.checkApprovalSRF()) {
-      this.billingservice.calculateBill(this.formGroup, this.question);
+      await this.calculateBillService.serviceBasedCheck();
     } else {
       //CGHS Beneficiary check
       await this.calculateBillService.checkCGHSBeneficiary();
