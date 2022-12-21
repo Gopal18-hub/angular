@@ -336,7 +336,8 @@ export class HealthCheckupsComponent implements OnInit {
       .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
       .subscribe((res) => {
         res.forEach((item: any, index: number) => {
-          if (item.isConsult == 1 && item.itemServiceID == 25) {
+          //if (item.isConsult == 1 && item.itemServiceID == 25) {
+          if (item.itemServiceID == 25) {
             this.doctorsList.push(0);
           }
         });
