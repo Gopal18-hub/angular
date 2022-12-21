@@ -52,7 +52,7 @@ import {
     ]),
   ],
 })
-export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
+export class MaxTableComponent implements OnInit, OnChanges {
   @Input() config: any;
 
   @Input() data: any = [];
@@ -249,7 +249,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.tableForm.setControl("data", new FormArray(formData));
 
     this.dataSource = new MatTableDataSource<any>(this.data);
-    if (this.sort) this.dataSource.sort = this.sort;
 
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
@@ -285,6 +284,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     this.tableForm.markAllAsTouched();
+    setTimeout(() => {
+      this.sortInitialize();
+    }, 50);
   }
 
   ngAfterContentInit() {
@@ -294,7 +296,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     }, -1);
   }
 
-  ngAfterViewInit() {
+  sortInitialize() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = (
