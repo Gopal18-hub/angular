@@ -283,7 +283,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isAPIProcess = false;
     this.defaultUI = false;
     if (formdata.data) {
-      const lookupdata = await this.lookupService.searchPatient(formdata);
+      const lookupdata = await this.lookupService.searchPatient(formdata).catch((error) => {});
       if (lookupdata == null || lookupdata == undefined || lookupdata.length == 0) {
         this.patientList = [];
         this.defaultUI = true;

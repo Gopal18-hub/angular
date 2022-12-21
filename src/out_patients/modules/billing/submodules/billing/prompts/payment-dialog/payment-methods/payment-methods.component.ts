@@ -173,10 +173,15 @@ export class BillingPaymentMethodsComponent implements OnInit {
     }
 
     //auto populate for 'No' select in online appointment popup
-    if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0)
+    if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0 && Number(this.paymentForm['onlinepayment'].controls["price"].value) == 0)
     {
       this.tabs.forEach((i: any) => {
+        let hiddenmode: any = PaymentMethods.modeofpaymentHiddenValue.properties;
+        this.paymentForm[i.key].reset();
         this.paymentForm[i.key].controls["price"].setValue("0.00");
+        this.paymentForm[i.key].controls["modeOfPayment"].setValue(
+          hiddenmode[i.key].value
+        );
       });
       this.paymentForm['onlinepayment'].patchValue(this.config.formData['onlinepayment']);
       this.questions.onlinepayment[1].readonly = true;
@@ -243,14 +248,25 @@ export class BillingPaymentMethodsComponent implements OnInit {
           parseFloat(existingPrice) +
           parseFloat(this.paymentForm[tabValue.key].controls.price.value);
       }
+      if(this.activeTab.key == 'onlinepayment' && 
+        this.config.formData['onlinepayment'].price > 0 &&
+        Number(this.paymentForm['onlinepayment'].controls["price"].value) > 0 &&
+        tabIndex == this.tabs.length - 1
+        )
+        {
+          existingPrice = parseFloat(existingPrice) + Number(this.paymentForm['onlinepayment'].controls["price"].value);
+        }
     });
     this.remainingAmount =
       parseFloat(this.totalAmount) - parseFloat(existingPrice);
 
     if (this.remainingAmount > 0) {
-      this.paymentForm[this.activeTab.key].controls["price"].setValue(
-        this.remainingAmount
-      );
+      if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0){}
+      else{
+        this.paymentForm[this.activeTab.key].controls["price"].setValue(
+          this.remainingAmount
+        );
+      }
     }
   }
 
