@@ -283,7 +283,7 @@ export class DashboardComponent implements OnInit {
     this.apiProcessing = false;
     this.defaultUI = false;
     if (formdata.data) {
-      const lookupdata = await this.lookupService.searchPatient(formdata);
+      const lookupdata = await this.lookupService.searchPatient(formdata).catch((error) => {});
       if (lookupdata == null || lookupdata == undefined) {
         this.patientList = [];
         this.defaultUI = true;
