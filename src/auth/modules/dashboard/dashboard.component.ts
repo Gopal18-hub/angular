@@ -15,8 +15,6 @@ import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-histo
 import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-//import { browserRefresh } from './../../src/app/app.component';
-import { ADAuthService } from "../../../auth/core/services/adauth.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -36,7 +34,6 @@ export class DashboardComponent implements OnInit {
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI: boolean = true;
-  browserRefresh!: boolean;
 
   @ViewChild("table") table: any;
   quickLinksRoutes: any = {
@@ -164,8 +161,7 @@ export class DashboardComponent implements OnInit {
     private lookupService: LookupService,
     private cookieService: CookieService,
     public matDialog: MatDialog,
-    private messageDialogService: MessageDialogService,
-    private adauth: ADAuthService
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -240,38 +236,6 @@ export class DashboardComponent implements OnInit {
         console.log(formdata);
         await this.loadGrid(formdata);
       });
-
-    //   //below code newly added to fix for the duplication login issue
-    //   this.browserRefresh = browserRefresh;
-    // if (!browserRefresh){
-    //   let tokenStorage:any = localStorage.getItem(
-    //     "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
-    //   );
-    //   const tokenJson = JSON.parse(tokenStorage);
-    //   let userId=Number(this.cookieService.get("UserId"));
-    //   let locationId=Number(this.cookieService.get("HSPLocationId"));
-    //   let stationId=Number(this.cookieService.get("StationId"));
-    //   let token=tokenJson['access_token'];
-    //   let moduleId=0;
-    //     if (token.trim() != ""){
-    //       this.adauth
-    //       .sessionCreation(
-    //         userId,
-    //         token,
-    //         locationId,
-    //         stationId,
-    //         moduleId
-    //       )
-    //       .pipe(takeUntil(this._destroying$))
-    //       .subscribe(
-    //         async (data) => {
-    //           //console.log('createSession-Data',data);
-    //         },
-    //         (error) => {
-    //         }
-    //       );
-    //     }
-    // }
   }
 
   ngOnDestroy(): void {
