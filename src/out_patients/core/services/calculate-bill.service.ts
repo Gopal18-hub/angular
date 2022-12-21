@@ -35,7 +35,6 @@ export class CalculateBillService {
   depositDetailsData: any = [];
 
   discountForm: any;
-  infoDialog: any;
 
   validCoupon: boolean = false;
 
@@ -64,7 +63,7 @@ export class CalculateBillService {
     this.companyNonCreditItems = items;
   }
 
-  initProcess(
+  async initProcess(
     billItems: any,
     billingServiceRef: any,
     formGroup?: any,
@@ -87,9 +86,6 @@ export class CalculateBillService {
         };
       }
       this.serviceBasedListItems[item.serviceName.toString()].items.push(item);
-    });
-    billItems.forEach(async (item: any) => {
-      await this.serviceBasedCheck(item);
     });
   }
 
@@ -132,22 +128,25 @@ export class CalculateBillService {
     });
   }
 
-  async serviceBasedCheck(item: any) {
-    switch (item.serviceId) {
-      case 41:
-        if (this.billingServiceRef.company > 0) {
-          await this.CheckOutSourceTest(item);
-        }
-        break;
-      case 65:
-      case 66:
-        break;
-      case 46:
-      case 109:
-        break;
+  async serviceBasedCheck() {
+    for (let i = 0; i < this.billingServiceRef.billItems.length; i++) {
+      const item = this.billingServiceRef.billItems[i];
+      switch (item.serviceId) {
+        case 41:
+          if (this.billingServiceRef.company > 0) {
+            await this.CheckOutSourceTest(item);
+          }
+          break;
+        case 65:
+        case 66:
+          break;
+        case 46:
+        case 109:
+          break;
 
-      default:
-        console.log("default");
+        default:
+          console.log("default");
+      }
     }
   }
 
@@ -174,18 +173,14 @@ export class CalculateBillService {
         });
 
       console.log(checkResult);
-      if (
-        !(this.infoDialog && this.infoDialog.componentInstance) &&
-        checkResult &&
-        checkResult.length > 0
-      ) {
+      if (checkResult && checkResult.length > 0) {
         this.billingServiceRef.isNeedToCheckSRF = 1;
-        this.infoDialog = await this.messageDialogService.confirm(
+        const infoDialog = this.messageDialogService.confirm(
           "",
           "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
         );
 
-        const infoDialogRes = await this.infoDialog.afterClosed().toPromise();
+        const infoDialogRes = await infoDialog.afterClosed().toPromise();
         if (
           infoDialogRes &&
           "type" in infoDialogRes &&
