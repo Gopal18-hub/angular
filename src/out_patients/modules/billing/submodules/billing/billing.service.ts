@@ -380,6 +380,8 @@ export class BillingService {
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
       this.iomMessage = "";
+      formGroup.controls["corporate"].setValue(null);
+      formGroup.controls["corporate"].disable();
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
@@ -423,11 +425,16 @@ export class BillingService {
               const corporateExist: any = this.corporateData.find(
                 (c: any) => c.id == this.patientDetailsInfo.corporateid
               );
-              if (corporateExist) {
+              if (
+                corporateExist &&
+                this.company == this.patientDetailsInfo.companyid
+              ) {
                 formGroup.controls["corporate"].setValue({
                   title: corporateExist.name,
                   value: this.patientDetailsInfo.corporateid,
                 });
+              } else {
+                formGroup.controls["corporate"].setValue(null);
               }
               //reseting value even value is available - GAV-1406
               // formGroup.controls["corporate"].setValue(null);
