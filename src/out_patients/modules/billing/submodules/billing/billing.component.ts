@@ -289,7 +289,11 @@ export class BillingComponent implements OnInit, OnDestroy {
     //       this.billingService.makeBillPayload.invoiceType = "B2C";
     //     }
     //   });
-    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
+
+    this.formGroup.controls["company"].valueChanges
+    .pipe(distinctUntilChanged())
+    .subscribe((res: any) => {
+      console.log(res);
       if (res && res.value) {
         console.log(res);
         // Clear SRF values
@@ -313,7 +317,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       } else {
         this.billingService.setCompnay(res, res, this.formGroup, "header");
       }
-    });
+    })
 
     this.formGroup.controls["corporate"].valueChanges.subscribe((res: any) => {
       if (res && res.value) {
@@ -524,7 +528,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (resultData) {
             this.patientDetails = resultData;
 
-            this.setValuesToForm(this.patientDetails);
+          this.billingService.setPatientDetails(
+            this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+          );  
+          this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
                 "Today is Patient’s birthday"
@@ -557,9 +564,6 @@ export class BillingComponent implements OnInit, OnDestroy {
                   });
                 }
               }
-              this.billingService.setPatientDetails(
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-              );
 
               this.billingService.setPatientChannelDetail(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]

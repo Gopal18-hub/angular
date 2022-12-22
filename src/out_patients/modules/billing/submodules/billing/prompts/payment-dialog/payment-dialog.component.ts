@@ -199,10 +199,20 @@ export class BillPaymentDialogComponent implements OnInit {
 
   breakupTotal() {
     if (this.paymentmethod) {
-      return this.paymentmethod.tabPrices.reduce(
+      const sum=this.paymentmethod.tabPrices.reduce(
         (partialSum, a) => partialSum + a,
         0
       );
+      let total;
+      total=(this.config.totalAmount - Math.floor(this.config.totalAmount)) !== 0;
+      let totalSum
+      if(!total){
+        totalSum= Math.floor(sum)
+      }
+      else{
+        totalSum=sum;
+      }
+      return totalSum;
     } else {
       return 0;
     }

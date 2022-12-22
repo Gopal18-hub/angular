@@ -114,8 +114,8 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill(formGroup: any, question: any) {
-    this.calculateBillService.initProcess(
+  async calculateBill(formGroup: any, question: any) {
+    await this.calculateBillService.initProcess(
       this.billItems,
       this,
       formGroup,
@@ -357,7 +357,7 @@ export class BillingService {
   setCreditLimit(data: any) {
     this.creditLimit = data;
   }
-  setCompnay(
+  async setCompnay(
     companyid: number,
     res: any,
     formGroup: any,
@@ -374,12 +374,16 @@ export class BillingService {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
+      // For GAV-1355 SRF Popup
+      await this.calculateBillService.serviceBasedCheck(); 
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
       this.iomMessage = "";
+      formGroup.controls["corporate"].setValue(null);
+      formGroup.controls["corporate"].disable();
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
@@ -420,6 +424,20 @@ export class BillingService {
             if (result.data == "corporate") {
               this.makeBillPayload.isIndivisualOrCorporate = true;
               formGroup.controls["corporate"].enable();
+              const corporateExist: any = this.corporateData.find(
+                (c: any) => c.id == this.patientDetailsInfo.corporateid
+              );
+              if (
+                corporateExist &&
+                this.company == this.patientDetailsInfo.companyid
+              ) {
+                formGroup.controls["corporate"].setValue({
+                  title: corporateExist.name,
+                  value: this.patientDetailsInfo.corporateid,
+                });
+              } else {
+                formGroup.controls["corporate"].setValue(null);
+              }
               //reseting value even value is available - GAV-1406
               // formGroup.controls["corporate"].setValue(null);
               // this.corporateChangeEvent.next({ corporate: null, from });
@@ -1987,7 +2005,7 @@ export class BillingService {
       },
     });
   }
-//gav 1428
+  //gav 1428
   checkValidItems() {
     let nonPricedItems = [];
     nonPricedItems = this.billItems.filter((e: any) => e.price == 0);
