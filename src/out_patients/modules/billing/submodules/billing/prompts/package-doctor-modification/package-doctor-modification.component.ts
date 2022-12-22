@@ -93,7 +93,12 @@ export class PackageDoctorModificationComponent implements OnInit {
       await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
-
+    this.itemsData.forEach((item: any, index: number) => {
+      this.data.items.find((dataExist:any)=>{
+        if (dataExist.specialisation == item.specialisation)
+        this.itemsData[index]["doctorName"] = dataExist.doctorName;
+      });
+    });
     // this.http
     //   .get(
     //     BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -118,6 +123,7 @@ export class PackageDoctorModificationComponent implements OnInit {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
       if (res.data.col == "doctorName") {
         this.data.doctorsList[res.data.index] = res.$event.value;
+        this.checkValidationSubmit();
       }
     });
   }
@@ -147,6 +153,7 @@ export class PackageDoctorModificationComponent implements OnInit {
     this.dialogRef.close({
       data: this.itemsData,
       itemId: this.data.orderSet.itemid,
+      doctorList:this.data.doctorsList,
     });
   }
 }
