@@ -440,7 +440,10 @@ export class BillComponent implements OnInit, OnDestroy {
     //added for uncheck coupon checkbox when uncheck the discount
     this.formGroup.controls["discAmtCheck"].valueChanges.subscribe(
       (value: any) => {
-        console.log(value);
+        console.log('discheck',value);
+        if(value){
+          this.calculateBillService.discountSelectedItems=[]
+        }
         if (value == false) {
           this.IsValidateCoupon = false;
         }
