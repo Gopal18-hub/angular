@@ -65,7 +65,8 @@ export class PackageDoctorModificationComponent implements OnInit {
           if (item.itemServiceID != 25) {
             this.packageContent.push(item.itemName);
           }
-          if (item.isConsult == 1 && item.itemServiceID == 25) {
+         // if (item.isConsult == 1 && item.itemServiceID == 25) {
+          if (item.itemServiceID == 25) {
             this.itemsData[i] = {
               sno: i + 1,
               specialisation: item.itemName,

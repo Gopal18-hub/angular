@@ -376,6 +376,7 @@ export class DisountReasonComponent implements OnInit {
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {
+      this.reasontitle = "";
       if (val) {
         const filterData = this.discReasonList.filter(
           (rl: any) => rl.mainhead == val

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -55,7 +56,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
   activeTab: any;
 
   bankList: any = [];
-
+  totalamtFlag:boolean=false;
   constructor(
     private formService: QuestionControlService,
     private depositservice: DepositService,
@@ -74,6 +75,8 @@ export class BillingPaymentMethodsComponent implements OnInit {
   async ngOnInit() {
     if (this.config.totalAmount) {
       this.totalAmount = this.config.totalAmount;
+      this.totalamtFlag = (this.totalAmount - Math.floor(this.totalAmount)) !== 0;
+      this.totalAmount= this.totalamtFlag?this.totalAmount:Math.floor(this.totalAmount);
     }
     // //GAV-530 Paid Online appointment
     if (this.config.isonlinepaidappointment) {
@@ -132,6 +135,14 @@ export class BillingPaymentMethodsComponent implements OnInit {
       if (this.paymentForm[method].controls["price"]) {
         this.paymentForm[method].controls["price"].valueChanges.subscribe(
           (res: any) => {
+            if(!this.totalamtFlag){
+              if(String(res)!=String(Math.trunc(res))){
+                this.paymentForm[method].controls["price"].setValue(
+                  Math.trunc(res)
+                )
+              
+              }
+            }
             if (Number(res) < 0) {
               this.messageDialogService.warning("Amount Cannot be Negative");
               this.paymentForm[method].controls["price"].setValue(
@@ -144,7 +155,12 @@ export class BillingPaymentMethodsComponent implements OnInit {
                 (partialSum, a) => partialSum + a,
                 0
               );
-              this.remainingAmount = parseFloat(this.totalAmount) - sum;
+              if(!this.totalamtFlag){
+               this.remainingAmount = parseFloat(this.totalAmount) -Math.floor(sum) ;
+              }
+              else{
+                this.remainingAmount = parseFloat(this.totalAmount) -sum ;
+              }
               if (this.remainingAmount < 0) {
                 this.messageDialogService.warning(
                   "Total of Receipt Amount Cannot be Greater than Bill Amount."
@@ -173,10 +189,15 @@ export class BillingPaymentMethodsComponent implements OnInit {
     }
 
     //auto populate for 'No' select in online appointment popup
-    if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0)
+    if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0 && Number(this.paymentForm['onlinepayment'].controls["price"].value) == 0)
     {
       this.tabs.forEach((i: any) => {
+        let hiddenmode: any = PaymentMethods.modeofpaymentHiddenValue.properties;
+        this.paymentForm[i.key].reset();
         this.paymentForm[i.key].controls["price"].setValue("0.00");
+        this.paymentForm[i.key].controls["modeOfPayment"].setValue(
+          hiddenmode[i.key].value
+        );
       });
       this.paymentForm['onlinepayment'].patchValue(this.config.formData['onlinepayment']);
       this.questions.onlinepayment[1].readonly = true;
@@ -243,14 +264,25 @@ export class BillingPaymentMethodsComponent implements OnInit {
           parseFloat(existingPrice) +
           parseFloat(this.paymentForm[tabValue.key].controls.price.value);
       }
+      if(this.activeTab.key == 'onlinepayment' && 
+        this.config.formData['onlinepayment'].price > 0 &&
+        Number(this.paymentForm['onlinepayment'].controls["price"].value) > 0 &&
+        tabIndex == this.tabs.length - 1
+        )
+        {
+          existingPrice = parseFloat(existingPrice) + Number(this.paymentForm['onlinepayment'].controls["price"].value);
+        }
     });
     this.remainingAmount =
       parseFloat(this.totalAmount) - parseFloat(existingPrice);
 
     if (this.remainingAmount > 0) {
-      this.paymentForm[this.activeTab.key].controls["price"].setValue(
-        this.remainingAmount
-      );
+      if(this.activeTab.key == 'onlinepayment' && this.config.formData['onlinepayment'].price > 0){}
+      else{
+        this.paymentForm[this.activeTab.key].controls["price"].setValue(
+          this.remainingAmount
+        );
+      }
     }
   }
 
