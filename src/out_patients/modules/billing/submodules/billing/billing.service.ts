@@ -357,7 +357,7 @@ export class BillingService {
   setCreditLimit(data: any) {
     this.creditLimit = data;
   }
-  setCompnay(
+  async setCompnay(
     companyid: number,
     res: any,
     formGroup: any,
@@ -374,6 +374,8 @@ export class BillingService {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
+      // For GAV-1355 SRF Popup
+      await this.calculateBillService.serviceBasedCheck(); 
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
