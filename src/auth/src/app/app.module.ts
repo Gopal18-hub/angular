@@ -59,8 +59,8 @@ const providers = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    ...importModules,
     AppRoutingModule,
+    ...importModules,
   ],
   providers: [...providers, { provide: APP_BASE_HREF, useValue: "/" }],
   bootstrap: [AppComponent],
