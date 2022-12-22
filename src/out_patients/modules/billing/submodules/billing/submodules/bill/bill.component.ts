@@ -440,7 +440,10 @@ export class BillComponent implements OnInit, OnDestroy {
     //added for uncheck coupon checkbox when uncheck the discount
     this.formGroup.controls["discAmtCheck"].valueChanges.subscribe(
       (value: any) => {
-        console.log(value);
+        console.log('discheck',value);
+        if(value){
+          this.calculateBillService.discountSelectedItems=[]
+        }
         if (value == false) {
           this.IsValidateCoupon = false;
         }
@@ -1304,8 +1307,10 @@ export class BillComponent implements OnInit, OnDestroy {
   duplicateflag: boolean = true;
   makePrint() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1436];
+    let exist: any = accessControls[2][7][534][1436];
     console.log(exist);
+    if(exist == undefined)
+         exist =  false ;
 
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
