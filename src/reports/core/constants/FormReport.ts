@@ -747,7 +747,7 @@ export namespace FormReport {
               value: "id",
             },
           },
-          defaultValue: "",
+          defaultValue: { title: "", value: 0 },
         },
 
         Location: {
