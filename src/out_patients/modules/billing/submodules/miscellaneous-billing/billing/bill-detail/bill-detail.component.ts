@@ -2178,7 +2178,7 @@ export class BillDetailComponent implements OnInit {
         docid: e.docid,
         remarksId: e.remarksId,
         itemId: e.itemId,
-        mPrice: Number(e.PriceNo),
+        mPrice: Number(e.mPrice),
         empowerApproverCode: "",
         couponCode: "",
       });
