@@ -1096,6 +1096,19 @@ export class BillingService {
 
   async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {
+      ////1412 - on Patient share or Company Share
+      let totalDiscount: any = 0;
+      if (
+        this.makeBillPayload.tab_o_opDiscount &&
+        this.makeBillPayload.tab_o_opDiscount.length > 0
+      ) {
+        this.makeBillPayload.tab_o_opDiscount.forEach((billDiscount: any) => {
+          if (billDiscount.disType == "4" || billDiscount.disType == "5") {
+            totalDiscount += billDiscount.disAmt;
+          }
+        });
+      }
+
       let toBePaid =
         parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount
@@ -1103,6 +1116,8 @@ export class BillingService {
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
         ) +
+          ////1412 - on Patient share or Company Share
+          parseFloat(totalDiscount) +
           // parseFloat(
           //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
           // ) +

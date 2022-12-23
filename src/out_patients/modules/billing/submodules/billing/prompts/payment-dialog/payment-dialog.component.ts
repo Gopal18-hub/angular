@@ -199,18 +199,18 @@ export class BillPaymentDialogComponent implements OnInit {
 
   breakupTotal() {
     if (this.paymentmethod) {
-      const sum=this.paymentmethod.tabPrices.reduce(
+      const sum = this.paymentmethod.tabPrices.reduce(
         (partialSum, a) => partialSum + a,
         0
       );
       let total;
-      total=(this.config.totalAmount - Math.floor(this.config.totalAmount)) !== 0;
-      let totalSum
-      if(!total){
-        totalSum= Math.floor(sum)
-      }
-      else{
-        totalSum=sum;
+      total =
+        this.config.totalAmount - Math.floor(this.config.totalAmount) !== 0;
+      let totalSum;
+      if (!total) {
+        totalSum = Math.floor(sum);
+      } else {
+        totalSum = sum;
       }
       return totalSum;
     } else {
@@ -223,9 +223,12 @@ export class BillPaymentDialogComponent implements OnInit {
     if (this.paymentmethod) {
       this.paymentmethod.tabs.forEach((tab: any, index: number) => {
         // console.log(this.paymentmethod.paymentForm[tab.key]);
+
+        ////GAV-1353 -  addded tab.key != cash condition
         if (
           this.paymentmethod.tabPrices[index] > 0 &&
-          this.paymentmethod.paymentForm[tab.key].valid == false
+          this.paymentmethod.paymentForm[tab.key].valid == false &&
+          tab.key != "cash"
         ) {
           tabForms = false;
         }
@@ -247,7 +250,7 @@ export class BillPaymentDialogComponent implements OnInit {
       Number(this.data.toPaidAmount) >= collectedAmount
     )
       return true;
-    return false;
+    return true;
   }
 
   formsixtysubmit: boolean = false;
