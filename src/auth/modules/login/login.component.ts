@@ -244,9 +244,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
             this.loginForm.controls["station"].valueChanges
               .pipe(takeUntil(this._destroying$))
               .subscribe((value) => {
-                this.stationdetail = this.stationList.filter(
-                  (s) => s.stationid === value.value
-                )[0];
+                if (value) {
+                  this.stationdetail = this.stationList.filter(
+                    (s) => s.stationid === value.value
+                  )[0];
+                }
               });
             // this.loginForm.controls["password"].enable();
             this.loginForm.controls["location"].enable();
@@ -275,6 +277,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           async (data) => {
+            console.log(data);
             status = data["status"];
             if (status == "Valid") {
               this.authStatus = true;
@@ -295,8 +298,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 "StationId",
                 this.stationdetail!.stationid.toString()
               );
-              this.appLogicService.getGSTVistaLiveFlag();
-              window.location = data["redirectUrl"];
+              //this.appLogicService.getGSTVistaLiveFlag();
+              setTimeout(() => {
+                window.location.href = data["redirectUrl"];
+              }, 200);
               this.Authentication = true;
             } else if (status == "InvalidUser") {
               this.authStatus = false;
