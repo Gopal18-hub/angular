@@ -242,6 +242,21 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.doctorID = res.$event.value;
+
+        ///GAV-1462
+        this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+          (opbillItem: any, billIndex: any) => {
+            if (
+              opbillItem.itemId ==
+              this.billingService.InvestigationItems[res.data.index].billItem
+                .itemId
+            ) {
+              this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].consultid = res.$event.value;
+            }
+          }
+        );
         const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
           res.data.index
         ].find((doc: any) => doc.value == res.$event.value);
@@ -461,6 +476,9 @@ export class InvestigationsComponent implements OnInit {
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
+          ////GAV-1464
+          this.billingService.InvestigationItems[index].billItem.itemCode =
+            res[0].itemCode;
           this.data = [...this.billingService.InvestigationItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {
