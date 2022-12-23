@@ -246,7 +246,15 @@ export class DisountReasonComponent implements OnInit {
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
       this.question[0].options = this.discounttypes;
-      this.discAmtForm.controls["types"].setValue("On-Bill");
+      let defaultDiscountType: any = "";
+      this.discounttypes.forEach((type: any) => {
+        if (type.disabled == false && defaultDiscountType == "") {
+          defaultDiscountType = type;
+        }
+      });
+      if (defaultDiscountType) {
+        this.discAmtForm.controls["types"].setValue(defaultDiscountType.value);
+      }
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
