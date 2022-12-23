@@ -7,7 +7,7 @@
         </ul>
         <div class="maxhealth-spacer"></div>
     </nav>
-    <mat-tab-nav-panel #tabpanel>
+<mat-tab-nav-panel #tabpanel>
 <div class="h-full w-full p-2">
     <!--First row-->
     <div class="flex  w-full text-wrap bg-lightgray border-radius-lg input-padding">
@@ -318,9 +318,12 @@
 
    </div>
 
-         </div>
+    </div>
 </div>
-    </mat-tab-nav-panel>
+</mat-tab-nav-panel>
+<div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+    <mat-spinner strokeWidth="3"></mat-spinner>
+</div>
 </section>
 <div class="flex ml-4 mr-2 justify-between font-xs">
     <div class="left flex">

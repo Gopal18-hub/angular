@@ -47,14 +47,20 @@ export class IomCompanyBillingComponent implements OnInit {
     this.iomcompanybillingform = formResult.form;
     this.questions = formResult.questions;
     console.log(this.billingservice);
-    if(this.billingservice.channelDetail.channelName == 'TPA')
+    if(this.billingservice.company == this.billingservice.patientDetailsInfo.companyid)
     {
-      this.iomcompanybillingform.controls["mainradio"].setValue('corporate');
+      console.log(this.billingservice.company == this.billingservice.patientDetailsInfo.companyid, 
+        this.billingservice.company, this.billingservice.patientDetailsInfo.companyid)
+      if(this.billingservice.patientDetailsInfo.isIndivisualOrCorporate)
+      {
+        this.iomcompanybillingform.controls["mainradio"].setValue('corporate');
+      }
+      else
+      {
+        this.iomcompanybillingform.controls["mainradio"].setValue('individual');
+      }
     }
-    else if(this.billingservice.channelDetail.channelName == 'Cash')
-    {
-      this.iomcompanybillingform.controls["mainradio"].setValue('individual');
-    }
+    
   }
 
   iomok(){

@@ -35,7 +35,6 @@ export class CalculateBillService {
   depositDetailsData: any = [];
 
   discountForm: any;
-  infoDialog: any;
 
   validCoupon: boolean = false;
 
@@ -64,7 +63,7 @@ export class CalculateBillService {
     this.companyNonCreditItems = items;
   }
 
-  initProcess(
+  async initProcess(
     billItems: any,
     billingServiceRef: any,
     formGroup?: any,
@@ -87,9 +86,6 @@ export class CalculateBillService {
         };
       }
       this.serviceBasedListItems[item.serviceName.toString()].items.push(item);
-    });
-    billItems.forEach(async (item: any) => {
-      await this.serviceBasedCheck(item);
     });
   }
 
@@ -132,80 +128,82 @@ export class CalculateBillService {
     });
   }
 
-  async serviceBasedCheck(item: any) {
-    switch (item.serviceId) {
-      case 41:
-        if (this.billingServiceRef.company > 0) {
-          await this.CheckOutSourceTest(item);
-        }
-        break;
-      case 65:
-      case 66:
-        break;
-      case 46:
-      case 109:
-        break;
+  async serviceBasedCheck() {
+    for (let i = 0; i < this.billingServiceRef.billItems.length; i++) {
+      const item = this.billingServiceRef.billItems[i];
+      switch (item.serviceId) {
+        case 41:
+          if (this.billingServiceRef.company > 0) {
+            await this.CheckOutSourceTest(item);
+          }
+          break;
+        case 65:
+        case 66:
+          break;
+        case 46:
+        case 109:
+          break;
 
-      default:
-        console.log("default");
+        default:
+          console.log("default");
+      }
     }
   }
 
   async CheckOutSourceTest(item: any) {
     ////GAV-1355  -SRF
-    // if (
-    //   !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
-    //     .srfID ||
-    //   this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
-    //    .srfID == 0
-    //) {
-    const checkResult = await this.http
-      .post(
-        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
-        [{ id: item.itemId }]
-      )
-      .toPromise()
-      .catch((error: any) => {
-        if (error.status == 200) {
-          return error.error.text;
-        }
-      });
-
-    console.log(checkResult);
     if (
-      !(this.infoDialog && this.infoDialog.componentInstance) &&
-      checkResult &&
-      checkResult.length > 0
+      !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID ||
+      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID == 0
     ) {
-      this.infoDialog = await this.messageDialogService.confirm(
-        "",
-        "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
-      );
-
-      const infoDialogRes = await this.infoDialog.afterClosed().toPromise();
-      if (
-        infoDialogRes &&
-        "type" in infoDialogRes &&
-        infoDialogRes.type == "yes"
-      ) {
-        const srfDialogref = this.matDialog.open(SrfReasonComponent, {
-          width: "28vw",
-          height: "25vh",
-          disableClose: true,
+      const checkResult = await this.http
+        .post(
+          BillingApiConstants.checkoutsourcetest(
+            this.billingServiceRef.company
+          ),
+          [{ id: item.itemId }]
+        )
+        .toPromise()
+        .catch((error: any) => {
+          if (error.status == 200) {
+            return error.error.text;
+          }
         });
 
-        let res = await srfDialogref
-          .afterClosed()
-          .pipe(takeUntil(this._destroying$))
-          .toPromise();
+      console.log(checkResult);
+      if (checkResult && checkResult.length > 0) {
+        this.billingServiceRef.isNeedToCheckSRF = 1;
+        const infoDialog = this.messageDialogService.confirm(
+          "",
+          "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
+        );
 
-        if (res && res.data && res.data.reason) {
-          this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
-            res.data.reason;
+        const infoDialogRes = await infoDialog.afterClosed().toPromise();
+        if (
+          infoDialogRes &&
+          "type" in infoDialogRes &&
+          infoDialogRes.type == "yes"
+        ) {
+          const srfDialogref = this.matDialog.open(SrfReasonComponent, {
+            width: "28vw",
+            height: "25vh",
+            disableClose: true,
+          });
+
+          let res = await srfDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .toPromise();
+
+          if (res && res.data && res.data.reason) {
+            this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
+              res.data.reason;
+          }
         }
       }
     }
-    //}
   }
 
   async getinteraction() {
@@ -1233,7 +1231,10 @@ export class CalculateBillService {
             this.billingServiceRef.patientDetailsInfo.adhaarID || ""
           )
         )
-        .toPromise();
+        .toPromise()
+        .catch((error: any) => {
+          return [];
+        });
 
       if (cghsBeneficiary) {
         if (

@@ -92,6 +92,8 @@ export class BillingComponent implements OnInit, OnDestroy {
   disableStopQueueBtn: boolean = true;
   queueId: number = 0;
   qmsSeqNo = "";
+  ////GAV-1442
+  clearQueryParams = 1;
 
   constructor(
     public matDialog: MatDialog,
@@ -144,6 +146,10 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(takeUntil(this._routingdestroying$))
       .subscribe((params: any) => {
+        ////GAV-1442
+        if (!params.maxId && !params.orderid) {
+          if (this.clearQueryParams > 0) this.clear(this.clearQueryParams);
+        }
         if (params.maxId) {
           this.formGroup.controls["maxid"].setValue(params.maxId);
           this.apiProcessing = true;
@@ -283,9 +289,16 @@ export class BillingComponent implements OnInit, OnDestroy {
     //       this.billingService.makeBillPayload.invoiceType = "B2C";
     //     }
     //   });
-    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
+
+    this.formGroup.controls["company"].valueChanges
+    .pipe(distinctUntilChanged())
+    .subscribe((res: any) => {
+      console.log(res);
       if (res && res.value) {
         console.log(res);
+        // Clear SRF values
+        this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
+        this.billingService.isNeedToCheckSRF = 0;
         if (this.billingService.billtype == 3 && res.company.id > 0) {
           this.billingService.checkcreditcompany(
             res.value,
@@ -304,7 +317,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       } else {
         this.billingService.setCompnay(res, res, this.formGroup, "header");
       }
-    });
+    })
 
     this.formGroup.controls["corporate"].valueChanges.subscribe((res: any) => {
       if (res && res.value) {
@@ -515,7 +528,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (resultData) {
             this.patientDetails = resultData;
 
-            this.setValuesToForm(this.patientDetails);
+          this.billingService.setPatientDetails(
+            this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+          );  
+          this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
                 "Today is Patient’s birthday"
@@ -548,9 +564,6 @@ export class BillingComponent implements OnInit, OnDestroy {
                   });
                 }
               }
-              this.billingService.setPatientDetails(
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-              );
 
               this.billingService.setPatientChannelDetail(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]
@@ -716,9 +729,9 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {
@@ -1362,12 +1375,14 @@ export class BillingComponent implements OnInit, OnDestroy {
     //   this.cookie.get("LocationIACode") + "."
     // );
     this.questions[0].elementRef.focus();
-    if (clearQueryParams == 1)
+    if (clearQueryParams == 1) {
       this.router.navigate(["services"], {
         queryParams: {},
         relativeTo: this.route,
       });
-    else {
+      ////GAV-1442
+      this.clearQueryParams = 0;
+    } else {
       this._routingdestroying$.next(undefined);
       this._routingdestroying$.complete();
     }

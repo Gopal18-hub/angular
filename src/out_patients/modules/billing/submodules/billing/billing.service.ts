@@ -30,7 +30,8 @@ export class BillingService {
   patientDemographicdata: any = {};
   billItemsTrigger = new Subject<any>();
   configurationservice: [{ itemname: string; servicename: string }] = [] as any;
-
+  healthCheckupselectedItems:any={};
+  doctorList:any=[];
   clearAllItems = new Subject<boolean>();
 
   billNoGenerated = new Subject<boolean>();
@@ -71,6 +72,7 @@ export class BillingService {
   consultationItemsAdded = new Subject<boolean>();
 
   referralDoctor: any;
+  isNeedToCheckSRF: any = 0;
   twiceConsultationReason: any = "";
 
   companyChangeEvent = new Subject<any>();
@@ -113,12 +115,21 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill(formGroup: any, question: any) {
-    this.calculateBillService.initProcess(
+  async calculateBill(formGroup: any, question: any) {
+    await this.calculateBillService.initProcess(
       this.billItems,
       this,
       formGroup,
       question
+    );
+  }
+
+  //check For approval or SRF GAV-1355
+  checkApprovalSRF() {
+    return (
+      this.isNeedToCheckSRF &&
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.srfID == 0 &&
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId != 0
     );
   }
 
@@ -148,6 +159,7 @@ export class BillingService {
     this.unbilledInvestigations = false;
     this.billingFormGroup = { form: "", questions: [] };
     this.referralDoctor = null;
+    this.isNeedToCheckSRF = 0;
     this.iomMessage = "";
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
@@ -346,7 +358,7 @@ export class BillingService {
   setCreditLimit(data: any) {
     this.creditLimit = data;
   }
-  setCompnay(
+  async setCompnay(
     companyid: number,
     res: any,
     formGroup: any,
@@ -363,12 +375,16 @@ export class BillingService {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
+      // For GAV-1355 SRF Popup
+      await this.calculateBillService.serviceBasedCheck(); 
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
       this.iomMessage = "";
+      formGroup.controls["corporate"].setValue(null);
+      formGroup.controls["corporate"].disable();
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
@@ -407,12 +423,29 @@ export class BillingService {
 
           iomcompanycorporate.afterClosed().subscribe((result: any) => {
             if (result.data == "corporate") {
+              this.makeBillPayload.isIndivisualOrCorporate = true;
               formGroup.controls["corporate"].enable();
-              formGroup.controls["corporate"].setValue(null);
-              this.corporateChangeEvent.next({ corporate: null, from });
+              const corporateExist: any = this.corporateData.find(
+                (c: any) => c.id == this.patientDetailsInfo.corporateid
+              );
+              if (
+                corporateExist &&
+                this.company == this.patientDetailsInfo.companyid
+              ) {
+                formGroup.controls["corporate"].setValue({
+                  title: corporateExist.name,
+                  value: this.patientDetailsInfo.corporateid,
+                });
+              } else {
+                formGroup.controls["corporate"].setValue(null);
+              }
+              //reseting value even value is available - GAV-1406
+              // formGroup.controls["corporate"].setValue(null);
+              // this.corporateChangeEvent.next({ corporate: null, from });
               this.disablecorporatedropdown = true;
             } else {
               formGroup.controls["corporate"].setValue(null);
+              this.makeBillPayload.isIndivisualOrCorporate = false;
               formGroup.controls["corporate"].disable();
               this.corporateChangeEvent.next({
                 corporate: null,
@@ -937,8 +970,7 @@ export class BillingService {
   getconfigurationservice() {
     return this.configurationservice;
   }
-  setPatientChannelDetail(channeldetail: any)
-  {
+  setPatientChannelDetail(channeldetail: any) {
     this.channelDetail = channeldetail;
   }
 
@@ -1059,9 +1091,9 @@ export class BillingService {
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
         ) +
-          parseFloat(
-            this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
-          ) +
+          // parseFloat(
+          //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+          // ) +
           parseFloat(
             this.calculateBillService.billFormGroup.form.value.amtPayByComp
           ));
@@ -1973,5 +2005,18 @@ export class BillingService {
         docid: "",
       },
     });
+  }
+  //gav 1428
+  checkValidItems() {
+    let nonPricedItems = [];
+    nonPricedItems = this.billItems.filter((e: any) => e.price == 0);
+    if (nonPricedItems.length > 0) {
+      this.messageDialogService.error(
+        "Please remove Non Priced Items in the list to proceed billing"
+      );
+      return false;
+    } else {
+      return true;
+    }
   }
 }

@@ -161,7 +161,7 @@ export class DashboardComponent implements OnInit {
     private lookupService: LookupService,
     private cookieService: CookieService,
     public matDialog: MatDialog,
-    private messageDialogService: MessageDialogService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -173,11 +173,13 @@ export class DashboardComponent implements OnInit {
         resultData = resultData.map((item: any) => {
           item.fullname = item.firstName + " " + item.lastName;
           item.notereason = item.noteReason;
-          item.age= this.onageCalculator(item.dob);
+          item.age = this.onageCalculator(item.dob);
           return item;
         });
-         //Added line for restricting secondary id to display in list
-        this.patientList = resultData.filter((res:any) => res.parentMergeLinked == "");
+        //Added line for restricting secondary id to display in list
+        this.patientList = resultData.filter(
+          (res: any) => res.parentMergeLinked == ""
+        );
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
         );
@@ -245,7 +247,7 @@ export class DashboardComponent implements OnInit {
     this.apiProcessing = false;
     this.defaultUI = false;
     if (formdata.data) {
-      const lookupdata = await this.lookupService.searchPatient(formdata);
+      const lookupdata = await this.lookupService.searchPatient(formdata).catch((error) => {});
       if (lookupdata == null || lookupdata == undefined) {
         this.patientList = [];
         this.defaultUI = true;
@@ -280,7 +282,7 @@ export class DashboardComponent implements OnInit {
                           " merged with these " +
                           lookupdata[0]["mergeLinked"]
                       );
-                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                    } else if (lookupdata[0]["parentMergeLinked"] != "") {
                       this.patientList = [];
                       this.messageDialogService.info(
                         "Max Id :" +
@@ -307,7 +309,7 @@ export class DashboardComponent implements OnInit {
                           " merged with these " +
                           lookupdata[0]["mergeLinked"]
                       );
-                    }else if(lookupdata[0]["parentMergeLinked"] != ""){
+                    } else if (lookupdata[0]["parentMergeLinked"] != "") {
                       this.patientList = [];
                       this.messageDialogService.info(
                         "Max Id :" +
@@ -336,21 +338,21 @@ export class DashboardComponent implements OnInit {
       } else {
         this.processLookupData(lookupdata);
       }
-    }   
+    }
   }
 
   processLookupData(lookupdata: any) {
     const resultData = lookupdata.map((item: any) => {
       item.fullname = item.firstName + " " + item.lastName;
       item.notereason = item.noteReason;
-      item.age= this.onageCalculator(item.dob);
+      item.age = this.onageCalculator(item.dob);
       return item;
     });
-     //Added line for restricting secondary id to display in list
-    this.patientList = resultData.filter((res:any) => res.parentMergeLinked == ""); 
-    this.patientList = this.patientServie.getAllCategoryIcons(
-      this.patientList
+    //Added line for restricting secondary id to display in list
+    this.patientList = resultData.filter(
+      (res: any) => res.parentMergeLinked == ""
     );
+    this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
     this.apiProcessing = true;
     this.showspinner = false;
     this.defaultUI = false;
@@ -413,7 +415,7 @@ export class DashboardComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-     
+
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";

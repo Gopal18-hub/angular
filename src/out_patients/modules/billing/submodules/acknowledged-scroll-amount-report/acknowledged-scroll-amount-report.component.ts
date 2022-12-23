@@ -8,8 +8,8 @@ import { LookupService } from "@core/services/lookup.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
-import { getackdetailsforscroll } from "core/types/GetackdetailsforScroll.Interface";
-import { ackscrolldetailslist } from "core/types/GetackdetailsforScroll.Interface";
+import { getackdetailsforscroll } from "@core/types/GetackdetailsforScroll.Interface";
+import { ackscrolldetailslist } from "@core/types/GetackdetailsforScroll.Interface";
 import { DatePipe } from "@angular/common";
 
 @Component({

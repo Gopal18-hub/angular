@@ -19,7 +19,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReport?opbillid=${params.opbillid}&locationID=${params.locationID}&enableexport=${params.enableexport ? 1 : 0}`;
   };
   export const billdetailsreport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Billing/BilldetailsOPbillreport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/BilldetailsOPbillreport?opbillid=${params.opbillid}&locationID=${params.locationID}&enableexport=${params.enableexport ? 1 : 0}`;
   };
   export const billingreportPDF = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReportPDF?opbillid=${params.opbillid}&locationID=${params.locationID}`;
@@ -71,7 +71,7 @@ export namespace CrystalReport {
   };
 
   export const ConsumabaleEntryDetailsReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Billing/OTBilling/ConsumabaleEntryDetails?billno=${params.billno}&locationID=${params.locationID}&MAXID=${params.MAXID}&exportflagEnable=${params.exportflagEnable}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/OTBilling/ConsumabaleEntryDetails?billno=${params.billno}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&MAXID=${params.MAXID}&exportflagEnable=${params.exportflagEnable?1:0}`;
   };
 
   export const HappyFamilyPlanAllocationReport = (params: any) => {

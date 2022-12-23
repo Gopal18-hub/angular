@@ -214,6 +214,8 @@
                   [questions]="question[27]"
                   class="w-21 mb-1"
                   [index]="27"
+                  (click)="clearDis()"
+                  (focusout)="unClearDis()"
                 >
                 </maxhealth-question>
               </div>
@@ -275,6 +277,8 @@
                   [questions]="question[21]"
                   class="w-1/45"
                   [index]="21"
+                  (click) = "clearCoPay()"
+                  (focusout)="unClearCoPay()"
                 >
                 </maxhealth-question>
               </div>
@@ -289,6 +293,8 @@
                   [questions]="question[22]"
                   class="w-1/45"
                   [index]="22"
+                  (click)="clearCredit()"
+                  (focusout)="unClearCredit()"
                 >
                 </maxhealth-question>
               </div>

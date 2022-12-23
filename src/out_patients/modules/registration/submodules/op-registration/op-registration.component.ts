@@ -171,6 +171,7 @@ export class OpRegistrationComponent implements OnInit {
   vipdb!: string;
   noteRemarkdb!: string;
   hwcRemarkdb!: string;
+  onlineId: number = 0;
   ewsDetailsdb: {
     bplCardNo: string;
     bplCardAddress: string;
@@ -210,7 +211,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "pattern_string",
         title: "First Name",
         required: true,
-        pattern: "^[a-zA-Z0-9 .]*$",
+        pattern: "^[a-zA-Z0-9 ]*$",
         capitalizeText: true,
       },
       middleName: {
@@ -518,6 +519,7 @@ export class OpRegistrationComponent implements OnInit {
         }
         if (value["id"]) {
           this.apiProcessing = true;
+          this.onlineId = value["id"];
           this.getappointmentpatientssearchbyid(value["id"]);
         }
       });
@@ -545,8 +547,8 @@ export class OpRegistrationComponent implements OnInit {
         });
         this.OPRegForm.controls["firstName"].setValue(res[0]?.firstName);
         this.OPRegForm.controls["lastName"].setValue(res[0]?.lastName);
-        this.OPRegForm.controls["age"].setValue(res[0]?.age);
-        this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
+        // this.OPRegForm.controls["age"].setValue(res[0]?.age);
+        // this.OPRegForm.controls["ageType"].setValue(res[0]?.agetype);
         this.OPRegForm.controls["address"].setValue(res[0]?.houseNo);
         // this.OPRegForm.controls["pincode"].setValue(
         //   patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
@@ -709,6 +711,17 @@ export class OpRegistrationComponent implements OnInit {
       this.onPhoneModify.bind(this)
     );
 
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        this.maxIDSearch = true;
+        this.getPatientDetailsByMaxId();
+      }
+    });
+
     //ENTER EVENT ON PHONE NUMBER
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -778,29 +791,16 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     // nationality value chnage event to enable foreigner
-    this.questions[28].elementRef.addEventListener(
-      "blur",
-      // this.onNationalityModify.bind(this)
-    );
+    // this.questions[28].elementRef.addEventListener(
+    //   "blur"
+    //   // this.onNationalityModify.bind(this)
+    // );
 
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener(
       "change",
       this.MarkasMaxIDChange.bind(this)
     );
-
-    //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
-      if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
-        event.preventDefault();
-        this.maxIDSearch = true;
-        this.getPatientDetailsByMaxId();
-      }
-    });
 
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -819,14 +819,12 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((res) => {
         console.log(res, typeof res);
         //added for - able to save by don't lose focus of the nationality element
-        if(res.title && res.value && typeof res == 'object')
-        {
+        if (res.title && res.value && typeof res == "object") {
           this.OPRegForm.controls["nationality"].setErrors(null);
           this.onNationalityModify();
         }
-        if(typeof res == 'string')
-        {
-          this.OPRegForm.controls["nationality"].setErrors({'incorrect': true});
+        if (typeof res == "string") {
+          this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
         }
         this.disableforeigner = false;
       });
@@ -920,7 +918,7 @@ export class OpRegistrationComponent implements OnInit {
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
           }
-          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') != 
+          // if(this.datepipe.transform(this.OPRegForm.controls['dob'].value, 'dd/mm/yyyy') !=
           //   this.datepipe.transform(this.patientDetails?.dateOfBirth, 'dd/mm/yyyy'))
           //   {
           //     if (!this.maxIDChangeCall) {
@@ -936,7 +934,6 @@ export class OpRegistrationComponent implements OnInit {
           //   {
           //     this.isPatientdetailModified = false;
           //   }
-          
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -992,8 +989,7 @@ export class OpRegistrationComponent implements OnInit {
           this.getSimilarpatientlistonagetype();
           if (!this.maxIDChangeCall) {
             if (this.checkForModifiedPatientDetail()) {
-              this.modfiedPatiendDetails.dateOfBirth =
-                this.OPRegForm.value.dob;
+              this.modfiedPatiendDetails.dateOfBirth = this.OPRegForm.value.dob;
               this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
               this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
             }
@@ -1030,6 +1026,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         this.questions[25].options = [];
         this.questions[22].options = [];
+        this.questions = { ...this.questions };
         this.clearAddressOnCountryChange();
         if (
           this.OPRegForm.value.country.value != undefined &&
@@ -1100,6 +1097,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[25].options = [];
           this.localitybyCityList = [];
           this.questions[22].options = [];
+          this.questions = { ...this.questions };
         }
 
         if (this.OPRegForm.value.country.value != 1) {
@@ -1133,7 +1131,11 @@ export class OpRegistrationComponent implements OnInit {
             this.getCityListByState(this.OPRegForm.value.state);
           }
         }
-        if (this.OPRegForm.value.country.value != 1) {
+        if (
+          this.OPRegForm.value.country &&
+          this.OPRegForm.value.country.value &&
+          this.OPRegForm.value.country.value != 1
+        ) {
           this.OPRegForm.controls["pincode"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
           this.OPRegForm.controls["locality"].setErrors(null);
@@ -1151,8 +1153,9 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["city"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        console.log(value);
-        if (value) {
+        if (typeof value != "object") {
+          this.OPRegForm.controls["city"].setErrors({ incorrect: true });
+        } else if (typeof value == "object") {
           if (value.value > 0) {
             if (
               (this.OPRegForm.value.locality.value == undefined ||
@@ -1219,9 +1222,9 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["locality"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (value: any) => {
-        if (!this.maxIDChangeCall && this.countrybasedflow) {
-          this.OPRegForm.controls["pincode"].setValue("");
-        }
+        //if (!this.maxIDChangeCall && this.countrybasedflow) {
+        //  this.OPRegForm.controls["pincode"].setValue("");
+        //}
         if (
           (this.OPRegForm.value.pincode == "" ||
             this.OPRegForm.value.pincode == undefined ||
@@ -1246,6 +1249,7 @@ export class OpRegistrationComponent implements OnInit {
                       return { title: l.localityName, value: l.id };
                     }
                   );
+                  this.questions[22] = { ...this.questions[22] };
                 }
               }
             }
@@ -1257,25 +1261,21 @@ export class OpRegistrationComponent implements OnInit {
                 (l) => l.id === value.value
               )[0].pincode;
 
-              this.OPRegForm.controls["pincode"].setValue(pincode);
+              this.OPRegForm.controls["pincode"].setValue(Number(pincode));
               this.pincodebasedflow = true;
               this.countrybasedflow = false;
               this.citybasedflow = false;
               this.addressByLocalityID(value);
+            } else if (value && value.value) {
+              this.OPRegForm.controls["locality"].setErrors(null);
+              this.questions[22].customErrorMessage = "";
+              this.addressByLocalityID(value);
             }
-            // else if(value && value.value)
-            // {
-            //   this.OPRegForm.controls["locality"].setErrors(null);
-            //   this.questions[22].customErrorMessage = "";
-            //   this.addressByLocalityID(value);
-            // }
+          } else if (value && value.value) {
+            this.OPRegForm.controls["locality"].setErrors(null);
+            this.questions[22].customErrorMessage = "";
+            this.addressByLocalityID(value);
           }
-          // else if(value && value.value)
-          // {
-          //   this.OPRegForm.controls["locality"].setErrors(null);
-          //   this.questions[22].customErrorMessage = "";
-          //   this.addressByLocalityID(value);
-          // }
         } else if (
           value.value > 0 &&
           value.value != undefined &&
@@ -1295,7 +1295,11 @@ export class OpRegistrationComponent implements OnInit {
           }
         }
 
-        if (this.OPRegForm.value.country.value != 1) {
+        if (
+          this.OPRegForm.value.country &&
+          this.OPRegForm.value.country.value &&
+          this.OPRegForm.value.country.value != 1
+        ) {
           this.OPRegForm.controls["pincode"].setErrors(null);
           this.OPRegForm.controls["district"].setErrors(null);
           this.OPRegForm.controls["locality"].setErrors(null);
@@ -1421,6 +1425,14 @@ export class OpRegistrationComponent implements OnInit {
     this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.disableforeigner = false;
+    setTimeout(() => {
+      this.OPRegForm.controls["nationality"].setErrors(null);
+      this.OPRegForm.controls["nationality"].setValue({
+        title: "Indian",
+        value: 149,
+      });
+    }, 20);
+    console.log(this.OPRegForm.controls["nationality"]);
   }
 
   flushAllObjects() {
@@ -1692,40 +1704,41 @@ export class OpRegistrationComponent implements OnInit {
           (resultData: SimilarSoundPatientResponse[]) => {
             this.similarContactPatientList = resultData;
             console.log(this.similarContactPatientList);
-            if (this.similarContactPatientList.length == 1) {
-              console.log(this.similarContactPatientList[0]);
-              let maxID = this.similarContactPatientList[0].maxid;
-              this.OPRegForm.controls["maxid"].setValue(maxID);
-              this.getPatientDetailsByMaxId();
-            } else {
-              if (this.similarContactPatientList.length != 0) {
-                const similarSoundDialogref = this.matDialog.open(
-                  SimilarPatientDialog,
-                  {
-                    width: "60vw",
-                    height: "80vh",
-                    data: {
-                      searchResults: this.similarContactPatientList,
-                    },
+            ////GAV-1283
+            // if (this.similarContactPatientList.length == 1) {
+            //   console.log(this.similarContactPatientList[0]);
+            //   let maxID = this.similarContactPatientList[0].maxid;
+            //   this.OPRegForm.controls["maxid"].setValue(maxID);
+            //   this.getPatientDetailsByMaxId();
+            // } else {
+            if (this.similarContactPatientList.length != 0) {
+              const similarSoundDialogref = this.matDialog.open(
+                SimilarPatientDialog,
+                {
+                  width: "60vw",
+                  height: "80vh",
+                  data: {
+                    searchResults: this.similarContactPatientList,
+                  },
+                }
+              );
+              similarSoundDialogref
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result) => {
+                  if (result) {
+                    console.log(result.data["added"][0].maxid);
+                    let maxID = result.data["added"][0].maxid;
+                    this.OPRegForm.controls["maxid"].setValue(maxID);
+                    this.getPatientDetailsByMaxId();
                   }
-                );
-                similarSoundDialogref
-                  .afterClosed()
-                  .pipe(takeUntil(this._destroying$))
-                  .subscribe((result) => {
-                    if (result) {
-                      console.log(result.data["added"][0].maxid);
-                      let maxID = result.data["added"][0].maxid;
-                      this.OPRegForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                    }
-                    console.log("seafarers dialog was closed");
-                    this.similarContactPatientList = [];
-                  });
-              } else {
-                console.log("no data found");
-              }
+                  console.log("seafarers dialog was closed");
+                  this.similarContactPatientList = [];
+                });
+            } else {
+              console.log("no data found");
             }
+            // }
           },
           (error) => {
             console.log(error);
@@ -2034,12 +2047,19 @@ export class OpRegistrationComponent implements OnInit {
     this.http
       .get(ApiConstants.localityMasterData)
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: any) => {
-        this.localityList = resultData;
-        this.questions[22].options = this.localityList.map((l) => {
-          return { title: l.localityName, value: l.id };
-        });
-      });
+      .subscribe(
+        (resultData: any) => {
+          this.localityList = resultData;
+          this.questions[22].options = this.localityList.map((l) => {
+            return { title: l.localityName, value: l.id };
+          });
+          this.questions[22] = { ...this.questions[22] };
+        },
+        (err: any) => {
+          this.questions[22] = [];
+          this.questions[22] = { ...this.questions[22] };
+        }
+      );
   }
 
   localityListByPin: LocalityByPincodeModel[] = [];
@@ -2051,17 +2071,18 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.pincode > 0 &&
       this.OPRegForm.value.pincode != null
     ) {
+      let pinCodeLength = String(this.OPRegForm.value.pincode).length;
       if (this.OPRegForm.value.country.value == 1) {
-        if (this.OPRegForm.value.pincode.length == 6) {
+        if (pinCodeLength == 6) {
           isvalidpincode = true;
         } else {
           isvalidpincode = false;
         }
       } else {
         if (
-          this.OPRegForm.value.pincode.length == 6 ||
-          this.OPRegForm.value.pincode.length == 5 ||
-          this.OPRegForm.value.pincode.length == 4
+          pinCodeLength == 6 ||
+          pinCodeLength == 5 ||
+          pinCodeLength == 4
         ) {
           isvalidpincode = true;
         } else {
@@ -2075,13 +2096,23 @@ export class OpRegistrationComponent implements OnInit {
         this.http
           .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
           .pipe(takeUntil(this._destroying$))
-          .subscribe((resultData: any) => {
-            this.localityListByPin = resultData;
-            this.questions[22].options = this.localityListByPin.map((l) => {
-              return { title: l.name, value: l.id };
-            });
-            this.questions[22] = { ...this.questions[22] };
-          });
+          .subscribe(
+            (resultData: any) => {
+              if (resultData) {
+                this.localityListByPin = resultData;
+                this.questions[22].options = this.localityListByPin.map((l) => {
+                  return { title: l.name, value: l.id };
+                });
+              } else {
+                this.localityListByPin = this.questions[22].options = [];
+              }
+              this.questions[22] = { ...this.questions[22] };
+            },
+            (err: any) => {
+              this.questions[22] = [];
+              this.questions[22] = { ...this.questions[22] };
+            }
+          );
       } else {
         this.OPRegForm.controls["pincode"].setErrors({ incorrect: true });
         this.questions[21].customErrorMessage = "PinCode is Invalid";
@@ -2107,8 +2138,16 @@ export class OpRegistrationComponent implements OnInit {
       ) {
         this.OPRegForm.controls["city"].setValue({ title: "", value: 0 });
       }
-
+      let isflag = true;
       if (
+        this.AddressonLocalityModellst &&
+        this.AddressonLocalityModellst.pinCode ==
+          this.OPRegForm.controls["pincode"].value
+      ) {
+        isflag = false;
+      }
+      if (
+        isflag &&
         this.OPRegForm.value.locality.value != undefined &&
         this.OPRegForm.value.locality.value != null &&
         this.OPRegForm.value.locality.value != ""
@@ -2116,7 +2155,7 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
       }
 
-      if (this.OPRegForm.value.locality) {
+      if (isflag && this.OPRegForm.value.locality) {
         this.OPRegForm.controls["locality"].setValue("");
       }
 
@@ -2147,7 +2186,7 @@ export class OpRegistrationComponent implements OnInit {
       this.getStatesByCountry(this.OPRegForm.controls["country"].value);
       this.questions[22].options = [];
       this.questions[25].options = [];
-
+      this.questions = { ...this.questions };
       this.localitybyCityList = [];
       this.getLocalityList();
     }
@@ -2207,6 +2246,10 @@ export class OpRegistrationComponent implements OnInit {
       this.questions[25].required = false;
       this.questions[26].required = true;
       this.questions = { ...this.questions };
+    } else {
+      if (this.OPRegForm.controls["pincode"].value == "") {
+        this.getLocalityList();
+      }
     }
   }
 
@@ -2325,7 +2368,10 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[25].readonly = true;
             this.questions[26].readonly = true;
             this.questions[27].readonly = true;
-
+            this.OPRegForm.controls["pincode"].setValue(
+              Number(this.AddressonLocalityModellst.pinCode),
+              { emitEvent: false }
+            );
             this.OPRegForm.controls["country"].setValue({
               title: this.AddressonLocalityModellst.countryName,
               value: this.AddressonLocalityModellst.countryid,
@@ -2365,7 +2411,9 @@ export class OpRegistrationComponent implements OnInit {
           )[0].pincode;
           // this.countrybasedflow = true;
           this.pincodebasedflow = false;
-          this.OPRegForm.controls["pincode"].setValue(pincode);
+          this.OPRegForm.controls["pincode"].setValue(Number(pincode), {
+            emitEvent: false,
+          });
           this.questions[24].readonly = true;
           this.questions[25].readonly = true;
           this.questions[26].readonly = true;
@@ -2390,7 +2438,6 @@ export class OpRegistrationComponent implements OnInit {
   cityListByState: CityModel[] = [];
   //CITY LIST FOR STATEID
   getCityListByState(state: any) {
-    console.log(state);
     if (state.value != undefined && state.value != null && state.value != "") {
       this.http
         .get(ApiConstants.cityByStateID(state.value))
@@ -2424,7 +2471,6 @@ export class OpRegistrationComponent implements OnInit {
 
   //locality by city
   getLocalityByCity(city: any) {
-    console.log(city.value);
     this.localitybyCityList = [];
     if (city.value != undefined && city.value != null && city.value != "") {
       this.http
@@ -2449,17 +2495,22 @@ export class OpRegistrationComponent implements OnInit {
         .get(ApiConstants.addressByCityID(city.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
-          console.log(resultData);
           this.addressByCity = resultData;
           if (this.addressByCity.length > 0) {
-            this.OPRegForm.controls["state"].setValue({
-              title: this.addressByCity[0].stateName,
-              value: this.addressByCity[0].stateId,
-            });
-            this.OPRegForm.controls["district"].setValue({
-              title: this.addressByCity[0].districtName,
-              value: this.addressByCity[0].districtId,
-            });
+            this.OPRegForm.controls["state"].setValue(
+              {
+                title: this.addressByCity[0].stateName,
+                value: this.addressByCity[0].stateId,
+              },
+              { emitEvent: false }
+            );
+            this.OPRegForm.controls["district"].setValue(
+              {
+                title: this.addressByCity[0].districtName,
+                value: this.addressByCity[0].districtId,
+              },
+              { emitEvent: false }
+            );
           }
           this.questions[25].readonly = true;
           this.questions[26].readonly = true;
@@ -2474,16 +2525,13 @@ export class OpRegistrationComponent implements OnInit {
       country.value != null &&
       country.value != ""
     ) {
-      console.log(country.value);
       this.stateList = [];
       // this.questions[26].options = [];
       this.http
         .get(ApiConstants.stateByCountryId(country.value))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
-          console.log(resultData);
           this.stateList = resultData;
-          // console.log(this.localityListByPin);
           this.questions[26].options = this.stateList.map((l) => {
             return { title: l.stateName, value: l.id };
           });
@@ -2506,7 +2554,6 @@ export class OpRegistrationComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.cityList = resultData;
-          // console.log(this.localityListByPin);
           this.questions[24].options = this.cityList.map((l) => {
             return { title: l.cityName, value: l.id };
           });
@@ -2519,7 +2566,6 @@ export class OpRegistrationComponent implements OnInit {
   async getPatientDetailsByMaxId() {
     this.apiProcessing = true;
     this.maxIDChangeCall = true;
-    console.log(this.OPRegForm.value.maxid);
 
     let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
 
@@ -2604,7 +2650,6 @@ export class OpRegistrationComponent implements OnInit {
                   this.patientDetails
                 );
               this.MaxIDExist = true;
-              console.log(this.categoryIcons);
               this.checkForMaxID();
               //RESOPONSE DATA BINDING WITH CONTROLS
 
@@ -2693,20 +2738,18 @@ export class OpRegistrationComponent implements OnInit {
 
       if (passportdetailspresent || this.isPatientdetailModified) {
         this.onUpdatePatientDetail();
-      
+
         // if (this.isPatientdetailModified || this.nationalityChanged) {
-          
+
         //   this.modifyDialogg();
         // }
-        if(this.modificationCheckForMandatoryControls())
-        {
+        if (this.modificationCheckForMandatoryControls()) {
           this.modifyDialogg();
         }
       } else {
         this.onUpdatePatientDetail();
 
-        if(this.modificationCheckForMandatoryControls())
-        {
+        if (this.modificationCheckForMandatoryControls()) {
           this.modifyDialogg();
         }
       }
@@ -2782,7 +2825,7 @@ export class OpRegistrationComponent implements OnInit {
             const successdialog = this.messageDialogService.success(
               "Patient Details has been modified"
             );
-            
+
             successdialog.afterClosed().subscribe(() => {
               this.getPatientDetailsByMaxId();
             });
@@ -2791,7 +2834,6 @@ export class OpRegistrationComponent implements OnInit {
           //   this.getPatientDetailsByMaxId();
           // }
           this.maxIDChangeCall = false;
-          console.log(resultData);
         },
         (error) => {
           console.log(error);
@@ -2819,7 +2861,6 @@ export class OpRegistrationComponent implements OnInit {
           this.MaxIDExist = true;
           this.maxIDSearch = false;
           this.checkForMaxID();
-          console.log(resultData);
           this.maxIDChangeCall = false;
           this.lastupdatedDate =
             this.datepipe.transform(
@@ -2915,7 +2956,6 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   setHotlistDetails(patientDetail: PatientDetails) {
-    console.log(patientDetail);
     this.hotlistReason.title = patientDetail.hotlistreason;
 
     this.hotlistRemark = patientDetail.hotlistcomments;
@@ -2923,7 +2963,6 @@ export class OpRegistrationComponent implements OnInit {
       this.hotlistReasondb.title = patientDetail.hotlistreason;
       this.hotlistRemarkdb = patientDetail.hotlistcomments;
     }
-    console.log(this.hotlistReason);
   }
 
   // commented as UAT requirement change
@@ -3106,7 +3145,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["healthId"].setValue("");
     this.OPRegForm.controls["address"].setValue(patientDetails?.address1);
     this.OPRegForm.controls["pincode"].setValue(
-      patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode
+      Number(patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode)
     );
     this.OPRegForm.controls["state"].setValue({
       title: patientDetails?.stateName,
@@ -3149,8 +3188,7 @@ export class OpRegistrationComponent implements OnInit {
 
     if (patientDetails?.ppinCode != 0) {
       this.questions[27].readonly = true;
-    }
-    else{
+    } else {
       //added for make readonly as false in case there is no pincode(Foreign country) by deena
       this.questions[24].readonly = false;
       this.questions[25].readonly = false;
@@ -3282,10 +3320,6 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
         ? false
         : true;
-    console.log(this.OPRegForm.value.locality);
-    console.log(this.OPRegForm.value.locality.value);
-    console.log(this.OPRegForm.value.locality.title);
-    console.log(this.OPRegForm.value.localityTxt);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
@@ -3348,7 +3382,8 @@ export class OpRegistrationComponent implements OnInit {
           : this.OPRegForm.value.locality
         : this.OPRegForm.value.locality.title == undefined ||
           this.OPRegForm.value.locality.title == ""
-        ? this.OPRegForm.value.locality.title || this.OPRegForm.value.localityTxt
+        ? this.OPRegForm.value.locality.title ||
+          this.OPRegForm.value.localityTxt
         : this.OPRegForm.value.locality.title,
       this.OPRegForm.value.sourceOfInput == null ||
       this.OPRegForm.value.sourceOfInput == undefined
@@ -3392,7 +3427,6 @@ export class OpRegistrationComponent implements OnInit {
   // registationFormSubmit()
   // {}
   async registationFormSubmit() {
-    console.log(this.maxIDSearch);
     let isFormValid = await this.validateForm();
     if (!isFormValid) {
       //validateForm return boolean variable if validation error present or not
@@ -3406,7 +3440,6 @@ export class OpRegistrationComponent implements OnInit {
       if (this.maxIDSearch) {
         if (this.OPRegForm.value.maxid) {
           let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
-
           //HANDLING IF MAX ID IS NOT PRESENT
           if (regNumber != 0) {
             let iacode = this.OPRegForm.value.maxid.split(".")[0];
@@ -3609,6 +3642,7 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
     if (!validationerror) {
       if (this.OPRegForm.value.note) {
         if (this.noteRemark.trim() == "") {
@@ -3701,10 +3735,65 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
 
+    // Check City validation
+    if (!validationerror) {
+      if (
+        this.OPRegForm.controls["city"] &&
+        this.OPRegForm.value.city &&
+        this.OPRegForm.controls["city"].value
+      ) {
+        if (
+          !this.OPRegForm.value.city.value &&
+          this.OPRegForm.value.city.value !== 0 &&
+          this.OPRegForm.value.city.trim() == ""
+        ) {
+          validationerror = true;
+        } else if (Number(this.OPRegForm.value.city.value) == 0) {
+          validationerror = true;
+        } else {
+          validationerror = false;
+        }
+      } else {
+        validationerror = true;
+      }
+
+      if (validationerror) {
+        this.OPRegForm.controls["city"].setValue("");
+        this.OPRegForm.controls["city"].markAsTouched();
+      }
+    }
+
+    // Check State validation
+    if (!validationerror) {
+      if (
+        this.OPRegForm.controls["state"] &&
+        this.OPRegForm.value.state &&
+        this.OPRegForm.controls["state"].value
+      ) {
+        if (
+          !this.OPRegForm.value.state.value &&
+          this.OPRegForm.value.state.value !== 0 &&
+          this.OPRegForm.value.state.trim() == ""
+        ) {
+          validationerror = true;
+        } else if (Number(this.OPRegForm.value.state.value) == 0) {
+          validationerror = true;
+        } else {
+          validationerror = false;
+        }
+      } else {
+        validationerror = true;
+      }
+
+      if (validationerror) {
+        this.OPRegForm.controls["state"].setValue("");
+        this.OPRegForm.controls["state"].markAsTouched();
+      }
+    }
+
     return validationerror;
   }
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
 
@@ -3802,7 +3891,7 @@ export class OpRegistrationComponent implements OnInit {
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
-      0,
+      this.onlineId || 0,
       this.ewsDetails.bplCardNo,
       this.OPRegForm.value.hotlist || false,
       "",
@@ -4326,7 +4415,6 @@ export class OpRegistrationComponent implements OnInit {
           this.vip = "";
           this.OPRegForm.controls["vip"].setValue(false);
         }
-
         console.log("openVipNotes dialog was closed");
       });
   }
@@ -4712,35 +4800,47 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
-  modificationCheckForMandatoryControls()
-  {
+  modificationCheckForMandatoryControls() {
     this.modfiedPatiendDetailsForPopUp = this.getModifiedPatientDetailObj();
     console.log(this.OPRegForm.controls);
     console.log(this.patientDetails);
     console.log(this.modfiedPatiendDetailsForPopUp);
-    console.log(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname,
-      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName,
-      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName,
+    console.log(
+      this.patientDetails.firstname !=
+        this.modfiedPatiendDetailsForPopUp.firstname,
+      this.patientDetails.middleName !=
+        this.modfiedPatiendDetailsForPopUp.middleName,
+      this.patientDetails.lastName !=
+        this.modfiedPatiendDetailsForPopUp.lastName,
       this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex,
-      this.patientDetails.dateOfBirth != this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+      this.patientDetails.dateOfBirth !=
+        this.modfiedPatiendDetailsForPopUp.dateOfBirth,
       this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail,
       this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone,
-      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title); 
+      this.patientDetails.nationalityName !=
+        this.OPRegForm.value.nationality.title
+    );
 
-    if(this.patientDetails.firstname != this.modfiedPatiendDetailsForPopUp.firstname || 
-      this.patientDetails.middleName != this.modfiedPatiendDetailsForPopUp.middleName ||
-      this.patientDetails.lastName != this.modfiedPatiendDetailsForPopUp.lastName ||
+    if (
+      this.patientDetails.firstname !=
+        this.modfiedPatiendDetailsForPopUp.firstname ||
+      this.patientDetails.middleName !=
+        this.modfiedPatiendDetailsForPopUp.middleName ||
+      this.patientDetails.lastName !=
+        this.modfiedPatiendDetailsForPopUp.lastName ||
       this.patientDetails.sex != this.modfiedPatiendDetailsForPopUp.sex ||
-      this.datepipe.transform(this.patientDetails.dateOfBirth, 'dd/mm/yyyy') != this.datepipe.transform(this.modfiedPatiendDetailsForPopUp.dateOfBirth, 'dd/mm/yyyy') ||
+      this.datepipe.transform(this.patientDetails.dateOfBirth, "dd/mm/yyyy") !=
+        this.datepipe.transform(
+          this.modfiedPatiendDetailsForPopUp.dateOfBirth,
+          "dd/mm/yyyy"
+        ) ||
       this.patientDetails.pemail != this.modfiedPatiendDetailsForPopUp.pemail ||
       this.patientDetails.pphone != this.modfiedPatiendDetailsForPopUp.pphone ||
-      this.patientDetails.nationalityName != this.OPRegForm.value.nationality.title
-    )
-    {
+      this.patientDetails.nationalityName !=
+        this.OPRegForm.value.nationality.title
+    ) {
       return true;
-    }
-    else
-    {
+    } else {
       return false;
     }
   }

@@ -189,6 +189,7 @@ export class DisountReasonComponent implements OnInit {
 
   dualList: any = [];
   reasontitle: any = "";
+  head:any=""
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -375,16 +376,24 @@ export class DisountReasonComponent implements OnInit {
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {
+      this.reasontitle = "";
       if (val) {
         const filterData = this.discReasonList.filter(
           (rl: any) => rl.mainhead == val
         );
+        const existHead = this.mainHeadList.filter(
+          (rl: any) => rl.id == val
+        );
+        this.head=existHead[0].name
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
         });
         this.discAmtFormConfig.columnsInfo.reason.options =
           this.question[2].options;
         this.discAmtFormConfig = { ...this.discAmtFormConfig };
+      }
+      else{
+        this.head=""
       }
     });
 

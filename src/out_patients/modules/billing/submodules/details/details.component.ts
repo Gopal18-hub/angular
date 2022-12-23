@@ -1189,6 +1189,8 @@ export class DetailsComponent implements OnInit {
     }
   }
   openReportModal(btnname: string) {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    const exist: any = accessControls[2][7][534][1436];
     if (btnname == "PHPTracksheet") {
       this.reportService.openWindow(
         "PHP Tracksheet - " + this.BServiceForm.value.billNo,
@@ -1204,12 +1206,12 @@ export class DetailsComponent implements OnInit {
         {
           opbillid:
             this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
-          locationID: this.cookie.get("HSPLocationId"),
+            locationID: this.cookie.get("HSPLocationId"),
+            enableexport: exist,
         }
       );
     } else if (btnname == "ConsumabaleEntryDetailsReport") {
-      const accessControls: any = this.permissionservice.getAccessControls();
-      const exist: any = accessControls[2][7][534][1430];
+      
       console.log(exist);
 
       this.reportService.openWindow(
