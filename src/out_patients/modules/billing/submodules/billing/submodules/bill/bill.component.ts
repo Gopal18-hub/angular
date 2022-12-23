@@ -440,7 +440,10 @@ export class BillComponent implements OnInit, OnDestroy {
     //added for uncheck coupon checkbox when uncheck the discount
     this.formGroup.controls["discAmtCheck"].valueChanges.subscribe(
       (value: any) => {
-        console.log(value);
+        console.log("discheck", value);
+        if (value) {
+          this.calculateBillService.discountSelectedItems = [];
+        }
         if (value == false) {
           this.IsValidateCoupon = false;
         }
@@ -597,6 +600,19 @@ export class BillComponent implements OnInit, OnDestroy {
     );
     /////GAV-1427
     this.billingservice.makeBillPayload.tab_o_opDiscount = [];
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+      (opbillItem: any, billIndex: any) => {
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+          billIndex
+        ].discountamount = 0;
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+          billIndex
+        ].discountType = 0;
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+          billIndex
+        ].oldOPBillId = 0;
+      }
+    );
     this.billTypeChange(this.formGroup.value.paymentMode);
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
@@ -609,7 +625,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
   checkCreditLimit() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      this.applyCreditLimit();
+      this.resetDiscount();
+      //this.applyCreditLimit();
     } else {
       this.formGroup.controls["credLimit"].setValue("");
       this.applyCreditLimit();
@@ -1304,10 +1321,13 @@ export class BillComponent implements OnInit, OnDestroy {
   duplicateflag: boolean = true;
   makePrint() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    let exist: any = accessControls[2][7][534][1436];
-    console.log(exist);
-    if(exist == undefined)
-         exist =  false ;
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined) {
+      exist = false;
+    } else {
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
 
     this.reportService.openWindow(
       this.billNo + " - Billing Report",

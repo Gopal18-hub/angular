@@ -13,10 +13,10 @@ const routes: Routes = [
     redirectTo: "login",
     pathMatch: "full",
   },
-  {
-    path: "auth-callback",
-    component: AuthCallbackComponent,
-  },
+  // {
+  //   path: "auth-callback",
+  //   component: AuthCallbackComponent,
+  // },
 ];
 
 @NgModule({

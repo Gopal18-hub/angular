@@ -79,7 +79,7 @@ export class HealthCheckupsComponent implements OnInit {
   };
 
   doctorsList: any = [];
-  departmentHealthCheckup: any=[];
+  departmentHealthCheckup: any = [];
 
   constructor(
     private formService: QuestionControlService,
@@ -128,6 +128,11 @@ export class HealthCheckupsComponent implements OnInit {
     }
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
+
+    //newly added to remove from array
+    let itemid = $event.data.itemid;
+    delete this.billingService.healthCheckupselectedItems[itemid];
+    this.billingService.doctorList = [];
   }
 
   detialsForHealthCheckup(res: any) {
@@ -137,21 +142,25 @@ export class HealthCheckupsComponent implements OnInit {
         width: "50%",
         data: {
           orderSet: res.element,
-          items: [],
-          doctorsList: this.doctorsList,
+          items:
+            res.element.itemid.toString() in
+            this.billingService.healthCheckupselectedItems
+              ? this.billingService.healthCheckupselectedItems[
+                  res.element.itemid.toString()
+                ]
+              : [], //[],
+          doctorsList: this.billingService.doctorList, //this.doctorsList,
         },
       }
     );
     dialogPopup.afterClosed().subscribe((res1: any) => {
+      if (res1 && "data" in res1) {
+        this.billingService.healthCheckupselectedItems[res1.itemId.toString()] =
+          res1.data;
+      }
       if (res1 && res1.itemId) {
         this.doctorsList = [];
-        res1.data.forEach((doctor: any) => {
-          if (doctor.doctorName) {
-            this.doctorsList.push(doctor.doctorName);
-          } else {
-            this.doctorsList.push(0);
-          }
-        });
+        this.billingService.doctorList = res1.doctorList;
         ////GAV-882
         this.billingService.changeBillTabStatus(false);
         this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
@@ -186,15 +195,14 @@ export class HealthCheckupsComponent implements OnInit {
         debounceTime(1000),
         tap(() => {}),
         switchMap((value) => {
-            if (
-              this.formGroup.value.department &&
-              this.formGroup.value.department.value
-            ) {
-              return this.departmentHealthCheckup;
-              //return of([]);
-            } else {
-              if (value !== null && value.length >= 3) {
-                
+          if (
+            this.formGroup.value.department &&
+            this.formGroup.value.department.value
+          ) {
+            return this.departmentHealthCheckup;
+            //return of([]);
+          } else {
+            if (value !== null && value.length >= 3) {
               return this.http
                 .get(
                   BillingApiConstants.gethealthcheckupsonsearch(
@@ -209,16 +217,15 @@ export class HealthCheckupsComponent implements OnInit {
                   }),
                   finalize(() => {})
                 );
-              } else {
-                return of([]);
-              }
+            } else {
+              return of([]);
             }
+          }
         })
       )
       .subscribe(
         (data: any) => {
           if (data.length > 0) {
-            
             this.questions[1].options = data.map((r: any) => {
               return {
                 title: r.nameWithDepartment || r.name,
@@ -229,11 +236,11 @@ export class HealthCheckupsComponent implements OnInit {
             });
             this.questions[1] = { ...this.questions[1] };
           } else {
-            if(data && data.id && data.id>0){}else{
+            if (data && data.id && data.id > 0) {
+            } else {
               this.questions[1].options = [];
-            this.questions[1] = { ...this.questions[1] };
+              this.questions[1] = { ...this.questions[1] };
             }
-            
           }
         },
         (err: any) => {
@@ -253,7 +260,7 @@ export class HealthCheckupsComponent implements OnInit {
     this.formGroup.controls["department"].valueChanges.subscribe((val: any) => {
       if (val && val.value) {
         this.gethealthcheckups(val.value);
-      }else{
+      } else {
         this.departmentHealthCheckup = [];
       }
     });
@@ -269,7 +276,7 @@ export class HealthCheckupsComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          console.log('department valueChanges res => ',res);
+          console.log("department valueChanges res => ", res);
           this.formGroup.controls["healthCheckup"].reset();
           if (Array.isArray(res)) {
             this.departmentHealthCheckup = res;
@@ -284,7 +291,10 @@ export class HealthCheckupsComponent implements OnInit {
           } else {
             this.questions[1].options = [];
           }
-          console.log('department valueChanges this.questions => ',this.questions);
+          console.log(
+            "department valueChanges this.questions => ",
+            this.questions
+          );
           this.questions = { ...this.questions };
         },
         (error) => {
@@ -419,6 +429,7 @@ export class HealthCheckupsComponent implements OnInit {
               gstValue: res[0].totaltaX_Value,
               specialisationID: 0,
               doctorID: 0,
+              itemCode: res[0].itemCode || "",
             },
             gstDetail: {
               gsT_value: res[0].totaltaX_Value,
