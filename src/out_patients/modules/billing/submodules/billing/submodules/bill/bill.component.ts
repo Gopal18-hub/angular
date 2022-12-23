@@ -1308,9 +1308,13 @@ export class BillComponent implements OnInit, OnDestroy {
   duplicateflag: boolean = true;
   makePrint() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    let exist: any = accessControls[2][7][534][1436];
-    console.log(exist);
-    if (exist == undefined) exist = false;
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined){
+      exist = false;
+    } else{
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
 
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
