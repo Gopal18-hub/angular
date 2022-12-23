@@ -142,7 +142,6 @@ export class BillingPaymentMethodsComponent implements OnInit {
                 this.paymentForm[method].controls["price"].setValue(
                   Math.trunc(res)
                 );
-                // this.tabPrices[index] = Math.trunc(res);
               }
             }
             if (Number(res) < 0) {
