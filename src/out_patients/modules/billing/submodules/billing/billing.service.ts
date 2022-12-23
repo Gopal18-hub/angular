@@ -350,14 +350,16 @@ export class BillingService {
             this.updateServiceItemPrice(this.billItems[index]);
             ////GAV-1464
             this.billItems[index].itemCode = resItem.itemCode || "";
-            if (
-              this.makeBillPayload.ds_insert_bill.tab_d_opbillList[index]
-                .itemId == this.billItems[index].itemId
-            ) {
-              this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
-                index
-              ].itemcode = resItem.itemCode;
-            }
+            ////GAV-1464
+            this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+              (opbillItem: any, billIndex: any) => {
+                if (opbillItem.itemId == this.billItems[index].itemId) {
+                  this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                    billIndex
+                  ].itemcode = resItem.itemCode;
+                }
+              }
+            );
           });
           this.calculateTotalAmount();
           this.refreshBillTab.next(true);
