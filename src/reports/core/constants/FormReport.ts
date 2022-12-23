@@ -561,8 +561,8 @@ export namespace FormReport {
             {
               expression: "self",
               controlKey: "dtpStartDate",
-              type: "dateMinWithDays",
-              days: 30,
+              // type: "dateMinWithDays",
+              // days: 30,
             },
           ],
         },
