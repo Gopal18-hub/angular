@@ -602,6 +602,14 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.tab_o_opDiscount = [];
     this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
       (opbillItem: any, billIndex: any) => {
+        this.billingservice.billItems.forEach((item: any, index: any) => {
+          if (opbillItem.itemId == item.itemId) {
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+              billIndex
+            ].amount = item.totalAmount;
+          }
+        });
+
         this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
           billIndex
         ].discountamount = 0;
