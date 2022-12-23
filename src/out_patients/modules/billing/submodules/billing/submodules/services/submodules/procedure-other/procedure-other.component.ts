@@ -202,6 +202,21 @@ export class ProcedureOtherComponent implements OnInit {
       } else if (res.data.col == "doctorName") {
         this.billingService.ProcedureItems[res.data.index].billItem.doctorID =
           res.$event.value;
+
+        ///GAV-1462
+        this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+          (opbillItem: any, billIndex: any) => {
+            if (
+              opbillItem.itemId ==
+              this.billingService.ProcedureItems[res.data.index].billItem.itemId
+            ) {
+              this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].consultid = res.$event.value;
+            }
+          }
+        );
+
         const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
           res.data.index
         ].find((doc: any) => doc.value == res.$event.value);

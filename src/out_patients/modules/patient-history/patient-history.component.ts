@@ -722,7 +722,13 @@ export class PatientHistoryComponent implements OnInit {
 
   openReportModal(btnname: string) {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1436];
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined){
+      exist = false;
+    } else{
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
     if (btnname == "DepositReport") {
       console.log(exist);
       this.reportService.openWindow(
