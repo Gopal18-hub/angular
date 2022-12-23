@@ -1190,7 +1190,13 @@ export class DetailsComponent implements OnInit {
   }
   openReportModal(btnname: string) {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1436];
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined){
+      exist = false;
+    } else{
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
     if (btnname == "PHPTracksheet") {
       this.reportService.openWindow(
         "PHP Tracksheet - " + this.BServiceForm.value.billNo,

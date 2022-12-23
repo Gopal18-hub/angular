@@ -365,6 +365,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             res.amount +
             this.billingService.consultationItems[index].billItem.gstValue;
 
+          ////GAV-1464
+          this.billingService.consultationItems[index].billItem.itemCode =
+            res.itemCode;
+
           let consultType: any = this.consultationTypes.filter(
             (c: any) => c.id === priorityId
           );
@@ -710,6 +714,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,
+              itemCode: res[0].itemCode || "",
             },
             gstDetail: {
               gsT_value: res[0].totaltaX_Value,
