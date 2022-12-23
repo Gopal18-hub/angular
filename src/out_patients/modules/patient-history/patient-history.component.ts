@@ -780,13 +780,13 @@ export class PatientHistoryComponent implements OnInit {
     );
   }
   setimage(
-    patienthsitory: getPatientHistoryModel[],
+    patienthistory: getPatientHistoryModel[],
     model: any = getPatientHistoryModel
   ) {
-    patienthsitory.forEach((e) => {
+    patienthistory.forEach((e) => {
       e.printIcon = this.getimage();
     });
-    return patienthsitory as typeof model;
+    return patienthistory as typeof model;
   }
 
   getimage() {
