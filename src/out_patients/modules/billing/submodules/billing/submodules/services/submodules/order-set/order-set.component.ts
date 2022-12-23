@@ -401,6 +401,7 @@ export class OrderSetComponent implements OnInit {
               gstValue: resItem.totaltaX_Value,
               specialisationID: 0,
               doctorID: 0,
+              itemCode: resItem.itemCode,
             },
             gstDetail: {
               gsT_value: resItem.totaltaX_Value,
@@ -473,6 +474,10 @@ export class OrderSetComponent implements OnInit {
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.OrderSetItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
+          ////GAV-1464
+          this.billingService.OrderSetItems[index].billItem.itemCode =
+            res[0].itemCode;
+
           this.data = [...this.billingService.OrderSetItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {

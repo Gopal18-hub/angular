@@ -461,6 +461,9 @@ export class InvestigationsComponent implements OnInit {
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
+          ////GAV-1464
+          this.billingService.InvestigationItems[index].billItem.itemCode =
+            res[0].itemCode;
           this.data = [...this.billingService.InvestigationItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {
