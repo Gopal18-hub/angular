@@ -188,12 +188,12 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
             ];
             this.OPIP = 2;
           } else if (this.data.type == "Deposit") {
-            this.PaymentMethod = this.depositservice.data;            
+            this.PaymentMethod = this.depositservice.data;                        
             this.OPIP = 3;
           } else {
           }
 
-          if (this.PaymentMethod[0].transactionamount >= 200000) {
+          if (this.PaymentMethod.length != 0 && Number(this.PaymentMethod[0].transactionamount) >= 200000) {
             const form60dialog = this.matdialog.open(FormSixtyComponent, {
               width: "50vw",
               height: "94vh",
@@ -217,10 +217,16 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
                   );
                 }
               });
-          }
-
-          this.patientidentityform.controls["panno"].disable();
-          this.patientidentityform.controls["panno"].setValue("");
+              this.patientidentityform.controls["panno"].disable();
+              this.patientidentityform.controls["panno"].setValue("");
+          }else{
+            const formsixtyinfo =   this.messageDialogService.info("Amount should be less than 2 lakh, Form60 is not required.");  
+            formsixtyinfo.afterClosed().subscribe((res : any) => {
+              this.patientidentityform.controls["mainradio"].setValue(
+                "pancardno");              
+            });             
+                  
+          }        
         } else {
           this.patientidentityform.controls["panno"].enable();
         }
