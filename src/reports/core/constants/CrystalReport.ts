@@ -75,7 +75,7 @@ export namespace CrystalReport {
   };
 
   export const HappyFamilyPlanAllocationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanAllocation?MemberShipNo=${params.MemberShipNo}&Flag=${params.Flag}&planID=${params.planID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanAllocation?MemberShipNo=${params.MemberShipNo}&Flag=${params.Flag}&planID=${params.planID ? 1:0}`;
   };
 
   export const HappyFamilyPlanUtilizationReport = (params: any) => {
