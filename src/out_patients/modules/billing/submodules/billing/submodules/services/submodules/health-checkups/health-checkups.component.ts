@@ -128,6 +128,11 @@ export class HealthCheckupsComponent implements OnInit {
     }
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
+
+    //newly added to remove from array
+    let itemid =$event.data.itemid;
+    delete this.billingService.healthCheckupselectedItems[itemid];
+    this.billingService.doctorList=[];
   }
 
   detialsForHealthCheckup(res: any) {
@@ -137,21 +142,25 @@ export class HealthCheckupsComponent implements OnInit {
         width: "50%",
         data: {
           orderSet: res.element,
-          items: [],
-          doctorsList: this.doctorsList,
+          items: res.element.itemid.toString() in
+          this.billingService.healthCheckupselectedItems
+            ? this.billingService.healthCheckupselectedItems[
+                res.element.itemid.toString()
+              ]
+            : [],//[],
+          doctorsList: this.billingService.doctorList,//this.doctorsList,
         },
       }
     );
     dialogPopup.afterClosed().subscribe((res1: any) => {
+      if (res1 && "data" in res1){
+        this.billingService.healthCheckupselectedItems[
+          res1.itemId.toString()
+        ] = res1.data;
+      }
       if (res1 && res1.itemId) {
         this.doctorsList = [];
-        res1.data.forEach((doctor: any) => {
-          if (doctor.doctorName) {
-            this.doctorsList.push(doctor.doctorName);
-          } else {
-            this.doctorsList.push(0);
-          }
-        });
+        this.billingService.doctorList= res1.doctorList;
         ////GAV-882
         this.billingService.changeBillTabStatus(false);
         this.billingService.setHCUDetails(res1.itemId, this.doctorsList);

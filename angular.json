@@ -1739,7 +1739,7 @@
             "sslKey": "ssl/server.key",
             "sslCert": "ssl/server.crt",
             "ssl": true,
-            "host": "0.0.0.0",
+            "host": "127.0.0.2",
             "port": 443,
             "disableHostCheck": true
           },

@@ -30,7 +30,8 @@ export class BillingService {
   patientDemographicdata: any = {};
   billItemsTrigger = new Subject<any>();
   configurationservice: [{ itemname: string; servicename: string }] = [] as any;
-
+  healthCheckupselectedItems:any={};
+  doctorList:any=[];
   clearAllItems = new Subject<boolean>();
 
   billNoGenerated = new Subject<boolean>();

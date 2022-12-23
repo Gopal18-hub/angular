@@ -440,7 +440,10 @@ export class BillComponent implements OnInit, OnDestroy {
     //added for uncheck coupon checkbox when uncheck the discount
     this.formGroup.controls["discAmtCheck"].valueChanges.subscribe(
       (value: any) => {
-        console.log(value);
+        console.log("discheck", value);
+        if (value) {
+          this.calculateBillService.discountSelectedItems = [];
+        }
         if (value == false) {
           this.IsValidateCoupon = false;
         }
@@ -609,7 +612,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
   checkCreditLimit() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      this.applyCreditLimit();
+      this.resetDiscount();
+      //this.applyCreditLimit();
     } else {
       this.formGroup.controls["credLimit"].setValue("");
       this.applyCreditLimit();
@@ -1306,8 +1310,7 @@ export class BillComponent implements OnInit, OnDestroy {
     const accessControls: any = this.permissionservice.getAccessControls();
     let exist: any = accessControls[2][7][534][1436];
     console.log(exist);
-    if(exist == undefined)
-         exist =  false ;
+    if (exist == undefined) exist = false;
 
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
