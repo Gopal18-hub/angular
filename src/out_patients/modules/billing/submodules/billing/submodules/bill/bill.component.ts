@@ -826,12 +826,6 @@ export class BillComponent implements OnInit, OnDestroy {
     if (this.billingservice.checkApprovalSRF()) {
       await this.calculateBillService.serviceBasedCheck();
     } else {
-      //CGHS Beneficiary check
-      await this.calculateBillService.checkCGHSBeneficiary();
-
-      ////GAV-910 - Domestic Tarrif check
-      await this.calculateBillService.checkDoemsticTarrif();
-
       if (
         !this.billingservice.referralDoctor ||
         this.billingservice.referralDoctor.id === 0
@@ -842,6 +836,13 @@ export class BillComponent implements OnInit, OnDestroy {
         await referralErrorRef.afterClosed().toPromise();
         return;
       }
+
+      //CGHS Beneficiary check
+      await this.calculateBillService.checkCGHSBeneficiary();
+
+      ////GAV-910 - Domestic Tarrif check
+      await this.calculateBillService.checkDoemsticTarrif();
+
       const consulatationStatus =
         await this.calculateBillService.checkForConsultation();
       if (!consulatationStatus) {
