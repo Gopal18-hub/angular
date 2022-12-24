@@ -758,6 +758,28 @@ export class BillingService {
         this.calculateBillService.discountForm.reset();
       this.calculateBillService.calculateDiscount();
       this.makeBillPayload.tab_o_opDiscount = [];
+      ////GAV-1427
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (opbillItem: any, billIndex: any) => {
+          this.billItems.forEach((item: any, index: any) => {
+            if (opbillItem.itemId == item.itemId) {
+              this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].amount = item.totalAmount;
+            }
+          });
+
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountamount = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountType = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].oldOPBillId = 0;
+        }
+      );
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
