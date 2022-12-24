@@ -394,6 +394,7 @@ export class BillingService {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =0;
       this.iomMessage = "";
       formGroup.controls["corporate"].setValue(null);
       formGroup.controls["corporate"].disable();
