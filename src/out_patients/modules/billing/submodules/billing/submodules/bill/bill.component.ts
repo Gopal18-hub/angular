@@ -395,6 +395,8 @@ export class BillComponent implements OnInit, OnDestroy {
         return dItem;
       });
       this.data = [...this.data];
+      /////GAV-1474
+      this.applyCreditLimit();
     } else if (value == 4) {
       if (this.billingservice.billItems.length > 0) {
         if (
