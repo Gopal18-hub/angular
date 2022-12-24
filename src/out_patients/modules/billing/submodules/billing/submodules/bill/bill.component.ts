@@ -97,6 +97,12 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
+    } else {
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: false },
+      ];
     }
     if (this.billingservice.selectedHealthPlan) {
       this.billDataForm.properties.discAmtCheck.disabled = true;
@@ -121,6 +127,7 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
+
     if (this.calculateBillService.companyNonCreditItems.length > 0) {
       this.billDataForm.properties["credLimit"].readonly = false;
     }
@@ -239,8 +246,13 @@ export class BillComponent implements OnInit, OnDestroy {
     });
   }
   clearCoPay() {
-    if (this.formGroup.controls["coPay"].value == 0) {
-      this.formGroup.controls["coPay"].setValue("");
+    ////GAV-1473
+    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      if (this.formGroup.controls["coPay"].value == 0) {
+        this.formGroup.controls["coPay"].setValue("");
+      }
+    } else {
+      this.question[13].readonly = true;
     }
   }
 
@@ -328,6 +340,9 @@ export class BillComponent implements OnInit, OnDestroy {
     if (this.billingservice.billItems.length == 0) {
       this.resetDiscount();
       this.formGroup.controls["discAmtCheck"].setValue(false);
+      ////GAV-1473
+      this.formGroup.reset();
+      this.formGroup.controls["paymentMode"].setValue(1);
     } else {
       console.log("calling the referesh the discount");
       this.calculateBillService.refreshDiscount(this.formGroup);
@@ -355,7 +370,15 @@ export class BillComponent implements OnInit, OnDestroy {
       this.data = [...this.data];
     } else if (value == 3) {
       this.question[14].readonly = false;
-      this.question[13].readonly = false;
+      if (
+        this.formGroup.value.credLimit &&
+        this.formGroup.value.credLimit > 0
+      ) {
+        this.question[13].readonly = false;
+      } else {
+        this.question[13].readonly = true;
+      }
+
       let exceptions = this.calculateBillService.companyNonCreditItems.map(
         (cnci: any) => cnci.itemId
       );
@@ -561,6 +584,12 @@ export class BillComponent implements OnInit, OnDestroy {
       this.checkCreditLimit.bind(this)
     );
 
+    ////GAV-1473 -
+    this.question[13].elementRef.addEventListener(
+      "blur",
+      this.applyCopay.bind(this)
+    );
+
     this.question[20].elementRef.addEventListener(
       "change",
       this.onModifyDepositAmt.bind(this)
@@ -602,6 +631,14 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.tab_o_opDiscount = [];
     this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
       (opbillItem: any, billIndex: any) => {
+        this.billingservice.billItems.forEach((item: any, index: any) => {
+          if (opbillItem.itemId == item.itemId) {
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+              billIndex
+            ].amount = item.totalAmount;
+          }
+        });
+
         this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
           billIndex
         ].discountamount = 0;
@@ -623,8 +660,16 @@ export class BillComponent implements OnInit, OnDestroy {
     this.applyCreditLimit();
   }
 
+  ///GAV-1473
+  applyCopay() {
+    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      this.checkCreditLimit();
+    }
+  }
   checkCreditLimit() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      ////////GAV-1473
+      this.question[13].readonly = false;
       this.resetDiscount();
       //this.applyCreditLimit();
     } else {
