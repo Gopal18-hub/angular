@@ -16,6 +16,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { BillingService } from "../../billing.service";
 
 @Component({
   selector: "out-patients-configuration-billing",
@@ -35,7 +36,8 @@ export class ConfigurationBillingComponent implements OnInit {
       companyname: string;
       creditLimit: string;
     },
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private billingService: BillingService
   ) {}
   questions: any;
   Configurationbilling!: FormGroup;
@@ -105,7 +107,10 @@ export class ConfigurationBillingComponent implements OnInit {
       "." +
       this.data.patientdetails.registrationno;
     this.companyname = this.data.companyname;
-    this.patientname = this.data.patientdetails.firstname + " " + this.data.patientdetails.lastname;
+    this.patientname =
+      this.data.patientdetails.firstname +
+      " " +
+      this.data.patientdetails.lastname;
     this.creditLimit = this.data.creditLimit;
   }
 
@@ -129,6 +134,8 @@ export class ConfigurationBillingComponent implements OnInit {
         this.calculateBillService.setCompanyNonCreditItems(
           this.companybillingtable.selection.selected
         );
+        /////GAV-1474
+        this.billingService.resetDiscount();
         this.dialogRef.close();
       }
     });
