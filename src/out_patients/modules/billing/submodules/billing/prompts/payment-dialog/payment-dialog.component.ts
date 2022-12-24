@@ -133,8 +133,22 @@ export class BillPaymentDialogComponent implements OnInit {
       },
     };
   }
-  ngAfterViewInit(): void {}
-
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.paymentmethod.totalamtFlag == false) {
+        this.paymentmethod.tabs.forEach((i: any) => {
+          this.paymentmethod.questions[i.key][1].elementRef.addEventListener(
+            "keypress",
+            (event: any) => {
+              if (event.keyCode == 46) {
+                event.preventDefault();
+              }
+            }
+          );
+        });
+      }
+    }, 1000);
+  }
   clear() {
     this._destroying$.next(undefined);
     this._destroying$.complete();

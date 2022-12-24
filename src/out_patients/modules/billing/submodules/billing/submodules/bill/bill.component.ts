@@ -395,6 +395,8 @@ export class BillComponent implements OnInit, OnDestroy {
         return dItem;
       });
       this.data = [...this.data];
+      /////GAV-1474
+      this.applyCreditLimit();
     } else if (value == 4) {
       if (this.billingservice.billItems.length > 0) {
         if (
@@ -487,7 +489,15 @@ export class BillComponent implements OnInit, OnDestroy {
         this.billingservice.setBilltype(value);
         if (value == 3) {
           this.question[14].readonly = false;
-          this.question[13].readonly = false;
+          if (
+            this.formGroup.value.credLimit &&
+            this.formGroup.value.credLimit > 0
+          ) {
+            this.question[13].readonly = false;
+          } else {
+            this.question[13].readonly = true;
+          }
+
           this.billingservice.setCompnay(0, "", this.formGroup, "header");
           this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
