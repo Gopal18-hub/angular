@@ -392,11 +392,14 @@ export class BillingService {
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
+
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
       this.iomMessage = "";
-      formGroup.controls["corporate"].setValue(null);
-      formGroup.controls["corporate"].disable();
+      if (formGroup.controls["corporate"]) {
+        formGroup.controls["corporate"].setValue(null);
+        formGroup.controls["corporate"].disable();
+      }
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
