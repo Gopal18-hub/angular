@@ -167,9 +167,12 @@ export class HealthCheckupsComponent implements OnInit {
       } else {
         // this.doctorsList = this.doctorsList.map((d: number) => d * 0);
         ////GAV-882
-        // if (this.billingService.doctorList && this.billingService.doctorList.length > 0) {
-        //   this.billingService.changeBillTabStatus(true);
-        // }
+          if (Object.keys(this.billingService.healthCheckupselectedItems).length > 0) {
+           this.billingService.changeBillTabStatus(false);
+         }
+         else{
+          this.billingService.changeBillTabStatus(true);
+         }
       }
     });
   }
