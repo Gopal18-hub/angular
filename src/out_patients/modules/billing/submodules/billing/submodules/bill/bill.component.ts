@@ -489,7 +489,15 @@ export class BillComponent implements OnInit, OnDestroy {
         this.billingservice.setBilltype(value);
         if (value == 3) {
           this.question[14].readonly = false;
-          this.question[13].readonly = false;
+          if (
+            this.formGroup.value.credLimit &&
+            this.formGroup.value.credLimit > 0
+          ) {
+            this.question[13].readonly = false;
+          } else {
+            this.question[13].readonly = true;
+          }
+
           this.billingservice.setCompnay(0, "", this.formGroup, "header");
           this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
@@ -818,12 +826,6 @@ export class BillComponent implements OnInit, OnDestroy {
     if (this.billingservice.checkApprovalSRF()) {
       await this.calculateBillService.serviceBasedCheck();
     } else {
-      //CGHS Beneficiary check
-      await this.calculateBillService.checkCGHSBeneficiary();
-
-      ////GAV-910 - Domestic Tarrif check
-      await this.calculateBillService.checkDoemsticTarrif();
-
       if (
         !this.billingservice.referralDoctor ||
         this.billingservice.referralDoctor.id === 0
@@ -834,6 +836,13 @@ export class BillComponent implements OnInit, OnDestroy {
         await referralErrorRef.afterClosed().toPromise();
         return;
       }
+
+      //CGHS Beneficiary check
+      await this.calculateBillService.checkCGHSBeneficiary();
+
+      ////GAV-910 - Domestic Tarrif check
+      await this.calculateBillService.checkDoemsticTarrif();
+
       const consulatationStatus =
         await this.calculateBillService.checkForConsultation();
       if (!consulatationStatus) {
