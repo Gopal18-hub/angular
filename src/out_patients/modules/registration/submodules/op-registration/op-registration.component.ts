@@ -1222,6 +1222,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["locality"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (value: any) => {
+        console.log(value);
         //if (!this.maxIDChangeCall && this.countrybasedflow) {
         //  this.OPRegForm.controls["pincode"].setValue("");
         //}
@@ -1289,6 +1290,13 @@ export class OpRegistrationComponent implements OnInit {
           if (value.trim() == "") {
             this.OPRegForm.controls["locality"].setErrors({ incorrect: true });
             this.questions[22].customErrorMessage = "locality is required";
+            if (
+              this.OPRegForm.value.pincode != "" &&
+              this.OPRegForm.value.pincode != null &&
+              this.OPRegForm.value.pincode != undefined
+            ) {
+              this.getLocalityByPinCode();
+            }
           } else {
             this.OPRegForm.controls["locality"].setErrors(null);
             this.questions[22].customErrorMessage = "";
