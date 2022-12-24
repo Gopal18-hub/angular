@@ -2079,11 +2079,7 @@ export class OpRegistrationComponent implements OnInit {
           isvalidpincode = false;
         }
       } else {
-        if (
-          pinCodeLength == 6 ||
-          pinCodeLength == 5 ||
-          pinCodeLength == 4
-        ) {
+        if (pinCodeLength == 6 || pinCodeLength == 5 || pinCodeLength == 4) {
           isvalidpincode = true;
         } else {
           isvalidpincode = false;
@@ -3147,6 +3143,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["pincode"].setValue(
       Number(patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode)
     );
+    Number(patientDetails?.ppinCode == 0 ? "" : this.getLocalityByPinCode());
     this.OPRegForm.controls["state"].setValue({
       title: patientDetails?.stateName,
       value: patientDetails?.pstate,
