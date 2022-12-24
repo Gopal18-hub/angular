@@ -190,6 +190,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     this.billingService.companyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
+        if (res.company == null){
+          this.getAllCompany();
+        }
         this.formGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
         });
