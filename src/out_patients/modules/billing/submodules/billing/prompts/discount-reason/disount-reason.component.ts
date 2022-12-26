@@ -245,16 +245,7 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
-      this.question[0].options = this.discounttypes;
-      let defaultDiscountType: any = "";
-      this.discounttypes.forEach((type: any) => {
-        if (type.disabled == false && defaultDiscountType == "") {
-          defaultDiscountType = type;
-        }
-      });
-      if (defaultDiscountType) {
-        this.discAmtForm.controls["types"].setValue(defaultDiscountType.value);
-      }
+      this.question[0].options = this.discounttypes; ////GAV-1456
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
@@ -271,6 +262,7 @@ export class DisountReasonComponent implements OnInit {
     });
     if (this.selectedItems.length > 0) {
       const tempItem = this.selectedItems[0];
+      let disTypes: any = [];
       if (tempItem.discTypeValue == "On-Bill") {
         this.disableAdd = true;
       } else if (tempItem.discTypeValue == "On-Service") {
@@ -280,7 +272,7 @@ export class DisountReasonComponent implements OnInit {
         ) {
           this.disableAdd = true;
         } else {
-          this.question[0].options = this.discounttypes.map((a: any) => {
+          disTypes = this.discounttypes.map((a: any) => {
             if (a.title != "On Service") {
               return {
                 title: a.title,
@@ -295,6 +287,7 @@ export class DisountReasonComponent implements OnInit {
               };
             }
           });
+          this.question[0].options = disTypes; ////GAV-1456
         }
       } else if (tempItem.discTypeValue == "On-Item") {
         let totalItems = 0;
@@ -304,7 +297,7 @@ export class DisountReasonComponent implements OnInit {
         if (this.selectedItems.length == totalItems) {
           this.disableAdd = true;
         } else {
-          this.question[0].options = this.discounttypes.map((a: any) => {
+          disTypes = this.discounttypes.map((a: any) => {
             if (a.title != "On Item") {
               return {
                 title: a.title,
@@ -319,6 +312,7 @@ export class DisountReasonComponent implements OnInit {
               };
             }
           });
+          this.question[0].options = disTypes; ////GAV-1456
         }
       } else {
         this.selectedItems.forEach((sItem: any) => {
@@ -352,9 +346,23 @@ export class DisountReasonComponent implements OnInit {
         }
       }
     }
+
+    let defaultDiscountType: any = "";
+    ////GAV-1456
+    this.question[0].options.forEach((type: any) => {
+      if (type.disabled == false && defaultDiscountType == "") {
+        defaultDiscountType = type;
+      }
+    });
+    if (defaultDiscountType) {
+      this.discAmtForm.controls["types"].setValue(defaultDiscountType.value);
+    }
   }
 
   ngAfterViewInit() {
+    this.discAmtForm.controls["head"].setValue("")
+    this.discAmtForm.controls["reason"].setValue("")
+    this.discAmtForm.controls["percentage"].setValue("");
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "head") {
         const filterData = this.discReasonList.filter(
