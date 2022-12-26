@@ -75,7 +75,7 @@ export class BillComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private permissionservice: PermissionService,
-    private depositservice: DepositService,
+    private depositservice: DepositService
   ) {}
 
   ngOnDestroy(): void {
@@ -708,9 +708,35 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   ///GAV-1473
-  applyCopay() {
+  async applyCopay() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      this.checkCreditLimit();
+      if (this.formGroup.value.coPay <= 100) {
+        this.checkCreditLimit();
+      } else {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
+        const copayStatus = await this.messageDialogService
+          .warning("copay cannot exceeds 100%")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!copayStatus) {
+          return;
+        }
+      }
+    } else {
+      if (this.formGroup.value.credLimit <= 0) {
+        this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["credLimit"].setValue("");
+        const credLimitStatus = await this.messageDialogService
+          .warning("Enter Credit Limit")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!credLimitStatus) {
+          return;
+        }
+      }
     }
   }
   checkCreditLimit() {
@@ -721,6 +747,7 @@ export class BillComponent implements OnInit, OnDestroy {
       //this.applyCreditLimit();
     } else {
       this.formGroup.controls["credLimit"].setValue("");
+      this.formGroup.controls["coPay"].setValue(0);
       this.applyCreditLimit();
     }
   }
