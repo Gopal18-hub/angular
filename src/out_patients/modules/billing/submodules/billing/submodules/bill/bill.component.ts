@@ -265,15 +265,23 @@ export class BillComponent implements OnInit, OnDestroy {
         });
         await popuptextDialogRef.afterClosed().toPromise();
       }
-      await this.calculateBillService.billTabActiveLogics(this.formGroup, this);
-      this.billingservice.refreshBillTab
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((event: boolean) => {
-          if (event) {
-            this.refreshForm();
-            this.refreshTable();
-          }
-        });
+
+      /////GAV-1418
+      if (this.billingservice.totalCostWithOutGst > 0) {
+        await this.calculateBillService.billTabActiveLogics(
+          this.formGroup,
+          this
+        );
+        this.billingservice.refreshBillTab
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((event: boolean) => {
+            if (event) {
+              this.refreshForm();
+              this.refreshTable();
+            }
+          });
+      }
+
       this.billTypeChange(this.formGroup.value.paymentMode);
     }
     this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
