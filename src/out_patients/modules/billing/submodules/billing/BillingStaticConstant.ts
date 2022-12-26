@@ -577,6 +577,13 @@ export namespace BillingStaticConstants {
     { title: "SRF Done", value: 3 },
   ];
 
+    //CGHS Reasons
+    export const cghsReasons: any = [
+      { title: "Speciality not covered under CGHS", value: 1 },
+      { title: "Hospital is not on CGHS Panel", value: 2 },
+      { title: "As per Patient Instruction request", value: 3 },
+    ];
+
   //GST Confirm POPUP exclusion and Apply GST
 
   export const excludeCodeIdGSTReason: any = [1406];
