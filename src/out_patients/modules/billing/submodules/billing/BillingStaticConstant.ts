@@ -380,6 +380,7 @@ export namespace BillingStaticConstants {
       coupon: {
         type: "string",
         required: false,
+        readonly: false,
       },
       coPay: {
         type: "number",
