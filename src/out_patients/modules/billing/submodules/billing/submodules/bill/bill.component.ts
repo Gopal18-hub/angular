@@ -727,7 +727,7 @@ export class BillComponent implements OnInit, OnDestroy {
     } else {
       if (this.formGroup.value.credLimit <= 0) {
         this.formGroup.controls["coPay"].setValue(0);
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         const credLimitStatus = await this.messageDialogService
           .warning("Enter Credit Limit")
           .afterClosed()
@@ -746,7 +746,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.resetDiscount();
       //this.applyCreditLimit();
     } else {
-      this.formGroup.controls["credLimit"].setValue("");
+      this.formGroup.controls["credLimit"].setValue("0.00");
       this.formGroup.controls["coPay"].setValue(0);
       this.applyCreditLimit();
     }
@@ -1784,7 +1784,7 @@ export class BillComponent implements OnInit, OnDestroy {
     if (credLimitWarning) {
       if (credLimitWarning.type == "yes") {
         this.question[14].elementRef.focus();
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         return false;
       } else {
         this.formGroup.controls["paymentMode"].setValue(1);
