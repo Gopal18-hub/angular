@@ -220,7 +220,10 @@ export class ConsumablesComponent implements OnInit {
                 itemId: head.itemId,
                 priority: typeof head.priority == "string" ? 0 : head.priority, ////GAV1027 make bill priority issue
                 serviceId: head.serviceId,
-                price: head.amount,
+                price:
+                  head.amount != tempTotalAmount
+                    ? tempTotalAmount
+                    : head.amount,
                 serviceName: "Consumables Charges",
                 itemName: head.itemName,
                 qty: 1,
@@ -280,11 +283,11 @@ export class ConsumablesComponent implements OnInit {
   }
 
   goToBill() {
-    let isValid = this.billingService.checkValidItems();
-    if (isValid == true)
-      this.router.navigate(["../bill"], {
-        queryParamsHandling: "merge",
-        relativeTo: this.route,
-      });
+    // let isValid = this.billingService.checkValidItems();
+    // if (isValid == true)
+    this.router.navigate(["../bill"], {
+      queryParamsHandling: "merge",
+      relativeTo: this.route,
+    });
   }
 }

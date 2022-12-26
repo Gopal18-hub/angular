@@ -190,6 +190,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     this.billingService.companyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
+        if (res.company == null){
+          this.getAllCompany();
+        }
         this.formGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
         });
@@ -291,33 +294,33 @@ export class BillingComponent implements OnInit, OnDestroy {
     //   });
 
     this.formGroup.controls["company"].valueChanges
-    .pipe(distinctUntilChanged())
-    .subscribe((res: any) => {
-      console.log(res);
-      if (res && res.value) {
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
         console.log(res);
-        // Clear SRF values
-        this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
-        this.billingService.isNeedToCheckSRF = 0;
-        if (this.billingService.billtype == 3 && res.company.id > 0) {
-          this.billingService.checkcreditcompany(
-            res.value,
-            res,
-            this.formGroup,
-            "header"
-          );
+        if (res && res.value) {
+          console.log(res);
+          // Clear SRF values
+          this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
+          this.billingService.isNeedToCheckSRF = 0;
+          if (this.billingService.billtype == 3 && res.company.id > 0) {
+            this.billingService.checkcreditcompany(
+              res.value,
+              res,
+              this.formGroup,
+              "header"
+            );
+          } else {
+            this.billingService.setCompnay(
+              res.value,
+              res,
+              this.formGroup,
+              "header"
+            );
+          }
         } else {
-          this.billingService.setCompnay(
-            res.value,
-            res,
-            this.formGroup,
-            "header"
-          );
+          this.billingService.setCompnay(res, res, this.formGroup, "header");
         }
-      } else {
-        this.billingService.setCompnay(res, res, this.formGroup, "header");
-      }
-    })
+      });
 
     this.formGroup.controls["corporate"].valueChanges.subscribe((res: any) => {
       if (res && res.value) {
@@ -528,10 +531,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (resultData) {
             this.patientDetails = resultData;
 
-          this.billingService.setPatientDetails(
-            this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-          );  
-          this.setValuesToForm(this.patientDetails);
+            this.billingService.setPatientDetails(
+              this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+            );
+            this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
                 "Today is Patient’s birthday"

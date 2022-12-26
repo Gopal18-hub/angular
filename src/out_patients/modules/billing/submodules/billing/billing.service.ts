@@ -392,11 +392,15 @@ export class BillingService {
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
+
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =0;
       this.iomMessage = "";
-      formGroup.controls["corporate"].setValue(null);
-      formGroup.controls["corporate"].disable();
+      if (formGroup.controls["corporate"]) {
+        formGroup.controls["corporate"].setValue(null);
+        formGroup.controls["corporate"].disable();
+      }
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
@@ -758,6 +762,28 @@ export class BillingService {
         this.calculateBillService.discountForm.reset();
       this.calculateBillService.calculateDiscount();
       this.makeBillPayload.tab_o_opDiscount = [];
+      ////GAV-1427
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (opbillItem: any, billIndex: any) => {
+          this.billItems.forEach((item: any, index: any) => {
+            if (opbillItem.itemId == item.itemId) {
+              this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].amount = item.totalAmount;
+            }
+          });
+
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountamount = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountType = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].oldOPBillId = 0;
+        }
+      );
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
@@ -1096,6 +1122,19 @@ export class BillingService {
 
   async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {
+      ////1412 - on Patient share or Company Share
+      let totalDiscount: any = 0;
+      if (
+        this.makeBillPayload.tab_o_opDiscount &&
+        this.makeBillPayload.tab_o_opDiscount.length > 0
+      ) {
+        this.makeBillPayload.tab_o_opDiscount.forEach((billDiscount: any) => {
+          if (billDiscount.disType == "4" || billDiscount.disType == "5") {
+            totalDiscount += billDiscount.disAmt;
+          }
+        });
+      }
+
       let toBePaid =
         parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount
@@ -1103,6 +1142,8 @@ export class BillingService {
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
         ) +
+          ////1412 - on Patient share or Company Share
+          parseFloat(totalDiscount) +
           // parseFloat(
           //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
           // ) +

@@ -206,6 +206,7 @@ export class DepositDialogComponent implements OnInit {
           (resultData) => {
             console.log(resultData);
             if(resultData[0].returnFlag == 0){
+              this.depositservice.clearformsixtydetails();
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
               const successInfo = this.messageDialogService.success(

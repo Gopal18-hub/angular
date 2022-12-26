@@ -557,9 +557,9 @@
       matInput
       placeholder="__/__/____"
       [(ngModel)]="data.element[data.col]"
-      [value]="data.element[data.col]"
       [type]="'text'"
       [ngxMatDatetimePicker]="picker"
+      autocomplete="off"
     />
     <mat-datepicker-toggle
       matSuffix

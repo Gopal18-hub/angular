@@ -28,6 +28,7 @@ import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 import { timeStamp } from "console";
 import { PermissionService } from "@shared/services/permission.service";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "out-patients-bill",
@@ -73,7 +74,8 @@ export class BillComponent implements OnInit, OnDestroy {
     public calculateBillService: CalculateBillService,
     private router: Router,
     private route: ActivatedRoute,
-    private permissionservice: PermissionService
+    private permissionservice: PermissionService,
+    private depositservice: DepositService
   ) {}
 
   ngOnDestroy(): void {
@@ -96,6 +98,12 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Cash", value: 1, disabled: false },
         { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    } else {
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: false },
       ];
     }
     if (this.billingservice.selectedHealthPlan) {
@@ -121,6 +129,36 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
+
+    ///GAV-1418
+    if (
+      this.billingservice.ConsumableItems &&
+      this.billingservice.ConsumableItems.length > 0 &&
+      this.billingservice.totalCostWithOutGst == 0
+    ) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.dipositAmtcheck.disabled = true;
+      this.billDataForm.properties.dipositAmt.disabled = true;
+      this.billDataForm.properties.coupon.readonly = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    } else {
+      this.billDataForm.properties.discAmtCheck.disabled = false;
+      this.billDataForm.properties.discAmt.disabled = false;
+      this.billDataForm.properties.dipositAmtcheck.disabled = false;
+      this.billDataForm.properties.dipositAmt.disabled = false;
+      this.billDataForm.properties.coupon.readonly = false;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: false },
+      ];
+    }
+
     if (this.calculateBillService.companyNonCreditItems.length > 0) {
       this.billDataForm.properties["credLimit"].readonly = false;
     }
@@ -149,15 +187,21 @@ export class BillComponent implements OnInit, OnDestroy {
 
     //GAV 1428
     let nonPricedItems = [];
-    nonPricedItems = this.billingservice.billItems.filter(
-      (e: any) => e.price == 0
-    );
-    if (nonPricedItems.length > 0) {
-      this.data = [];
-      return;
+    ///GAV-1418
+    if (!this.billingservice.ConsumableItems) {
+      nonPricedItems = this.billingservice.billItems.filter(
+        (e: any) => e.price == 0
+      );
+      if (nonPricedItems.length > 0) {
+        this.data = [];
+        return;
+      } else {
+        this.data = this.billingservice.billItems;
+      }
     } else {
       this.data = this.billingservice.billItems;
     }
+
     let planAmount = 0;
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
       this.calculateBillService.otherPlanSelectedItems.forEach((oItem: any) => {
@@ -239,8 +283,13 @@ export class BillComponent implements OnInit, OnDestroy {
     });
   }
   clearCoPay() {
-    if (this.formGroup.controls["coPay"].value == 0) {
-      this.formGroup.controls["coPay"].setValue("");
+    ////GAV-1473
+    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      if (this.formGroup.controls["coPay"].value == 0) {
+        this.formGroup.controls["coPay"].setValue("");
+      }
+    } else {
+      this.question[13].readonly = true;
     }
   }
 
@@ -328,6 +377,9 @@ export class BillComponent implements OnInit, OnDestroy {
     if (this.billingservice.billItems.length == 0) {
       this.resetDiscount();
       this.formGroup.controls["discAmtCheck"].setValue(false);
+      ////GAV-1473
+      this.formGroup.reset();
+      this.formGroup.controls["paymentMode"].setValue(1);
     } else {
       console.log("calling the referesh the discount");
       this.calculateBillService.refreshDiscount(this.formGroup);
@@ -355,7 +407,15 @@ export class BillComponent implements OnInit, OnDestroy {
       this.data = [...this.data];
     } else if (value == 3) {
       this.question[14].readonly = false;
-      this.question[13].readonly = false;
+      if (
+        this.formGroup.value.credLimit &&
+        this.formGroup.value.credLimit > 0
+      ) {
+        this.question[13].readonly = false;
+      } else {
+        this.question[13].readonly = true;
+      }
+
       let exceptions = this.calculateBillService.companyNonCreditItems.map(
         (cnci: any) => cnci.itemId
       );
@@ -372,6 +432,8 @@ export class BillComponent implements OnInit, OnDestroy {
         return dItem;
       });
       this.data = [...this.data];
+      /////GAV-1474
+      this.applyCreditLimit();
     } else if (value == 4) {
       if (this.billingservice.billItems.length > 0) {
         if (
@@ -464,7 +526,15 @@ export class BillComponent implements OnInit, OnDestroy {
         this.billingservice.setBilltype(value);
         if (value == 3) {
           this.question[14].readonly = false;
-          this.question[13].readonly = false;
+          if (
+            this.formGroup.value.credLimit &&
+            this.formGroup.value.credLimit > 0
+          ) {
+            this.question[13].readonly = false;
+          } else {
+            this.question[13].readonly = true;
+          }
+
           this.billingservice.setCompnay(0, "", this.formGroup, "header");
           this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
@@ -561,6 +631,12 @@ export class BillComponent implements OnInit, OnDestroy {
       this.checkCreditLimit.bind(this)
     );
 
+    ////GAV-1473 -
+    this.question[13].elementRef.addEventListener(
+      "blur",
+      this.applyCopay.bind(this)
+    );
+
     this.question[20].elementRef.addEventListener(
       "change",
       this.onModifyDepositAmt.bind(this)
@@ -602,6 +678,14 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.tab_o_opDiscount = [];
     this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
       (opbillItem: any, billIndex: any) => {
+        this.billingservice.billItems.forEach((item: any, index: any) => {
+          if (opbillItem.itemId == item.itemId) {
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+              billIndex
+            ].amount = item.totalAmount;
+          }
+        });
+
         this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
           billIndex
         ].discountamount = 0;
@@ -623,12 +707,47 @@ export class BillComponent implements OnInit, OnDestroy {
     this.applyCreditLimit();
   }
 
+  ///GAV-1473
+  async applyCopay() {
+    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      if (this.formGroup.value.coPay <= 100) {
+        this.checkCreditLimit();
+      } else {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
+        const copayStatus = await this.messageDialogService
+          .warning("copay cannot exceeds 100%")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!copayStatus) {
+          return;
+        }
+      }
+    } else {
+      if (this.formGroup.value.credLimit <= 0) {
+        this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["credLimit"].setValue("");
+        const credLimitStatus = await this.messageDialogService
+          .warning("Enter Credit Limit")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!credLimitStatus) {
+          return;
+        }
+      }
+    }
+  }
   checkCreditLimit() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+      ////////GAV-1473
+      this.question[13].readonly = false;
       this.resetDiscount();
       //this.applyCreditLimit();
     } else {
       this.formGroup.controls["credLimit"].setValue("");
+      this.formGroup.controls["coPay"].setValue(0);
       this.applyCreditLimit();
     }
   }
@@ -771,12 +890,6 @@ export class BillComponent implements OnInit, OnDestroy {
     if (this.billingservice.checkApprovalSRF()) {
       await this.calculateBillService.serviceBasedCheck();
     } else {
-      //CGHS Beneficiary check
-      await this.calculateBillService.checkCGHSBeneficiary();
-
-      ////GAV-910 - Domestic Tarrif check
-      await this.calculateBillService.checkDoemsticTarrif();
-
       if (
         !this.billingservice.referralDoctor ||
         this.billingservice.referralDoctor.id === 0
@@ -787,6 +900,13 @@ export class BillComponent implements OnInit, OnDestroy {
         await referralErrorRef.afterClosed().toPromise();
         return;
       }
+
+      //CGHS Beneficiary check
+      await this.calculateBillService.checkCGHSBeneficiary();
+
+      ////GAV-910 - Domestic Tarrif check
+      await this.calculateBillService.checkDoemsticTarrif();
+
       const consulatationStatus =
         await this.calculateBillService.checkForConsultation();
       if (!consulatationStatus) {
@@ -1034,6 +1154,7 @@ export class BillComponent implements OnInit, OnDestroy {
         } else {
           this.calculateBillService.blockActions.next(false);
         }
+        this.depositservice.clearformsixtydetails();
       });
   }
 
