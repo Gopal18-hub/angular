@@ -478,6 +478,7 @@ export class DepositComponent implements OnInit {
                 this.MaxIDdepositExist = false;
                 this.tableselectionexists = false;
                 this.deposittable.selection.clear();
+                this.depositservice.clearformsixtydetails();
                 if (result == "Success") {
                   this.getPatientPreviousDepositDetails();
                 }
