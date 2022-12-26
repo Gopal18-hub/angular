@@ -185,10 +185,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
     //GAV 1428
     let nonPricedItems = [];
-    if (
-      !this.billingservice.ConsumableItems &&
-      this.billingservice.totalCostWithOutGst == 0
-    ) {
+    ///GAV-1418
+    if (!this.billingservice.ConsumableItems) {
       nonPricedItems = this.billingservice.billItems.filter(
         (e: any) => e.price == 0
       );
