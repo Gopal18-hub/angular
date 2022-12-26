@@ -28,6 +28,7 @@ import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 import { timeStamp } from "console";
 import { PermissionService } from "@shared/services/permission.service";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "out-patients-bill",
@@ -73,7 +74,8 @@ export class BillComponent implements OnInit, OnDestroy {
     public calculateBillService: CalculateBillService,
     private router: Router,
     private route: ActivatedRoute,
-    private permissionservice: PermissionService
+    private permissionservice: PermissionService,
+    private depositservice: DepositService
   ) {}
 
   ngOnDestroy(): void {
@@ -128,6 +130,35 @@ export class BillComponent implements OnInit, OnDestroy {
       ];
     }
 
+    ///GAV-1418
+    if (
+      this.billingservice.ConsumableItems &&
+      this.billingservice.ConsumableItems.length > 0 &&
+      this.billingservice.totalCostWithOutGst == 0
+    ) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.dipositAmtcheck.disabled = true;
+      this.billDataForm.properties.dipositAmt.disabled = true;
+      this.billDataForm.properties.coupon.readonly = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    } else {
+      this.billDataForm.properties.discAmtCheck.disabled = false;
+      this.billDataForm.properties.discAmt.disabled = false;
+      this.billDataForm.properties.dipositAmtcheck.disabled = false;
+      this.billDataForm.properties.dipositAmt.disabled = false;
+      this.billDataForm.properties.coupon.readonly = false;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: false },
+      ];
+    }
+
     if (this.calculateBillService.companyNonCreditItems.length > 0) {
       this.billDataForm.properties["credLimit"].readonly = false;
     }
@@ -156,15 +187,21 @@ export class BillComponent implements OnInit, OnDestroy {
 
     //GAV 1428
     let nonPricedItems = [];
-    nonPricedItems = this.billingservice.billItems.filter(
-      (e: any) => e.price == 0
-    );
-    if (nonPricedItems.length > 0) {
-      this.data = [];
-      return;
+    ///GAV-1418
+    if (!this.billingservice.ConsumableItems) {
+      nonPricedItems = this.billingservice.billItems.filter(
+        (e: any) => e.price == 0
+      );
+      if (nonPricedItems.length > 0) {
+        this.data = [];
+        return;
+      } else {
+        this.data = this.billingservice.billItems;
+      }
     } else {
       this.data = this.billingservice.billItems;
     }
+
     let planAmount = 0;
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
       this.calculateBillService.otherPlanSelectedItems.forEach((oItem: any) => {
@@ -671,9 +708,35 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   ///GAV-1473
-  applyCopay() {
+  async applyCopay() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      this.checkCreditLimit();
+      if (this.formGroup.value.coPay <= 100) {
+        this.checkCreditLimit();
+      } else {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
+        const copayStatus = await this.messageDialogService
+          .warning("copay cannot exceeds 100%")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!copayStatus) {
+          return;
+        }
+      }
+    } else {
+      if (this.formGroup.value.credLimit <= 0) {
+        this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["credLimit"].setValue("");
+        const credLimitStatus = await this.messageDialogService
+          .warning("Enter Credit Limit")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!credLimitStatus) {
+          return;
+        }
+      }
     }
   }
   checkCreditLimit() {
@@ -684,6 +747,7 @@ export class BillComponent implements OnInit, OnDestroy {
       //this.applyCreditLimit();
     } else {
       this.formGroup.controls["credLimit"].setValue("");
+      this.formGroup.controls["coPay"].setValue(0);
       this.applyCreditLimit();
     }
   }
@@ -1090,6 +1154,7 @@ export class BillComponent implements OnInit, OnDestroy {
         } else {
           this.calculateBillService.blockActions.next(false);
         }
+        this.depositservice.clearformsixtydetails();
       });
   }
 

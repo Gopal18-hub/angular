@@ -212,15 +212,17 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
                   this.Form60success = true;
                   this.neweventform60ssave.emit(this.Form60success);
                 } else {
-                  this.patientidentityform.controls["mainradio"].setValue(
-                    "pancardno"
-                  );
+                  if(!this.depositservice.isform60exists){
+                    this.patientidentityform.controls["mainradio"].setValue(
+                      "pancardno"
+                    );
+                  }                 
                 }
               });
               this.patientidentityform.controls["panno"].disable();
               this.patientidentityform.controls["panno"].setValue("");
           }else{
-            const formsixtyinfo =   this.messageDialogService.info("Amount should be less than 2 lakh, Form60 is not required.");  
+            const formsixtyinfo =   this.messageDialogService.info("Form60 is not required, when amount is less than 2 lakh");  
             formsixtyinfo.afterClosed().subscribe((res : any) => {
               this.patientidentityform.controls["mainradio"].setValue(
                 "pancardno");              
