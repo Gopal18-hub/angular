@@ -128,6 +128,35 @@ export class BillComponent implements OnInit, OnDestroy {
       ];
     }
 
+    ///GAV-1418
+    if (
+      this.billingservice.ConsumableItems &&
+      this.billingservice.ConsumableItems.length > 0 &&
+      this.billingservice.totalCostWithOutGst == 0
+    ) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.dipositAmtcheck.disabled = true;
+      this.billDataForm.properties.dipositAmt.disabled = true;
+      this.billDataForm.properties.coupon.readonly = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    } else {
+      this.billDataForm.properties.discAmtCheck.disabled = false;
+      this.billDataForm.properties.discAmt.disabled = false;
+      this.billDataForm.properties.dipositAmtcheck.disabled = false;
+      this.billDataForm.properties.dipositAmt.disabled = false;
+      this.billDataForm.properties.coupon.readonly = false;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: false },
+      ];
+    }
+
     if (this.calculateBillService.companyNonCreditItems.length > 0) {
       this.billDataForm.properties["credLimit"].readonly = false;
     }
@@ -156,15 +185,21 @@ export class BillComponent implements OnInit, OnDestroy {
 
     //GAV 1428
     let nonPricedItems = [];
-    nonPricedItems = this.billingservice.billItems.filter(
-      (e: any) => e.price == 0
-    );
-    if (nonPricedItems.length > 0) {
-      this.data = [];
-      return;
+    ///GAV-1418
+    if (!this.billingservice.ConsumableItems) {
+      nonPricedItems = this.billingservice.billItems.filter(
+        (e: any) => e.price == 0
+      );
+      if (nonPricedItems.length > 0) {
+        this.data = [];
+        return;
+      } else {
+        this.data = this.billingservice.billItems;
+      }
     } else {
       this.data = this.billingservice.billItems;
     }
+
     let planAmount = 0;
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
       this.calculateBillService.otherPlanSelectedItems.forEach((oItem: any) => {
@@ -826,12 +861,6 @@ export class BillComponent implements OnInit, OnDestroy {
     if (this.billingservice.checkApprovalSRF()) {
       await this.calculateBillService.serviceBasedCheck();
     } else {
-      //CGHS Beneficiary check
-      await this.calculateBillService.checkCGHSBeneficiary();
-
-      ////GAV-910 - Domestic Tarrif check
-      await this.calculateBillService.checkDoemsticTarrif();
-
       if (
         !this.billingservice.referralDoctor ||
         this.billingservice.referralDoctor.id === 0
@@ -842,6 +871,13 @@ export class BillComponent implements OnInit, OnDestroy {
         await referralErrorRef.afterClosed().toPromise();
         return;
       }
+
+      //CGHS Beneficiary check
+      await this.calculateBillService.checkCGHSBeneficiary();
+
+      ////GAV-910 - Domestic Tarrif check
+      await this.calculateBillService.checkDoemsticTarrif();
+
       const consulatationStatus =
         await this.calculateBillService.checkForConsultation();
       if (!consulatationStatus) {
