@@ -94,7 +94,12 @@ export class PackageDoctorModificationComponent implements OnInit {
       await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
-
+    this.itemsData.forEach((item: any, index: number) => {
+      this.data.items.find((dataExist:any)=>{
+        if (dataExist.specialisation == item.specialisation)
+        this.itemsData[index]["doctorName"] = dataExist.doctorName;
+      });
+    });
     // this.http
     //   .get(
     //     BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -148,6 +153,18 @@ export class PackageDoctorModificationComponent implements OnInit {
     this.dialogRef.close({
       data: this.itemsData,
       itemId: this.data.orderSet.itemid,
+      doctorList:this.data.doctorsList,
     });
+  }
+
+  packageDoctorclosebtn(){
+    if (this.data && this.data.items.length != 0) {
+      this.billingService.doctorList=this.data.doctorsList;
+      this.billingService.changeBillTabStatus(false);
+    }
+    else{
+      this.billingService.doctorList=this.billingService.doctorList.map((d: number) => d * 0);//this.data.doctorsList;
+      this.billingService.changeBillTabStatus(true);
+    }
   }
 }

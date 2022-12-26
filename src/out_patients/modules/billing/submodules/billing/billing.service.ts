@@ -30,7 +30,8 @@ export class BillingService {
   patientDemographicdata: any = {};
   billItemsTrigger = new Subject<any>();
   configurationservice: [{ itemname: string; servicename: string }] = [] as any;
-
+  healthCheckupselectedItems: any = {};
+  doctorList: any = [];
   clearAllItems = new Subject<boolean>();
 
   billNoGenerated = new Subject<boolean>();
@@ -347,6 +348,18 @@ export class BillingService {
             this.billItems[index].price = resItem.returnOutPut;
             this.billItems[index].totalAmount = quanity * resItem.returnOutPut;
             this.updateServiceItemPrice(this.billItems[index]);
+            ////GAV-1464
+            this.billItems[index].itemCode = resItem.itemCode || "";
+            ////GAV-1464
+            this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+              (opbillItem: any, billIndex: any) => {
+                if (opbillItem.itemId == this.billItems[index].itemId) {
+                  this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                    billIndex
+                  ].itemcode = resItem.itemCode;
+                }
+              }
+            );
           });
           this.calculateTotalAmount();
           this.refreshBillTab.next(true);
@@ -375,15 +388,19 @@ export class BillingService {
           "credLimit"
         ].setValue("0.00");
       // For GAV-1355 SRF Popup
-      await this.calculateBillService.serviceBasedCheck(); 
+      await this.calculateBillService.serviceBasedCheck();
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
+
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =0;
       this.iomMessage = "";
-      formGroup.controls["corporate"].setValue(null);
-      formGroup.controls["corporate"].disable();
+      if (formGroup.controls["corporate"]) {
+        formGroup.controls["corporate"].setValue(null);
+        formGroup.controls["corporate"].disable();
+      }
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
@@ -720,7 +737,7 @@ export class BillingService {
       specialisationID: data.specialisationID || 0,
       doctorID: data.doctorID || 0,
       isServiceTax: 0,
-      itemcode: "",
+      itemcode: data.itemCode || "",
       empowerApproverCode: "",
       couponCode: "",
     });
@@ -745,6 +762,28 @@ export class BillingService {
         this.calculateBillService.discountForm.reset();
       this.calculateBillService.calculateDiscount();
       this.makeBillPayload.tab_o_opDiscount = [];
+      ////GAV-1427
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (opbillItem: any, billIndex: any) => {
+          this.billItems.forEach((item: any, index: any) => {
+            if (opbillItem.itemId == item.itemId) {
+              this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].amount = item.totalAmount;
+            }
+          });
+
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountamount = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountType = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].oldOPBillId = 0;
+        }
+      );
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
@@ -1083,6 +1122,19 @@ export class BillingService {
 
   async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {
+      ////1412 - on Patient share or Company Share
+      let totalDiscount: any = 0;
+      if (
+        this.makeBillPayload.tab_o_opDiscount &&
+        this.makeBillPayload.tab_o_opDiscount.length > 0
+      ) {
+        this.makeBillPayload.tab_o_opDiscount.forEach((billDiscount: any) => {
+          if (billDiscount.disType == "4" || billDiscount.disType == "5") {
+            totalDiscount += billDiscount.disAmt;
+          }
+        });
+      }
+
       let toBePaid =
         parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount
@@ -1090,6 +1142,8 @@ export class BillingService {
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
         ) +
+          ////1412 - on Patient share or Company Share
+          parseFloat(totalDiscount) +
           // parseFloat(
           //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
           // ) +
@@ -1397,6 +1451,7 @@ export class BillingService {
           gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
           doctorID: 0,
+          itemCode: res[0].itemCode,
         },
         gstDetail: {
           gsT_value: res[0].totaltaX_Value,
@@ -1481,6 +1536,7 @@ export class BillingService {
         gstValue: 0,
         specialisationID: 0,
         doctorID: 0,
+        itemCode: "",
       },
       gstDetail: {},
       gstCode: {},
@@ -1555,6 +1611,7 @@ export class BillingService {
             doctorID: investigation.doctorid || 0,
             patient_Instructions: investigation.patient_Instructions,
             profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
+            itemCode: investigation.itemCode || "",
           },
           gstDetail: {
             gsT_value: rItem.totaltaX_Value,
@@ -1659,6 +1716,7 @@ export class BillingService {
           doctorID: investigation.doctorid || 0,
           patient_Instructions: investigation.patient_Instructions,
           profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
+          itemCode: res[0].itemCode || "", /////GAV-1464
         },
         gstDetail: {
           gsT_value: res[0].totaltaX_Value,
@@ -1749,6 +1807,7 @@ export class BillingService {
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
         profileId: investigation.profileid || 0, ////GAV-1280  Adding Investigations with same profile
+        itemCode: "", ////GAV-1464
       },
       gstDetail: {},
       gstCode: {},
@@ -1796,6 +1855,7 @@ export class BillingService {
         gstValue: 0,
         specialisationID: doctorName.specialisationid,
         doctorID: doctorName.value,
+        itemCode: "", //GAV-1464
       },
       gstDetail: {},
       gstCode: {},
@@ -1889,6 +1949,7 @@ export class BillingService {
           gstValue: res[0].totaltaX_Value,
           specialisationID: doctorName.specialisationid,
           doctorID: doctorName.value,
+          itemCode: res[0].itemCode || "",
         },
         gstDetail: {
           gsT_value: res[0].totaltaX_Value,
