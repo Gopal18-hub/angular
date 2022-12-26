@@ -360,6 +360,9 @@ export class DisountReasonComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.discAmtForm.controls["head"].setValue("")
+    this.discAmtForm.controls["reason"].setValue("")
+    this.discAmtForm.controls["percentage"].setValue("");
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "head") {
         const filterData = this.discReasonList.filter(
