@@ -568,7 +568,7 @@ export class DispatchReportComponent implements OnInit {
       ),
       todate: this.datepipe.transform(
         this.dispatchhistoryform.controls["todate"].value,
-        "YYYY-MM-dd"
+        "YYYY-MM-ddT23:59:59"
       ),
       locationid:
         this.dispatchhistoryform.controls["billedlocation"].value.value,
