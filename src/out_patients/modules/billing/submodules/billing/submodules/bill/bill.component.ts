@@ -724,7 +724,7 @@ export class BillComponent implements OnInit, OnDestroy {
         ////GAV-1473
         this.formGroup.controls["coPay"].setValue(0);
         const copayStatus = await this.messageDialogService
-          .warning("copay cannot exceeds 100%")
+          .warning("Copay cannot exceeds 100%")
           .afterClosed()
           .toPromise()
           .catch();
@@ -778,6 +778,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     let tempAmount = parseFloat(this.formGroup.value.credLimit);
     this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
+
     let tempFAmount = 0;
     if (tempAmount <= amtPayByComp) {
       tempFAmount = tempAmount;
@@ -807,7 +808,11 @@ export class BillComponent implements OnInit, OnDestroy {
       );
       tempFAmount -= parseFloat(companyDiscount.discAmt);
     }
-    this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+    if (this.formGroup.value.credLimit > 0) {
+      this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+    } else {
+      this.formGroup.controls["amtPayByComp"].setValue("0.00");
+    }
 
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
