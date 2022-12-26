@@ -1191,7 +1191,10 @@ export class BillComponent implements OnInit, OnDestroy {
       console.log(complexflag);
       console.log(res);
       console.log(complexflag);
-      if (complexflag == 1) {
+      if (
+        complexflag == 1 &&
+        [7, 11, 10].includes(Number(this.cookie.get("HSPLocationId")))
+      ) {
         const complexdialog = this.messageDialogService.confirm(
           "",
           "Do You want to print Complex Care Patient Form?"
