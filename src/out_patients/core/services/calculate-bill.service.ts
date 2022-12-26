@@ -1258,7 +1258,7 @@ export class CalculateBillService {
               .pipe(takeUntil(this._destroying$))
               .toPromise();
             if (res && res.data) {
-              let reason = BillingStaticConstants.cghsBeneficiaryReasons.filter(
+              let reason = BillingStaticConstants.cghsReasons.filter(
                 (r: any) => r.value === res.data.reason
               );
               if (reason && reason.length > 0) {
