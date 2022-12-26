@@ -28,6 +28,7 @@ import { BillingStaticConstants } from "../../BillingStaticConstant";
 import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 import { timeStamp } from "console";
 import { PermissionService } from "@shared/services/permission.service";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "out-patients-bill",
@@ -73,7 +74,8 @@ export class BillComponent implements OnInit, OnDestroy {
     public calculateBillService: CalculateBillService,
     private router: Router,
     private route: ActivatedRoute,
-    private permissionservice: PermissionService
+    private permissionservice: PermissionService,
+    private depositservice: DepositService,
   ) {}
 
   ngOnDestroy(): void {
@@ -1125,6 +1127,7 @@ export class BillComponent implements OnInit, OnDestroy {
         } else {
           this.calculateBillService.blockActions.next(false);
         }
+        this.depositservice.clearformsixtydetails();
       });
   }
 

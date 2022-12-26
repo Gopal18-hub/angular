@@ -13,6 +13,7 @@ import { BillingService } from "../../billing.service";
 import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { PaytmRedirectionService } from "@core/services/paytm-redirection.service";
+import { DepositService } from "@core/services/deposit.service";
 @Component({
   selector: "out-patients-payment-dialog",
   templateUrl: "./payment-dialog.component.html",
@@ -94,7 +95,8 @@ export class BillPaymentDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
     private billingService: BillingService,
     private miscService: MiscService,
-    private paytmRedirectionService: PaytmRedirectionService
+    private paytmRedirectionService: PaytmRedirectionService,
+    private depositservice: DepositService,
   ) {}
 
   ngOnInit(): void {
@@ -157,6 +159,7 @@ export class BillPaymentDialogComponent implements OnInit {
       this.paymentmethod.tabPrices[index] = 0;
       this.paymentmethod.paymentForm[tab.key].reset();
     });
+    this.depositservice.clearformsixtydetails();
   }
 
   async makeBill() {
@@ -195,6 +198,7 @@ export class BillPaymentDialogComponent implements OnInit {
       this.messageDialogService.error("Please fill the form60 ");
       return;
     }
+    this.depositservice.clearformsixtydetails();
 
     if (this.data.name == "Misc Billing") {
       this.miscService.makeBill(this.paymentmethod);
