@@ -21,6 +21,7 @@ export class savepatientform60detailsModel{
     opip:number;
     returnValue:number; 
     errorDetails:string;
+    tickforsamedoc?:number;
     constructor(
         iacode: string,
         registrationno: number,
@@ -44,6 +45,7 @@ export class savepatientform60detailsModel{
         opip:number,
         returnValue:number,
         errorDetails:string,
+        tickforsamedoc?:number,
     ) {
         this.iacode = iacode;
         this.registrationno= registrationno;
@@ -66,6 +68,7 @@ export class savepatientform60detailsModel{
         this.mop = mop;
         this.opip = opip;
         this.returnValue = returnValue;
-      this.errorDetails = errorDetails;
+        this.errorDetails = errorDetails;
+        this.tickforsamedoc = tickforsamedoc;
     }
   }
