@@ -23,6 +23,12 @@ export class ADAuthService {
   public ClearExistingLogin(userid: number): any {
     return this.http.postExternal(ApiConstants.deleteactivesession(userid),{});
   }
+
+  public updateActiveSessionToken(userId: number, token: string, locationid: number, stationid: number, moduleid: number) {
+    return this.http.postExternal(
+      ApiConstants.updateActiveSessionToken(userId,token,locationid, stationid, moduleid), {})
+  }
+
   public authenticate(username: string, password: string) {
     let returnUrl;
     const query = window.location.search.substring(1);
