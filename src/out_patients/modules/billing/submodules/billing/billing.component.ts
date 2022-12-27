@@ -142,7 +142,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-
+    this.billingService.doctorList=[];
     this.route.queryParams
       .pipe(takeUntil(this._routingdestroying$))
       .subscribe((params: any) => {
@@ -348,6 +348,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
+        this.billingService.doctorList = [];
         if (
           !this.route.snapshot.queryParams["maxId"] &&
           this.formGroup.value.maxid != this.questions[0].defaultValue
@@ -360,7 +361,6 @@ export class BillingComponent implements OnInit, OnDestroy {
             queryParamsHandling: "merge",
           });
         }
-
         //sthis.getPatientDetailsByMaxId();
       }
     });
@@ -1536,6 +1536,8 @@ export class SimilarPatientDialog {
   ) {}
   ngOnInit(): void {
     console.log(this.data.searchResults);
+
+
   }
   ngAfterViewInit() {
     this.getMaxID();
