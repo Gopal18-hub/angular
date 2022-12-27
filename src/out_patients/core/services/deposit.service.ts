@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { DepositPatientDetailInterface } from "@core/types/PatientPersonalDetail.Interface";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { MatDialog } from "@angular/material/dialog";
+import { savepatientform60detailsModel } from "@core/models/form60PatientDetailsModel.Model";
 
 @Injectable({ 
     providedIn: 'root' 
@@ -122,6 +123,7 @@ export class DepositService {
  transactionamount:any = 0.00;
  MOP:string = "Cash";
  data:any[] = [];
+ depositformsixtydetails: any = [];
 
     setFormList(dataList: any) {
         if(dataList.cashamount > 0)
@@ -165,7 +167,6 @@ export class DepositService {
             
         });
     }
-
   
     getCategoryIconsForDeposit(deposit:DepositPatientDetailInterface) {
         let returnIcons: any = [];
@@ -216,9 +217,21 @@ export class DepositService {
 
     clearsibllingcomponent(){
       this.clearAllItems.next(true);
+      this.clearformsixtydetails();
     }
+
     refundcashlimit:any=[];
     setcashlimitation(cashlimitlist:any){
        this.refundcashlimit = cashlimitlist;
+    }
+    isform60exists:boolean = false;
+    setdepositformsixtydata(items: any) {
+      this.depositformsixtydetails = items;
+      this.isform60exists = true;
+    }
+
+    clearformsixtydetails(){
+      this.depositformsixtydetails = [];
+      this.isform60exists = false;
     }
 }

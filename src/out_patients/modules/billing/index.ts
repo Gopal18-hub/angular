@@ -143,6 +143,7 @@ import { DmgOthergrpDocPopupComponent } from "./submodules/billing/prompts/dmg-o
 import { ReasonForGxtTaxComponent } from "./submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component";
 import { OnlinePaymentPaidPatientComponent } from "./submodules/billing/prompts/online-payment-paid-patient/online-payment-paid-patient.component";
 import { SrfReasonComponent } from "./submodules/billing/prompts/srf-reason/srf-reason.component";
+import { CghsReasonComponent } from "./submodules/billing/submodules/services/submodules/cghs-reason/cghs-reason.component";
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -254,6 +255,7 @@ import { SrfReasonComponent } from "./submodules/billing/prompts/srf-reason/srf-
     ReasonForGxtTaxComponent,
     OnlinePaymentPaidPatientComponent,
     SrfReasonComponent,
+    CghsReasonComponent,
   ],
   imports: [
     BillingRoutingModule,

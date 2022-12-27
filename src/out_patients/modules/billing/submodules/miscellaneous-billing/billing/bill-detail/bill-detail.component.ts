@@ -30,7 +30,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { GstTaxComponent } from "@modules/billing/submodules/billing/prompts/gst-tax-popup/gst-tax.component";
 import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
-
+import { DepositService } from "@core/services/deposit.service";
 @Component({
   selector: "out-patients-bill-detail",
   templateUrl: "./bill-detail.component.html",
@@ -129,7 +129,8 @@ export class BillDetailComponent implements OnInit {
     private reportService: ReportService,
     private snackbar: MaxHealthSnackBarService,
     private billingservice: BillingService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private depositservice: DepositService,
   ) {}
 
   miscBillData = {
@@ -1990,6 +1991,7 @@ export class BillDetailComponent implements OnInit {
                     .pipe(takeUntil(this._destroying$))
                     .subscribe(
                       (resultData) => {
+                        this.depositservice.clearformsixtydetails();
                         if (resultData[0].successFlag === true) {
                           //this.enableForm = 0;
                           this.generatedBillNo = resultData[0].billId;

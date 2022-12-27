@@ -6,7 +6,7 @@
         <mat-label class="max-health-primary-color font-lg font-bold">Form 60</mat-label>
         <div class="flex mt-3">
             <mat-label class="max-health-primary-color">Aadhar No.</mat-label>
-            <div class="ml-3 aadharerror">
+            <div class="ml-3 aadharerror default-label-none">
                 <maxhealth-question
                 [question]="questions[0]"
                 [form]="form60form"
@@ -208,10 +208,10 @@
 
         <div class="flex float-right mt-2 formsixtybutton">
             <div class="mr-4">
-                <button mat-raised-button color="primary" type="submit" (click)="saveform60()">Save</button>
+                <button mat-raised-button color="primary" type="submit" (click)="saveform60()" [disabled]="!form60form.valid || disbalesave">Save</button>
             </div>
             <div class="">
-                <button mat-raised-button color="primary" type="submit" (click)="clearform60()">Clear</button>
+                <button mat-raised-button color="primary" type="submit" (click)="clearform60()" [disabled]="disbalesave">Clear</button>
             </div>
         </div>
 

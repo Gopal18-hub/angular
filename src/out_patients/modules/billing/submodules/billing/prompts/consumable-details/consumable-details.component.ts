@@ -146,7 +146,13 @@ export class ConsumableDetailsComponent implements OnInit {
   }
   ConsumableBill() {
     const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1436];
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined){
+      exist = false;
+    } else{
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
     if (this.billingservice.activeMaxId) {
       this.dialogRef.close({ data: this.tableRows.selection.selected });
       this.reportService.openWindow(
