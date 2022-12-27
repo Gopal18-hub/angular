@@ -15,6 +15,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { SrfReasonComponent } from "@modules/billing/submodules/billing/prompts/srf-reason/srf-reason.component";
+import { CghsReasonComponent } from "@modules/billing/submodules/billing/submodules/services/submodules/cghs-reason/cghs-reason.component";
 
 @Injectable({
   providedIn: "root",
@@ -1246,7 +1247,25 @@ export class CalculateBillService {
               "Patient belongs to Panel CGHS beneficiary, but you have not selected that company, Please select appropriate reason."
             );
             await infoRef.afterClosed().toPromise();
-            await this.openCGHSChangeReason();
+            // await this.openCGHSChangeReason();
+            const chgsChangeDialogref = this.matDialog.open(CghsReasonComponent, {
+              width: "28vw",
+              height: "25vh",
+              disableClose: true,
+            });
+            let res = await chgsChangeDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .toPromise();
+            if (res && res.data) {
+              let reason = BillingStaticConstants.cghsReasons.filter(
+                (r: any) => r.value === res.data.reason
+              );
+              if (reason && reason.length > 0) {
+                this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason =
+                  reason[0].title;
+              }
+            }
           }
         }
 
