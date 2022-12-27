@@ -94,12 +94,12 @@ export class PackageDoctorModificationComponent implements OnInit {
       await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
-    this.itemsData.forEach((item: any, index: number) => {
-      this.data.items.find((dataExist:any)=>{
-        if (dataExist.specialisation == item.specialisation)
-        this.itemsData[index]["doctorName"] = dataExist.doctorName;
-      });
-    });
+    // this.itemsData.forEach((item: any, index: number) => {
+    //   this.data.items.find((dataExist:any)=>{
+    //     if (dataExist.specialisation == item.specialisation)
+    //     this.itemsData[index]["doctorName"] = dataExist.doctorName;
+    //   });
+    // });
     // this.http
     //   .get(
     //     BillingApiConstants.getdoctorlistonSpecializationClinic(

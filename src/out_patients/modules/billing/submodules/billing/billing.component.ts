@@ -1357,6 +1357,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.apiProcessing = false;
+    this.billingService.doctorList=[];
     this.patient = false;
     this.secondaryMaxId = false;
     this.formGroup.reset(
