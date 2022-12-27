@@ -395,7 +395,7 @@ export class BillingService {
 
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =0;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = 0;
       this.iomMessage = "";
       if (formGroup.controls["corporate"]) {
         formGroup.controls["corporate"].setValue(null);
@@ -475,6 +475,8 @@ export class BillingService {
           formGroup.controls["corporate"].disable();
         }
       }
+    } else if (res.value == -1) {
+      this.iomMessage = "";
     }
   }
 

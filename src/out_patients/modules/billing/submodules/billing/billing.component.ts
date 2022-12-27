@@ -190,7 +190,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     this.billingService.companyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
-        if (res.company == null){
+        if (res.company == null) {
           this.getAllCompany();
         }
         this.formGroup.controls["company"].setValue(res.company, {
@@ -528,7 +528,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe(
         async (resultData: Registrationdetails) => {
           console.log(resultData);
-          if (resultData) {
+          if (
+            resultData &&
+            resultData.dsPersonalDetails.dtPersonalDetails1.length > 0
+          ) {
             this.patientDetails = resultData;
 
             this.billingService.setPatientDetails(
