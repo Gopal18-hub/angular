@@ -481,6 +481,9 @@ export class BillingService {
       }
     } else if (res.value == -1) {
       this.iomMessage = "";
+      this.selectedcompanydetails = res;
+      this.selectedcorporatedetails = [];
+      this.companyChangeEvent.next({ company: res, from });
     }
   }
 
