@@ -387,6 +387,10 @@ export class BillingService {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
+      ///GAV-1473
+      this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
+        "0.00"
+      );
       // For GAV-1355 SRF Popup
       await this.calculateBillService.serviceBasedCheck();
     }
