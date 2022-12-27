@@ -142,7 +142,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.billingService.doctorList=[];
+    this.billingService.doctorList = [];
     this.route.queryParams
       .pipe(takeUntil(this._routingdestroying$))
       .subscribe((params: any) => {
@@ -1412,8 +1412,8 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((data: any[]) => {
         this.companyData = data;
         this.formGroup.controls["corporate"].disable();
-        this.billingService.setCompanyData(data);
         data.unshift({ name: "Select", id: -1 });
+        this.billingService.setCompanyData(data);
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id, company: a };
         });
@@ -1540,8 +1540,6 @@ export class SimilarPatientDialog {
   ) {}
   ngOnInit(): void {
     console.log(this.data.searchResults);
-
-
   }
   ngAfterViewInit() {
     this.getMaxID();
