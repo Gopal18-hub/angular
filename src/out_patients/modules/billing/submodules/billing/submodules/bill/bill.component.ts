@@ -75,7 +75,7 @@ export class BillComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private permissionservice: PermissionService,
-    private depositservice: DepositService,
+    private depositservice: DepositService
   ) {}
 
   ngOnDestroy(): void {
@@ -265,15 +265,23 @@ export class BillComponent implements OnInit, OnDestroy {
         });
         await popuptextDialogRef.afterClosed().toPromise();
       }
-      await this.calculateBillService.billTabActiveLogics(this.formGroup, this);
-      this.billingservice.refreshBillTab
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((event: boolean) => {
-          if (event) {
-            this.refreshForm();
-            this.refreshTable();
-          }
-        });
+
+      /////GAV-1418
+      if (this.billingservice.totalCostWithOutGst > 0) {
+        await this.calculateBillService.billTabActiveLogics(
+          this.formGroup,
+          this
+        );
+        this.billingservice.refreshBillTab
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((event: boolean) => {
+            if (event) {
+              this.refreshForm();
+              this.refreshTable();
+            }
+          });
+      }
+
       this.billTypeChange(this.formGroup.value.paymentMode);
     }
     this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
@@ -545,7 +553,7 @@ export class BillComponent implements OnInit, OnDestroy {
         //this.billTypeChange(value);
         this.billingservice.calculateTotalAmount();
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
         this.formGroup.controls["amtPayByPatient"].setValue(
@@ -708,9 +716,41 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   ///GAV-1473
-  applyCopay() {
+  async applyCopay() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      this.checkCreditLimit();
+      if (
+        this.formGroup.value.coPay <= 100 &&
+        this.formGroup.value.coPay >= 0
+      ) {
+        this.checkCreditLimit();
+      } else if (this.formGroup.value.coPay > 100) {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
+        const copayStatus = await this.messageDialogService
+          .warning("Copay cannot exceeds 100%")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!copayStatus) {
+          return;
+        }
+      } else {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
+      }
+    } else {
+      if (this.formGroup.value.credLimit <= 0) {
+        this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["credLimit"].setValue("0.00");
+        const credLimitStatus = await this.messageDialogService
+          .warning("Enter Credit Limit")
+          .afterClosed()
+          .toPromise()
+          .catch();
+        if (!credLimitStatus) {
+          return;
+        }
+      }
     }
   }
   checkCreditLimit() {
@@ -720,7 +760,8 @@ export class BillComponent implements OnInit, OnDestroy {
       this.resetDiscount();
       //this.applyCreditLimit();
     } else {
-      this.formGroup.controls["credLimit"].setValue("");
+      this.formGroup.controls["credLimit"].setValue("0.00");
+      this.formGroup.controls["coPay"].setValue(0);
       this.applyCreditLimit();
     }
   }
@@ -743,6 +784,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     let tempAmount = parseFloat(this.formGroup.value.credLimit);
     this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
+
     let tempFAmount = 0;
     if (tempAmount <= amtPayByComp) {
       tempFAmount = tempAmount;
@@ -772,7 +814,11 @@ export class BillComponent implements OnInit, OnDestroy {
       );
       tempFAmount -= parseFloat(companyDiscount.discAmt);
     }
-    this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+    if (this.formGroup.value.credLimit > 0) {
+      this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+    } else {
+      this.formGroup.controls["amtPayByComp"].setValue("0.00");
+    }
 
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
@@ -1164,7 +1210,10 @@ export class BillComponent implements OnInit, OnDestroy {
       console.log(complexflag);
       console.log(res);
       console.log(complexflag);
-      if (complexflag == 1) {
+      if (
+        complexflag == 1 &&
+        [7, 11, 10].includes(Number(this.cookie.get("HSPLocationId")))
+      ) {
         const complexdialog = this.messageDialogService.confirm(
           "",
           "Do You want to print Complex Care Patient Form?"
@@ -1757,7 +1806,7 @@ export class BillComponent implements OnInit, OnDestroy {
     if (credLimitWarning) {
       if (credLimitWarning.type == "yes") {
         this.question[14].elementRef.focus();
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         return false;
       } else {
         this.formGroup.controls["paymentMode"].setValue(1);
