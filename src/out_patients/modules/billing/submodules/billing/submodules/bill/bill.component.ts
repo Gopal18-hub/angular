@@ -553,7 +553,7 @@ export class BillComponent implements OnInit, OnDestroy {
         //this.billTypeChange(value);
         this.billingservice.calculateTotalAmount();
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
         this.formGroup.controls["amtPayByPatient"].setValue(
