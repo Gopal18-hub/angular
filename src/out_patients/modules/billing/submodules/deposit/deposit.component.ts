@@ -478,7 +478,6 @@ export class DepositComponent implements OnInit {
                 this.MaxIDdepositExist = false;
                 this.tableselectionexists = false;
                 this.deposittable.selection.clear();
-                this.depositservice.clearformsixtydetails();
                 if (result == "Success") {
                   this.getPatientPreviousDepositDetails();
                 }
@@ -751,7 +750,7 @@ export class DepositComponent implements OnInit {
             item.deposit = item.deposit.toFixed(2);
             item.gst = item.gst.toFixed(2);
             item.gstValue = item.gstValue.toFixed(2);
-            item.paymentType = item.paymentType.toCapitalize();
+            item.paymentType = item.paymentType != null ? item.paymentType.toCapitalize() : "";
             return item;
           });
 

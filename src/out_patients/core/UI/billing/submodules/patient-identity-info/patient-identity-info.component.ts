@@ -27,7 +27,6 @@ import { BillingService } from "@modules/billing/submodules/billing/billing.serv
 })
 export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
   @Input() data!: any;
-  @Output() neweventform60ssave = new EventEmitter<boolean>();
   @Input() form60payment!: any;
 
   patientidentityformData = {
@@ -193,7 +192,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
           } else {
           }
 
-          if (this.PaymentMethod.length != 0 && Number(this.PaymentMethod[0].transactionamount) >= 200000) {
+          if (this.PaymentMethod.length != 0 && (Number(this.PaymentMethod[0].transactionamount) >= 200000 || this.data.patientinfo.screenname == "Billing" )) 
+          {
             const form60dialog = this.matdialog.open(FormSixtyComponent, {
               width: "50vw",
               height: "94vh",
@@ -210,7 +210,6 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
               .subscribe((result) => {
                 if (result == "Success") {
                   this.Form60success = true;
-                  this.neweventform60ssave.emit(this.Form60success);
                 } else {
                   if(!this.depositservice.isform60exists){
                     this.patientidentityform.controls["mainradio"].setValue(
@@ -221,13 +220,19 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
               });
               this.patientidentityform.controls["panno"].disable();
               this.patientidentityform.controls["panno"].setValue("");
-          }else{
+          }
+          else if (this.data.type == "Deposit") 
+          {
             const formsixtyinfo =   this.messageDialogService.info("Form60 is not required, when amount is less than 2 lakh");  
             formsixtyinfo.afterClosed().subscribe((res : any) => {
               this.patientidentityform.controls["mainradio"].setValue(
                 "pancardno");              
             });             
                   
+          }
+          else{
+            this.patientidentityform.controls["mainradio"].setValue(
+              "pancardno");
           }        
         } else {
           this.patientidentityform.controls["panno"].enable();
