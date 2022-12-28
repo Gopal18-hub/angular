@@ -181,6 +181,9 @@ export class OrderSetComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[0].elementRef.focus();
+    }
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "specialization") {
         res.data.element["doctorName"] = "";

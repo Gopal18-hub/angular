@@ -386,16 +386,17 @@ export class BillingService {
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
-      )
+      ) {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
-      ///GAV-1473
-      this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
-        "0.00"
-      );
-      // For GAV-1355 SRF Popup
-      await this.calculateBillService.serviceBasedCheck();
+        ///GAV-1473
+        this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
+          "0.00"
+        );
+        // For GAV-1355 SRF Popup
+        await this.calculateBillService.serviceBasedCheck();
+      }
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
@@ -1205,25 +1206,21 @@ export class BillingService {
 
       // for form60
       let tobepaidby: number = 0,
-      paymentmode: string = "";
-      if(this.depositservice.isform60exists)
-      {
-        this.makeBillPayload.ds_paymode.tab_paymentList.forEach((payment: any) => {
-          if (Number(payment.amount) > 0)
-           {
-            tobepaidby += Number(
-              payment.amount
-            );
-            paymentmode = paymentmode + 
-              " ," +
-             payment.modeOfPayment;             
+        paymentmode: string = "";
+      if (this.depositservice.isform60exists) {
+        this.makeBillPayload.ds_paymode.tab_paymentList.forEach(
+          (payment: any) => {
+            if (Number(payment.amount) > 0) {
+              tobepaidby += Number(payment.amount);
+              paymentmode = paymentmode + " ," + payment.modeOfPayment;
+            }
           }
-        });
-      this.depositservice.depositformsixtydetails.transactionAmount = tobepaidby;
-      this.depositservice.depositformsixtydetails.mop = paymentmode;   
-      this.depositservice.saveform60();
+        );
+        this.depositservice.depositformsixtydetails.transactionAmount =
+          tobepaidby;
+        this.depositservice.depositformsixtydetails.mop = paymentmode;
+        this.depositservice.saveform60();
       }
-    
 
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
