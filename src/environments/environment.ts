@@ -8,20 +8,26 @@ export const environment = {
   cookieUrl: "localhost",
   passwordResetUrl: "https://selfheal.maxhealthcare.com/resetaccount",
   //dev environment urls
-  CommonApiUrl: "http://172.30.0.16:1009/",
-  PatientApiUrl: "http://172.30.0.16:1008/",
+  // CommonApiUrl: "http://172.30.0.16:1009/",
+  // PatientApiUrl: "http://172.30.0.16:1008/",
+  CommonApiUrl: "https://MaxHIS-Common-sit.maxhealthcare.in/",
+  PatientApiUrl: "https://MaxHIS-OpReg-sit.maxhealthcare.in/",
 
-  //IdentityServerUrl: 'https://MaxHIS-Idsrv-dev.maxhealthcare.in/',
-  //IentityServerRedirectUrl:'http://172.30.0.16/',
+  // IdentityServerUrl: "https://maxhis-idsrv-dev.maxhealthare.in/",
+  // IentityServerRedirectUrl: "https://maxhis-dev.maxhealthcaredev.in/",
   ReportsApiUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
-  BillingApiUrl: "http://172.30.0.16:1007/",
+  BillingApiUrl: "https://Maxhis-OPBill-sit.maxhealthcare.in/", //"http://localhost:7003/", //"http://172.30.0.16:1007/",
   ReportsSampleUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
   reportTenantUrl: "http://localhost:4205/reports/crystal-report/popup/",
   crystalReportBaseUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/",
 
   //local envionment urls for testing
-  IdentityServerUrl: "https://localhost/",
+  IdentityServerUrl: "https://localhost:5001/",
   IentityServerRedirectUrl: "http://localhost:8100/",
+
+  // IdentityServerUrl: "https://172.25.0.41/",
+  //IentityServerRedirectUrl: "https://localhost:5002/",
+
   clientId: "hispwa",
 };
 

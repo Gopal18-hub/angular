@@ -23,6 +23,7 @@ import { BillingApiConstants } from '../../billing/BillingApiConstant';
 import { OnlinePaymentPaidPatientComponent } from '../../billing/prompts/online-payment-paid-patient/online-payment-paid-patient.component';
 import { MaxHealthStorage } from '@shared/services/storage';
 import { PaymentService } from '@core/services/payment.service';
+import { DepositService } from '@core/services/deposit.service';
 @Component({
   selector: 'out-patients-payment-dialog',
   templateUrl: './payment-dialog.component.html',
@@ -292,6 +293,7 @@ export class PaymentDialogComponent implements OnInit {
     private billDetailService: billDetailService,
     private matdialog: MatDialog,
     private paymentService: PaymentService,
+    private depositservice: DepositService,
   ) { }
 
   ngOnInit(): void {
@@ -1044,7 +1046,7 @@ export class PaymentDialogComponent implements OnInit {
       this.messageDialogService.info('Please Enter a valid PAN Number');
     }
 
-     else if(this.billpatientIdentityInfo.mainradio == "form60" && this.formsixtysubmit == false){
+     else if(this.billpatientIdentityInfo.mainradio == "form60" && this.depositservice.isform60exists == false){
       this.messageDialogService.error("Please fill the form60 ");   
      } 
 

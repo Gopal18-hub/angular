@@ -30,7 +30,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { GstTaxComponent } from "@modules/billing/submodules/billing/prompts/gst-tax-popup/gst-tax.component";
 import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
-
+import { DepositService } from "@core/services/deposit.service";
 @Component({
   selector: "out-patients-bill-detail",
   templateUrl: "./bill-detail.component.html",
@@ -129,7 +129,8 @@ export class BillDetailComponent implements OnInit {
     private reportService: ReportService,
     private snackbar: MaxHealthSnackBarService,
     private billingservice: BillingService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private depositservice: DepositService,
   ) {}
 
   miscBillData = {
@@ -1891,6 +1892,7 @@ export class BillDetailComponent implements OnInit {
           .subscribe(
             (resultData) => {
               if (resultData[0].successFlag === true) {
+                this.depositservice.clearformsixtydetails();
                 this.generatedBillNo = resultData[0].billId;
                 //this.billingservice.billNoGenerated.next(true);
                 this.miscPatient.cacheBillTabdata.generatedBillNo =
@@ -1952,8 +1954,8 @@ export class BillDetailComponent implements OnInit {
   }
   paymentDialog() {
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
+      width: "80vw",
+      height: "96vh",
       data: {
         totalBillAmount: this.TotalAmount,
         totalDiscount: this.miscServBillForm.value.discAmt,
@@ -1991,6 +1993,7 @@ export class BillDetailComponent implements OnInit {
                     .subscribe(
                       (resultData) => {
                         if (resultData[0].successFlag === true) {
+                          this.depositservice.clearformsixtydetails();
                           //this.enableForm = 0;
                           this.generatedBillNo = resultData[0].billId;
                           //this.billingservice.billNoGenerated.next(true);
@@ -2052,6 +2055,7 @@ export class BillDetailComponent implements OnInit {
               .subscribe(
                 (resultData) => {
                   if (resultData[0].successFlag === true) {
+                    this.depositservice.clearformsixtydetails();
                     //this.enableForm = 0;
                     this.generatedBillNo = resultData[0].billId;
                     //this.billingservice.billNoGenerated.next(true);

@@ -23,6 +23,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { savepatientform60detailsModel } from "@core/models/form60PatientDetailsModel.Model";
 import { DatePipe } from "@angular/common";
 import { CookieService } from "@shared/services/cookie.service";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "out-patients-form-sixty",
@@ -35,7 +36,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
   questions: any;
   today: any;
   validationerrorexists: boolean = true;
-
+  
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -45,7 +46,8 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     private cookie: CookieService,
     @Inject(MAT_DIALOG_DATA)
     public data: { from60data: any; paymentamount: any; OPIP: number },
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private depositservice: DepositService,
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -66,6 +68,9 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["dateofapplication"].disable();
     this.form60form.controls["applicationno"].disable();
     this.getForm60DocumentType();
+    if(this.depositservice.isform60exists){
+         this.updateexistingform60info();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -77,11 +82,14 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
           this.form60form.controls["applicationno"].enable();
           this.form60form.controls["agriculturalincome"].disable();
           this.form60form.controls["otherthanagriculturalincome"].disable();
+          this.form60form.controls["agriculturalincome"].setValue("");
+          this.form60form.controls["otherthanagriculturalincome"].setValue("");
         } else {
           this.form60form.controls["dateofapplication"].disable();
           this.form60form.controls["applicationno"].disable();
           this.form60form.controls["agriculturalincome"].enable();
           this.form60form.controls["otherthanagriculturalincome"].enable();
+          this.form60form.controls["applicationno"].setValue("");
         }
       }
     );
@@ -186,41 +194,26 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
 
   clearform60() {
     this.form60form.reset();
+    this.depositservice.clearformsixtydetails();    
+    this.form60form.controls["dateofapplication"].setValue(this.today);
   }
 
   saveform60() {
     this.form60validation();
     if (!this.validationerrorexists) {
-      console.log(
-        "deposit request body" + this.getPatientform60SubmitRequestBody()
+      this.depositservice.clearformsixtydetails();
+      this.getPatientform60SubmitRequestBody();
+      this.dialogRef.close("Success");
+      this.messageDialogService.success(
+        "Form60 details have been successfully saved."
       );
-      console.log(this.form60savedetails);
-      this.http
-        .post(
-          ApiConstants.saveform60patientdata,
-          this.getPatientform60SubmitRequestBody()
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            //this.matDialog.closeAll();
-            this.dialogRef.close("Success");
-            this.messageDialogService.success(
-              "Form60 details have been successfully saved."
-            );
-          },
-          (error) => {
-            console.log(error);
-            this.messageDialogService.info(error.error);
-          }
-        );
     }
   }
 
   form60savedetails: savepatientform60detailsModel | undefined;
 
   getPatientform60SubmitRequestBody(): savepatientform60detailsModel {
-    return (this.form60savedetails = new savepatientform60detailsModel(
+   this.form60savedetails = new savepatientform60detailsModel(
       this.data.from60data.iacode,
       this.data.from60data.registrationno,
       this.hsplocationId,
@@ -230,7 +223,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
       this.datepipe.transform(
         this.form60form.value.dateofapplication,
         "yyyy-MM-ddThh:mm:ss"
-      ) || "1900-01-01T00:00:00",
+      ) || this.today,
       this.form60form.value.applicationno == undefined
         ? ""
         : this.form60form.value.applicationno,
@@ -251,7 +244,28 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
       this.data.paymentamount.MOP,
       this.data.OPIP,
       0,
-      ""
-    ));
+      "",
+      this.form60form.value.tickforsamedoc
+    );
+    this.depositservice.setdepositformsixtydata(this.form60savedetails);
+    return this.form60savedetails;
+  }
+
+  updateexistingform60info(){
+    let formsixtylist = this.depositservice.depositformsixtydetails;
+    this.form60form.controls["aadharno"].setValue(formsixtylist.adhaarNo);
+    this.form60form.controls["appliedforpan"].setValue(formsixtylist.isAppliedForPAN);
+    this.form60form.controls["dateofapplication"].setValue(formsixtylist.panAppliedDate);
+    this.form60form.controls["applicationno"].setValue(formsixtylist.panApplicationNo);
+    this.form60form.controls["agriculturalincome"].setValue(formsixtylist.agriculturalIncome);
+    this.form60form.controls["otherthanagriculturalincome"].setValue(formsixtylist.otherIncome);
+    this.form60form.controls["iddocumenttype"].setValue(formsixtylist.idDoc);
+    this.form60form.controls["iddocidentityno"].setValue(formsixtylist.idDocNumber);
+    this.form60form.controls["idnameofauthority"].setValue(formsixtylist.idNameOfAuthority);
+    this.form60form.controls["tickforsamedoc"].setValue(formsixtylist.tickforsamedoc);
+    this.form60form.controls["addressdocumenttype"].setValue(formsixtylist.addressDoc);
+    this.form60form.controls["addressdocidentityno"].setValue(formsixtylist.addressDocNumber);
+    this.form60form.controls["addressnameofauthority"].setValue(formsixtylist.addressNameOfAuthority);
+    this.form60form.controls["remarks"].setValue(formsixtylist.remarks);
   }
 }

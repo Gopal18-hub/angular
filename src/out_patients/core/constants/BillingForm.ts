@@ -379,8 +379,10 @@ export namespace BillingForm {
         type: "object",
         properties: {
           aadharno: {
-            type: "number",
-           // pattern: "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$"
+            title: "Aadhar No.",
+            type: "string",
+            pattern: /(^[0-9]{4}[0-9]{4}[0-9]{4}$)/,
+           // pattern: /(^[0-9]{4}[0-9]{4}[0-9]{4}$)|(^[0-9]{4}\s[0-9]{4}\s[0-9]{4}$)|(^[0-9]{4}-[0-9]{4}-[0-9]{4}$)/,
           },
           appliedforpan: {
             type: "checkbox",
@@ -396,10 +398,10 @@ export namespace BillingForm {
             type: "number"
           },
           agriculturalincome: {
-            type: "string"
+            type: "number"
           },
           otherthanagriculturalincome: {
-            type: "string"
+            type: "number"
           },
           iddocumenttype: {
             type: "dropdown",

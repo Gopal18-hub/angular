@@ -2,14 +2,19 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { DepositPatientDetailInterface } from "@core/types/PatientPersonalDetail.Interface";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, } from "@angular/material/dialog";
+import { savepatientform60detailsModel } from "@core/models/form60PatientDetailsModel.Model";
+import { HttpService } from "@shared/services/http.service";
+import { ApiConstants } from "@core/constants/ApiConstants"; 
+import { takeUntil } from "rxjs/operators";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Injectable({ 
     providedIn: 'root' 
 })
 
 export class DepositService {
-    categoryIcons: any = {
+      categoryIcons: any = {
         cghs: "CGHS_Icon.svg",
         hotList: "Hot_listing_icon.svg",
         mergeLinked: "merge.svg",
@@ -23,6 +28,7 @@ export class DepositService {
         isCghsverified: "CGHS_Icon.svg",
         hotlist: "Hot_listing_icon.svg",
       };
+
       pageNumberIcons: any = {
         Cash: "Cash_Icon.svg",
         "PSU/Govt": "PSU_icon.svg",
@@ -31,8 +37,7 @@ export class DepositService {
         ews: "EWS.svg",
         cash: "Cash_Icon.svg",
         "psu/govt": "PSU_icon.svg",
-      };
-    
+      };    
     
       categoryIconsTooltip: any = {
         cghs: {
@@ -116,12 +121,19 @@ export class DepositService {
         },
       };
       
+ constructor(
+        private http: HttpService,
+        public messageDialogService: MessageDialogService,
+      ) {}
+
  clearAllItems = new Subject<boolean>();
  formsixtytobefill = new Subject<boolean>();
+ private readonly _destroying$ = new Subject<void>();
 
  transactionamount:any = 0.00;
  MOP:string = "Cash";
  data:any[] = [];
+ depositformsixtydetails: any = [];
 
     setFormList(dataList: any) {
         if(dataList.cashamount > 0)
@@ -165,7 +177,6 @@ export class DepositService {
             
         });
     }
-
   
     getCategoryIconsForDeposit(deposit:DepositPatientDetailInterface) {
         let returnIcons: any = [];
@@ -216,9 +227,40 @@ export class DepositService {
 
     clearsibllingcomponent(){
       this.clearAllItems.next(true);
+      this.clearformsixtydetails();
     }
+
     refundcashlimit:any=[];
     setcashlimitation(cashlimitlist:any){
        this.refundcashlimit = cashlimitlist;
+    }
+    isform60exists:boolean = false;
+    setdepositformsixtydata(items: any) {
+      this.depositformsixtydetails = items;
+      this.isform60exists = true;
+    }
+
+    clearformsixtydetails(){
+      this.depositformsixtydetails = [];
+      this.isform60exists = false;
+    }
+
+  saveform60(){
+      let form60details = this.depositformsixtydetails;
+      this.http
+          .post(
+            ApiConstants.saveform60patientdata,
+            form60details
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
+            (resultData) => {
+              console.log("Form60 Success");           
+            },
+            (error) => {
+              console.log(error);
+              this.messageDialogService.info(error.error);
+            }
+          );
     }
 }

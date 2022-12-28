@@ -15,6 +15,7 @@ import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { ReasonForDueBillComponent } from "../billing/prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { BillingStaticConstants } from "../billing/BillingStaticConstant";
+import { DepositService } from "@core/services/deposit.service";
 
 @Injectable({
   providedIn: "root",
@@ -68,7 +69,8 @@ export class MiscService {
     public matDialog: MatDialog,
     private datepipe: DatePipe,
     public cookie: CookieService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private depositservice : DepositService,
   ) {}
 
   setPatientDetail(dataList: any) {
@@ -400,6 +402,26 @@ export class MiscService {
         console.log(this.makeBillPayload.ds_paymode, "check");
       });
 
+         // for form60
+         let tobepaidby: number = 0,
+         paymentmode: string = "";
+         if(this.depositservice.isform60exists)
+         {
+           this.makeBillPayload.ds_paymode.tab_paymentList.forEach((payment: any) => {
+             if (Number(payment.amount) > 0)
+              {
+               tobepaidby += Number(
+                 payment.amount
+               );
+               paymentmode = paymentmode + 
+                 " ," +
+                payment.modeOfPayment;             
+             }
+           });
+           this.depositservice.depositformsixtydetails.transactionAmount = tobepaidby;
+           this.depositservice.depositformsixtydetails.mop = paymentmode;   
+           this.depositservice.saveform60();
+         }
       // if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
       //   const lessAmountWarningDialog = this.messageDialogService.confirm(
       //     "",

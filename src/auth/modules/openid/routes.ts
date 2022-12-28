@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: "auth-callback",
     component: AuthCallbackComponent,
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
   },
 ];
 

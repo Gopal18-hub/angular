@@ -167,6 +167,7 @@ export class InvestigationsComponent implements OnInit {
     this.billingService.removeFromBill(
       this.billingService.InvestigationItems[$event.index]
     );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.billingService.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
       $event.index,
@@ -209,6 +210,9 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       if (
         "patient_Instructions" in res.element.billItem &&
@@ -242,6 +246,21 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.doctorID = res.$event.value;
+
+        ///GAV-1462
+        this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+          (opbillItem: any, billIndex: any) => {
+            if (
+              opbillItem.itemId ==
+              this.billingService.InvestigationItems[res.data.index].billItem
+                .itemId
+            ) {
+              this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].consultid = res.$event.value;
+            }
+          }
+        );
         const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
           res.data.index
         ].find((doc: any) => doc.value == res.$event.value);
@@ -461,6 +480,9 @@ export class InvestigationsComponent implements OnInit {
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
+          ////GAV-1464
+          this.billingService.InvestigationItems[index].billItem.itemCode =
+            res[0].itemCode;
           this.data = [...this.billingService.InvestigationItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {

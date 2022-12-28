@@ -750,7 +750,7 @@ export class DepositComponent implements OnInit {
             item.deposit = item.deposit.toFixed(2);
             item.gst = item.gst.toFixed(2);
             item.gstValue = item.gstValue.toFixed(2);
-            item.paymentType = item.paymentType.toCapitalize();
+            item.paymentType = item.paymentType != null ? item.paymentType.toCapitalize() : "";
             return item;
           });
 
@@ -976,9 +976,7 @@ export class DepositComponent implements OnInit {
           }
         );
     } else {
-      const accessControls: any = this.permissionservice.getAccessControls();
-      const exist: any = accessControls[2][7][534][1436];
-      console.log(exist);
+      let exist = this.checkaccesscontrol();
       let refundreceiptno;
       this.deposittable.childTable.map((r: any) => {
         r.selection.selected.map((res: any) => {
@@ -1001,9 +999,7 @@ export class DepositComponent implements OnInit {
     console.log(this.deposittable.selection.selected);
   }
   depositreport() {
-    const accessControls: any = this.permissionservice.getAccessControls();
-    const exist: any = accessControls[2][7][534][1436];
-    console.log(exist);
+   let exist = this.checkaccesscontrol();
     let receiptno;
     this.deposittable.selection.selected.map((s: any) => {
       if (this.containsSpecialChars(s.receiptno)) {
@@ -1099,6 +1095,18 @@ export class DepositComponent implements OnInit {
   containsSpecialChars(str: any) {
     const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     return specialChars.test(str);
+  }
+
+  checkaccesscontrol(){
+    const accessControls: any = this.permissionservice.getAccessControls();
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined){    
+      return false;
+    } else{
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+      return exist;
+    }
   }
 }
 
