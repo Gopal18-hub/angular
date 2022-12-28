@@ -36,8 +36,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
   questions: any;
   today: any;
   validationerrorexists: boolean = true;
-  disbalesave: boolean = false;
-
+  
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -69,7 +68,6 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["dateofapplication"].disable();
     this.form60form.controls["applicationno"].disable();
     this.getForm60DocumentType();
-    this.disbalesave = false;
     if(this.depositservice.isform60exists){
          this.updateexistingform60info();
     }
@@ -84,11 +82,14 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
           this.form60form.controls["applicationno"].enable();
           this.form60form.controls["agriculturalincome"].disable();
           this.form60form.controls["otherthanagriculturalincome"].disable();
+          this.form60form.controls["agriculturalincome"].setValue("");
+          this.form60form.controls["otherthanagriculturalincome"].setValue("");
         } else {
           this.form60form.controls["dateofapplication"].disable();
           this.form60form.controls["applicationno"].disable();
           this.form60form.controls["agriculturalincome"].enable();
           this.form60form.controls["otherthanagriculturalincome"].enable();
+          this.form60form.controls["applicationno"].setValue("");
         }
       }
     );
@@ -193,34 +194,19 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
 
   clearform60() {
     this.form60form.reset();
+    this.depositservice.clearformsixtydetails();    
+    this.form60form.controls["dateofapplication"].setValue(this.today);
   }
 
   saveform60() {
     this.form60validation();
     if (!this.validationerrorexists) {
-      console.log(
-        "deposit request body" + this.getPatientform60SubmitRequestBody()
+      this.depositservice.clearformsixtydetails();
+      this.getPatientform60SubmitRequestBody();
+      this.dialogRef.close("Success");
+      this.messageDialogService.success(
+        "Form60 details have been successfully saved."
       );
-      console.log(this.form60savedetails);
-      this.http
-        .post(
-          ApiConstants.saveform60patientdata,
-          this.getPatientform60SubmitRequestBody()
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            //this.matDialog.closeAll();
-            this.dialogRef.close("Success");
-            this.messageDialogService.success(
-              "Form60 details have been successfully saved."
-            );
-          },
-          (error) => {
-            console.log(error);
-            this.messageDialogService.info(error.error);
-          }
-        );
     }
   }
 
@@ -281,8 +267,5 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["addressdocidentityno"].setValue(formsixtylist.addressDocNumber);
     this.form60form.controls["addressnameofauthority"].setValue(formsixtylist.addressNameOfAuthority);
     this.form60form.controls["remarks"].setValue(formsixtylist.remarks);
-    this.disbalesave = true;
-    this.form60form.controls["appliedforpan"].disable();
-    this.form60form.controls["tickforsamedoc"].disable();
   }
 }

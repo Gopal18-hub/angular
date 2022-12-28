@@ -14,6 +14,8 @@ import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { threadId } from "worker_threads";
 import { InstantiateExpr } from "@angular/compiler";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
+import { DepositService } from "@core/services/deposit.service";
+
 @Injectable({
   providedIn: "root",
 })
@@ -107,7 +109,8 @@ export class BillingService {
     private calculateBillService: CalculateBillService,
     public matDialog: MatDialog,
     private datepipe: DatePipe,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private depositservice: DepositService
   ) {}
 
   setBillingFormGroup(formgroup: any, questions: any) {
@@ -1199,6 +1202,28 @@ export class BillingService {
         modeconfirm.afterClosed().toPromise();
         return;
       }
+
+      // for form60
+      let tobepaidby: number = 0,
+      paymentmode: string = "";
+      if(this.depositservice.isform60exists)
+      {
+        this.makeBillPayload.ds_paymode.tab_paymentList.forEach((payment: any) => {
+          if (Number(payment.amount) > 0)
+           {
+            tobepaidby += Number(
+              payment.amount
+            );
+            paymentmode = paymentmode + 
+              " ," +
+             payment.modeOfPayment;             
+          }
+        });
+      this.depositservice.depositformsixtydetails.transactionAmount = tobepaidby;
+      this.depositservice.depositformsixtydetails.mop = paymentmode;   
+      this.depositservice.saveform60();
+      }
+    
 
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
