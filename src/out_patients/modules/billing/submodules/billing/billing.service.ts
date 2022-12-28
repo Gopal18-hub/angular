@@ -1205,25 +1205,21 @@ export class BillingService {
 
       // for form60
       let tobepaidby: number = 0,
-      paymentmode: string = "";
-      if(this.depositservice.isform60exists)
-      {
-        this.makeBillPayload.ds_paymode.tab_paymentList.forEach((payment: any) => {
-          if (Number(payment.amount) > 0)
-           {
-            tobepaidby += Number(
-              payment.amount
-            );
-            paymentmode = paymentmode + 
-              " ," +
-             payment.modeOfPayment;             
+        paymentmode: string = "";
+      if (this.depositservice.isform60exists) {
+        this.makeBillPayload.ds_paymode.tab_paymentList.forEach(
+          (payment: any) => {
+            if (Number(payment.amount) > 0) {
+              tobepaidby += Number(payment.amount);
+              paymentmode = paymentmode + " ," + payment.modeOfPayment;
+            }
           }
-        });
-      this.depositservice.depositformsixtydetails.transactionAmount = tobepaidby;
-      this.depositservice.depositformsixtydetails.mop = paymentmode;   
-      this.depositservice.saveform60();
+        );
+        this.depositservice.depositformsixtydetails.transactionAmount =
+          tobepaidby;
+        this.depositservice.depositformsixtydetails.mop = paymentmode;
+        this.depositservice.saveform60();
       }
-    
 
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
@@ -1713,7 +1709,7 @@ export class BillingService {
     if (res.length > 0) {
       this.addToInvestigations({
         sno: this.InvestigationItems.length + 1,
-        investigations: investigation.title,
+        investigations: res[0].procedureName, //investigation.title,
         precaution:
           investigation.precaution == "P"
             ? '<span class="max-health-red-color">P</span>'
@@ -1732,7 +1728,7 @@ export class BillingService {
           serviceId: serviceType || investigation.serviceid,
           price: res[0].returnOutPut,
           serviceName: "Investigations",
-          itemName: investigation.title,
+          itemName: res[0].procedureName, //investigation.title,
           qty: 1,
           precaution:
             investigation.precaution == "P"
