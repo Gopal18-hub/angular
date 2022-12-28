@@ -77,9 +77,17 @@ export class ServiceDepositComponent implements OnInit {
       .subscribe((resultData: any) => {
         this.deposittypeList = resultData;
         console.log(resultData);
+        let defalutSelector:any;
         this.questions[1].options = this.deposittypeList.map((l) => {
+          if(l.advanceType=="Deposit"){
+            defalutSelector={ title: l.advanceType, value: l.id };
+          }
           return { title: l.advanceType, value: l.id };
         });
+        this.questions[1]={...this.questions[1]}
+        if(defalutSelector){
+            this.servicedepositForm.controls["deposithead"].setValue(defalutSelector.value);
+        }
        // this.questions[1].options.push({ title: "Select Advance Type", value:0});
       
       });
