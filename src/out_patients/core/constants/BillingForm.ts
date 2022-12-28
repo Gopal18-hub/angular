@@ -398,10 +398,10 @@ export namespace BillingForm {
             type: "number"
           },
           agriculturalincome: {
-            type: "string"
+            type: "number"
           },
           otherthanagriculturalincome: {
-            type: "string"
+            type: "number"
           },
           iddocumenttype: {
             type: "dropdown",
