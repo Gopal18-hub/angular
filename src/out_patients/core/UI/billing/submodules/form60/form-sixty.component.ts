@@ -275,5 +275,20 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["addressdocidentityno"].setValue(formsixtylist.addressDocNumber);
     this.form60form.controls["addressnameofauthority"].setValue(formsixtylist.addressNameOfAuthority);
     this.form60form.controls["remarks"].setValue(formsixtylist.remarks);
+
+    if(formsixtylist.isAppliedForPAN){
+      this.form60form.controls["dateofapplication"].enable();
+          this.form60form.controls["applicationno"].enable();
+          this.form60form.controls["agriculturalincome"].disable();
+          this.form60form.controls["otherthanagriculturalincome"].disable();
+          this.form60form.controls["agriculturalincome"].setValue("");
+          this.form60form.controls["otherthanagriculturalincome"].setValue("");
+    }else{
+      this.form60form.controls["dateofapplication"].disable();
+      this.form60form.controls["applicationno"].disable();
+      this.form60form.controls["agriculturalincome"].enable();
+      this.form60form.controls["otherthanagriculturalincome"].enable();
+      this.form60form.controls["applicationno"].setValue("");
+    }
   }
 }
