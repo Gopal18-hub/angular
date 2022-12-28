@@ -718,9 +718,12 @@ export class BillComponent implements OnInit, OnDestroy {
   ///GAV-1473
   async applyCopay() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      if (this.formGroup.value.coPay <= 100) {
+      if (
+        this.formGroup.value.coPay <= 100 &&
+        this.formGroup.value.coPay >= 0
+      ) {
         this.checkCreditLimit();
-      } else {
+      } else if (this.formGroup.value.coPay > 100) {
         ////GAV-1473
         this.formGroup.controls["coPay"].setValue(0);
         const copayStatus = await this.messageDialogService
@@ -731,6 +734,9 @@ export class BillComponent implements OnInit, OnDestroy {
         if (!copayStatus) {
           return;
         }
+      } else {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
       }
     } else {
       if (this.formGroup.value.credLimit <= 0) {

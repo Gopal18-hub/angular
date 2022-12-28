@@ -360,8 +360,8 @@ export class DisountReasonComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.discAmtForm.controls["head"].setValue("")
-    this.discAmtForm.controls["reason"].setValue("")
+    this.discAmtForm.controls["head"].setValue("");
+    this.discAmtForm.controls["reason"].setValue("");
     this.discAmtForm.controls["percentage"].setValue("");
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "head") {
@@ -935,18 +935,23 @@ export class DisountReasonComponent implements OnInit {
           this.question[2].options;
         if (this.selectedItems.length > 0) {
           this.selectedItems.forEach((item: any, index: number) => {
-            const filterData = this.discReasonList.filter(
-              (rl: any) => rl.mainhead == item.head
-            );
-            let options = filterData.map((a) => {
-              return {
-                title: a.name,
-                value: a.id,
-                discountPer: a.discountPer,
-              };
-            });
-            this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
-              options;
+            if (item.head == null || item.head == "") {
+              this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
+                this.question[2].options;
+            } else {
+              const filterData = this.discReasonList.filter(
+                (rl: any) => rl.mainhead == item.head
+              );
+              let options = filterData.map((a) => {
+                return {
+                  title: a.name,
+                  value: a.id,
+                  discountPer: a.discountPer,
+                };
+              });
+              this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
+                options;
+            }
           });
         }
       });

@@ -142,7 +142,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-
+    this.billingService.doctorList = [];
     this.route.queryParams
       .pipe(takeUntil(this._routingdestroying$))
       .subscribe((params: any) => {
@@ -190,7 +190,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     this.billingService.companyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
-        if (res.company == null){
+        if (res.company == null) {
           this.getAllCompany();
         }
         this.formGroup.controls["company"].setValue(res.company, {
@@ -348,6 +348,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
+        this.billingService.doctorList = [];
         if (
           !this.route.snapshot.queryParams["maxId"] &&
           this.formGroup.value.maxid != this.questions[0].defaultValue
@@ -360,7 +361,6 @@ export class BillingComponent implements OnInit, OnDestroy {
             queryParamsHandling: "merge",
           });
         }
-
         //sthis.getPatientDetailsByMaxId();
       }
     });
@@ -528,7 +528,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe(
         async (resultData: Registrationdetails) => {
           console.log(resultData);
-          if (resultData) {
+          if (
+            resultData &&
+            resultData.dsPersonalDetails.dtPersonalDetails1.length > 0
+          ) {
             this.patientDetails = resultData;
 
             this.billingService.setPatientDetails(
@@ -1408,8 +1411,8 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((data: any[]) => {
         this.companyData = data;
         this.formGroup.controls["corporate"].disable();
-        this.billingService.setCompanyData(data);
         data.unshift({ name: "Select", id: -1 });
+        this.billingService.setCompanyData(data);
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id, company: a };
         });
