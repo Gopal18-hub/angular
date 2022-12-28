@@ -343,6 +343,13 @@ export class ProcedureOtherComponent implements OnInit {
       const index = this.billingService.ProcedureItems.findIndex(
         (c: any) => c.sno == sno
       );
+      this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (i: any) => {
+          if (i.itemId == this.billingService.ProcedureItems[index].itemid) {
+            i.qty = this.billingService.ProcedureItems[index].qty.toString();
+          }
+        }
+      );
       if (index > -1) {
         this.billingService.ProcedureItems[index].price =
           this.billingService.ProcedureItems[index].unitPrice *
