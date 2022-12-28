@@ -139,7 +139,11 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     console.log(this.form60form.value.iddocidentityno);
     this.DocumentIDNumber = this.form60form.value.iddocidentityno;
     this.validationerrorexists = true;
-    if (
+    if( this.form60form.value.aadharno == "" ||  this.form60form.value.aadharno == null ){
+      this.questions[0].elementRef.focus();
+      this.messageDialogService.error("Please enter Aadhar No.");    
+    }
+    else if (
       this.form60form.value.appliedforpan &&
       this.form60form.value.applicationno == ""
     ) {
@@ -157,25 +161,29 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
         "Please enter other than agriculturer income"
       );
     } else if (
-      this.questions[6].options.value == 0 ||
-      this.questions[6].options.title == ""
+      this.form60form.value.iddocumenttype == "" ||
+      this.form60form.value.iddocumenttype == null
     ) {
       this.messageDialogService.error("Please select ID proof");
     } else if (
       (this.form60form.value.iddocidentityno =
-        "" || this.form60form.value.idnameofauthority == "")
+        "" || this.form60form.value.idnameofauthority == "" 
+        || this.form60form.value.iddocidentityno == null
+         || this.form60form.value.idnameofauthority == null)
     ) {
       this.messageDialogService.error(
         "Please select ID proof number/name of authority"
       );
     } else if (
-      this.questions[10].options.value == 0 ||
-      this.questions[10].options.title == ""
+      this.form60form.value.addressdocumenttype == "" || 
+      this.form60form.value.addressdocumenttype == null
     ) {
       this.messageDialogService.error("Please select Address proof");
     } else if (
       this.form60form.value.addressdocidentityno == "" ||
-      this.form60form.value.addressnameofauthority == ""
+      this.form60form.value.addressdocidentityno == null ||
+      this.form60form.value.addressnameofauthority == "" ||
+      this.form60form.value.addressnameofauthority == null
     ) {
       this.messageDialogService.error(
         "Please select address proof number/name of authority"
