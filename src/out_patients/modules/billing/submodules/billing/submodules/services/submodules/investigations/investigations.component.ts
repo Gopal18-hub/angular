@@ -167,7 +167,7 @@ export class InvestigationsComponent implements OnInit {
     this.billingService.removeFromBill(
       this.billingService.InvestigationItems[$event.index]
     );
-    this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =0;
+    this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.billingService.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
       $event.index,
@@ -210,6 +210,9 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       if (
         "patient_Instructions" in res.element.billItem &&

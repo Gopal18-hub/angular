@@ -386,16 +386,17 @@ export class BillingService {
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
-      )
+      ) {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
-      ///GAV-1473
-      this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
-        "0.00"
-      );
-      // For GAV-1355 SRF Popup
-      await this.calculateBillService.serviceBasedCheck();
+        ///GAV-1473
+        this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
+          "0.00"
+        );
+        // For GAV-1355 SRF Popup
+        await this.calculateBillService.serviceBasedCheck();
+      }
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
