@@ -848,6 +848,7 @@ export class BillComponent implements OnInit, OnDestroy {
           (parseFloat(this.formGroup.value.gstTax) || 0) -
           (parseFloat(this.formGroup.value.planAmt) || 0) -
           (parseFloat(this.formGroup.value.availDisc) || 0);
+        console.log(temp);
       } else {
         temp =
           parseFloat(this.formGroup.value.billAmt) -
@@ -856,6 +857,7 @@ export class BillComponent implements OnInit, OnDestroy {
           (parseFloat(this.formGroup.value.gstTax) || 0) -
           (parseFloat(this.formGroup.value.planAmt) || 0) -
           (parseFloat(this.formGroup.value.availDisc) || 0);
+        console.log(temp);
       }
 
       if (
@@ -1538,7 +1540,10 @@ export class BillComponent implements OnInit, OnDestroy {
     }
 
     console.log("Amount Pay by Patinet: ", temp);
-
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.patientDiscount =
+      parseFloat(this.formGroup.value.patientDisc);
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyDiscount =
+      parseFloat(this.formGroup.value.compDisc);
     return temp > 0 ? temp.toFixed(2) : "0.00";
   }
 

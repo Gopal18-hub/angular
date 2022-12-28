@@ -381,7 +381,8 @@ export class BillingComponent implements OnInit, OnDestroy {
       !this.formGroup.value.mobile ||
       this.formGroup.value.mobile.length != 10
     ) {
-      this.snackbar.open("Invalid Mobile No.", "error");
+      // this.snackbar.open("Invalid Mobile No.", "error");
+      this.messageDialogService.error("Invalid Mobile No.");
       this.apiProcessing = false;
       this.patient = false;
       return;
@@ -470,9 +471,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       this.patient = false;
       return;
     }
+    let arr = this.formGroup.value.maxid.split(".");
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    if (regNumber != 0) {
+    if (regNumber != 0 && arr.length == 2) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
@@ -486,6 +488,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           .toPromise();
       }
       this.getSimilarSoundDetails(iacode, regNumber);
+    } else if (arr.length != 2) {
+      this.clear();
+      // this.snackbar.open("Invalid Max ID", "error");
+      this.messageDialogService.error("Invalid Max ID");
     } else {
       this.apiProcessing = false;
       this.patient = false;
@@ -510,7 +516,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.clear();
-          this.snackbar.open("Invalid Max ID", "error");
+          // this.snackbar.open("Invalid Max ID", "error");
+          this.messageDialogService.error("Invalid Max ID");
         }
       );
   }
@@ -530,7 +537,8 @@ export class BillingComponent implements OnInit, OnDestroy {
           console.log(resultData);
           if (
             resultData &&
-            resultData.dsPersonalDetails.dtPersonalDetails1.length > 0
+            resultData.dsPersonalDetails.dtPersonalDetails1.length > 0 &&
+            resultData.dsPersonalDetails.dtPersonalDetails1 != null
           ) {
             this.patientDetails = resultData;
 
@@ -554,8 +562,9 @@ export class BillingComponent implements OnInit, OnDestroy {
               0
             ) {
               if (
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-                  .pPagerNumber == "ews"
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0].pPagerNumber
+                  .toString()
+                  .toLowerCase() == "ews"
               ) {
                 this.formGroup.controls["company"].disable();
                 this.formGroup.controls["corporate"].disable();
@@ -563,10 +572,12 @@ export class BillingComponent implements OnInit, OnDestroy {
                 const tpacompanyExist: any = this.companyData.filter(
                   (c: any) => c.isTPA == 18
                 );
+                console.log(tpacompanyExist);
                 if (tpacompanyExist && tpacompanyExist.length > 0) {
                   this.formGroup.controls["company"].setValue({
                     title: tpacompanyExist[0].name,
                     value: tpacompanyExist[0].id,
+                    company: tpacompanyExist[0],
                   });
                 }
               }
@@ -616,7 +627,8 @@ export class BillingComponent implements OnInit, OnDestroy {
             }
           } else {
             this.clear();
-            this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
+            // this.snackbar.open("Invalid Max ID", "error");
           }
 
           //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
@@ -627,7 +639,8 @@ export class BillingComponent implements OnInit, OnDestroy {
             // this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
             //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
             //this.questions[0].customErrorMessage = "Invalid Max ID";
-            this.snackbar.open("Invalid Max ID", "error");
+            // this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
           }
           this.apiProcessing = false;
           this.patient = false;
@@ -664,7 +677,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0)
     ) {
       this.clear();
-      this.snackbar.open("Invalid Max ID", "error");
+      this.messageDialogService.error("Invalid Max ID");
+      // this.snackbar.open("Invalid Max ID", "error");
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -1357,6 +1371,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.apiProcessing = false;
+    this.billingService.doctorList=[];
     this.patient = false;
     this.secondaryMaxId = false;
     this.formGroup.reset(
