@@ -1710,7 +1710,7 @@ export class BillingService {
     if (res.length > 0) {
       this.addToInvestigations({
         sno: this.InvestigationItems.length + 1,
-        investigations: investigation.title,
+        investigations: res[0].procedureName, //investigation.title,
         precaution:
           investigation.precaution == "P"
             ? '<span class="max-health-red-color">P</span>'
@@ -1729,7 +1729,7 @@ export class BillingService {
           serviceId: serviceType || investigation.serviceid,
           price: res[0].returnOutPut,
           serviceName: "Investigations",
-          itemName: investigation.title,
+          itemName: res[0].procedureName, //investigation.title,
           qty: 1,
           precaution:
             investigation.precaution == "P"
