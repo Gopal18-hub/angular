@@ -36,8 +36,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
   questions: any;
   today: any;
   validationerrorexists: boolean = true;
-  disbalesave: boolean = false;
-
+  
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -69,7 +68,6 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["dateofapplication"].disable();
     this.form60form.controls["applicationno"].disable();
     this.getForm60DocumentType();
-    this.disbalesave = false;
     if(this.depositservice.isform60exists){
          this.updateexistingform60info();
     }
@@ -84,11 +82,14 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
           this.form60form.controls["applicationno"].enable();
           this.form60form.controls["agriculturalincome"].disable();
           this.form60form.controls["otherthanagriculturalincome"].disable();
+          this.form60form.controls["agriculturalincome"].setValue("");
+          this.form60form.controls["otherthanagriculturalincome"].setValue("");
         } else {
           this.form60form.controls["dateofapplication"].disable();
           this.form60form.controls["applicationno"].disable();
           this.form60form.controls["agriculturalincome"].enable();
           this.form60form.controls["otherthanagriculturalincome"].enable();
+          this.form60form.controls["applicationno"].setValue("");
         }
       }
     );
@@ -138,48 +139,67 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     console.log(this.form60form.value.iddocidentityno);
     this.DocumentIDNumber = this.form60form.value.iddocidentityno;
     this.validationerrorexists = true;
-    if (
+    if( this.form60form.value.aadharno == "" ||  this.form60form.value.aadharno == null ){
+      this.questions[0].elementRef.focus();
+      this.messageDialogService.error("Please enter Aadhar No.");     
+    }
+    else if (
       this.form60form.value.appliedforpan &&
       this.form60form.value.applicationno == ""
     ) {
-      this.messageDialogService.error("Please enter PAN Application Number");
+      this.messageDialogService.error("Please enter PAN Application Number");      
     } else if (
       !this.form60form.value.appliedforpan &&
      ( this.form60form.value.agriculturalincome == "" || Number(this.form60form.value.agriculturalincome) <= 0)
     ) {
-      this.messageDialogService.error("Please enter agriculturer income");
+      this.messageDialogService.error("Please enter agriculturer income");     
     } else if (
       !this.form60form.value.appliedforpan &&
       (this.form60form.value.otherthanagriculturalincome == "" || Number(this.form60form.value.otherthanagriculturalincome) <= 0)
     ) {
       this.messageDialogService.error(
         "Please enter other than agriculturer income"
-      );
+      );     
     } else if (
-      this.questions[6].options.value == 0 ||
-      this.questions[6].options.title == ""
+      this.form60form.value.iddocumenttype == "" ||
+      this.form60form.value.iddocumenttype == null
     ) {
-      this.messageDialogService.error("Please select ID proof");
+      this.messageDialogService.error("Please select ID proof");    
     } else if (
-      (this.form60form.value.iddocidentityno =
-        "" || this.form60form.value.idnameofauthority == "")
+      this.form60form.value.iddocidentityno == "" ||
+      this.form60form.value.iddocidentityno == null     
     ) {
       this.messageDialogService.error(
         "Please select ID proof number/name of authority"
+      );    
+    }
+    else if  (this.form60form.value.idnameofauthority == "" 
+    || this.form60form.value.idnameofauthority == null){
+      this.messageDialogService.error(
+        "Please select ID proof number/name of authority"
       );
-    } else if (
-      this.questions[10].options.value == 0 ||
-      this.questions[10].options.title == ""
+    }
+    else if (
+      this.form60form.value.addressdocumenttype == "" || 
+      this.form60form.value.addressdocumenttype == null
     ) {
       this.messageDialogService.error("Please select Address proof");
-    } else if (
-      this.form60form.value.addressdocidentityno == "" ||
-      this.form60form.value.addressnameofauthority == ""
+     
+    } else if (      
+      this.form60form.value.addressnameofauthority == "" ||
+      this.form60form.value.addressnameofauthority == null
     ) {
       this.messageDialogService.error(
         "Please select address proof number/name of authority"
       );
-    } else {
+    }
+    else if(this.form60form.value.addressdocidentityno == "" ||
+    this.form60form.value.addressdocidentityno == null){
+      this.messageDialogService.error(
+        "Please select address proof number/name of authority"
+      );
+    }
+    else {
       this.validationerrorexists = false;
     }
 
@@ -193,35 +213,20 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
 
   clearform60() {
     this.form60form.reset();
+    this.depositservice.clearformsixtydetails();    
+    this.form60form.controls["dateofapplication"].setValue(this.today);
   }
 
   saveform60() {
     this.form60validation();
     if (!this.validationerrorexists) {
-      console.log(
-        "deposit request body" + this.getPatientform60SubmitRequestBody()
+      this.depositservice.clearformsixtydetails();
+      this.getPatientform60SubmitRequestBody();
+      this.dialogRef.close("Success");
+      this.messageDialogService.success(
+        "Form60 details have been successfully saved."
       );
-      console.log(this.form60savedetails);
-      this.http
-        .post(
-          ApiConstants.saveform60patientdata,
-          this.getPatientform60SubmitRequestBody()
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            //this.matDialog.closeAll();
-            this.dialogRef.close("Success");
-            this.messageDialogService.success(
-              "Form60 details have been successfully saved."
-            );
-          },
-          (error) => {
-            console.log(error);
-            this.messageDialogService.info(error.error);
-          }
-        );
-    }
+   }
   }
 
   form60savedetails: savepatientform60detailsModel | undefined;
@@ -281,8 +286,20 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["addressdocidentityno"].setValue(formsixtylist.addressDocNumber);
     this.form60form.controls["addressnameofauthority"].setValue(formsixtylist.addressNameOfAuthority);
     this.form60form.controls["remarks"].setValue(formsixtylist.remarks);
-    this.disbalesave = true;
-    this.form60form.controls["appliedforpan"].disable();
-    this.form60form.controls["tickforsamedoc"].disable();
+
+    if(formsixtylist.isAppliedForPAN){
+      this.form60form.controls["dateofapplication"].enable();
+          this.form60form.controls["applicationno"].enable();
+          this.form60form.controls["agriculturalincome"].disable();
+          this.form60form.controls["otherthanagriculturalincome"].disable();
+          this.form60form.controls["agriculturalincome"].setValue("");
+          this.form60form.controls["otherthanagriculturalincome"].setValue("");
+    }else{
+      this.form60form.controls["dateofapplication"].disable();
+      this.form60form.controls["applicationno"].disable();
+      this.form60form.controls["agriculturalincome"].enable();
+      this.form60form.controls["otherthanagriculturalincome"].enable();
+      this.form60form.controls["applicationno"].setValue("");
+    }
   }
 }

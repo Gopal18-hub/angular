@@ -316,14 +316,14 @@ export namespace BillingForm {
           mobileorderid:{
             type: "string",
             title: "Order Id"
-          }, //60
+          }, 
           posimei:{
-            type: "string",
-            required: true,
+            type: "dropdown",
             title: "POS IMEI",
-            defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
-            readonly: true,
-          },
+            required: true,
+            //defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+            readonly: false, 
+          },//60
           creditcardtransactionid:{
             type: "string",
             required: true,
@@ -359,11 +359,11 @@ export namespace BillingForm {
           title: "Bank TID",
         },//66
         upiposimei:{
-          type: "string",
+          type: "dropdown",
           title: "POS IMEI",
           required: true,
-          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
-          readonly: true,
+          //defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+          readonly: false,          
         },
         upibanktid:{
           type: "string",
@@ -398,10 +398,10 @@ export namespace BillingForm {
             type: "number"
           },
           agriculturalincome: {
-            type: "string"
+            type: "number"
           },
           otherthanagriculturalincome: {
-            type: "string"
+            type: "number"
           },
           iddocumenttype: {
             type: "dropdown",

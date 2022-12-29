@@ -1892,6 +1892,7 @@ export class BillDetailComponent implements OnInit {
           .subscribe(
             (resultData) => {
               if (resultData[0].successFlag === true) {
+                this.depositservice.clearformsixtydetails();
                 this.generatedBillNo = resultData[0].billId;
                 //this.billingservice.billNoGenerated.next(true);
                 this.miscPatient.cacheBillTabdata.generatedBillNo =
@@ -1953,8 +1954,8 @@ export class BillDetailComponent implements OnInit {
   }
   paymentDialog() {
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
+      width: "80vw",
+      height: "96vh",
       data: {
         totalBillAmount: this.TotalAmount,
         totalDiscount: this.miscServBillForm.value.discAmt,
@@ -1991,8 +1992,8 @@ export class BillDetailComponent implements OnInit {
                     .pipe(takeUntil(this._destroying$))
                     .subscribe(
                       (resultData) => {
-                        this.depositservice.clearformsixtydetails();
                         if (resultData[0].successFlag === true) {
+                          this.depositservice.clearformsixtydetails();
                           //this.enableForm = 0;
                           this.generatedBillNo = resultData[0].billId;
                           //this.billingservice.billNoGenerated.next(true);
@@ -2054,6 +2055,7 @@ export class BillDetailComponent implements OnInit {
               .subscribe(
                 (resultData) => {
                   if (resultData[0].successFlag === true) {
+                    this.depositservice.clearformsixtydetails();
                     //this.enableForm = 0;
                     this.generatedBillNo = resultData[0].billId;
                     //this.billingservice.billNoGenerated.next(true);

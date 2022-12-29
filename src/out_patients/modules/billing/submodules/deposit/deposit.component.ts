@@ -478,7 +478,6 @@ export class DepositComponent implements OnInit {
                 this.MaxIDdepositExist = false;
                 this.tableselectionexists = false;
                 this.deposittable.selection.clear();
-                this.depositservice.clearformsixtydetails();
                 if (result == "Success") {
                   this.getPatientPreviousDepositDetails();
                 }
@@ -535,9 +534,8 @@ export class DepositComponent implements OnInit {
               this.getPatientDetailsForDeposit();
               this.apiProcessing = false;
             } else {
-              this.snackbar.open("Invalid Max ID", "error");
-              // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-              // this.questions[0].customErrorMessage = "Invalid Max ID";
+             // this.snackbar.open("Invalid Max ID", "error"); bala told to change to error
+              this.messageDialogService.error("Invalid Max ID");
             }
           }
         }
@@ -550,7 +548,8 @@ export class DepositComponent implements OnInit {
         if (this.depositForm.controls["mobileno"].valid) {
           this.mobilechange();
         } else {
-          this.snackbar.open("Invalid Mobile No", "error");
+          //this.snackbar.open("Invalid Mobile No", "error");
+          this.messageDialogService.error("Invalid Mobile No.");
         }
       }
     });
@@ -591,9 +590,8 @@ export class DepositComponent implements OnInit {
             this.patientservicetype = resultData.getServiceType;
 
             if (this.patientpersonaldetails.length === 0) {
-              this.snackbar.open("Invalid Max ID", "error");
-              // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-              // this.questions[0].customErrorMessage = "Invalid Max ID";
+              //this.snackbar.open("Invalid Max ID", "error");
+              this.messageDialogService.error("Invalid Max ID");
             } else {
               this.depositForm.controls["mobileno"].setValue(
                 this.patientpersonaldetails[0]?.pcellno
@@ -653,9 +651,8 @@ export class DepositComponent implements OnInit {
               this.depositForm.controls["maxid"].setValue(
                 this.iacode + "." + this.regNumber
               );
-              this.snackbar.open("Invalid Max ID", "error");
-              // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-              // this.questions[0].customErrorMessage = "Invalid Max ID";
+              //this.snackbar.open("Invalid Max ID", "error");
+              this.messageDialogService.error("Invalid Max ID");
             }
           }
         );
@@ -682,9 +679,8 @@ export class DepositComponent implements OnInit {
           if (resultData == CheckPatientDetails.Inpatient) {
             this.messageDialogService.error("This Patient is an InPatient");
           } else if (resultData == CheckPatientDetails.PatientNotReg) {
-            this.messageDialogService.error(
-              "This is not a valid Registration Number"
-            );
+            //this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
           } else if (resultData == CheckPatientDetails.NoDeposit) {
             this.getPatientDetailsByMaxId();
             this.getPatientPreviousDepositDetails();
@@ -692,15 +688,13 @@ export class DepositComponent implements OnInit {
             this.getPatientDetailsByMaxId();
             this.getPatientPreviousDepositDetails();
           } else if (resultData == null) {
-            this.snackbar.open("Invalid Max ID", "error");
-            // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-            // this.questions[0].customErrorMessage = "Invalid Max ID";
+            //this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
           }
         },
         (error) => {
-          this.snackbar.open("Invalid Max ID", "error");
-          // this.depositForm.controls["maxid"].setErrors({ incorrect: true });
-          // this.questions[0].customErrorMessage = "Invalid Max ID";
+          //this.snackbar.open("Invalid Max ID", "error");
+          this.messageDialogService.error("Invalid Max ID");
         }
       );
   }
@@ -751,7 +745,7 @@ export class DepositComponent implements OnInit {
             item.deposit = item.deposit.toFixed(2);
             item.gst = item.gst.toFixed(2);
             item.gstValue = item.gstValue.toFixed(2);
-            item.paymentType = item.paymentType.toCapitalize();
+            item.paymentType = item.paymentType != null ? item.paymentType.toCapitalize() : "";
             return item;
           });
 
@@ -913,12 +907,8 @@ export class DepositComponent implements OnInit {
 
             this.getPatientDetailsByMaxId();
           } else {
-            this.snackbar.open("Invalid Mobile No", "error");
-            // this.depositForm.controls["mobile"].setErrors({
-            //   incorrect: true,
-            // });
-            // this.questions[1].customErrorMessage = "Invalid Mobile No";
-
+            //this.snackbar.open("Invalid Mobile No", "error");
+            this.messageDialogService.error("Invalid Mobile No.");
             console.log("no data found");
           }
         },
