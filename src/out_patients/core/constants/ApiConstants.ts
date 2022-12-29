@@ -1567,4 +1567,11 @@ export namespace ApiConstants {
       id
     );
   };
+
+  export const getPOSMachineMaster = (
+    locationId: number,
+    stationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/GetPosMachineMaster/${stationId}/${locationId}`;
+  };
 }
