@@ -173,6 +173,9 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -342,6 +345,13 @@ export class ProcedureOtherComponent implements OnInit {
     if (sno > 0) {
       const index = this.billingService.ProcedureItems.findIndex(
         (c: any) => c.sno == sno
+      );
+      this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (i: any) => {
+          if (i.itemId == this.billingService.ProcedureItems[index].itemid) {
+            i.qty = this.billingService.ProcedureItems[index].qty.toString();
+          }
+        }
       );
       if (index > -1) {
         this.billingService.ProcedureItems[index].price =
