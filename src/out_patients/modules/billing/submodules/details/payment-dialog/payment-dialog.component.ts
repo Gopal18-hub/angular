@@ -7,6 +7,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { ApiConstants } from "@core/constants/ApiConstants";
+import { ApiConstants as billingconst } from "@shared/constants/ApiConstants";
 import { sendotpforpatientrefund } from "@core/models/patientsaveotprefunddetailModel.Model";
 import { savepatientRefunddetailModel } from "@core/models/savepatientRefundDetailModel.Model";
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
@@ -1338,7 +1339,7 @@ export class PaymentDialogComponent implements OnInit {
   posimeiapi() {
     console.log(this.questions);
     this.http
-      .get(ApiConstants.getPOSMachineMaster(this.hsplocationId, this.stationId))
+      .get(billingconst.getPOSMachineMaster(this.hsplocationId, this.stationId))
       .subscribe((res: any) => {
         if (res && res.length > 0) {
           this.POSIMEIList = res;
