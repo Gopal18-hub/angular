@@ -473,7 +473,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
     let arr = this.formGroup.value.maxid.split(".");
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
-
+    console.log(regNumber);
     if (regNumber != 0 && arr.length == 2) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
@@ -488,7 +488,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           .toPromise();
       }
       this.getSimilarSoundDetails(iacode, regNumber);
-    } else if (arr.length != 2) {
+    } else if (regNumber == 0 || arr.length != 2) {
       this.clear();
       // this.snackbar.open("Invalid Max ID", "error");
       this.messageDialogService.error("Invalid Max ID");
@@ -1371,7 +1371,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.apiProcessing = false;
-    this.billingService.doctorList=[];
+    this.billingService.doctorList = [];
     this.patient = false;
     this.secondaryMaxId = false;
     this.formGroup.reset(
