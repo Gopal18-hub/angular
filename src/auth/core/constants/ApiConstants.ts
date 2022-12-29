@@ -18,23 +18,15 @@ export namespace ApiConstants {
     stationid:number,
     moduleid:number
 ) => {
-  return `${environment.IdentityServerUrl}api/authenticate/createSession?userId=${userId}&token=${token}&locationid=${locationid}&stationid=${stationid}&moduleid=${moduleid}`;
+  return `${environment.IdentityServerUrl}api/authenticate/createSession`;
 };
-
   export const deleteactivesession = (userId: number) => {
     return `${environment.IdentityServerUrl}api/authenticate/deleteActiveSession?userid=${userId}`;
   };
 
-  export const updateActiveSessionToken = (
-    userId:number,
-    token:string,
-    locationid:number,
-    stationid:number,
-    moduleid:number
-) => {
-  return `${environment.IdentityServerUrl}api/authenticate/updateActiveSessionToken?userId=${userId}&token=${token}&locationid=${locationid}&stationid=${stationid}&moduleid=${moduleid}`;
+  export const updateActiveSessionToken = () => {
+  return `${environment.IdentityServerUrl}api/authenticate/updateActiveSessionToken`;
 };
-
   export const searchPatientDefault = (HsplocationId: number) => {
     return (
       environment.PatientApiUrl +
