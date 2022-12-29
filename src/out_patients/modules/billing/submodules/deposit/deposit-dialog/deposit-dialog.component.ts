@@ -116,10 +116,12 @@ export class DepositDialogComponent implements OnInit {
     if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead == 0 && this.isNSSHLocation)){
       this.messageDialogService.info("Please Select Deposit Head");
       this.validationexists = true;
+      return
     }
     else  if(this.selecteddepositservicetype.servicetype == null){
       this.messageDialogService.info("Please Select Service Type");
       this.validationexists = true;
+      return
     }
     //deposit - payment method
     else if(this.DepositcashMode){
@@ -134,6 +136,7 @@ export class DepositDialogComponent implements OnInit {
           if(!this.paymentdepositcashMode.chequemandatoryfields()){
             this.messageDialogService.info("Please Fill All Cheque Mandatory Fields ");
             this.validationexists = true;
+            return
           }         
        }
        else if(this.DepositcashMode.creditamount > 0){
@@ -142,6 +145,7 @@ export class DepositDialogComponent implements OnInit {
           if(!this.paymentdepositcashMode.creditcardmandatoryfields()){
             this.messageDialogService.info("Please Fill All Credit Card Mandatory Fields ");
             this.validationexists = true;
+            return
           }
       }
       else if(this.DepositcashMode.demandamount > 0){
@@ -152,6 +156,7 @@ export class DepositDialogComponent implements OnInit {
         {
          this.messageDialogService.info("Please Fill All Demand Draft Mandatory Fields ");
          this.validationexists = true;
+         return
        }  
 
       }
@@ -165,15 +170,18 @@ export class DepositDialogComponent implements OnInit {
         if(this.DepositcashMode.internetemail.trim().toUpperCase() == "INFO@MAXHEALTHCARE.COM"){
           this.messageDialogService.info("Please fill valid Email Id " + this.DepositcashMode.internetemail + " Not allowed to save internet payment request!!");
           this.validationexists = true;
+          return
         }
         else if(this.DepositcashMode.internetremarks == "" || this.DepositcashMode.internetremarks == null ){
           this.messageDialogService.info("Please fill Internet Payment Remarks !!");
           this.validationexists = true;
+          return
         }
       }
       else if(this.PaymentTypedepositamount <= 0){
         this.messageDialogService.info("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
+        return
       }      
     }
 
@@ -188,17 +196,26 @@ export class DepositDialogComponent implements OnInit {
         this.billingservice.setpaymenthodpancardfocus();
          return;  
      }
-     else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false && !this.validationexists){
+     else if(this.depositpatientidentityinfo.mainradio == "form60" && this.depositservice.isform60exists == false && !this.validationexists){
       this.messageDialogService.info("Please fill the form60 ");   
       this.validationexists = true;
+      return;
      }    
   }
 
   savedialogpayment()
   {
     this.depositformvalidation();
-   if(!this.validationexists){
-      console.log(this.patientSaveDepositDetails);
+    if(Number(this.PaymentTypedepositamount) >= 200000 && this.depositservice.isform60exists){
+      this.depositservice.depositformsixtydetails.transactionAmount = Number(this.PaymentTypedepositamount).toFixed(2);
+      this.depositservice.depositformsixtydetails.mop = this.PaymentType == 2 ? "Cheque" : (this.PaymentType == 4 ? "Credit Card" : (this.PaymentType == 3 ? "Demand Draft" : (this.PaymentType == 8 ? "UPI" : (this.PaymentType == 9 ? "Internet Banking" : "cash"))));
+   
+      this.depositservice.saveform60();
+    }
+    
+
+    if(!this.validationexists)
+   {     
       this.http
         .post(ApiConstants.SavePatientsDepositDetailsGST, this.getPatientDepositSubmitRequestBody())
         .pipe(takeUntil(this._destroying$))
@@ -206,6 +223,7 @@ export class DepositDialogComponent implements OnInit {
           (resultData) => {
             console.log(resultData);
             if(resultData[0].returnFlag == 0){
+              this.depositservice.clearformsixtydetails();
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
               const successInfo = this.messageDialogService.success(
@@ -234,6 +252,7 @@ export class DepositDialogComponent implements OnInit {
         );
     }   
   }
+
   patientSaveDepositDetails: PatientSaveDepositDetailGST | undefined;
   
   getPatientDepositSubmitRequestBody(): PatientSaveDepositDetailGST {  

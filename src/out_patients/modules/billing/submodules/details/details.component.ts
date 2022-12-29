@@ -1191,9 +1191,9 @@ export class DetailsComponent implements OnInit {
   openReportModal(btnname: string) {
     const accessControls: any = this.permissionservice.getAccessControls();
     let exist: any = accessControls[2][7][534];
-    if (exist == undefined){
+    if (exist == undefined) {
       exist = false;
-    } else{
+    } else {
       exist = accessControls[2][7][534][1436];
       exist = exist == undefined ? false : exist;
     }
@@ -1212,12 +1212,11 @@ export class DetailsComponent implements OnInit {
         {
           opbillid:
             this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
-            locationID: this.cookie.get("HSPLocationId"),
-            enableexport: exist,
+          locationID: this.cookie.get("HSPLocationId"),
+          enableexport: exist,
         }
       );
     } else if (btnname == "ConsumabaleEntryDetailsReport") {
-      
       console.log(exist);
 
       this.reportService.openWindow(
@@ -1362,56 +1361,71 @@ export class DetailsComponent implements OnInit {
         console.log(this.approvedfalg);
         if (
           forenablerefundbill.length == 0 &&
-          this.billdetailservice.sendforapproval.length > 0 &&
-          this.patientbilldetaillist
-            .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
-            .authorisedby != ""
+          this.billdetailservice.sendforapproval.length > 0
         ) {
           this.refundbill = true;
           this.approvalsend = false;
 
           this.approvedfalg = false;
+          console.log("1", this.refundbill, this.approvalsend);
         } else if (
           forenablerefundbill.length !=
           this.billdetailservice.sendforapproval.length
         ) {
           this.refundbill = true;
           this.approvalsend = true;
+
+          this.approvedfalg = true;
+          console.log("2", this.refundbill, this.approvalsend);
         }
         //end
         var forboth = 0;
+        var approved = 0;
+        var notapproved = 0;
         forenablerefundbill.forEach((k: any) => {
-          forboth = 0;
           if (
             k.notApproved == 1 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0 &&
-            this.billdetailservice.sendforapproval.length ==
-              forenablerefundbill.length
+              .cancelled == 0
           ) {
             this.refundbill = false;
             this.approvalsend = true;
 
             this.approvedfalg = true;
+            console.log("3", this.refundbill, this.approvalsend);
             forboth++;
+            approved++;
           } else if (
             k.notApproved == 0 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0 &&
-            this.billdetailservice.sendforapproval.length ==
-              forenablerefundbill.length
+              .cancelled == 0
           ) {
             this.refundbill = true;
             this.approvalsend = true;
 
             this.approvedfalg = true;
+            console.log("4", this.refundbill, this.approvalsend);
             forboth++;
+            notapproved++;
           }
         });
-        if (forboth > 1 && forenablerefundbill.length != 0) {
+        console.log(forboth, approved, notapproved);
+        if (approved > 0 && notapproved > 0) {
           this.refundbill = true;
           this.approvalsend = true;
         }
+        if (
+          approved != this.billdetailservice.sendforapproval.length &&
+          notapproved != this.billdetailservice.sendforapproval.length
+        ) {
+          this.refundbill = true;
+          this.approvalsend = true;
+        }
+        // if (forboth > 1 && forenablerefundbill.length != 0) {
+        //   this.refundbill = true;
+        //   this.approvalsend = true;
+        //   console.log("5", this.refundbill, this.approvalsend);
+        // }
       } else {
         this.refundbill = true;
         this.approvalsend = true;

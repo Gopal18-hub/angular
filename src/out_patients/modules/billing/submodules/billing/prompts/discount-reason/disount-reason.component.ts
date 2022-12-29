@@ -189,7 +189,7 @@ export class DisountReasonComponent implements OnInit {
 
   dualList: any = [];
   reasontitle: any = "";
-  head:any=""
+  head: any = "";
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -245,8 +245,7 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
-      this.question[0].options = this.discounttypes;
-      this.discAmtForm.controls["types"].setValue("On-Bill");
+      this.question[0].options = this.discounttypes; ////GAV-1456
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
@@ -263,6 +262,7 @@ export class DisountReasonComponent implements OnInit {
     });
     if (this.selectedItems.length > 0) {
       const tempItem = this.selectedItems[0];
+      let disTypes: any = [];
       if (tempItem.discTypeValue == "On-Bill") {
         this.disableAdd = true;
       } else if (tempItem.discTypeValue == "On-Service") {
@@ -271,6 +271,23 @@ export class DisountReasonComponent implements OnInit {
           Object.values(this.serviceBasedList).length
         ) {
           this.disableAdd = true;
+        } else {
+          disTypes = this.discounttypes.map((a: any) => {
+            if (a.title != "On Service") {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            } else {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: false,
+              };
+            }
+          });
+          this.question[0].options = disTypes; ////GAV-1456
         }
       } else if (tempItem.discTypeValue == "On-Item") {
         let totalItems = 0;
@@ -279,6 +296,23 @@ export class DisountReasonComponent implements OnInit {
         });
         if (this.selectedItems.length == totalItems) {
           this.disableAdd = true;
+        } else {
+          disTypes = this.discounttypes.map((a: any) => {
+            if (a.title != "On Item") {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            } else {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: false,
+              };
+            }
+          });
+          this.question[0].options = disTypes; ////GAV-1456
         }
       } else {
         this.selectedItems.forEach((sItem: any) => {
@@ -312,9 +346,23 @@ export class DisountReasonComponent implements OnInit {
         }
       }
     }
+
+    let defaultDiscountType: any = "";
+    ////GAV-1456
+    this.question[0].options.forEach((type: any) => {
+      if (type.disabled == false && defaultDiscountType == "") {
+        defaultDiscountType = type;
+      }
+    });
+    if (defaultDiscountType) {
+      this.discAmtForm.controls["types"].setValue(defaultDiscountType.value);
+    }
   }
 
   ngAfterViewInit() {
+    this.discAmtForm.controls["head"].setValue("");
+    this.discAmtForm.controls["reason"].setValue("");
+    this.discAmtForm.controls["percentage"].setValue("");
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "head") {
         const filterData = this.discReasonList.filter(
@@ -381,19 +429,16 @@ export class DisountReasonComponent implements OnInit {
         const filterData = this.discReasonList.filter(
           (rl: any) => rl.mainhead == val
         );
-        const existHead = this.mainHeadList.filter(
-          (rl: any) => rl.id == val
-        );
-        this.head=existHead[0].name
+        const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
+        this.head = existHead[0].name;
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
         });
         this.discAmtFormConfig.columnsInfo.reason.options =
           this.question[2].options;
         this.discAmtFormConfig = { ...this.discAmtFormConfig };
-      }
-      else{
-        this.head=""
+      } else {
+        this.head = "";
       }
     });
 
@@ -663,6 +708,8 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnItemPrepare() {
+    this.calculateBillService.discountSelectedItems = [];
+    this.selectedItems = [];
     let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
@@ -731,6 +778,8 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnServiceItemPrepare() {
+    this.calculateBillService.discountSelectedItems = [];
+    this.selectedItems = [];
     let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
@@ -886,18 +935,23 @@ export class DisountReasonComponent implements OnInit {
           this.question[2].options;
         if (this.selectedItems.length > 0) {
           this.selectedItems.forEach((item: any, index: number) => {
-            const filterData = this.discReasonList.filter(
-              (rl: any) => rl.mainhead == item.head
-            );
-            let options = filterData.map((a) => {
-              return {
-                title: a.name,
-                value: a.id,
-                discountPer: a.discountPer,
-              };
-            });
-            this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
-              options;
+            if (item.head == null || item.head == "") {
+              this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
+                this.question[2].options;
+            } else {
+              const filterData = this.discReasonList.filter(
+                (rl: any) => rl.mainhead == item.head
+              );
+              let options = filterData.map((a) => {
+                return {
+                  title: a.name,
+                  value: a.id,
+                  discountPer: a.discountPer,
+                };
+              });
+              this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
+                options;
+            }
           });
         }
       });

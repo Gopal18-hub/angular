@@ -159,15 +159,22 @@ export class HealthCheckupsComponent implements OnInit {
           res1.data;
       }
       if (res1 && res1.itemId) {
-        this.doctorsList = [];
+        // this.doctorsList = [];
         this.billingService.doctorList = res1.doctorList;
         ////GAV-882
         this.billingService.changeBillTabStatus(false);
-        this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
+        this.billingService.setHCUDetails(
+          res1.itemId,
+          this.billingService.doctorList
+        );
       } else {
-        this.doctorsList = this.doctorsList.map((d: number) => d * 0);
+        // this.doctorsList = this.doctorsList.map((d: number) => d * 0);
         ////GAV-882
-        if (this.doctorsList && this.doctorsList.length > 0) {
+        if (
+          Object.keys(this.billingService.healthCheckupselectedItems).length > 0
+        ) {
+          this.billingService.changeBillTabStatus(false);
+        } else {
           this.billingService.changeBillTabStatus(true);
         }
       }
@@ -175,6 +182,9 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -342,6 +352,7 @@ export class HealthCheckupsComponent implements OnInit {
 
   getDoctorsList(hid: string, serviceid: string) {
     this.doctorsList = [];
+    this.billingService.doctorList = [];
     this.http
       .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
       .subscribe((res) => {
@@ -349,6 +360,7 @@ export class HealthCheckupsComponent implements OnInit {
           //if (item.isConsult == 1 && item.itemServiceID == 25) {
           if (item.itemServiceID == 25) {
             this.doctorsList.push(0);
+            this.billingService.doctorList.push(0);
           }
         });
         if (this.doctorsList.length > 0) {

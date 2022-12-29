@@ -14,6 +14,8 @@ import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { threadId } from "worker_threads";
 import { InstantiateExpr } from "@angular/compiler";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
+import { DepositService } from "@core/services/deposit.service";
+
 @Injectable({
   providedIn: "root",
 })
@@ -107,7 +109,8 @@ export class BillingService {
     private calculateBillService: CalculateBillService,
     public matDialog: MatDialog,
     private datepipe: DatePipe,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private depositservice: DepositService
   ) {}
 
   setBillingFormGroup(formgroup: any, questions: any) {
@@ -383,20 +386,29 @@ export class BillingService {
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
-      )
+      ) {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
-      // For GAV-1355 SRF Popup
-      await this.calculateBillService.serviceBasedCheck();
+        ///GAV-1473
+        this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
+          "0.00"
+        );
+        // For GAV-1355 SRF Popup
+        await this.calculateBillService.serviceBasedCheck();
+      }
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
+
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = 0;
       this.iomMessage = "";
-      formGroup.controls["corporate"].setValue(null);
-      formGroup.controls["corporate"].disable();
+      if (formGroup.controls["corporate"]) {
+        formGroup.controls["corporate"].setValue(null);
+        formGroup.controls["corporate"].disable();
+      }
     } else if (res.title && res.title != "Select") {
       let iscompanyprocess = true;
       //fix for Staff company validation
@@ -471,6 +483,11 @@ export class BillingService {
           formGroup.controls["corporate"].disable();
         }
       }
+    } else if (res.value == -1) {
+      this.iomMessage = "";
+      this.selectedcompanydetails = res;
+      this.selectedcorporatedetails = [];
+      this.companyChangeEvent.next({ company: res, from });
     }
   }
 
@@ -758,6 +775,28 @@ export class BillingService {
         this.calculateBillService.discountForm.reset();
       this.calculateBillService.calculateDiscount();
       this.makeBillPayload.tab_o_opDiscount = [];
+      ////GAV-1427
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (opbillItem: any, billIndex: any) => {
+          this.billItems.forEach((item: any, index: any) => {
+            if (opbillItem.itemId == item.itemId) {
+              this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].amount = item.totalAmount;
+            }
+          });
+
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountamount = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].discountType = 0;
+          this.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+            billIndex
+          ].oldOPBillId = 0;
+        }
+      );
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
@@ -1096,6 +1135,19 @@ export class BillingService {
 
   async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {
+      ////1412 - on Patient share or Company Share
+      let totalDiscount: any = 0;
+      if (
+        this.makeBillPayload.tab_o_opDiscount &&
+        this.makeBillPayload.tab_o_opDiscount.length > 0
+      ) {
+        this.makeBillPayload.tab_o_opDiscount.forEach((billDiscount: any) => {
+          if (billDiscount.disType == "4" || billDiscount.disType == "5") {
+            totalDiscount += billDiscount.disAmt;
+          }
+        });
+      }
+
       let toBePaid =
         parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount
@@ -1103,6 +1155,8 @@ export class BillingService {
         (parseFloat(
           this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
         ) +
+          ////1412 - on Patient share or Company Share
+          parseFloat(totalDiscount) +
           // parseFloat(
           //   this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
           // ) +
@@ -1148,6 +1202,24 @@ export class BillingService {
         );
         modeconfirm.afterClosed().toPromise();
         return;
+      }
+
+      // for form60
+      let tobepaidby: number = 0,
+        paymentmode: string = "";
+      if (this.depositservice.isform60exists) {
+        this.makeBillPayload.ds_paymode.tab_paymentList.forEach(
+          (payment: any) => {
+            if (Number(payment.amount) > 0) {
+              tobepaidby += Number(payment.amount);
+              paymentmode = paymentmode + " ," + payment.modeOfPayment;
+            }
+          }
+        );
+        this.depositservice.depositformsixtydetails.transactionAmount =
+          tobepaidby;
+        this.depositservice.depositformsixtydetails.mop = paymentmode;
+        this.depositservice.saveform60();
       }
 
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
@@ -1638,7 +1710,9 @@ export class BillingService {
     if (res.length > 0) {
       this.addToInvestigations({
         sno: this.InvestigationItems.length + 1,
-        investigations: investigation.title,
+        investigations: res[0].procedureName
+          ? res[0].procedureName
+          : investigation.title, ////GAV-1493//investigation.title,
         precaution:
           investigation.precaution == "P"
             ? '<span class="max-health-red-color">P</span>'
@@ -1657,7 +1731,9 @@ export class BillingService {
           serviceId: serviceType || investigation.serviceid,
           price: res[0].returnOutPut,
           serviceName: "Investigations",
-          itemName: investigation.title,
+          itemName: res[0].procedureName
+            ? res[0].procedureName
+            : investigation.title, ////GAV-1493//investigation.title,
           qty: 1,
           precaution:
             investigation.precaution == "P"
