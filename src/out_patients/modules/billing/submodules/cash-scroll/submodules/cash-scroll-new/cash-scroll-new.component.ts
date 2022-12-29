@@ -533,7 +533,13 @@ export class CashScrollNewComponent implements OnInit {
             };
             console.log(resultdata);
           }
-        });
+        },
+        (error) => {
+            this.scrolldetailsList = [];
+            this.apiProcessing = false;
+            this.dialogservice.error("No search found");
+          }
+        );
     }
   }
   resetcashscrollnew() {
