@@ -42,7 +42,9 @@ export class TokenInterceptor implements HttpInterceptor {
       },
     });
 
-    if (request.url.endsWith("authenticate")) {
+    if (request.url.endsWith("authenticate") || request.url.includes("deleteActiveSession")
+    || request.url.includes("updateActiveSessionToken")
+     ) {
       request = request.clone({
         setHeaders: {
           "Content-Type": "application/json",
