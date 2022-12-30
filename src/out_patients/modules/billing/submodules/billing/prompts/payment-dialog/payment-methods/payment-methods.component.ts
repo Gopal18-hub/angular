@@ -169,7 +169,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
                   (partialSum, a) => partialSum + a,
                   0
                 );
-                this.remainingAmount = parseFloat(this.totalAmount) - sum;
+                if (this.totalamtFlag) {
+                  this.remainingAmount = Number(
+                    Number(parseFloat(this.totalAmount) - sum).toFixed(2)
+                  );
+                } else {
+                  this.remainingAmount = parseFloat(this.totalAmount) - sum;
+                }
               }
               if (this.remainingAmount < 0) {
                 this.messageDialogService.warning(
