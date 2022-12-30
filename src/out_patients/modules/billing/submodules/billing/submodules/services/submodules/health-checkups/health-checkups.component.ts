@@ -175,7 +175,12 @@ export class HealthCheckupsComponent implements OnInit {
         ) {
           this.billingService.changeBillTabStatus(false);
         } else {
-          this.billingService.changeBillTabStatus(true);
+          //GAV-1492
+          if (Object.keys(this.billingService.doctorList).length > 0) {
+            this.billingService.changeBillTabStatus(true);
+          }else{
+            this.billingService.changeBillTabStatus(false);
+          }
         }
       }
     });
