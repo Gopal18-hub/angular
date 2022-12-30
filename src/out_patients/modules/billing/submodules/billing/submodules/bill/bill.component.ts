@@ -1561,7 +1561,12 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
+        this.formGroup.controls["dipositAmtcheck"].setValue(true);
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
+        this.question[20].readonly = false;
+        this.formGroup.controls["dipositAmtEdit"].enable();
+        this.question[20].elementRef.focus();
+        // this.question[20].disable = false;
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
