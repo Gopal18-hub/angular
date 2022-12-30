@@ -1560,9 +1560,18 @@ export class BillComponent implements OnInit, OnDestroy {
 
   depositdetails() {
     let resultData = this.calculateBillService.depositDetailsData;
+    this.totalDeposit = 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList = [];
     if (resultData) {
       resultData.forEach((element: any) => {
         if (element.isAdvanceTypeEnabled == false) {
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+            {
+              id: element.id,
+              amount: element.amount,
+              balanceamount: element.balanceamount,
+            }
+          );
           this.totalDeposit += element.balanceamount;
         }
       });
@@ -1572,7 +1581,12 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
+        this.formGroup.controls["dipositAmtcheck"].setValue(true);
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
+        this.question[20].readonly = false;
+        this.formGroup.controls["dipositAmtEdit"].enable();
+        this.question[20].elementRef.focus();
+        // this.question[20].disable = false;
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>

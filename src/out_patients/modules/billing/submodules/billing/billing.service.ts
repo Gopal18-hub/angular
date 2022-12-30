@@ -1251,7 +1251,7 @@ export class BillingService {
           this.calculateBillService.discountForm.value.authorise.value;
       }
 
-      if (toBePaid > collectedAmount) {
+      if (toBePaid > collectedAmount && toBePaid - collectedAmount >= 1) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
           "Do you want to pay with due amount of Rs." +
@@ -1462,6 +1462,7 @@ export class BillingService {
         itemid: procedure.value,
         priorityId: priorityId,
         serviceId: procedure.serviceid,
+        price_col_type: res[0].ret_value == 1 ? "input_price" : "",
         billItem: {
           popuptext: procedure.popuptext,
           itemId: procedure.value,
