@@ -1462,6 +1462,7 @@ export class BillingService {
         itemid: procedure.value,
         priorityId: priorityId,
         serviceId: procedure.serviceid,
+        price_col_type: res[0].ret_value == 1 ? "input_price" : "",
         billItem: {
           popuptext: procedure.popuptext,
           itemId: procedure.value,
