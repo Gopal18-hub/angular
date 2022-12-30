@@ -904,8 +904,7 @@ export class DepositComponent implements OnInit {
             this.depositForm.controls["maxid"].setValue(maxID);
             this.regNumber = Number(maxID.split(".")[1]);
             this.iacode = maxID.split(".")[0];
-
-            this.getPatientDetailsByMaxId();
+            this.getPatientDetailsForDeposit();
           } else {
             //this.snackbar.open("Invalid Mobile No", "error");
             this.messageDialogService.error("Invalid Mobile No.");
