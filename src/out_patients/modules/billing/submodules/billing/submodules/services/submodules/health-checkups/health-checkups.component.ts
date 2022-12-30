@@ -372,6 +372,9 @@ export class HealthCheckupsComponent implements OnInit {
           this.detialsForHealthCheckup({
             element: this.billingService.HealthCheckupItems[0],
           });
+        }else{
+          //GAV-1492
+          this.billingService.changeBillTabStatus(false);
         }
       });
   }
