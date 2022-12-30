@@ -268,6 +268,21 @@ export class BillingPaymentMethodsComponent implements OnInit {
                     );
                   }
 
+                  if (
+                    this.cookie.get("MerchantPOSCode") &&
+                    this.cookie.get("MAXMachineName")
+                  ) {
+                    this.paymentForm[this.activeTab.key].controls[
+                      "posimei"
+                    ].setValue(this.cookie.get("MAXMachineName"));
+                  } else {
+                    if (this.POSIMEIList.length == 1) {
+                      this.paymentForm[this.activeTab.key].controls[
+                        "posimei"
+                      ].setValue(this.POSIMEIList[0].name);
+                    }
+                  }
+
                   this.paymentForm[this.activeTab.key].controls[
                     "posimei"
                   ].valueChanges
@@ -352,12 +367,6 @@ export class BillingPaymentMethodsComponent implements OnInit {
                         );
                       }
                     });
-
-                  if (this.POSIMEIList.length == 1) {
-                    this.paymentForm[this.activeTab.key].controls[
-                      "posimei"
-                    ].setValue(this.POSIMEIList[0].name);
-                  }
                 }
               });
           }

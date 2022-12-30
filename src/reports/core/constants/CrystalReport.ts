@@ -10,7 +10,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintOrganDonorForm?MAXID=${params.maxId}`;
   };
   export const PrintLabel = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintLabel?${params.maxId}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintLabel?MAXID=${params.maxId}`;
   };
   export const PrintFormReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintFormReport?MAXID=${params.maxId}`;
