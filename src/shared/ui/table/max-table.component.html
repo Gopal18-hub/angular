@@ -98,7 +98,9 @@
             >
               <ng-container *ngIf="displayColumnsInfo[col]?.type">
                 <ng-container
-                  [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
+                  [ngTemplateOutlet]="
+                    getTemplate(displayColumnsInfo[col], element, col)
+                  "
                   [ngTemplateOutletContext]="{
                     $implicit: {
                       output: element[col],
@@ -125,7 +127,9 @@
             >
               <ng-container
                 *ngIf="displayColumnsInfo[col].type"
-                [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
+                [ngTemplateOutlet]="
+                  getTemplate(displayColumnsInfo[col], element, col)
+                "
                 [ngTemplateOutletContext]="{
                   $implicit: {
                     output: element[col],
@@ -430,17 +434,17 @@
 </ng-template>
 <ng-template #currency let-data>
   <span class="currency-data">{{
-    data?.output | currency: "INR":undefined:undefined:"en-IN"
+    data?.output | currency : "INR" : undefined : undefined : "en-IN"
   }}</span>
 </ng-template>
 <ng-template #date let-data>
   <span *ngIf="data?.output">{{
-    data.output | date: data.config.dateformat
+    data.output | date : data.config.dateformat
   }}</span>
 </ng-template>
 <ng-template #datetime let-data>
   <span *ngIf="data?.output">{{
-    data.output | date: data.config.datetimeformat
+    data.output | date : data.config.datetimeformat
   }}</span>
 </ng-template>
 <ng-template #image let-data>
@@ -471,14 +475,48 @@
 </ng-template>
 
 <ng-template #input let-data>
-  <mat-form-field appearance="outline" floatLabel="never">
-    <input
-      matInput
-      type="text"
-      [(ngModel)]="data.element[data.col]"
-      [value]="data.element[data.col]"
-    />
-  </mat-form-field>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-input-control"
+        >
+          <input
+            matInput
+            type="text"
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            (change)="controlValueChange($event, data)"
+          />
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #inputPrice let-data>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-input-control"
+        >
+          <input
+            matInput
+            type="text"
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            class="text-right"
+            (change)="controlValueChange($event, data)"
+          />
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
 </ng-template>
 
 <ng-template #textarea let-data>
