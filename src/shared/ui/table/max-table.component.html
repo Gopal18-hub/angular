@@ -40,6 +40,7 @@
             "
           >
             <button
+              type="button"
               mat-icon-button
               aria-label="expand row"
               (click)="
@@ -159,7 +160,12 @@
             *matCellDef="let element; let i = dataIndex"
             class="pl-4"
           >
-            <button mat-icon-button color="accent" (click)="removeRow(i)">
+            <button
+              type="button"
+              mat-icon-button
+              color="accent"
+              (click)="removeRow(i)"
+            >
               <div class="remove-row-icon-wrapper">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -670,6 +676,7 @@
     color="primary"
     mat-raised-button
     (click)="btnClick(data)"
+    type="button"
   >
     {{ data.config.columnsInfo[data.col]?.title }}
   </button>
@@ -681,6 +688,7 @@
     color="primary"
     mat-raised-button
     (click)="btnClick(data)"
+    type="button"
   >
     {{ data.element[data.col] }}
   </button>
