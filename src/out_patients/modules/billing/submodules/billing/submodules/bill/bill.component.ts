@@ -1474,15 +1474,26 @@ export class BillComponent implements OnInit, OnDestroy {
       exist = exist == undefined ? false : exist;
     }
 
-    this.reportService.openWindow(
-      this.billNo + " - Billing Report",
-      "billingreport",
-      {
-        opbillid: this.billId,
-        locationID: this.cookie.get("HSPLocationId"),
-        enableexport: exist,
-      }
-    );
+    if(Number(this.cookie.get("HSPLocationId")) == 8 || Number(this.cookie.get("HSPLocationId")) == 20){
+       this.reportService.directPrint(      
+       "billingreport",
+       {
+         opbillid: this.billId,
+         locationID: this.cookie.get("HSPLocationId"),
+         enableexport: exist == true ? 1 : 0,
+       });
+    }else{
+      this.reportService.openWindow(
+        this.billNo + " - Billing Report",
+        "billingreport",
+        {
+          opbillid: this.billId,
+          locationID: this.cookie.get("HSPLocationId"),
+          enableexport: exist,
+        }
+      );
+    }
+  
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
