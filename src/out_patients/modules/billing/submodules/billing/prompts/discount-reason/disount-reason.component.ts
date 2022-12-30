@@ -439,9 +439,11 @@ export class DisountReasonComponent implements OnInit {
       this.reasontitle = "";
       if (val) {
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == val
+          (rl: any) => rl.mainhead == val.value
         );
-        const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
+        const existHead = this.mainHeadList.filter(
+          (rl: any) => rl.id == val.value && rl.name == val.name
+        );
         this.head = existHead[0].name;
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -929,7 +931,7 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data: any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: { value: a.id, name: a.name } };
         });
         this.discAmtFormConfig.columnsInfo.head.options =
           this.question[1].options;

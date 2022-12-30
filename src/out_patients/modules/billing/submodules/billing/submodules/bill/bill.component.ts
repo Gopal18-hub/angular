@@ -1549,9 +1549,18 @@ export class BillComponent implements OnInit, OnDestroy {
 
   depositdetails() {
     let resultData = this.calculateBillService.depositDetailsData;
+    this.totalDeposit = 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList = [];
     if (resultData) {
       resultData.forEach((element: any) => {
         if (element.isAdvanceTypeEnabled == false) {
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+            {
+              id: element.id,
+              amount: element.amount,
+              balanceamount: element.balanceamount,
+            }
+          );
           this.totalDeposit += element.balanceamount;
         }
       });
