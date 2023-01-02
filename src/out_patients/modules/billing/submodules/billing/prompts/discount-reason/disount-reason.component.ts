@@ -379,6 +379,11 @@ export class DisountReasonComponent implements OnInit {
         );
         let item =
           this.calculateBillService.discountSelectedItems[res.data.index];
+        if (existReason.valuebasedDisc == 1) {
+          item.discAmt_col_type = "input_price";
+        } else {
+          item.discAmt_col_type = "";
+        }
         const price = item.price;
         const discAmt = (price * existReason.discountPer) / 100;
         item.disc = existReason.discountPer;
@@ -387,7 +392,14 @@ export class DisountReasonComponent implements OnInit {
         item.reasonTitle = existReason.name;
         item.reason = existReason.id;
         item.head = existReason.mainhead;
+
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
+      } else if (res.data.col == "discAmt") {
+        let item =
+          this.calculateBillService.discountSelectedItems[res.data.index];
+        item.discAmt = parseFloat(item.discAmt);
+        item.disc = (parseFloat(item.discAmt) / item.price) * 100;
+        item.totalAmt = item.price - item.discAmt;
       }
     });
     this.discAmtForm.controls["reason"].valueChanges.subscribe((val: any) => {
@@ -427,9 +439,11 @@ export class DisountReasonComponent implements OnInit {
       this.reasontitle = "";
       if (val) {
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == val
+          (rl: any) => rl.mainhead == val.value
         );
-        const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
+        const existHead = this.mainHeadList.filter(
+          (rl: any) => rl.id == val.value && rl.name == val.name
+        );
         this.head = existHead[0].name;
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -583,6 +597,7 @@ export class DisountReasonComponent implements OnInit {
         value: "0",
         discTypeValue: "On-Campaign",
         reasonTitle: existReason.name,
+        discAmt_col_type: !this.question[4].readonly ? "input_price" : "",
       };
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
         this.discAmtFormConfig.columnsInfo.reason.options;
@@ -626,6 +641,7 @@ export class DisountReasonComponent implements OnInit {
         value: "0",
         discTypeValue: "On-Patient",
         reasonTitle: existReason.name,
+        discAmt_col_type: !this.question[4].readonly ? "input_price" : "",
       };
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[
         this.dualList.length
@@ -679,6 +695,7 @@ export class DisountReasonComponent implements OnInit {
         value: "0",
         discTypeValue: "On-Company",
         reasonTitle: existReason.name,
+        discAmt_col_type: !this.question[4].readonly ? "input_price" : "",
       };
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[
         this.dualList.length
@@ -741,6 +758,7 @@ export class DisountReasonComponent implements OnInit {
             value: "0",
             discTypeValue: "On-Item",
             reasonTitle: existReason.name,
+            discAmt_col_type: !this.question[4].readonly ? "input_price" : "",
           };
           this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
             this.discAmtFormConfig.columnsInfo.reason.options;
@@ -810,6 +828,7 @@ export class DisountReasonComponent implements OnInit {
           value: "0",
           discTypeValue: "On-Service",
           reasonTitle: existReason.name,
+          discAmt_col_type: !this.question[4].readonly ? "input_price" : "",
         };
         this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
           this.discAmtFormConfig.columnsInfo.reason.options;
@@ -885,6 +904,7 @@ export class DisountReasonComponent implements OnInit {
         value: "0",
         discTypeValue: "On-Bill",
         reasonTitle: existReason.name,
+        discAmt_col_type: !this.question[4].readonly ? "input_price" : "",
       };
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
         this.discAmtFormConfig.columnsInfo.reason.options;
@@ -911,7 +931,7 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data: any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: { value: a.id, name: a.name } };
         });
         this.discAmtFormConfig.columnsInfo.head.options =
           this.question[1].options;

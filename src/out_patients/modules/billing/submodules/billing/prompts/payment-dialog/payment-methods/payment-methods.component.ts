@@ -27,7 +27,7 @@ import { BillingService } from "../../../billing.service";
 import { MaxHealthStorage } from "@shared/services/storage";
 import { CookieService } from "@shared/services/cookie.service";
 import { PaytmRedirectionService } from "@core/services/paytm-redirection.service";
-
+import { ApiConstants } from "@shared/constants/ApiConstants";
 @Component({
   selector: "billing-payment-methods",
   templateUrl: "./payment-methods.component.html",
@@ -56,6 +56,10 @@ export class BillingPaymentMethodsComponent implements OnInit {
   activeTab: any;
 
   bankList: any = [];
+
+  POSIMEIList: any = [];
+  POSMachineDetal: any = {};
+
   totalamtFlag: boolean = false;
   constructor(
     private formService: QuestionControlService,
@@ -165,7 +169,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
                   (partialSum, a) => partialSum + a,
                   0
                 );
-                this.remainingAmount = parseFloat(this.totalAmount) - sum;
+                if (this.totalamtFlag) {
+                  this.remainingAmount = Number(
+                    Number(parseFloat(this.totalAmount) - sum).toFixed(2)
+                  );
+                } else {
+                  this.remainingAmount = parseFloat(this.totalAmount) - sum;
+                }
               }
               if (this.remainingAmount < 0) {
                 this.messageDialogService.warning(
@@ -186,7 +196,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
     this.today = new Date();
   }
 
-  tabChanged(event: MatTabChangeEvent) {
+  async tabChanged(event: MatTabChangeEvent) {
     this.activeTab = this.tabs[event.index];
     //PayTm Integration
     if (this.activeTab.key == "mobilepayment") {
@@ -235,10 +245,136 @@ export class BillingPaymentMethodsComponent implements OnInit {
             );
           }
         } else {
+          //GAV-1483 - pos selection on payment screen
           if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
-            this.paymentForm[this.activeTab.key].controls["posimei"].setValue(
-              MaxHealthStorage.getCookie("MAXMachineName")
-            );
+            let locationId = Number(this.cookie.get("HSPLocationId"));
+            let stationId = Number(this.cookie.get("StationId"));
+            this.http
+              .get(ApiConstants.getPOSMachineMaster(locationId, stationId))
+              .subscribe((res: any) => {
+                if (res && res.length > 0) {
+                  this.POSIMEIList = res;
+                  if (this.activeTab.key == "credit") {
+                    this.questions.credit[2].options = this.POSIMEIList.map(
+                      (l: any) => {
+                        return {
+                          title: l.merchantStorePosCode + "-" + l.name,
+                          value: l.name,
+                        };
+                      }
+                    );
+                  } else if (this.activeTab.key == "upi") {
+                    this.questions.upi[2].options = this.POSIMEIList.map(
+                      (l: any) => {
+                        return {
+                          title: l.merchantStorePosCode + "-" + l.name,
+                          value: l.name,
+                        };
+                      }
+                    );
+                  }
+
+                  if (
+                    this.cookie.get("MerchantPOSCode") &&
+                    this.cookie.get("MAXMachineName")
+                  ) {
+                    this.paymentForm[this.activeTab.key].controls[
+                      "posimei"
+                    ].setValue(this.cookie.get("MAXMachineName"));
+                  } else {
+                    if (this.POSIMEIList.length == 1) {
+                      this.paymentForm[this.activeTab.key].controls[
+                        "posimei"
+                      ].setValue(this.POSIMEIList[0].name);
+                    }
+                  }
+
+                  this.paymentForm[this.activeTab.key].controls[
+                    "posimei"
+                  ].valueChanges
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((value: any) => {
+                      if (value) {
+                        this.POSMachineDetal = this.POSIMEIList.filter(
+                          (s: any) => s.name === value
+                        )[0];
+
+                        this.cookie.delete("POSIMEI", "/");
+                        this.cookie.set(
+                          "POSIMEI",
+                          this.POSMachineDetal.hardwareID,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("MachineName", "/");
+                        this.cookie.set(
+                          "MachineName",
+                          this.POSMachineDetal.edcMachineName,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("MAXMachineName", "/");
+                        this.cookie.set(
+                          "MAXMachineName",
+                          this.POSMachineDetal.name,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("MAXMachineId", "/");
+                        this.cookie.set(
+                          "MAXMachineId",
+                          this.POSMachineDetal.id,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("MerchantId", "/");
+                        this.cookie.set(
+                          "MerchantId",
+                          this.POSMachineDetal.merchantID,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("MerchantPOSCode", "/");
+                        this.cookie.set(
+                          "MerchantPOSCode",
+                          this.POSMachineDetal.merchantStorePosCode,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("SecurityToken", "/");
+                        this.cookie.set(
+                          "SecurityToken",
+                          this.POSMachineDetal.securityToken,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("PineLabApiUrl", "/");
+                        this.cookie.set(
+                          "PineLabApiUrl",
+                          this.POSMachineDetal.apiUrlPineLab,
+                          {
+                            path: "/",
+                          }
+                        );
+                        this.cookie.delete("UPIAllowedPaymentMode", "/");
+                        this.cookie.set(
+                          "UPIAllowedPaymentMode",
+                          this.POSMachineDetal.upI_AllowedPaymentMode,
+                          {
+                            path: "/",
+                          }
+                        );
+                      }
+                    });
+                }
+              });
           }
           this.paymentForm[this.activeTab.key].controls["price"].setValue(
             this.remainingAmount
@@ -250,7 +386,76 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   PaymentMethodvalidation() {}
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
+      this.paymentForm[this.activeTab.key].controls["posimei"].valueChanges
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.POSMachineDetal = this.POSIMEIList.filter(
+              (s: any) => s.name === value
+            )[0];
+
+            this.cookie.delete("POSIMEI", "/");
+            this.cookie.set("POSIMEI", this.POSMachineDetal.hardwareID, {
+              path: "/",
+            });
+            this.cookie.delete("MachineName", "/");
+            this.cookie.set(
+              "MachineName",
+              this.POSMachineDetal.edcMachineName,
+              {
+                path: "/",
+              }
+            );
+            this.cookie.delete("MAXMachineName", "/");
+            this.cookie.set("MAXMachineName", this.POSMachineDetal.name, {
+              path: "/",
+            });
+            this.cookie.delete("MAXMachineId", "/");
+            this.cookie.set("MAXMachineId", this.POSMachineDetal.id, {
+              path: "/",
+            });
+            this.cookie.delete("MerchantId", "/");
+            this.cookie.set("MerchantId", this.POSMachineDetal.merchantID, {
+              path: "/",
+            });
+            this.cookie.delete("MerchantPOSCode", "/");
+            this.cookie.set(
+              "MerchantPOSCode",
+              this.POSMachineDetal.merchantStorePosCode,
+              {
+                path: "/",
+              }
+            );
+            this.cookie.delete("SecurityToken", "/");
+            this.cookie.set(
+              "SecurityToken",
+              this.POSMachineDetal.securityToken,
+              {
+                path: "/",
+              }
+            );
+            this.cookie.delete("PineLabApiUrl", "/");
+            this.cookie.set(
+              "PineLabApiUrl",
+              this.POSMachineDetal.apiUrlPineLab,
+              {
+                path: "/",
+              }
+            );
+            this.cookie.delete("UPIAllowedPaymentMode", "/");
+            this.cookie.set(
+              "UPIAllowedPaymentMode",
+              this.POSMachineDetal.upI_AllowedPaymentMode,
+              {
+                path: "/",
+              }
+            );
+          }
+        });
+    }
+  }
 
   clearTabForm(tab: any) {
     console.log(tab);

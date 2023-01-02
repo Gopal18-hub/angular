@@ -173,6 +173,9 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {

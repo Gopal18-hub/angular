@@ -281,7 +281,16 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    if (this.cookie.get("VistaLive") != "2") {
+    ///GAV-1501
+    let excludeClinicsLocations = false;
+    if (this.cookie.check("VistaLive") && this.cookie.get("VistaLive") != "2") {
+      excludeClinicsLocations = false;
+    } else if (this.excludeClinicsLocations.includes(this.locationId)) {
+      excludeClinicsLocations = true;
+    }
+    //GAV-1501
+    //if (this.cookie.get("VistaLive") != "2") {
+    if (!excludeClinicsLocations) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
         .subscribe((res: any) => {

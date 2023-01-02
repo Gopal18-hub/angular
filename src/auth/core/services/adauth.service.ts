@@ -26,7 +26,9 @@ export class ADAuthService {
 
   public updateActiveSessionToken(userId: number, token: string, locationid: number, stationid: number, moduleid: number) {
     return this.http.postExternal(
-      ApiConstants.updateActiveSessionToken(userId,token,locationid, stationid, moduleid), {})
+      ApiConstants.updateActiveSessionToken(), JSON.stringify({
+        userId,token,locationid, stationid, moduleid
+      }))
   }
 
   public authenticate(username: string, password: string) {

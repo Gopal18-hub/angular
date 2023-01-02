@@ -212,11 +212,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "string",
+          type: "dropdown",
           label: "POS IMEI",
           required: true,
-          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
-          readonly: true,
+          // defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),//GAV-1483
+          readonly: false,
         },
         transactionid: {
           type: "string",
@@ -627,11 +627,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "string",
+          type: "dropdown",
           label: "POS IMEI",
           required: true,
-          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
-          readonly: true,
+          //defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),//GAV-1483
+          readonly: false,
         },
         ccNumber_UPI: {
           type: "number",
@@ -782,30 +782,30 @@ export namespace PaymentMethods {
   };
 
   export const modeofpaymentHiddenValue = {
-    type: 'object',
-    title: '',
+    type: "object",
+    title: "",
     properties: {
       cash: {
-        value: 'Cash'
+        value: "Cash",
       },
       cheque: {
-        value: 'Cheque'
+        value: "Cheque",
       },
       credit: {
-        value: 'Credit Card'
+        value: "Credit Card",
       },
       demand: {
-        value: 'Demand Draft'
+        value: "Demand Draft",
       },
       mobilepayment: {
-        value: 'Cash Payment by Mobile'
+        value: "Cash Payment by Mobile",
       },
       onlinepayment: {
-        value: 'Online Payment'
+        value: "Online Payment",
       },
       upi: {
-        value: 'UPI'
-      }
+        value: "UPI",
+      },
     },
-  }
+  };
 }
