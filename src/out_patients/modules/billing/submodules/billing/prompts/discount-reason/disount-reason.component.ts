@@ -399,6 +399,7 @@ export class DisountReasonComponent implements OnInit {
           this.calculateBillService.discountSelectedItems[res.data.index];
         item.discAmt = parseFloat(item.discAmt);
         item.disc = (parseFloat(item.discAmt) / item.price) * 100;
+        item.totalAmt = item.price - item.discAmt;
       }
     });
     this.discAmtForm.controls["reason"].valueChanges.subscribe((val: any) => {
@@ -438,9 +439,11 @@ export class DisountReasonComponent implements OnInit {
       this.reasontitle = "";
       if (val) {
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == val
+          (rl: any) => rl.mainhead == val.value
         );
-        const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
+        const existHead = this.mainHeadList.filter(
+          (rl: any) => rl.id == val.value && rl.name == val.name
+        );
         this.head = existHead[0].name;
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -589,7 +592,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Campaign",
@@ -633,7 +636,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Patient",
@@ -687,7 +690,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Company",
@@ -750,7 +753,7 @@ export class DisountReasonComponent implements OnInit {
             disc: existReason.discountPer,
             discAmt: discAmt,
             totalAmt: price - discAmt,
-            head: this.discAmtForm.value.head,
+            head: this.discAmtForm.value.head.value,
             reason: this.discAmtForm.value.reason,
             value: "0",
             discTypeValue: "On-Item",
@@ -820,7 +823,7 @@ export class DisountReasonComponent implements OnInit {
           disc: existReason.discountPer,
           discAmt: discAmt,
           totalAmt: price - discAmt,
-          head: this.discAmtForm.value.head,
+          head: this.discAmtForm.value.head.value,
           reason: this.discAmtForm.value.reason,
           value: "0",
           discTypeValue: "On-Service",
@@ -896,7 +899,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Bill",
@@ -928,10 +931,13 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data: any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: { value: a.id, name: a.name } };
         });
-        this.discAmtFormConfig.columnsInfo.head.options =
-          this.question[1].options;
+        this.discAmtFormConfig.columnsInfo.head.options = this.mainHeadList.map(
+          (a) => {
+            return { title: a.name, value: a.id };
+          }
+        );
       });
   }
 
