@@ -332,28 +332,30 @@ export class LoginComponent implements OnInit, AfterViewInit {
             console.log(data);
             if (data.userData.user) {
               let userObj = data.userData.user;
-              // if (userObj.isAlreadyLoggedIn != undefined && userObj.isAlreadyLoggedIn) {
-              //   const dialogRef = this.messageDialogService.confirm(
-              //     "",
-              //     "You have logged in another session. Do you want to delete other active session?"
-              //   );
-              //   dialogRef.afterClosed().subscribe((res) => {
-              //     console.log('res', res);
-              //     if (res.type == "yes") {
-              //       this.adauth
-              //         .ClearExistingLogin(this.userId)
-              //         .pipe(takeUntil(this._destroying$))
-              //         .subscribe(async (resdata: any) => {
-              //           await this.validUser(data);
-              //         });
-              //     } else {
-              //       this.loginForm.reset();
-              //     }
-              //   });
-              // }
-              // else{
-              await this.validUser(data);
-              // }
+              if (
+                userObj.isAlreadyLoggedIn != undefined &&
+                userObj.isAlreadyLoggedIn
+              ) {
+                const dialogRef = this.messageDialogService.confirm(
+                  "",
+                  "You have logged in another session. Do you want to delete other active session?"
+                );
+                dialogRef.afterClosed().subscribe((res) => {
+                  console.log("res", res);
+                  if (res.type == "yes") {
+                    this.adauth
+                      .ClearExistingLogin(this.userId)
+                      .pipe(takeUntil(this._destroying$))
+                      .subscribe(async (resdata: any) => {
+                        await this.validUser(data);
+                      });
+                  } else {
+                    this.loginForm.reset();
+                  }
+                });
+              } else {
+                await this.validUser(data);
+              }
             }
           },
           (error) => {

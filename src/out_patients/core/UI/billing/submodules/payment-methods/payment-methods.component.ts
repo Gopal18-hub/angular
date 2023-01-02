@@ -21,6 +21,7 @@ import { getcreditcard } from '../../../../../core/types/billdetails/getcreditca
 import { CookieService } from '@shared/services/cookie.service';
 import { HttpService } from '@shared/services/http.service';
 import { PaymentService } from "@core/services/payment.service";
+import { ApiConstants } from "@shared/constants/ApiConstants";
 
 @Component({
   selector: "payment-methods",
@@ -34,6 +35,8 @@ export class PaymentMethodsComponent implements OnInit {
 
   bankname: getBankName[] = [];
   creditcard: getcreditcard[] = [];
+  POSIMEIList: any = [];
+  POSMachineDetal: any = {};
 
   refundFormData = BillingForm.refundFormData;
   refundform!: FormGroup;
@@ -86,6 +89,145 @@ export class PaymentMethodsComponent implements OnInit {
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = event.tab.textLabel;
     this.clearpaymentmethod();
+    if(this.activeTab == "Credit / Debit Card" || this.activeTab == "UPI"){
+      let locationId = Number(this.cookie.get("HSPLocationId"));
+      let stationId = Number(this.cookie.get("StationId"));
+      this.http
+      .get(ApiConstants.getPOSMachineMaster(locationId, stationId))
+      .subscribe((res: any) => {
+        if (res && res.length > 0) {
+          this.POSIMEIList = res;
+          if (this.activeTab == "Credit / Debit Card") {
+            this.questions[60].options = this.POSIMEIList.map(
+              (l: any) => {
+                return {
+                  title: l.merchantStorePosCode + "-" + l.name,
+                  value: l.name,
+                };
+              }
+            );
+          } else if (this.activeTab == "UPI") {
+            this.questions[67].options = this.POSIMEIList.map(
+              (l: any) => {
+                return {
+                  title: l.merchantStorePosCode + "-" + l.name,
+                  value: l.name,
+                };
+              }
+            );
+          }
+
+          if (this.activeTab == "Credit / Debit Card") {
+            this.refundform.controls["posimei"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value:any) => {
+              if(value){
+                   this.POSMachineDetal = this.POSIMEIList.filter(
+                  (s: any) => s.name === value
+                )[0];
+                this.setPOSMachinevaluesinCookie(this.POSMachineDetal);
+              }
+            });
+          } else if (this.activeTab == "UPI") {
+            this.refundform.controls["upiposimei"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value:any) => {
+              if(value){
+                   this.POSMachineDetal = this.POSIMEIList.filter(
+                  (s: any) => s.name === value
+                )[0];
+                this.setPOSMachinevaluesinCookie(this.POSMachineDetal);
+              }
+            });
+          }
+             
+          if (this.POSIMEIList.length == 1) {
+            if (this.activeTab == "Credit / Debit Card") {
+              this.refundform.controls["posimei"].setValue(this.POSIMEIList[0].name);
+            } else if (this.activeTab == "UPI") {
+              this.refundform.controls["upiposimei"].setValue(this.POSIMEIList[0].name);
+            }        
+          }
+        }
+      });
+    }
+  }
+
+  setPOSMachinevaluesinCookie(POSMachineDetail:any){
+    if(POSMachineDetail){
+      this.cookie.delete("POSIMEI", "/");
+      this.cookie.set(
+       "POSIMEI",
+       POSMachineDetail.hardwareID,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MachineName", "/");
+     this.cookie.set(
+       "MachineName",
+       POSMachineDetail.edcMachineName,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MAXMachineName", "/");
+     this.cookie.set(
+       "MAXMachineName",
+       POSMachineDetail.name,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MAXMachineId", "/");
+     this.cookie.set(
+       "MAXMachineId",
+       POSMachineDetail.id,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MerchantId", "/");
+     this.cookie.set(
+       "MerchantId",
+       POSMachineDetail.merchantID,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MerchantPOSCode", "/");
+     this.cookie.set(
+       "MerchantPOSCode",
+       POSMachineDetail.merchantStorePosCode,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("SecurityToken", "/");
+     this.cookie.set(
+       "SecurityToken",
+       POSMachineDetail.securityToken,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("PineLabApiUrl", "/");
+     this.cookie.set(
+       "PineLabApiUrl",
+       POSMachineDetail.apiUrlPineLab,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("UPIAllowedPaymentMode", "/");
+     this.cookie.set(
+       "UPIAllowedPaymentMode",
+       POSMachineDetail.upI_AllowedPaymentMode,
+       {
+         path: "/",
+       }
+     );
+}  
   }
 
   negativePriceValidation()
@@ -177,7 +319,27 @@ export class PaymentMethodsComponent implements OnInit {
               this.messageDialogService.error("Invalid Mobile No.");             
           }
         }
-      });
+   });
+
+   this.refundform.controls["posimei"].valueChanges          
+          .subscribe((value: any) => {
+            if (value) {
+              this.POSMachineDetal = this.POSIMEIList.filter(
+                (s: any) => s.name === value
+              )[0];
+              this.setPOSMachinevaluesinCookie(this.POSMachineDetal);              
+            }
+    });  
+
+  this.refundform.controls["upiposimei"].valueChanges         
+          .subscribe((value: any) => {
+            if (value) {
+              this.POSMachineDetal = this.POSIMEIList.filter(
+                (s: any) => s.name === value
+              )[0];
+              this.setPOSMachinevaluesinCookie(this.POSMachineDetal);              
+            }
+   });      
   }
 
   clearpaymentmethod() {

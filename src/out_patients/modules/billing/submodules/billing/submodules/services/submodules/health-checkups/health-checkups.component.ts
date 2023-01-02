@@ -163,21 +163,33 @@ export class HealthCheckupsComponent implements OnInit {
         this.billingService.doctorList = res1.doctorList;
         ////GAV-882
         this.billingService.changeBillTabStatus(false);
-        this.billingService.setHCUDetails(res1.itemId, this.billingService.doctorList);
+        this.billingService.setHCUDetails(
+          res1.itemId,
+          this.billingService.doctorList
+        );
       } else {
         // this.doctorsList = this.doctorsList.map((d: number) => d * 0);
         ////GAV-882
-          if (Object.keys(this.billingService.healthCheckupselectedItems).length > 0) {
-           this.billingService.changeBillTabStatus(false);
-         }
-         else{
-          this.billingService.changeBillTabStatus(true);
-         }
+        if (
+          Object.keys(this.billingService.healthCheckupselectedItems).length > 0
+        ) {
+          this.billingService.changeBillTabStatus(false);
+        } else {
+          //GAV-1492
+          if (Object.keys(this.billingService.doctorList).length > 0) {
+            this.billingService.changeBillTabStatus(true);
+          }else{
+            this.billingService.changeBillTabStatus(false);
+          }
+        }
       }
     });
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -345,7 +357,7 @@ export class HealthCheckupsComponent implements OnInit {
 
   getDoctorsList(hid: string, serviceid: string) {
     this.doctorsList = [];
-    this.billingService.doctorList=[];
+    this.billingService.doctorList = [];
     this.http
       .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
       .subscribe((res) => {
@@ -360,6 +372,9 @@ export class HealthCheckupsComponent implements OnInit {
           this.detialsForHealthCheckup({
             element: this.billingService.HealthCheckupItems[0],
           });
+        }else{
+          //GAV-1492
+          this.billingService.changeBillTabStatus(false);
         }
       });
   }
