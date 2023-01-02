@@ -169,7 +169,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
                   (partialSum, a) => partialSum + a,
                   0
                 );
-                this.remainingAmount = parseFloat(this.totalAmount) - sum;
+                if (this.totalamtFlag) {
+                  this.remainingAmount = Number(
+                    Number(parseFloat(this.totalAmount) - sum).toFixed(2)
+                  );
+                } else {
+                  this.remainingAmount = parseFloat(this.totalAmount) - sum;
+                }
               }
               if (this.remainingAmount < 0) {
                 this.messageDialogService.warning(
@@ -268,6 +274,21 @@ export class BillingPaymentMethodsComponent implements OnInit {
                     );
                   }
 
+                  if (
+                    this.cookie.get("MerchantPOSCode") &&
+                    this.cookie.get("MAXMachineName")
+                  ) {
+                    this.paymentForm[this.activeTab.key].controls[
+                      "posimei"
+                    ].setValue(this.cookie.get("MAXMachineName"));
+                  } else {
+                    if (this.POSIMEIList.length == 1) {
+                      this.paymentForm[this.activeTab.key].controls[
+                        "posimei"
+                      ].setValue(this.POSIMEIList[0].name);
+                    }
+                  }
+
                   this.paymentForm[this.activeTab.key].controls[
                     "posimei"
                   ].valueChanges
@@ -352,12 +373,6 @@ export class BillingPaymentMethodsComponent implements OnInit {
                         );
                       }
                     });
-
-                  if (this.POSIMEIList.length == 1) {
-                    this.paymentForm[this.activeTab.key].controls[
-                      "posimei"
-                    ].setValue(this.POSIMEIList[0].name);
-                  }
                 }
               });
           }
