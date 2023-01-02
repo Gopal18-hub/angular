@@ -592,7 +592,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Campaign",
@@ -636,7 +636,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Patient",
@@ -690,7 +690,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Company",
@@ -753,7 +753,7 @@ export class DisountReasonComponent implements OnInit {
             disc: existReason.discountPer,
             discAmt: discAmt,
             totalAmt: price - discAmt,
-            head: this.discAmtForm.value.head,
+            head: this.discAmtForm.value.head.value,
             reason: this.discAmtForm.value.reason,
             value: "0",
             discTypeValue: "On-Item",
@@ -823,7 +823,7 @@ export class DisountReasonComponent implements OnInit {
           disc: existReason.discountPer,
           discAmt: discAmt,
           totalAmt: price - discAmt,
-          head: this.discAmtForm.value.head,
+          head: this.discAmtForm.value.head.value,
           reason: this.discAmtForm.value.reason,
           value: "0",
           discTypeValue: "On-Service",
@@ -899,7 +899,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head,
+        head: this.discAmtForm.value.head.value,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Bill",
@@ -933,8 +933,11 @@ export class DisountReasonComponent implements OnInit {
         this.question[1].options = this.mainHeadList.map((a) => {
           return { title: a.name, value: { value: a.id, name: a.name } };
         });
-        this.discAmtFormConfig.columnsInfo.head.options =
-          this.question[1].options;
+        this.discAmtFormConfig.columnsInfo.head.options = this.mainHeadList.map(
+          (a) => {
+            return { title: a.name, value: a.id };
+          }
+        );
       });
   }
 
