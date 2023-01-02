@@ -1473,16 +1473,17 @@ export class BillComponent implements OnInit, OnDestroy {
       exist = accessControls[2][7][534][1436];
       exist = exist == undefined ? false : exist;
     }
-//direct print for ppg and vaishali
-    if(Number(this.cookie.get("HSPLocationId")) == 8 || Number(this.cookie.get("HSPLocationId")) == 20){
-       this.reportService.directPrint(      
-       "billingreport",
-       {
-         opbillid: this.billId,
-         locationID: this.cookie.get("HSPLocationId"),
-         enableexport: exist == true ? 1 : 0,
-       });
-    }else{
+    //direct print for ppg and vaishali
+    if (
+      Number(this.cookie.get("HSPLocationId")) == 8 ||
+      Number(this.cookie.get("HSPLocationId")) == 20
+    ) {
+      this.reportService.directPrint("billingreport", {
+        opbillid: this.billId,
+        locationID: this.cookie.get("HSPLocationId"),
+        enableexport: exist == true ? 1 : 0,
+      });
+    } else {
       this.reportService.openWindow(
         this.billNo + " - Billing Report",
         "billingreport",
@@ -1493,7 +1494,6 @@ export class BillComponent implements OnInit, OnDestroy {
         }
       );
     }
-  
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1581,7 +1581,9 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
-        this.formGroup.controls["dipositAmtcheck"].setValue(true);
+        this.formGroup.controls["dipositAmtcheck"].setValue(true, {
+          emitEvent: false,
+        });
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
         this.question[20].readonly = false;
         this.formGroup.controls["dipositAmtEdit"].enable();
