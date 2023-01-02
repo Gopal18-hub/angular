@@ -1836,7 +1836,7 @@ export class BillComponent implements OnInit, OnDestroy {
     if (credLimitWarning) {
       if (credLimitWarning.type == "yes") {
         this.question[14].elementRef.focus();
-        this.formGroup.controls["credLimit"].setValue("0.00");
+        this.formGroup.controls["credLimit"].setValue("");
         return false;
       } else {
         this.formGroup.controls["paymentMode"].setValue(1);
