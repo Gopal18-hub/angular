@@ -34,6 +34,12 @@ export namespace MaxHealthStorage {
     }
   }
 
+  export function deleteSession(key: string) {
+    if (sessionStorage) {
+      sessionStorage.removeItem(key);
+      storageSessionSub.next(key);
+    }
+  }
   export function get(key: string): any {
     if (localStorage) {
       let exist = localStorage.getItem(key);
