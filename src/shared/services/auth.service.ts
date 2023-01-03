@@ -88,16 +88,21 @@ export class AuthService {
     }
   }
 
+  public deleteToken() {
+    return MaxHealthStorage.deleteSession("accessToken");
+  }
   public getToken() {
-    return this.cookieService.get("accessToken");
+    // return this.cookieService.get("accessToken");
+    return MaxHealthStorage.getSession("accessToken");
   }
 
   public setToken(token: string): void {
-    this.cookieService.set("accessToken", token, {
-      path: "/",
-      domain: environment.cookieUrl,
-      secure: true,
-    });
+    // this.cookieService.set("accessToken", token, {
+    //   path: "/",
+    //   domain: environment.cookieUrl,
+    //   secure: true,
+    // });
+    MaxHealthStorage.setSession("accessToken", token);
   }
 
   public logout(): any {
@@ -160,10 +165,12 @@ export class AuthService {
     }
 
     if (accessToken != "" && accessToken != null && accessToken != undefined) {
-      if (accessToken != this.cookieService.get("accessToken")) {
-        this.cookieService.delete("accessToken", "/");
-        this.cookieService.set("accessToken", accessToken, { path: "/" });
-      }
+      // if (accessToken != this.cookieService.get("accessToken")) {
+      //   this.cookieService.delete("accessToken", "/");
+      //   this.cookieService.set("accessToken", accessToken, { path: "/" });
+      // }
+      this.deleteToken();
+      this.setToken(accessToken);
     }
   }
 }
@@ -192,7 +199,7 @@ export function getClientSettings(): UserManagerSettings {
     silent_redirect_uri:
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,
-    userStore: new WebStorageStateStore({ store: window.localStorage }),
+    userStore: new WebStorageStateStore({ store: window.sessionStorage }),
     extraQueryParams: { new: 1 },
     monitorSession: true,
   };
