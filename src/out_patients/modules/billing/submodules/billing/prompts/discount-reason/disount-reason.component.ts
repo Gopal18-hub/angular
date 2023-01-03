@@ -366,7 +366,7 @@ export class DisountReasonComponent implements OnInit {
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "head") {
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == res.$event.value
+          (rl: any) => rl.mainhead == res.$event.value.id
         );
         let options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -439,10 +439,10 @@ export class DisountReasonComponent implements OnInit {
       this.reasontitle = "";
       if (val) {
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == val
+          (rl: any) => rl.mainhead == val.id
         );
-        const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
-        this.head = existHead[0].name;
+        //const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
+        this.head = val.name;
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
         });
@@ -929,7 +929,7 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data: any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: a };
         });
         this.discAmtFormConfig.columnsInfo.head.options =
           this.question[1].options;
@@ -958,7 +958,7 @@ export class DisountReasonComponent implements OnInit {
                 this.question[2].options;
             } else {
               const filterData = this.discReasonList.filter(
-                (rl: any) => rl.mainhead == item.head
+                (rl: any) => rl.mainhead == item.head.id
               );
               let options = filterData.map((a) => {
                 return {
