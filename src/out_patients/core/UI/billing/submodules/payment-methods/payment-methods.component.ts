@@ -244,6 +244,7 @@ export class PaymentMethodsComponent implements OnInit {
       }
     });
   }
+
   PaymentMethodvalidation() {
     this.PaymentMethodcashdeposit = this.refundform.value;
     this.depositamount = 0;
@@ -339,7 +340,58 @@ export class PaymentMethodsComponent implements OnInit {
               )[0];
               this.setPOSMachinevaluesinCookie(this.POSMachineDetal);              
             }
-   });      
+   });
+   
+   //gav -1498
+   this.questions[0].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+
+  this.questions[5].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[11].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[19].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  ); 
+   this.questions[44].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[51].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
   }
 
   clearpaymentmethod() {
