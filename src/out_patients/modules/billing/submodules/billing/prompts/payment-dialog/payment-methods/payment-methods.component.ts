@@ -245,215 +245,204 @@ export class BillingPaymentMethodsComponent implements OnInit {
             );
           }
         } else {
-          //GAV-1483 - pos selection on payment screen
-          if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
-            let locationId = Number(this.cookie.get("HSPLocationId"));
-            let stationId = Number(this.cookie.get("StationId"));
-            this.http
-              .get(ApiConstants.getPOSMachineMaster(locationId, stationId))
-              .subscribe((res: any) => {
-                if (res && res.length > 0) {
-                  this.POSIMEIList = res;
-                  if (this.activeTab.key == "credit") {
-                    this.questions.credit[2].options = this.POSIMEIList.map(
-                      (l: any) => {
-                        return {
-                          title: l.merchantStorePosCode + "-" + l.name,
-                          value: l.name,
-                        };
-                      }
-                    );
-                  } else if (this.activeTab.key == "upi") {
-                    this.questions.upi[2].options = this.POSIMEIList.map(
-                      (l: any) => {
-                        return {
-                          title: l.merchantStorePosCode + "-" + l.name,
-                          value: l.name,
-                        };
-                      }
-                    );
-                  }
-
-                  if (
-                    this.cookie.get("MerchantPOSCode") &&
-                    this.cookie.get("MAXMachineName")
-                  ) {
-                    this.paymentForm[this.activeTab.key].controls[
-                      "posimei"
-                    ].setValue(this.cookie.get("MAXMachineName"));
-                  } else {
-                    if (this.POSIMEIList.length == 1) {
-                      this.paymentForm[this.activeTab.key].controls[
-                        "posimei"
-                      ].setValue(this.POSIMEIList[0].name);
-                    }
-                  }
-
-                  this.paymentForm[this.activeTab.key].controls[
-                    "posimei"
-                  ].valueChanges
-                    .pipe(takeUntil(this._destroying$))
-                    .subscribe((value: any) => {
-                      if (value) {
-                        this.POSMachineDetal = this.POSIMEIList.filter(
-                          (s: any) => s.name === value
-                        )[0];
-
-                        this.cookie.delete("POSIMEI", "/");
-                        this.cookie.set(
-                          "POSIMEI",
-                          this.POSMachineDetal.hardwareID,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("MachineName", "/");
-                        this.cookie.set(
-                          "MachineName",
-                          this.POSMachineDetal.edcMachineName,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("MAXMachineName", "/");
-                        this.cookie.set(
-                          "MAXMachineName",
-                          this.POSMachineDetal.name,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("MAXMachineId", "/");
-                        this.cookie.set(
-                          "MAXMachineId",
-                          this.POSMachineDetal.id,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("MerchantId", "/");
-                        this.cookie.set(
-                          "MerchantId",
-                          this.POSMachineDetal.merchantID,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("MerchantPOSCode", "/");
-                        this.cookie.set(
-                          "MerchantPOSCode",
-                          this.POSMachineDetal.merchantStorePosCode,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("SecurityToken", "/");
-                        this.cookie.set(
-                          "SecurityToken",
-                          this.POSMachineDetal.securityToken,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("PineLabApiUrl", "/");
-                        this.cookie.set(
-                          "PineLabApiUrl",
-                          this.POSMachineDetal.apiUrlPineLab,
-                          {
-                            path: "/",
-                          }
-                        );
-                        this.cookie.delete("UPIAllowedPaymentMode", "/");
-                        this.cookie.set(
-                          "UPIAllowedPaymentMode",
-                          this.POSMachineDetal.upI_AllowedPaymentMode,
-                          {
-                            path: "/",
-                          }
-                        );
-                      }
-                    });
-                }
-              });
-          }
           this.paymentForm[this.activeTab.key].controls["price"].setValue(
             this.remainingAmount
           );
         }
       }
     }
+
+    //GAV-1483 - pos selection on payment screen
+    if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
+      let locationId = Number(this.cookie.get("HSPLocationId"));
+      let stationId = Number(this.cookie.get("StationId"));
+      this.http
+        .get(ApiConstants.getPOSMachineMaster(locationId, stationId))
+        .subscribe((res: any) => {
+          if (res && res.length > 0) {
+            this.POSIMEIList = res;
+            if (this.activeTab.key == "credit") {
+              this.questions.credit[2].options = this.POSIMEIList.map(
+                (l: any) => {
+                  return {
+                    title: l.merchantStorePosCode + "-" + l.name,
+                    value: l.name,
+                  };
+                }
+              );
+            } else if (this.activeTab.key == "upi") {
+              this.questions.upi[2].options = this.POSIMEIList.map((l: any) => {
+                return {
+                  title: l.merchantStorePosCode + "-" + l.name,
+                  value: l.name,
+                };
+              });
+            }
+
+            if (
+              this.cookie.get("MerchantPOSCode") &&
+              this.cookie.get("MAXMachineName")
+            ) {
+              this.paymentForm[this.activeTab.key].controls["posimei"].setValue(
+                this.cookie.get("MAXMachineName")
+              );
+            } else {
+              if (this.POSIMEIList.length == 1) {
+                this.paymentForm[this.activeTab.key].controls[
+                  "posimei"
+                ].setValue(this.POSIMEIList[0].name);
+              }
+            }
+
+            this.paymentForm[this.activeTab.key].controls[
+              "posimei"
+            ].valueChanges
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((value: any) => {
+                if (value) {
+                  this.POSMachineDetal = this.POSIMEIList.filter(
+                    (s: any) => s.name === value
+                  )[0];
+
+                  this.cookie.delete("POSIMEI", "/");
+                  this.cookie.set("POSIMEI", this.POSMachineDetal.hardwareID, {
+                    path: "/",
+                  });
+                  this.cookie.delete("MachineName", "/");
+                  this.cookie.set(
+                    "MachineName",
+                    this.POSMachineDetal.edcMachineName,
+                    {
+                      path: "/",
+                    }
+                  );
+                  this.cookie.delete("MAXMachineName", "/");
+                  this.cookie.set("MAXMachineName", this.POSMachineDetal.name, {
+                    path: "/",
+                  });
+                  this.cookie.delete("MAXMachineId", "/");
+                  this.cookie.set("MAXMachineId", this.POSMachineDetal.id, {
+                    path: "/",
+                  });
+                  this.cookie.delete("MerchantId", "/");
+                  this.cookie.set(
+                    "MerchantId",
+                    this.POSMachineDetal.merchantID,
+                    {
+                      path: "/",
+                    }
+                  );
+                  this.cookie.delete("MerchantPOSCode", "/");
+                  this.cookie.set(
+                    "MerchantPOSCode",
+                    this.POSMachineDetal.merchantStorePosCode,
+                    {
+                      path: "/",
+                    }
+                  );
+                  this.cookie.delete("SecurityToken", "/");
+                  this.cookie.set(
+                    "SecurityToken",
+                    this.POSMachineDetal.securityToken,
+                    {
+                      path: "/",
+                    }
+                  );
+                  this.cookie.delete("PineLabApiUrl", "/");
+                  this.cookie.set(
+                    "PineLabApiUrl",
+                    this.POSMachineDetal.apiUrlPineLab,
+                    {
+                      path: "/",
+                    }
+                  );
+                  this.cookie.delete("UPIAllowedPaymentMode", "/");
+                  this.cookie.set(
+                    "UPIAllowedPaymentMode",
+                    this.POSMachineDetal.upI_AllowedPaymentMode,
+                    {
+                      path: "/",
+                    }
+                  );
+                }
+              });
+          }
+        });
+    }
   }
 
   PaymentMethodvalidation() {}
 
   ngAfterViewInit(): void {
-    if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
-      this.paymentForm[this.activeTab.key].controls["posimei"].valueChanges
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((value: any) => {
-          if (value) {
-            this.POSMachineDetal = this.POSIMEIList.filter(
-              (s: any) => s.name === value
-            )[0];
+    if (this.activeTab) {
+      if (this.activeTab.key == "credit" || this.activeTab.key == "upi") {
+        this.paymentForm[this.activeTab.key].controls["posimei"].valueChanges
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((value: any) => {
+            if (value) {
+              this.POSMachineDetal = this.POSIMEIList.filter(
+                (s: any) => s.name === value
+              )[0];
 
-            this.cookie.delete("POSIMEI", "/");
-            this.cookie.set("POSIMEI", this.POSMachineDetal.hardwareID, {
-              path: "/",
-            });
-            this.cookie.delete("MachineName", "/");
-            this.cookie.set(
-              "MachineName",
-              this.POSMachineDetal.edcMachineName,
-              {
+              this.cookie.delete("POSIMEI", "/");
+              this.cookie.set("POSIMEI", this.POSMachineDetal.hardwareID, {
                 path: "/",
-              }
-            );
-            this.cookie.delete("MAXMachineName", "/");
-            this.cookie.set("MAXMachineName", this.POSMachineDetal.name, {
-              path: "/",
-            });
-            this.cookie.delete("MAXMachineId", "/");
-            this.cookie.set("MAXMachineId", this.POSMachineDetal.id, {
-              path: "/",
-            });
-            this.cookie.delete("MerchantId", "/");
-            this.cookie.set("MerchantId", this.POSMachineDetal.merchantID, {
-              path: "/",
-            });
-            this.cookie.delete("MerchantPOSCode", "/");
-            this.cookie.set(
-              "MerchantPOSCode",
-              this.POSMachineDetal.merchantStorePosCode,
-              {
+              });
+              this.cookie.delete("MachineName", "/");
+              this.cookie.set(
+                "MachineName",
+                this.POSMachineDetal.edcMachineName,
+                {
+                  path: "/",
+                }
+              );
+              this.cookie.delete("MAXMachineName", "/");
+              this.cookie.set("MAXMachineName", this.POSMachineDetal.name, {
                 path: "/",
-              }
-            );
-            this.cookie.delete("SecurityToken", "/");
-            this.cookie.set(
-              "SecurityToken",
-              this.POSMachineDetal.securityToken,
-              {
+              });
+              this.cookie.delete("MAXMachineId", "/");
+              this.cookie.set("MAXMachineId", this.POSMachineDetal.id, {
                 path: "/",
-              }
-            );
-            this.cookie.delete("PineLabApiUrl", "/");
-            this.cookie.set(
-              "PineLabApiUrl",
-              this.POSMachineDetal.apiUrlPineLab,
-              {
+              });
+              this.cookie.delete("MerchantId", "/");
+              this.cookie.set("MerchantId", this.POSMachineDetal.merchantID, {
                 path: "/",
-              }
-            );
-            this.cookie.delete("UPIAllowedPaymentMode", "/");
-            this.cookie.set(
-              "UPIAllowedPaymentMode",
-              this.POSMachineDetal.upI_AllowedPaymentMode,
-              {
-                path: "/",
-              }
-            );
-          }
-        });
+              });
+              this.cookie.delete("MerchantPOSCode", "/");
+              this.cookie.set(
+                "MerchantPOSCode",
+                this.POSMachineDetal.merchantStorePosCode,
+                {
+                  path: "/",
+                }
+              );
+              this.cookie.delete("SecurityToken", "/");
+              this.cookie.set(
+                "SecurityToken",
+                this.POSMachineDetal.securityToken,
+                {
+                  path: "/",
+                }
+              );
+              this.cookie.delete("PineLabApiUrl", "/");
+              this.cookie.set(
+                "PineLabApiUrl",
+                this.POSMachineDetal.apiUrlPineLab,
+                {
+                  path: "/",
+                }
+              );
+              this.cookie.delete("UPIAllowedPaymentMode", "/");
+              this.cookie.set(
+                "UPIAllowedPaymentMode",
+                this.POSMachineDetal.upI_AllowedPaymentMode,
+                {
+                  path: "/",
+                }
+              );
+            }
+          });
+      }
     }
   }
 
