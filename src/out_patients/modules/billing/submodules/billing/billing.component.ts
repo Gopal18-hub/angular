@@ -394,6 +394,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res.length == 0) {
+          this.messageDialogService.error("Invalid Mobile No.");
+          this.apiProcessing = false;
+          this.patient = false;
+          return;
         } else {
           if (res.length == 1) {
             const maxID = res[0].maxid;

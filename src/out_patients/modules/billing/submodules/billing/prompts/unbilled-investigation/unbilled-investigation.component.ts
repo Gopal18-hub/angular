@@ -9,6 +9,9 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 })
 export class UnbilledInvestigationComponent implements OnInit {
   @ViewChild("table") tableRows: any;
+  testNameAlertExist:boolean=true;
+  duplicateItemArray:any=[];
+  testNameErrorRef:any;
   data: any = [];
   config: any = {
     clickedRows: false,
@@ -60,25 +63,48 @@ export class UnbilledInvestigationComponent implements OnInit {
 
   ngAfterViewInit() {
     this.tableRows.selection.changed.subscribe((res: any) => {
-      this.checkDuplicate();
+     this.checkDuplicate();  
     });
   }
 
   checkDuplicate() {
     let temp: any = [];
     let existProcess = false;
+    let selectedTestName:any
     for (let i = 0; i < this.tableRows.selection.selected.length; i++) {
       if (temp.includes(this.tableRows.selection.selected[i].testID)) {
         this.disableProcess = true;
         existProcess = true;
-        this.messageDialogService.error(
-          "Already selected the test - <b>" +
-            this.tableRows.selection.selected[i].testName +
-            "</b>"
-        );
-        break;
+        selectedTestName=this.tableRows.selection.selected[i].testName
+       this.duplicateItemArray.push(selectedTestName)
+        //break;
       }
+      else{
+           this.duplicateItemArray.splice(i, 1);
+      }
+     
       temp.push(this.tableRows.selection.selected[i].testID);
+     
+    }
+      if(this.testNameErrorRef){
+        this.testNameErrorRef.close()
+      }
+    if(this.duplicateItemArray.length>0){
+      this.duplicateItemArray = this.duplicateItemArray.filter((item:any, value:any)=>{
+        return this.duplicateItemArray.indexOf(item)== value; 
+      });
+      this.testNameAlertExist=false
+      if(existProcess){
+     this.testNameErrorRef=  this.messageDialogService.error(
+        "Already selected the test - <b>" +
+        this.duplicateItemArray.toString() +
+          "</b>"
+      );
+     }
+       this.testNameErrorRef.afterClosed().subscribe(async (result: any) => {
+       this.duplicateItemArray=[]
+       });
+     
     }
     if (!existProcess) this.disableProcess = false;
   }

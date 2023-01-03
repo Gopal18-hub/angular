@@ -14,34 +14,50 @@ const routes: Routes = [
   {
     path: "registration",
     component: RegistrationComponent,
-    canActivate: [AuthGuardService],
     children: [
-      { path: "", component: OpRegistrationComponent },
+      {
+        path: "",
+        component: OpRegistrationComponent,
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 60 },
+      },
       {
         path: "op-registration",
         component: OpRegistrationComponent,
         canDeactivate: [PendingChangesGuard],
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 60 },
       },
       {
         path: "find-patient",
         component: FindPatientComponent,
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 61 },
       },
       {
         path: "dup-reg-merging",
         component: DupRegMergingComponent,
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 460 },
       },
       {
         path: "registration-unmerging",
         component: RegistrationUnmergingComponent,
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 461 },
       },
       {
         path: "op-reg-approval",
         component: OpRegApprovalComponent,
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 595 },
       },
       { path: "appointment-search", component: AppointmentSearchComponent },
       {
         path: "hot-listing-approval",
         component: HotListingApprovalComponent,
+        canActivate: [AuthGuardService],
+        data: { masterModule: 2, moduleId: 7, featureId: 597 },
       },
     ],
   },
