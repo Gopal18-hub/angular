@@ -49,12 +49,10 @@ export class SearchDialogComponent implements OnInit {
       fromdate: {
         type: "date",
         defaultValue: new Date(),
-        disabled: false,
       },
       todate: {
         type: "date",
         defaultValue: new Date(),
-        disabled: false,
       },
     },
   };
@@ -204,7 +202,14 @@ export class SearchDialogComponent implements OnInit {
     this.questions = formResult.questions;
     this.questions[4].maximum = this.searchform.controls["todate"].value;
     this.questions[5].minimum = this.searchform.controls["fromdate"].value;
-    this.search();
+    console.log(this.formdata);
+    if (
+      (this.formdata.mobileno == "" || this.formdata.mobileno == null) &&
+      (this.formdata.check == "" || this.formdata.check == null) &&
+      this.formdata.maxid.split(".")[1] == ""
+    ) {
+      this.search();
+    }
   }
   ngAfterViewInit(): void {
     console.log(this.formdata);
@@ -381,6 +386,11 @@ export class SearchDialogComponent implements OnInit {
     this.searchform.reset();
     this.searchform.controls["fromdate"].setValue(new Date());
     this.searchform.controls["todate"].setValue(new Date());
+    this.searchform.controls["checkbox"].setValue(true, {
+      emitEvent: false,
+    });
+    this.searchform.controls["fromdate"].enable();
+    this.searchform.controls["todate"].enable();
     this.searchform.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );

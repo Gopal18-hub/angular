@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../../shared/services/auth.service";
 import * as Oidc from "oidc-client";
-import { CookieService } from "../../../../shared/services/cookie.service";
+import { CookieService } from "@shared/services/cookie.service";
 import { environment } from "@environments/environment";
 
 @Component({
@@ -21,10 +21,9 @@ export class AuthCallbackComponent implements OnInit {
     this.auth
       .completeAuthentication()
       .then((user) => {
-        // console.log(user.access_token);
-        // this.auth.setToken(user.access_token);
-        this.cookie.set("accessToken", user.access_token);
-        this.cookie.set("role", user.profile["role"]);
+         this.auth.setToken(user.access_token);
+        //  this.cookie.set("accessToken", user.access_token);
+         this.cookie.set("role", user.profile["role"]);
         this.router.navigate(["dashboard"]);
       })
       .catch((e) => {
