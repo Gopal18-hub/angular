@@ -27,6 +27,7 @@ import { AcdModule } from "@modules/acd";
 import { StaffDeptModule } from "@modules/staff-dept";
 import { ReportsModule } from "@modules/reports";
 import { ConfigureModule } from "@modules/configure";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 const importModules = [
   HeaderModule,
@@ -65,6 +66,7 @@ const providers = [
     BrowserAnimationsModule,
     ...importModules,
     AppRoutingModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     ...providers,
