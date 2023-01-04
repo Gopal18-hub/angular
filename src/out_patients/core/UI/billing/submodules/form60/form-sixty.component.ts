@@ -113,6 +113,59 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
         }
       }
     );
+    this.questions[7].elementRef.addEventListener(
+      "blur",
+      this.idproofvalidation.bind(this)
+    );
+    this.form60form.controls["iddocumenttype"].valueChanges.subscribe(
+     (res:any) => {
+        if(res == 1){
+          let idaadharno = this.form60form.value.iddocidentityno;
+          if(!this.validaadharcard(idaadharno) && idaadharno != "")
+          {
+            this.form60form.controls["iddocidentityno"].setErrors({ incorrect: true });   
+            this.questions[7].customErrorMessage = "Invalid Aadhar No.";        
+          }
+        }else{
+          this.form60form.controls["iddocidentityno"].setErrors(null); 
+        }
+     }
+   );
+    this.questions[11].elementRef.addEventListener(
+      "blur",
+      this.addressproofvalidation.bind(this)
+    );
+    this.form60form.controls["addressdocumenttype"].valueChanges.subscribe(
+      (res:any) => {
+        if(res == 1){
+          let addressaadharno = this.form60form.value.addressdocidentityno;
+          if(!this.validaadharcard(addressaadharno) && addressaadharno != "")
+          {
+            this.form60form.controls["addressdocidentityno"].setErrors({ incorrect: true });   
+            this.questions[11].customErrorMessage = "Invalid Aadhar No."; 
+          }
+      }
+      else{
+        this.form60form.controls["addressdocidentityno"].setErrors(null); 
+      }
+    }
+    );
+  }
+
+  idproofvalidation(){
+    let idaadharno = this.form60form.value.iddocidentityno;
+    if(idaadharno != "" && !this.validaadharcard(idaadharno) && this.form60form.value.iddocumenttype == 1){
+            this.form60form.controls["iddocidentityno"].setErrors({ incorrect: true });   
+            this.questions[7].customErrorMessage = "Invalid Aadhar No.";
+    }
+  }
+
+  addressproofvalidation(){
+    let addressaadharno = this.form60form.value.addressdocidentityno;
+     if(addressaadharno != "" && !this.validaadharcard(addressaadharno) && this.form60form.value.addressdocumenttype == 1){
+      this.form60form.controls["addressdocidentityno"].setErrors({ incorrect: true });   
+      this.questions[11].customErrorMessage = "Invalid Aadhar No."; 
+    }
   }
 
   getForm60DocumentType() {
@@ -301,5 +354,10 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
       this.form60form.controls["otherthanagriculturalincome"].enable();
       this.form60form.controls["applicationno"].setValue("");
     }
+  }
+
+  validaadharcard(str: any) {
+    const specialChars = /(^[0-9]{4}[0-9]{4}[0-9]{4}$)/s;
+    return specialChars.test(str);
   }
 }
