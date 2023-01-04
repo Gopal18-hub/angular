@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, HostListener } from "@angular/core";
 import { MaxModules } from "../../constants/Modules";
 import { APP_BASE_HREF } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
-import { CookieService } from "../../services/cookie.service";
+import { CookieService } from "@shared/services/cookie.service";
 import { environment } from "@environments/environment";
 import { PermissionService } from "../../services/permission.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -14,6 +14,7 @@ import { ChangepaswordComponent } from "./changepasword/changepasword.component"
 import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
 import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
 import { ADAuthService } from "../../../auth/core/services/adauth.service";
+import { MaxHealthStorage } from "@shared/services/storage";
 
 @Component({
   selector: "maxhealth-header",
@@ -26,8 +27,8 @@ export class HeaderComponent implements OnInit {
   station: string = "";
   usrname: string = "";
   user: string = "";
-  locationId:string="";
-  stationId:string="";
+  locationId: string = "";
+  stationId: string = "";
   activeModule: any;
   private readonly _destroying$ = new Subject<void>();
 
@@ -70,17 +71,18 @@ export class HeaderComponent implements OnInit {
     this.setRefreshedToken(); //Set refreshed access token in cookie
     this.authService.logout().subscribe((response: any) => {
       if (response.postLogoutRedirectUri) {
-          window.location = response.postLogoutRedirectUri;
+        window.location = response.postLogoutRedirectUri;
       }
       this.adauth
-          .ClearExistingLogin(Number(this.cookieService.get("UserId")))
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(async (resdata: any) => {
-            console.log(resdata);
-          });
+        .ClearExistingLogin(Number(this.cookieService.get("UserId")))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(async (resdata: any) => {
+          console.log(resdata);
+        });
       localStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.authService.deleteToken();
       this.dbService.cachedResponses.clear();
       window.location.href = window.location.origin + "/login";
     });
@@ -93,7 +95,7 @@ export class HeaderComponent implements OnInit {
 
   setRefreshedToken() {
     //oidc.user:https://localhost/:hispwa
-    let storage = localStorage.getItem(
+    let storage = sessionStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
     );
     let tokenKey;
@@ -116,6 +118,8 @@ export class HeaderComponent implements OnInit {
     if (accessToken != "" && accessToken != null && accessToken != undefined) {
       this.cookieService.delete("accessToken", "/");
       this.cookieService.set("accessToken", accessToken, { path: "/" });
+      this.authService.deleteToken();
+      this.authService.setToken(accessToken);
     }
   }
 
