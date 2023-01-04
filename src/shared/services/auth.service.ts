@@ -199,7 +199,7 @@ export function getClientSettings(): UserManagerSettings {
     silent_redirect_uri:
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,
-    userStore: new WebStorageStateStore({ store: window.sessionStorage }),
+    userStore: new WebStorageStateStore({ store: window.localStorage }),
     extraQueryParams: { new: 1 },
     monitorSession: true,
   };
