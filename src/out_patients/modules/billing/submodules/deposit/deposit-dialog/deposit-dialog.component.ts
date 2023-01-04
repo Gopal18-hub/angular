@@ -199,7 +199,7 @@ export class DepositDialogComponent implements OnInit {
      else if(this.depositpatientidentityinfo.mainradio == "form60" && this.depositservice.isform60exists == false && !this.validationexists){
       this.messageDialogService.info("Please fill the form60 ");   
       this.validationexists = true;
-      return
+      return;
      }    
   }
 

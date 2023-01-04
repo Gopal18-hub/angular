@@ -1473,16 +1473,27 @@ export class BillComponent implements OnInit, OnDestroy {
       exist = accessControls[2][7][534][1436];
       exist = exist == undefined ? false : exist;
     }
-
-    this.reportService.openWindow(
-      this.billNo + " - Billing Report",
-      "billingreport",
-      {
+    //direct print for ppg and vaishali
+    if (
+      Number(this.cookie.get("HSPLocationId")) == 8 ||
+      Number(this.cookie.get("HSPLocationId")) == 20
+    ) {
+      this.reportService.directPrint("billingreport", {
         opbillid: this.billId,
         locationID: this.cookie.get("HSPLocationId"),
-        enableexport: exist,
-      }
-    );
+        enableexport: exist == true ? 1 : 0,
+      });
+    } else {
+      this.reportService.openWindow(
+        this.billNo + " - Billing Report",
+        "billingreport",
+        {
+          opbillid: this.billId,
+          locationID: this.cookie.get("HSPLocationId"),
+          enableexport: exist,
+        }
+      );
+    }
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1549,9 +1560,18 @@ export class BillComponent implements OnInit, OnDestroy {
 
   depositdetails() {
     let resultData = this.calculateBillService.depositDetailsData;
+    this.totalDeposit = 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList = [];
     if (resultData) {
       resultData.forEach((element: any) => {
         if (element.isAdvanceTypeEnabled == false) {
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+            {
+              id: element.id,
+              amount: element.amount,
+              balanceamount: element.balanceamount,
+            }
+          );
           this.totalDeposit += element.balanceamount;
         }
       });
@@ -1561,7 +1581,14 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
+        this.formGroup.controls["dipositAmtcheck"].setValue(true, {
+          emitEvent: false,
+        });
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
+        this.question[20].readonly = false;
+        this.formGroup.controls["dipositAmtEdit"].enable();
+        this.question[20].elementRef.focus();
+        // this.question[20].disable = false;
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
@@ -1811,7 +1838,7 @@ export class BillComponent implements OnInit, OnDestroy {
     if (credLimitWarning) {
       if (credLimitWarning.type == "yes") {
         this.question[14].elementRef.focus();
-        this.formGroup.controls["credLimit"].setValue("0.00");
+        this.formGroup.controls["credLimit"].setValue("");
         return false;
       } else {
         this.formGroup.controls["paymentMode"].setValue(1);
