@@ -30,13 +30,24 @@ export class AuthGuardService implements CanActivate {
     //await this.auth.me();
     if (route.data["featureId"]) {
       const accessControls: any = this.permission.getAccessControls();
-      const exist: any =
+      if (
+        accessControls &&
+        accessControls[route.data["masterModule"]] &&
+        accessControls[route.data["masterModule"]][route.data["moduleId"]] &&
         accessControls[route.data["masterModule"]][route.data["moduleId"]][
           route.data["featureId"]
-        ];
-      if (exist) return true;
-      else {
-        window.location.href = environment.IentityServerRedirectUrl + "login";
+        ]
+      ) {
+        const exist: any =
+          accessControls[route.data["masterModule"]][route.data["moduleId"]][
+            route.data["featureId"]
+          ];
+        if (exist) return true;
+        else {
+          window.location.href = environment.IentityServerRedirectUrl + "login";
+          return false;
+        }
+      } else {
         return false;
       }
     }
