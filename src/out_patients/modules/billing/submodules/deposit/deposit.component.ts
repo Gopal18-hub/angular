@@ -811,12 +811,15 @@ export class DepositComponent implements OnInit {
   }
 
   clearDepositpage() {
+    this.matDialog.closeAll();
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.depositForm.reset();    
     this.similarContactPatientList = [];
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
+    this.phoneNumberFlag = false;
+    this.mobilenocall = false;
     this.depositForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
@@ -910,10 +913,11 @@ export class DepositComponent implements OnInit {
             this.mobilenocall = false;
           } else {
             console.log("no data found");
-            this.mobilenocall = true;
+            this.mobilenocall = true;           
             const MobilenoNotExists =  this.messageDialogService.error("Invalid Mobile No.");
             MobilenoNotExists.afterClosed().subscribe((res:any) => {
               this.mobilenocall = false;
+              this.phoneNumberFlag = false;
             });
 
           }

@@ -235,7 +235,7 @@ export class DashboardComponent implements OnInit {
         });
       });
 
-    let tokenStorage: any = localStorage.getItem(
+    let tokenStorage: any = sessionStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
     );
     const tokenJson = JSON.parse(tokenStorage);

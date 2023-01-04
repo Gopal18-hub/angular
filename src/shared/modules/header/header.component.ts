@@ -27,8 +27,8 @@ export class HeaderComponent implements OnInit {
   station: string = "";
   usrname: string = "";
   user: string = "";
-  locationId:string="";
-  stationId:string="";
+  locationId: string = "";
+  stationId: string = "";
   activeModule: any;
   private readonly _destroying$ = new Subject<void>();
 
@@ -69,17 +69,17 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.setRefreshedToken(); //Set refreshed access token in cookie
+    this.adauth
+      .ClearExistingLogin(Number(this.cookieService.get("UserId")))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (resdata: any) => {
+        console.log(resdata);
+      });
     this.authService.logout().subscribe((response: any) => {
       if (response.postLogoutRedirectUri) {
-          window.location = response.postLogoutRedirectUri;
+        window.location = response.postLogoutRedirectUri;
       }
-      this.adauth
-          .ClearExistingLogin(Number(this.cookieService.get("UserId")))
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(async (resdata: any) => {
-            console.log(resdata);
-          });
-      localStorage.clear();
+      sessionStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
       this.authService.deleteToken();
@@ -95,7 +95,7 @@ export class HeaderComponent implements OnInit {
 
   setRefreshedToken() {
     //oidc.user:https://localhost/:hispwa
-    let storage = localStorage.getItem(
+    let storage = sessionStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
     );
     let tokenKey;
@@ -116,8 +116,8 @@ export class HeaderComponent implements OnInit {
     }
 
     if (accessToken != "" && accessToken != null && accessToken != undefined) {
-      this.cookieService.delete("accessToken", "/");
-      this.cookieService.set("accessToken", accessToken, { path: "/" });
+      // this.cookieService.delete("accessToken", "/");
+      // this.cookieService.set("accessToken", accessToken, { path: "/" });
       this.authService.deleteToken();
       this.authService.setToken(accessToken);
     }
