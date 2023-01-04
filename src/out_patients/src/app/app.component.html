@@ -1,9 +1,9 @@
 <ng-container *ngIf="isAuthenticated">
   <maxhealth-header></maxhealth-header>
 </ng-container>
-<ng-container *ngIf="roleLoaded">
+
   <router-outlet></router-outlet>
-</ng-container>
+
 <div *ngIf="reportapiloader"
   class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 report-api-loader">
   <mat-spinner strokeWidth="3"></mat-spinner>
