@@ -357,6 +357,7 @@ export class DepositComponent implements OnInit {
   expiredpatientexists: boolean = false;
   moment = moment;
   apiProcessing: boolean = false;
+  mobilenocall: boolean = false;
 
   depositForm!: FormGroup;
   questions: any;
@@ -546,9 +547,9 @@ export class DepositComponent implements OnInit {
       console.log(event);
       if (event.key === "Enter") {
         if (this.depositForm.controls["mobileno"].valid) {
-          this.mobilechange();
+          this.onEnterPhoneModify();
         } else {
-          //this.snackbar.open("Invalid Mobile No", "error");
+          //this.snackbar.open("Invalid Mobile No.", "error");
           this.messageDialogService.error("Invalid Mobile No.");
         }
       }
@@ -898,6 +899,7 @@ export class DepositComponent implements OnInit {
                 }
                 this.similarContactPatientList = [];
               });
+              this.mobilenocall = false;
           } else if (this.similarContactPatientList.length == 1) {
             console.log(resultData);
             let maxID = resultData[0].maxid;
@@ -905,10 +907,15 @@ export class DepositComponent implements OnInit {
             this.regNumber = Number(maxID.split(".")[1]);
             this.iacode = maxID.split(".")[0];
             this.getPatientDetailsForDeposit();
+            this.mobilenocall = false;
           } else {
-            //this.snackbar.open("Invalid Mobile No", "error");
-            this.messageDialogService.error("Invalid Mobile No.");
             console.log("no data found");
+            this.mobilenocall = true;
+            const MobilenoNotExists =  this.messageDialogService.error("Invalid Mobile No.");
+            MobilenoNotExists.afterClosed().subscribe((res:any) => {
+              this.mobilenocall = false;
+            });
+
           }
         },
         (error) => {
@@ -919,7 +926,7 @@ export class DepositComponent implements OnInit {
   }
 
   mobilechange() {
-    if (this.depositForm.controls["mobileno"].valid && !this.phoneNumberFlag) {
+    if (this.depositForm.controls["mobileno"].valid && !this.phoneNumberFlag && !this.mobilenocall) {
       if (!this.similarSoundListPresent()) {
         this.getSimilarPatientDetails();
       }

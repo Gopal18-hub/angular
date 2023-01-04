@@ -300,6 +300,8 @@ export class PaymentDialogComponent implements OnInit {
 
   POSIMEIList: any = [];
   POSMachineDetal: any = {};
+
+  totalamtFlag: boolean = false;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -358,7 +360,15 @@ export class PaymentDialogComponent implements OnInit {
       this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(
         2
       );
+
     this.dueform.controls["cashamount"].setValue(this.totaldue);
+    // this.totalamtFlag = this.totaldue - Math.floor(this.totaldue) !== 0;
+    // if (!this.totalamtFlag) {
+    //   this.dueform.controls["cashamount"].setValue(Number(this.totaldue));
+    // } else {
+    //   this.dueform.controls["cashamount"].setValue(this.totaldue);
+    // }
+    // console.log(this.totalamtFlag, this.totaldue - Math.floor(this.totaldue));
     this.finalamount += Number(this.dueform.controls["cashamount"].value);
     this.data.patientinfo.toPaidAmount = this.finalamount;
     this.patientIdentityInfo = { patientinfo: this.data.patientinfo };
@@ -394,26 +404,26 @@ export class PaymentDialogComponent implements OnInit {
       this.removezero.bind(this, this.questions[23])
     );
 
-    this.questions[2].elementRef.addEventListener(
-      "blur",
-      this.adddecimal.bind(this, this.questions[2])
-    );
-    this.questions[3].elementRef.addEventListener(
-      "blur",
-      this.adddecimal.bind(this, this.questions[3])
-    );
-    this.questions[9].elementRef.addEventListener(
-      "blur",
-      this.adddecimal.bind(this, this.questions[9])
-    );
-    this.questions[17].elementRef.addEventListener(
-      "blur",
-      this.adddecimal.bind(this, this.questions[17])
-    );
-    this.questions[23].elementRef.addEventListener(
-      "blur",
-      this.adddecimal.bind(this, this.questions[23])
-    );
+    // this.questions[2].elementRef.addEventListener(
+    //   "blur",
+    //   this.adddecimal.bind(this, this.questions[2])
+    // );
+    // this.questions[3].elementRef.addEventListener(
+    //   "blur",
+    //   this.adddecimal.bind(this, this.questions[3])
+    // );
+    // this.questions[9].elementRef.addEventListener(
+    //   "blur",
+    //   this.adddecimal.bind(this, this.questions[9])
+    // );
+    // this.questions[17].elementRef.addEventListener(
+    //   "blur",
+    //   this.adddecimal.bind(this, this.questions[17])
+    // );
+    // this.questions[23].elementRef.addEventListener(
+    //   "blur",
+    //   this.adddecimal.bind(this, this.questions[23])
+    // );
 
     this.questions[2].elementRef.addEventListener(
       "blur",
@@ -1354,7 +1364,14 @@ export class PaymentDialogComponent implements OnInit {
             .subscribe((value: any) => {
               this.posimeivaluechange(value);
             });
-          if (this.POSIMEIList.length == 1) {
+          if (
+            this.cookie.get("MerchantPOSCode") &&
+            this.cookie.get("MAXMachineName")
+          ) {
+            this.dueform.controls["posimei"].setValue(
+              this.cookie.get("MAXMachineName")
+            );
+          } else if (this.POSIMEIList.length == 1) {
             this.dueform.controls["posimei"].setValue(this.POSIMEIList[0].name);
           }
         }
