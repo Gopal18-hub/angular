@@ -4,13 +4,14 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
+  CanActivateChild,
 } from "@angular/router";
 import { AuthService } from "../auth.service";
 import { environment } from "@environments/environment";
 import { PermissionService } from "../../services/permission.service";
 
 @Injectable()
-export class AuthGuardService implements CanActivate {
+export class AuthGuardService implements CanActivate, CanActivateChild {
   constructor(
     public auth: AuthService,
     public router: Router,
@@ -18,16 +19,22 @@ export class AuthGuardService implements CanActivate {
   ) {}
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    // let url: string = state.url;
     if (!this.auth.isAuthenticated()) {
-      //this.router.navigate(['login'], { queryParams: { redirect: url } });
-      // this.router.navigate(["/login"]);
-      // window.location.href = window.location.origin + "/login";
       window.location.href = environment.IentityServerRedirectUrl + "login";
-      // this.auth.startAuthentication();
       return false;
     }
-    //await this.auth.me();
+
+    return true;
+  }
+
+  async canActivateChild(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ) {
+    if (!this.auth.isAuthenticated()) {
+      window.location.href = environment.IentityServerRedirectUrl + "login";
+      return false;
+    }
     if (route.data["featureId"]) {
       const accessControls: any = this.permission.getAccessControls();
       if (
@@ -48,7 +55,7 @@ export class AuthGuardService implements CanActivate {
           return false;
         }
       } else {
-        return false;
+        return true;
       }
     }
     return true;
