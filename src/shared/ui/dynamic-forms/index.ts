@@ -38,7 +38,7 @@ import {
   NgxMatNativeDateModule,
   NgxMatDateAdapter,
 } from "@angular-material-components/datetime-picker";
-
+import{AccessControlDirective} from "@shared/utilities/directives/access-control.directive";
 @NgModule({
   imports: [
     CommonModule,
@@ -61,8 +61,8 @@ import {
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
   ],
-  exports: [DynamicFormQuestionComponent, MaskedInputDirective],
-  declarations: [
+  exports: [AccessControlDirective, DynamicFormQuestionComponent, MaskedInputDirective],
+  declarations: [AccessControlDirective,
     DynamicFormQuestionComponent,
     OptionGroupComponent,
     MaskedInputDirective,
