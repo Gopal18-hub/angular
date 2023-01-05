@@ -372,24 +372,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 //     this.loginForm.reset();
                 //   }
                 // });
-                // const dialogRef = this.messageDialogService.confirm(
-                //   "",
-                //   "You have logged in another session. Do you want to delete other active session?"
-                // );
-                // dialogRef.afterClosed().subscribe((res) => {
-                //   console.log("res", res);
-                //   if (res.type == "yes") {
-                //     this.adauth
-                //       .ClearExistingLogin(this.userId)
-                //       .pipe(takeUntil(this._destroying$))
-                //       .subscribe(async (resdata: any) => {
-                //         await this.validUser(data);
-                //         await this.createSession();
-                //       });
-                //   } else {
-                //     this.loginForm.reset();
-                //   }
-                // });
                 this.messageDialogService.warning(
                   "You have logged in another HIS session, please logout to proceed further."
                 );
