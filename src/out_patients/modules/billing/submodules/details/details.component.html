@@ -27,17 +27,16 @@
             <div class="w-full flex pt-2">
               <div class="flex ml-2 ">
                 <mat-label class="wt-nowrap">Bill No</mat-label>
-                <div class="ml-1 w-19 h-full bg-white">
+                <div class="ml-1 w-19 h-full bg-white"    accessControl
+                masterModule = "2"
+                moduleId="7"
+                featureId="63"
+                actionId="148">
                   <maxhealth-question
                     [question]="questions[0]"
                     [form]="BServiceForm"
                     [questions]="questions[0]"
-                    [index]="0"
-                    accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="63"
-                    actionId="148"
+                    [index]="0"                 
                   >
                   </maxhealth-question>
                 </div>
