@@ -118,7 +118,7 @@ export class ReportService {
   url: any = "";
 
   directPrint(reportEntity: string,reportParams: any)
-    {          
+    {            
     const params = "?" + new URLSearchParams(reportParams).toString();
     let func: Function = <Function>(
       CrystalReport[reportEntity as keyof typeof CrystalReport]
@@ -132,6 +132,7 @@ export class ReportService {
       existIframe.remove();
     }
     const that = this;
+    that.reportPrintloader.next(true);  
     const iframeReportUrl = reportUrl;
     // Create a new iframe for the print job
     const printFrame = document.createElement("iframe");
