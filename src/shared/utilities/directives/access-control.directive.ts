@@ -16,15 +16,24 @@ export class AccessControlDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.elementRef.nativeElement.style.display = "none";
+    this.elementRef.nativeElement.style.pointerEvents = "none";
+    this.elementRef.nativeElement.style.opacity = 0.4;
     this.checkAccess();
   }
   checkAccess() {
+    
     const accessControls: any = this.permission.getAccessControls();
     const exist: any =
       accessControls[this.masterModule][this.moduleId][this.featureId][
         this.actionId
       ];
-    this.elementRef.nativeElement.style.display = exist ? "block" : "none";
+    if(exist){
+      this.elementRef.nativeElement.style.pointerEvents = "initial";
+      this.elementRef.nativeElement.style.opacity = 1;
+    }else{
+      this.elementRef.nativeElement.style.pointerEvents = "none";
+      this.elementRef.nativeElement.style.opacity = 0.4;
+    }
+    //this.elementRef.nativeElement.style.display = exist ? "block" : "none";
   }
 }
