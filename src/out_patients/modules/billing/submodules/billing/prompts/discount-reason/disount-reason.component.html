@@ -5,7 +5,7 @@
       >Discount Reason</mat-label
     >
     <mat-icon
-      mat-dialog-close      
+      mat-dialog-close
       class="float-right cursor-pointer max-dialog-close-icon"
       aria-hidden="false"
       aria-label="Example home icon"
@@ -30,7 +30,7 @@
           [form]="discAmtForm"
           [questions]="question[1]"
           [index]="1"
-         matTooltip="{{head}}" 
+          matTooltip="{{ head }}"
         >
         </maxhealth-question>
       </div>
@@ -40,7 +40,7 @@
           [form]="discAmtForm"
           [questions]="question[2]"
           [index]="2"
-          matTooltip="{{reasontitle}}"
+          matTooltip="{{ reasontitle }}"
         >
         </maxhealth-question>
       </div>
@@ -70,7 +70,9 @@
         class="float-right mr-4"
         mat-raised-button
         color="primary"
-        [disabled]="disableAdd || data?.disableAdd"
+        [disabled]="
+          disableAdd || data?.disableAdd || checkRequiredFieldsSelected()
+        "
         (click)="prepareData()"
       >
         Add

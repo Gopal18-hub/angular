@@ -311,17 +311,8 @@ export class PaymentMethodsComponent implements OnInit {
    //for GAV-1375
    this.refundform.valueChanges.subscribe(() => {
      this.negativePriceValidation();
-   });
+   }); 
  
-   this.questions[49].elementRef.addEventListener("keypress", (event: any) => {
-        if (event.key === "Enter") {
-          if(this.refundform.value.internetmobile.length != 10)
-          {          
-              this.messageDialogService.error("Invalid Mobile No.");             
-          }
-        }
-   });
-
    this.refundform.controls["posimei"].valueChanges          
           .subscribe((value: any) => {
             if (value) {
@@ -392,6 +383,15 @@ export class PaymentMethodsComponent implements OnInit {
       }
     }
   );
+  this.questions[49].elementRef.addEventListener("keypress", (event: any) => {
+    if (event.key === "Enter") {
+      if(this.refundform.value.internetmobile.length != 10)
+      {          
+          this.messageDialogService.error("Invalid Mobile No.");             
+      }
+    }
+});
+
   }
 
   clearpaymentmethod() {

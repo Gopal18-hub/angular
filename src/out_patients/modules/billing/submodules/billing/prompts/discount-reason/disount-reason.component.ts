@@ -202,6 +202,7 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.disableAdd = false;
     this.dualList = [];
     if ("removeRow" in this.data) {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
@@ -215,6 +216,9 @@ export class DisountReasonComponent implements OnInit {
         });
       }
     }
+    this.selectedItems.forEach((sItem: any) => {
+      if (sItem.head) sItem.head = { ...sItem.head };
+    });
 
     let formResult: any = this.formService.createForm(
       this.discAmtFormData.properties,
@@ -377,6 +381,10 @@ export class DisountReasonComponent implements OnInit {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == res.$event.value
         );
+        let mainHead: any = this.mainHeadList.find(
+          (rl: any) => rl.id == existReason.mainhead
+        );
+
         let item =
           this.calculateBillService.discountSelectedItems[res.data.index];
         if (existReason.valuebasedDisc == 1) {
@@ -384,6 +392,10 @@ export class DisountReasonComponent implements OnInit {
         } else {
           item.discAmt_col_type = "";
         }
+        if (item.head && item.head.id == existReason.mainhead) {
+          mainHead = item.head;
+        }
+
         const price = item.price;
         const discAmt = (price * existReason.discountPer) / 100;
         item.disc = existReason.discountPer;
@@ -391,7 +403,7 @@ export class DisountReasonComponent implements OnInit {
         item.totalAmt = price - discAmt;
         item.reasonTitle = existReason.name;
         item.reason = existReason.id;
-        item.head = existReason.mainhead;
+        item.head = mainHead;
 
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       } else if (res.data.col == "discAmt") {
@@ -455,12 +467,12 @@ export class DisountReasonComponent implements OnInit {
     });
 
     ///GAV-1348- for reopening popup without clearing data
-    if (this.discAmtForm.value.amt) {
-      this.question[4].elementRef.focus();
-      if (this.discAmtForm.value.reason) {
-      }
-      this.question[4].readonly = false;
-    }
+    // if (parseInt(this.discAmtForm.value.amt) > 0) {
+    //   this.question[4].elementRef.focus();
+    //   if (this.discAmtForm.value.reason) {
+    //   }
+    //   this.question[4].readonly = false;
+    // }
   }
 
   rowRwmove($event: any) {
@@ -590,7 +602,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head.value,
+        head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Campaign",
@@ -634,7 +646,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head.value,
+        head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Patient",
@@ -688,7 +700,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head.value,
+        head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Company",
@@ -751,7 +763,7 @@ export class DisountReasonComponent implements OnInit {
             disc: existReason.discountPer,
             discAmt: discAmt,
             totalAmt: price - discAmt,
-            head: this.discAmtForm.value.head.value,
+            head: this.discAmtForm.value.head,
             reason: this.discAmtForm.value.reason,
             value: "0",
             discTypeValue: "On-Item",
@@ -821,7 +833,7 @@ export class DisountReasonComponent implements OnInit {
           disc: existReason.discountPer,
           discAmt: discAmt,
           totalAmt: price - discAmt,
-          head: this.discAmtForm.value.head.value,
+          head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "0",
           discTypeValue: "On-Service",
@@ -897,7 +909,7 @@ export class DisountReasonComponent implements OnInit {
         disc: existReason.discountPer,
         discAmt: discAmt,
         totalAmt: price - discAmt,
-        head: this.discAmtForm.value.head.value,
+        head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
         value: "0",
         discTypeValue: "On-Bill",
@@ -933,7 +945,7 @@ export class DisountReasonComponent implements OnInit {
         });
         this.discAmtFormConfig.columnsInfo.head.options = this.mainHeadList.map(
           (a) => {
-            return { title: a.name, value: a.id };
+            return { title: a.name, value: a };
           }
         );
       });
@@ -991,5 +1003,12 @@ export class DisountReasonComponent implements OnInit {
         });
         this.question[5] = { ...this.question[5] };
       });
+  }
+
+  checkRequiredFieldsSelected() {
+    if (this.discAmtForm.value.head && this.discAmtForm.value.reason) {
+      return false;
+    }
+    return true;
   }
 }

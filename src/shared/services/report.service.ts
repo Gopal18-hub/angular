@@ -5,6 +5,7 @@ import "winbox";
 import { DomSanitizer } from "@angular/platform-browser";
 import { CrystalReport } from "../../reports/core/constants/CrystalReport";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Subject } from "rxjs";
 
 declare const WinBox: WinBox.WinBoxConstructor;
 
@@ -19,6 +20,8 @@ export class ReportService {
     private route: ActivatedRoute
   ) {}
   baseUrl: string | undefined;
+
+  reportPrintloader = new Subject<boolean>();
 
   openWindow(
     reportName: string,
@@ -43,6 +46,7 @@ export class ReportService {
       class: "material-print-icon",
       image: "",
       click: function (event: any, winbox: any) {
+        that.reportPrintloader.next(true);
         const existIframe = document.getElementById("report-print");
         if (existIframe) {
           existIframe.remove();
@@ -100,6 +104,7 @@ export class ReportService {
 
   performPrint(iframeElement: any) {
     try {
+      this.reportPrintloader.next(false);
       iframeElement.contentWindow.print();
     } catch (error) {
       console.log(error);
@@ -113,7 +118,7 @@ export class ReportService {
   url: any = "";
 
   directPrint(reportEntity: string,reportParams: any)
-    {          
+    {            
     const params = "?" + new URLSearchParams(reportParams).toString();
     let func: Function = <Function>(
       CrystalReport[reportEntity as keyof typeof CrystalReport]
@@ -127,6 +132,7 @@ export class ReportService {
       existIframe.remove();
     }
     const that = this;
+    that.reportPrintloader.next(true);  
     const iframeReportUrl = reportUrl;
     // Create a new iframe for the print job
     const printFrame = document.createElement("iframe");
