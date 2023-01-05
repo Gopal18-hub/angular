@@ -202,6 +202,7 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.disableAdd = false;
     this.dualList = [];
     if ("removeRow" in this.data) {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
@@ -215,6 +216,9 @@ export class DisountReasonComponent implements OnInit {
         });
       }
     }
+    this.selectedItems.forEach((sItem: any) => {
+      if (sItem.head) sItem.head = { ...sItem.head };
+    });
 
     let formResult: any = this.formService.createForm(
       this.discAmtFormData.properties,
@@ -463,12 +467,12 @@ export class DisountReasonComponent implements OnInit {
     });
 
     ///GAV-1348- for reopening popup without clearing data
-    if (this.discAmtForm.value.amt) {
-      this.question[4].elementRef.focus();
-      if (this.discAmtForm.value.reason) {
-      }
-      this.question[4].readonly = false;
-    }
+    // if (parseInt(this.discAmtForm.value.amt) > 0) {
+    //   this.question[4].elementRef.focus();
+    //   if (this.discAmtForm.value.reason) {
+    //   }
+    //   this.question[4].readonly = false;
+    // }
   }
 
   rowRwmove($event: any) {
@@ -999,5 +1003,12 @@ export class DisountReasonComponent implements OnInit {
         });
         this.question[5] = { ...this.question[5] };
       });
+  }
+
+  checkRequiredFieldsSelected() {
+    if (this.discAmtForm.value.head && this.discAmtForm.value.reason) {
+      return false;
+    }
+    return true;
   }
 }
