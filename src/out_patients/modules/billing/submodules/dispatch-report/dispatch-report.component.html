@@ -61,18 +61,18 @@
                 </div>
                 <!-- buttons -->
                 <div class="float-right flex w-1/10 dis-mar-left-12">
-                    <div class="mr-2 searchbtn">
+                    <div class="mr-2 searchbtn"  accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="67"
+                    actionId="165">
                         <button 
                         mat-raised-button 
                         color="primary" 
                         type="submit" 
                         (click)="dispatchreportsearch()" 
                         [disabled]="!dispatchhistoryform.valid"
-                        accessControl
-                        masterModule = "2"
-                        moduleId="7"
-                        featureId="67"
-                        actionId="165">
+                       >
                             <img src="assets/lens.svg" class="lens-icon">
                             Search
                         </button>
@@ -98,31 +98,32 @@
                     <div class="mr-2">
                         <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
                     </div>
-                    <div class="mr-2">
+                    <div class="mr-2"  accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="67"
+                    actionId="166">
                         <button 
                         mat-raised-button 
                         color="primary" 
                         type="submit" 
                         [disabled]="savebtn" 
                         (click)="savedialog()"
-                        accessControl
-                        masterModule = "2"
-                        moduleId="7"
-                        featureId="67"
-                        actionId="166">Save</button>
+                       >Save</button>
                     </div>
-                    <div class="mr-2">
+                    <div class="mr-2"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="67"
+                    actionId="167">
                         <button 
                         mat-raised-button 
                         color="primary" 
                         type="submit" 
                         (click)="print()" 
                         [disabled]="printbtn"
-                        accessControl
-                        masterModule = "2"
-                        moduleId="7"
-                        featureId="67"
-                        actionId="167">Print</button>
+                      >Print</button>
                     </div>
                     <div class="mr-1">
                         <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>
