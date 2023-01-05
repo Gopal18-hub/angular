@@ -4,6 +4,7 @@ import { CookieService } from "./cookie.service";
 import { HttpService } from "./http.service";
 import { ApiConstants } from "../constants/ApiConstants";
 import { MaxModules } from "../constants/Modules";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -16,6 +17,8 @@ export class PermissionService {
   masterModules: any = [];
   modules: any = [];
   features: any = [];
+
+  rolesLoaded = new Subject<boolean>();
 
   constructor(public cookieService: CookieService, public http: HttpService) {}
 
@@ -56,6 +59,7 @@ export class PermissionService {
     }
 
     this.manipulatedAccessControls = temp;
+    this.rolesLoaded.next(true);
   }
 
   checkModules() {

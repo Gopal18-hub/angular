@@ -47,6 +47,7 @@ export class TokenInterceptor implements HttpInterceptor {
     request = request.clone({
       //setHeaders: ApiHeaders.getHeaders(request.url)
       setHeaders: {
+        Authorization: `bearer ${this.auth.getToken()}`,
         "Content-Type": "application/json",
       },
     });
@@ -54,7 +55,8 @@ export class TokenInterceptor implements HttpInterceptor {
     if (
       request.url.endsWith("authenticate") ||
       request.url.includes("deleteActiveSession") ||
-      request.url.includes("updateActiveSessionToken")
+      request.url.includes("updateActiveSessionToken") ||
+      request.url.includes("clearCookies")
     ) {
       request = request.clone({
         setHeaders: {

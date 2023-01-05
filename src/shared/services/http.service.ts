@@ -115,6 +115,7 @@ export class HttpService {
     if (error.status === 401) {
       //window.location.reload();
       console.log(error);
+      sessionStorage.clear();
       localStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);

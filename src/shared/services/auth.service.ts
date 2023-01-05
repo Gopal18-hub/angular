@@ -144,7 +144,7 @@ export class AuthService {
 
   public setRefreshedToken() {
     //oidc.user:https://localhost/:hispwa
-    let storage = localStorage.getItem(
+    let storage = sessionStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
     );
     let tokenKey;
@@ -199,7 +199,9 @@ export function getClientSettings(): UserManagerSettings {
     silent_redirect_uri:
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,
-    userStore: new WebStorageStateStore({ store: window.sessionStorage }),
+    userStore: new WebStorageStateStore({
+      store: sessionStorage,
+    }),
     extraQueryParams: { new: 1 },
     monitorSession: true,
   };
