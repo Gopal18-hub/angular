@@ -374,22 +374,23 @@
                   [index]="25"
                 >
                 </maxhealth-question>
+                <div  accessControl
+                masterModule = "2"
+                moduleId="7"
+                featureId="62"
+                actionId="147"  > 
                 <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-md min-width-initial"
-                  type="submit"                  
-                  (click)="print()"
-                  type="button"    
-                  [disabled]="!enablePrint"
-                  accessControl
-                  masterModule = "2"
-                  moduleId="7"
-                  featureId="62"
-                  actionId="147"             
-                >
-                  Print Bill&nbsp;
-                </button>
+                mat-raised-button
+                color="primary"
+                class="btn-md min-width-initial"
+                type="submit"                  
+                (click)="print()"
+                type="button"    
+                [disabled]="!enablePrint"                            
+              >
+                Print Bill&nbsp;
+              </button>
+                </div>            
               </div>
             </div>
             <div
