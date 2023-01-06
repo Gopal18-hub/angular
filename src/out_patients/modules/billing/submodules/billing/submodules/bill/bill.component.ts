@@ -265,15 +265,23 @@ export class BillComponent implements OnInit, OnDestroy {
         });
         await popuptextDialogRef.afterClosed().toPromise();
       }
-      await this.calculateBillService.billTabActiveLogics(this.formGroup, this);
-      this.billingservice.refreshBillTab
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((event: boolean) => {
-          if (event) {
-            this.refreshForm();
-            this.refreshTable();
-          }
-        });
+
+      /////GAV-1418
+      if (this.billingservice.totalCostWithOutGst > 0) {
+        await this.calculateBillService.billTabActiveLogics(
+          this.formGroup,
+          this
+        );
+        this.billingservice.refreshBillTab
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((event: boolean) => {
+            if (event) {
+              this.refreshForm();
+              this.refreshTable();
+            }
+          });
+      }
+
       this.billTypeChange(this.formGroup.value.paymentMode);
     }
     this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
@@ -545,7 +553,7 @@ export class BillComponent implements OnInit, OnDestroy {
         //this.billTypeChange(value);
         this.billingservice.calculateTotalAmount();
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
         this.formGroup.controls["amtPayByPatient"].setValue(
@@ -710,24 +718,30 @@ export class BillComponent implements OnInit, OnDestroy {
   ///GAV-1473
   async applyCopay() {
     if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
-      if (this.formGroup.value.coPay <= 100) {
+      if (
+        this.formGroup.value.coPay <= 100 &&
+        this.formGroup.value.coPay >= 0
+      ) {
         this.checkCreditLimit();
-      } else {
+      } else if (this.formGroup.value.coPay > 100) {
         ////GAV-1473
         this.formGroup.controls["coPay"].setValue(0);
         const copayStatus = await this.messageDialogService
-          .warning("copay cannot exceeds 100%")
+          .warning("Copay cannot exceeds 100%")
           .afterClosed()
           .toPromise()
           .catch();
         if (!copayStatus) {
           return;
         }
+      } else {
+        ////GAV-1473
+        this.formGroup.controls["coPay"].setValue(0);
       }
     } else {
       if (this.formGroup.value.credLimit <= 0) {
         this.formGroup.controls["coPay"].setValue(0);
-        this.formGroup.controls["credLimit"].setValue("");
+        this.formGroup.controls["credLimit"].setValue("0.00");
         const credLimitStatus = await this.messageDialogService
           .warning("Enter Credit Limit")
           .afterClosed()
@@ -746,7 +760,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.resetDiscount();
       //this.applyCreditLimit();
     } else {
-      this.formGroup.controls["credLimit"].setValue("");
+      this.formGroup.controls["credLimit"].setValue("0.00");
       this.formGroup.controls["coPay"].setValue(0);
       this.applyCreditLimit();
     }
@@ -770,6 +784,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
     let tempAmount = parseFloat(this.formGroup.value.credLimit);
     this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
+
     let tempFAmount = 0;
     if (tempAmount <= amtPayByComp) {
       tempFAmount = tempAmount;
@@ -799,7 +814,11 @@ export class BillComponent implements OnInit, OnDestroy {
       );
       tempFAmount -= parseFloat(companyDiscount.discAmt);
     }
-    this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+    if (this.formGroup.value.credLimit > 0) {
+      this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+    } else {
+      this.formGroup.controls["amtPayByComp"].setValue("0.00");
+    }
 
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
@@ -829,6 +848,7 @@ export class BillComponent implements OnInit, OnDestroy {
           (parseFloat(this.formGroup.value.gstTax) || 0) -
           (parseFloat(this.formGroup.value.planAmt) || 0) -
           (parseFloat(this.formGroup.value.availDisc) || 0);
+        console.log(temp);
       } else {
         temp =
           parseFloat(this.formGroup.value.billAmt) -
@@ -837,6 +857,7 @@ export class BillComponent implements OnInit, OnDestroy {
           (parseFloat(this.formGroup.value.gstTax) || 0) -
           (parseFloat(this.formGroup.value.planAmt) || 0) -
           (parseFloat(this.formGroup.value.availDisc) || 0);
+        console.log(temp);
       }
 
       if (
@@ -1191,7 +1212,10 @@ export class BillComponent implements OnInit, OnDestroy {
       console.log(complexflag);
       console.log(res);
       console.log(complexflag);
-      if (complexflag == 1) {
+      if (
+        complexflag == 1 &&
+        [7, 11, 10].includes(Number(this.cookie.get("HSPLocationId")))
+      ) {
         const complexdialog = this.messageDialogService.confirm(
           "",
           "Do You want to print Complex Care Patient Form?"
@@ -1449,16 +1473,25 @@ export class BillComponent implements OnInit, OnDestroy {
       exist = accessControls[2][7][534][1436];
       exist = exist == undefined ? false : exist;
     }
-
-    this.reportService.openWindow(
-      this.billNo + " - Billing Report",
-      "billingreport",
-      {
+    //direct print for ppg
+    if (
+      Number(this.cookie.get("HSPLocationId")) == 8) {
+      this.reportService.directPrint("billingreport", {
         opbillid: this.billId,
         locationID: this.cookie.get("HSPLocationId"),
-        enableexport: exist,
-      }
-    );
+        enableexport: exist == true ? 1 : 0,
+      });
+    } else {
+      this.reportService.openWindow(
+        this.billNo + " - Billing Report",
+        "billingreport",
+        {
+          opbillid: this.billId,
+          locationID: this.cookie.get("HSPLocationId"),
+          enableexport: exist,
+        }
+      );
+    }
   }
   formreport() {
     let regno = this.billingservice.activeMaxId.regNumber;
@@ -1516,15 +1549,27 @@ export class BillComponent implements OnInit, OnDestroy {
     }
 
     console.log("Amount Pay by Patinet: ", temp);
-
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.patientDiscount =
+      parseFloat(this.formGroup.value.patientDisc);
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyDiscount =
+      parseFloat(this.formGroup.value.compDisc);
     return temp > 0 ? temp.toFixed(2) : "0.00";
   }
 
   depositdetails() {
     let resultData = this.calculateBillService.depositDetailsData;
+    this.totalDeposit = 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList = [];
     if (resultData) {
       resultData.forEach((element: any) => {
         if (element.isAdvanceTypeEnabled == false) {
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+            {
+              id: element.id,
+              amount: element.amount,
+              balanceamount: element.balanceamount,
+            }
+          );
           this.totalDeposit += element.balanceamount;
         }
       });
@@ -1534,7 +1579,14 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["dipositAmt"].setValue(
           this.totalDeposit.toFixed(2)
         );
+        this.formGroup.controls["dipositAmtcheck"].setValue(true, {
+          emitEvent: false,
+        });
         this.formGroup.controls["dipositAmtEdit"].setValue(""); // for ticket GAV -1432
+        this.question[20].readonly = false;
+        this.formGroup.controls["dipositAmtEdit"].enable();
+        this.question[20].elementRef.focus();
+        // this.question[20].disable = false;
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>

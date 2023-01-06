@@ -118,7 +118,7 @@ export class ConsumablesComponent implements OnInit {
       );
       const dialogConst = this.matDialog.open(ConsumableDetailsComponent, {
         width: "80%",
-        height: "50%",
+        height: "53%",
         data: {
           orderSet: res.element,
           items: filteredItems,

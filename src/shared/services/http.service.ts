@@ -112,9 +112,10 @@ export class HttpService {
     operation = "operation",
     options?: Options
   ) {
-    if (error.status === 401) {
+    if (error.status === 401 || error.status === 403) {
       //window.location.reload();
       console.log(error);
+      sessionStorage.clear();
       localStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);

@@ -194,6 +194,9 @@ export class CashScrollComponent implements OnInit {
               }
             });
         });
+      },
+      (error) => {
+        this.dialogservice.error("No data Found");
       });
   }
 
@@ -257,6 +260,8 @@ export class CashScrollComponent implements OnInit {
               }
             });
         });
+      },(error) => {
+        this.dialogservice.error("No data Found");
       });
   }
 }

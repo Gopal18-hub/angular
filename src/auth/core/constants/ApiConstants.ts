@@ -11,21 +11,19 @@ export namespace ApiConstants {
 
   export const autheticate = environment.IdentityServerUrl + "api/authenticate";
 
-  export const sessionCreation = (
-    userId:number,
-    token:string,
-    locationid:number,
-    stationid:number,
-    moduleid:number
-) => {
-  return `${environment.IdentityServerUrl}api/authenticate/createSession?userId=${userId}&token=${token}&locationid=${locationid}&stationid=${stationid}&moduleid=${moduleid}`;
-};
-
+  export const sessionCreation = () => {
+    return `${environment.IdentityServerUrl}api/authenticate/createSession`;
+  };
   export const deleteactivesession = (userId: number) => {
     return `${environment.IdentityServerUrl}api/authenticate/deleteActiveSession?userid=${userId}`;
   };
 
-  
+  export const updateActiveSessionToken = () => {
+    return `${environment.IdentityServerUrl}api/authenticate/updateActiveSessionToken`;
+  };
+
+  export const clearCookies = `${environment.IdentityServerUrl}api/authenticate/clearCookies`;
+
   export const searchPatientDefault = (HsplocationId: number) => {
     return (
       environment.PatientApiUrl +

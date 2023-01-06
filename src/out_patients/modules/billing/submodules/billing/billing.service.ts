@@ -14,6 +14,8 @@ import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { threadId } from "worker_threads";
 import { InstantiateExpr } from "@angular/compiler";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
+import { DepositService } from "@core/services/deposit.service";
+
 @Injectable({
   providedIn: "root",
 })
@@ -107,7 +109,8 @@ export class BillingService {
     private calculateBillService: CalculateBillService,
     public matDialog: MatDialog,
     private datepipe: DatePipe,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private depositservice: DepositService
   ) {}
 
   setBillingFormGroup(formgroup: any, questions: any) {
@@ -383,19 +386,24 @@ export class BillingService {
       if (
         this.calculateBillService.billFormGroup &&
         this.calculateBillService.billFormGroup.form
-      )
+      ) {
         this.calculateBillService.billFormGroup.form.controls[
           "credLimit"
         ].setValue("0.00");
-      // For GAV-1355 SRF Popup
-      await this.calculateBillService.serviceBasedCheck();
+        ///GAV-1473
+        this.calculateBillService.billFormGroup.form.controls["coPay"].setValue(
+          "0.00"
+        );
+        // For GAV-1355 SRF Popup
+        await this.calculateBillService.serviceBasedCheck();
+      }
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
 
       this.selectedcorporatedetails = [];
       this.selectedcompanydetails = [];
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =0;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = 0;
       this.iomMessage = "";
       if (formGroup.controls["corporate"]) {
         formGroup.controls["corporate"].setValue(null);
@@ -475,6 +483,11 @@ export class BillingService {
           formGroup.controls["corporate"].disable();
         }
       }
+    } else if (res.value == -1) {
+      this.iomMessage = "";
+      this.selectedcompanydetails = res;
+      this.selectedcorporatedetails = [];
+      this.companyChangeEvent.next({ company: res, from });
     }
   }
 
@@ -1191,6 +1204,24 @@ export class BillingService {
         return;
       }
 
+      // for form60
+      let tobepaidby: number = 0,
+        paymentmode: string = "";
+      if (this.depositservice.isform60exists) {
+        this.makeBillPayload.ds_paymode.tab_paymentList.forEach(
+          (payment: any) => {
+            if (Number(payment.amount) > 0) {
+              tobepaidby += Number(payment.amount);
+              paymentmode = paymentmode + " ," + payment.modeOfPayment;
+            }
+          }
+        );
+        this.depositservice.depositformsixtydetails.transactionAmount =
+          tobepaidby;
+        this.depositservice.depositformsixtydetails.mop = paymentmode;
+        this.depositservice.saveform60();
+      }
+
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
         this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
@@ -1220,7 +1251,7 @@ export class BillingService {
           this.calculateBillService.discountForm.value.authorise.value;
       }
 
-      if (toBePaid > collectedAmount) {
+      if (toBePaid > collectedAmount && toBePaid - collectedAmount >= 1) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
           "Do you want to pay with due amount of Rs." +
@@ -1431,6 +1462,7 @@ export class BillingService {
         itemid: procedure.value,
         priorityId: priorityId,
         serviceId: procedure.serviceid,
+        price_col_type: res[0].ret_value == 1 ? "input_price" : "",
         billItem: {
           popuptext: procedure.popuptext,
           itemId: procedure.value,
@@ -1679,7 +1711,9 @@ export class BillingService {
     if (res.length > 0) {
       this.addToInvestigations({
         sno: this.InvestigationItems.length + 1,
-        investigations: investigation.title,
+        investigations: res[0].procedureName
+          ? res[0].procedureName
+          : investigation.title, ////GAV-1493//investigation.title,
         precaution:
           investigation.precaution == "P"
             ? '<span class="max-health-red-color">P</span>'
@@ -1698,7 +1732,9 @@ export class BillingService {
           serviceId: serviceType || investigation.serviceid,
           price: res[0].returnOutPut,
           serviceName: "Investigations",
-          itemName: investigation.title,
+          itemName: res[0].procedureName
+            ? res[0].procedureName
+            : investigation.title, ////GAV-1493//investigation.title,
           qty: 1,
           precaution:
             investigation.precaution == "P"

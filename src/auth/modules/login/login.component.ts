@@ -13,6 +13,7 @@ import { environment } from "@environments/environment";
 import { ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ApplicationLogicService } from "@shared/services/applogic.service";
+import { MatDialog } from "@angular/material/dialog";
 @Component({
   selector: "auth-login",
   templateUrl: "./login.component.html",
@@ -76,7 +77,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private messageDialogService: MessageDialogService,
-    private appLogicService: ApplicationLogicService
+    private appLogicService: ApplicationLogicService,
+    public matDialog: MatDialog
   ) {}
 
   async ngOnInit() {
@@ -91,13 +93,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
         ).search
       );
       let stateId = checkingState.get("state");
-      if (localStorage.getItem("oidc." + stateId)) {
+      if (sessionStorage.getItem("oidc." + stateId)) {
         this.showLoginForm = true;
         this.processLoginForm();
       } else {
         this.authService.startAuthentication();
       }
     } else {
+      //await this.adauth.clearCookies().toPromise();
+
       await this.authService.manager.clearStaleState();
       this.authService.startAuthentication();
     }
@@ -266,6 +270,72 @@ export class LoginComponent implements OnInit, AfterViewInit {
       );
   }
 
+  async validUser(data: any) {
+    let status = data["status"];
+    if (status == "Valid") {
+      this.authStatus = true;
+      this.cookie.set("UserName", this.username);
+      this.cookie.set("UserId", this.userId.toString());
+      this.cookie.set("Name", this.name);
+      this.cookie.set("LocationIACode", this.locationdetail!.iaCode);
+      this.cookie.set(
+        "HSPLocationId",
+        this.locationdetail!.hspLocationId.toString()
+      );
+      this.cookie.set("Location", this.locationdetail!.organizationName);
+      this.cookie.set("Station", this.stationdetail!.stationName);
+      this.cookie.set("StationId", this.stationdetail!.stationid.toString());
+      //this.appLogicService.getGSTVistaLiveFlag();
+      setTimeout(() => {
+        window.location.href = data["redirectUrl"];
+      }, 200);
+      this.Authentication = true;
+    } else if (status == "InvalidUser") {
+      this.authStatus = false;
+      this.Authentication = false;
+      this.loginForm.reset();
+    } else if (status == "UserValidationError") {
+      if (data.userData) {
+        if (data.userData["error"]) {
+          // if ((data.userData.user.logged = "Y")) {
+          //   const errorDialogRef = this.messageDialogService.warning(
+          //     data.userData["error"]
+          //   );
+          //   await errorDialogRef.afterClosed().toPromise();
+          //   this.loginForm.reset();
+          //   //Delete ActiveSession
+          // } else {
+          this.messageDialogService.warning(data.userData["error"]);
+          this.loginForm.reset();
+          // this.Authentication = false;
+          // this.authStatus = false;
+          // this.userValidationError = data.userData["error"];
+          // }
+        }
+      }
+    } else {
+      this.authStatus = false;
+      this.Authentication = false;
+      this.loginForm.reset();
+    }
+  }
+
+  async createSession() {
+    let userId = Number(this.userId);
+    let locationId = Number(this.locationdetail!.hspLocationId);
+    let stationId = Number(this.stationdetail!.stationid);
+    let token = "";
+    let moduleId = 0;
+    this.adauth
+      .sessionCreation(userId, token, locationId, stationId, moduleId)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        async (data) => {
+          //console.log('createSession-Data',data);
+        },
+        (error) => {}
+      );
+  }
   loginSubmit() {
     let status;
     if (this.loginForm.valid) {
@@ -278,58 +348,32 @@ export class LoginComponent implements OnInit, AfterViewInit {
         .subscribe(
           async (data) => {
             console.log(data);
-            status = data["status"];
-            if (status == "Valid") {
-              this.authStatus = true;
-              this.cookie.set("UserName", this.username);
-              this.cookie.set("UserId", this.userId.toString());
-              this.cookie.set("Name", this.name);
-              this.cookie.set("LocationIACode", this.locationdetail!.iaCode);
-              this.cookie.set(
-                "HSPLocationId",
-                this.locationdetail!.hspLocationId.toString()
-              );
-              this.cookie.set(
-                "Location",
-                this.locationdetail!.organizationName
-              );
-              this.cookie.set("Station", this.stationdetail!.stationName);
-              this.cookie.set(
-                "StationId",
-                this.stationdetail!.stationid.toString()
-              );
-              //this.appLogicService.getGSTVistaLiveFlag();
-              setTimeout(() => {
-                window.location.href = data["redirectUrl"];
-              }, 200);
-              this.Authentication = true;
-            } else if (status == "InvalidUser") {
-              this.authStatus = false;
-              this.Authentication = false;
-              this.loginForm.reset();
-            } else if (status == "UserValidationError") {
-              if (data.userData) {
-                if (data.userData["error"]) {
-                  console.log(data.userData["error"]);
-                  if ((data.userData.user.logged = "Y")) {
-                    const errorDialogRef = this.messageDialogService.warning(
-                      data.userData["error"]
-                    );
-                    await errorDialogRef.afterClosed().toPromise();
-                    //Delete ActiveSession
+            if (data.userData.user) {
+              let userObj = data.userData.user;
+              if (
+                userObj.isAlreadyLoggedIn != undefined &&
+                userObj.isAlreadyLoggedIn
+              ) {
+                const dialogRef = this.messageDialogService.confirm(
+                  "",
+                  "You have logged in another session. Do you want to delete other active session?"
+                );
+                dialogRef.afterClosed().subscribe((res) => {
+                  if (res.type == "yes") {
+                    this.adauth
+                      .ClearExistingLogin(this.userId)
+                      .pipe(takeUntil(this._destroying$))
+                      .subscribe(async (resdata: any) => {
+                        await this.validUser(data);
+                        await this.createSession();
+                      });
                   } else {
-                    this.messageDialogService.warning(data.userData["error"]);
-                    // this.Authentication = false;
-                    // this.authStatus = false;
-                    // this.userValidationError = data.userData["error"];
+                    this.loginForm.reset();
                   }
-                }
+                });
+              } else {
+                await this.validUser(data);
               }
-              this.loginForm.reset();
-            } else {
-              this.authStatus = false;
-              this.Authentication = false;
-              this.loginForm.reset();
             }
           },
           (error) => {

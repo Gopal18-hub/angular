@@ -1,0 +1,16 @@
+.loading {
+  /* Absolute position */
+  left: 0;
+  position: absolute;
+  top: 0;
+
+  /* Take full size */
+  height: 100%;
+  width: 100%;
+  font-size: x-large;
+
+  /* Center */
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}

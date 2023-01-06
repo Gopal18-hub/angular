@@ -21,8 +21,28 @@ export class ADAuthService {
     );
   }
   public ClearExistingLogin(userid: number): any {
-    return this.http.postExternal(ApiConstants.deleteactivesession(userid),{});
+    return this.http.postExternal(ApiConstants.deleteactivesession(userid), {});
   }
+
+  public updateActiveSessionToken(
+    userId: number,
+    token: string,
+    locationid: number,
+    stationid: number,
+    moduleid: number
+  ) {
+    return this.http.postExternal(
+      ApiConstants.updateActiveSessionToken(),
+      JSON.stringify({
+        userId,
+        token,
+        locationid,
+        stationid,
+        moduleid,
+      })
+    );
+  }
+
   public authenticate(username: string, password: string) {
     let returnUrl;
     const query = window.location.search.substring(1);
@@ -42,8 +62,28 @@ export class ADAuthService {
       })
     );
   }
-  public sessionCreation(userId: number, token: string, locationid: number, stationid: number, moduleid: number) {
+  public sessionCreation(
+    userId: number,
+    token: string,
+    locationid: number,
+    stationid: number,
+    moduleid: number
+  ) {
     return this.http.postExternal(
-      ApiConstants.sessionCreation(userId,token,locationid, stationid, moduleid), {})
+      ApiConstants.sessionCreation(),
+      JSON.stringify({
+        userId,
+        token,
+        locationid,
+        stationid,
+        moduleid,
+      })
+    );
+  }
+
+  //clearCookies
+
+  public clearCookies() {
+    return this.http.post(ApiConstants.clearCookies, {});
   }
 }

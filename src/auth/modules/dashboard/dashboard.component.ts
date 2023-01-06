@@ -15,6 +15,8 @@ import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-histo
 import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ADAuthService } from "@auth/core/services/adauth.service";
+import { ApplicationLogicService } from "@shared/services/applogic.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -161,10 +163,13 @@ export class DashboardComponent implements OnInit {
     private lookupService: LookupService,
     private cookieService: CookieService,
     public matDialog: MatDialog,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private adauth: ADAuthService,
+    private appLogicService: ApplicationLogicService
   ) {}
 
   ngOnInit(): void {
+    this.appLogicService.getGSTVistaLiveFlag();
     this.getAllpatients()
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
@@ -229,6 +234,34 @@ export class DashboardComponent implements OnInit {
           });
         });
       });
+
+    let tokenStorage: any = sessionStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    const tokenJson = JSON.parse(tokenStorage);
+    let userId = Number(this.cookieService.get("UserId"));
+    let locationId = Number(this.cookieService.get("HSPLocationId"));
+    let stationId = Number(this.cookieService.get("StationId"));
+    let token = tokenJson["access_token"];
+    let moduleId = 0;
+    if (token.trim() != "") {
+      this.adauth
+        .updateActiveSessionToken(
+          userId,
+          token,
+          locationId,
+          stationId,
+          moduleId
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          async (data) => {
+            console.log("updateActiveSessionToken", data);
+          },
+          (error) => {}
+        );
+    }
+
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
@@ -247,7 +280,9 @@ export class DashboardComponent implements OnInit {
     this.apiProcessing = false;
     this.defaultUI = false;
     if (formdata.data) {
-      const lookupdata = await this.lookupService.searchPatient(formdata).catch((error) => {});
+      const lookupdata = await this.lookupService
+        .searchPatient(formdata)
+        .catch((error) => {});
       if (lookupdata == null || lookupdata == undefined) {
         this.patientList = [];
         this.defaultUI = true;

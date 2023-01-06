@@ -193,13 +193,12 @@ export class BillPaymentDialogComponent implements OnInit {
       return;
     } else if (
       this.billpatientIdentityInfo.mainradio == "form60" &&
-      this.formsixtysubmit == false
+      this.depositservice.isform60exists == false
     ) {
       this.messageDialogService.error("Please fill the form60 ");
       return;
     }
-    this.depositservice.clearformsixtydetails();
-
+   
     if (this.data.name == "Misc Billing") {
       this.miscService.makeBill(this.paymentmethod);
       this.dialogRef.close("MakeBill");
