@@ -58,7 +58,10 @@ export class CookieService {
   //   }
   // }
   get(name: string): string {
-    return MaxHealthStorage.getSession(name).toString();
+    let cookieValue = MaxHealthStorage.getSession(name);
+    if (cookieValue != undefined && cookieValue != null)
+      return MaxHealthStorage.getSession(name).toString();
+    else return "";
   }
 
   /**
