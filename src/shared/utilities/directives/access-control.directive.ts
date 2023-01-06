@@ -23,6 +23,7 @@ export class AccessControlDirective implements OnInit {
   async checkAccess() {
     let accessControls: any = this.permission.getAccessControls();
     if(accessControls && accessControls.length <= 0){
+      
      await this.permission.getPermissionsRoleWise();
      accessControls = this.permission.getAccessControls();
     }
