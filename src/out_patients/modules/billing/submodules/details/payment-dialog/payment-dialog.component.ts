@@ -361,8 +361,11 @@ export class PaymentDialogComponent implements OnInit {
         2
       );
 
-    this.dueform.controls["cashamount"].setValue(this.totaldue);
-    // this.totalamtFlag = this.totaldue - Math.floor(this.totaldue) !== 0;
+    this.dueform.controls["cashamount"].setValue(
+      this.billDetailService.patientbilldetaillist
+        .billDetialsForRefund_DepositRefundAmountDetail[0].balance
+    );
+    this.totalamtFlag = this.totaldue - Math.floor(this.totaldue) !== 0;
     // if (!this.totalamtFlag) {
     //   this.dueform.controls["cashamount"].setValue(Number(this.totaldue));
     // } else {
@@ -382,6 +385,20 @@ export class PaymentDialogComponent implements OnInit {
     //   console.log(res);
     //   this.adddueamount(res);
     // })
+
+    let amountIndex = [2, 3, 9, 17, 23];
+    if (!this.totalamtFlag) {
+      amountIndex.forEach((i) => {
+        this.questions[i].elementRef.addEventListener(
+          "keypress",
+          (event: any) => {
+            if (event.keyCode == 46) {
+              event.preventDefault();
+            }
+          }
+        );
+      });
+    }
 
     this.questions[2].elementRef.addEventListener(
       "focus",
@@ -689,37 +706,58 @@ export class PaymentDialogComponent implements OnInit {
   tabchange(event: MatTabChangeEvent) {
     console.log(event);
     console.log(this.selected);
+    console.log(this.totalamtFlag);
     if (event.index == 0) {
       if (Number(this.dueform.controls["cashamount"].value) == 0.0) {
-        this.dueform.controls["cashamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["cashamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["cashamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
       }
     } else if (event.index == 1) {
       if (Number(this.dueform.controls["chequeamount"].value) == 0.0) {
-        this.dueform.controls["chequeamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["chequeamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["chequeamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
       }
     } else if (event.index == 2) {
       //GAV-1483 - pos selection on payment screen
       this.posimeiapi();
       if (Number(this.dueform.controls["creditamount"].value) == 0.0) {
-        this.dueform.controls["creditamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["creditamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["creditamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
       }
     } else if (event.index == 3) {
       if (Number(this.dueform.controls["demandamount"].value) == 0.0) {
-        this.dueform.controls["demandamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["demandamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["demandamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
       }
     } else if (event.index == 4) {
       if (Number(this.dueform.controls["onlineamount"].value) == 0.0) {
-        this.dueform.controls["onlineamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["onlineamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["onlineamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
       }
     }
     this.amountcheck();
@@ -823,11 +861,15 @@ export class PaymentDialogComponent implements OnInit {
         "Amount can't be Negative"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["cashamount"].setValue(0.0);
+        this.dueform.controls["cashamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["cashamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["cashamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["cashamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (Number(this.dueform.controls["chequeamount"].value) < 0) {
@@ -835,11 +877,15 @@ export class PaymentDialogComponent implements OnInit {
         "Amount can't be Negative"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["chequeamount"].setValue(0.0);
+        this.dueform.controls["chequeamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["chequeamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["chequeamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["chequeamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (Number(this.dueform.controls["creditamount"].value) < 0) {
@@ -847,11 +893,15 @@ export class PaymentDialogComponent implements OnInit {
         "Amount can't be Negative"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["creditamount"].setValue(0.0);
+        this.dueform.controls["creditamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["creditamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["creditamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["creditamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (Number(this.dueform.controls["demandamount"].value) < 0) {
@@ -859,11 +909,15 @@ export class PaymentDialogComponent implements OnInit {
         "Amount can't be Negative"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["demandamount"].setValue(0.0);
+        this.dueform.controls["demandamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["demandamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["demandamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["demandamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (Number(this.dueform.controls["onlineamount"].value) < 0) {
@@ -871,11 +925,15 @@ export class PaymentDialogComponent implements OnInit {
         "Amount can't be Negative"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["onlineamount"].setValue(0.0);
+        this.dueform.controls["onlineamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["onlineamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["onlineamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["onlineamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     }
@@ -886,80 +944,101 @@ export class PaymentDialogComponent implements OnInit {
       Number(this.dueform.controls["demandamount"].value) +
       Number(this.dueform.controls["onlineamount"].value);
     this.reduceamount = Number(this.totaldue) - Number(this.finalamount);
-
+    console.log(this.finalamount, this.totaldue);
     if (
       this.selected == 0 &&
-      Number(this.finalamount) > Number(this.totaldue)
+      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["cashamount"].setValue(0.0);
+        this.dueform.controls["cashamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["cashamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["cashamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["cashamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (
       this.selected == 1 &&
-      Number(this.finalamount) > Number(this.totaldue)
+      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
     ) {
+      console.log(this.finalamount, this.totaldue);
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["chequeamount"].setValue(0.0);
+        this.dueform.controls["chequeamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["chequeamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["chequeamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["chequeamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (
       this.selected == 2 &&
-      Number(this.finalamount) > Number(this.totaldue)
+      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["creditamount"].setValue(0.0);
+        this.dueform.controls["creditamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["creditamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["creditamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["creditamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (
       this.selected == 3 &&
-      Number(this.finalamount) > Number(this.totaldue)
+      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["demandamount"].setValue(0.0);
+        this.dueform.controls["demandamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["demandamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["demandamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["demandamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     } else if (
       this.selected == 4 &&
-      Number(this.finalamount) > Number(this.totaldue)
+      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
       );
       dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["onlineamount"].setValue(0.0);
+        this.dueform.controls["onlineamount"].setValue(0);
         this.amountcheck();
-        this.dueform.controls["onlineamount"].setValue(
-          this.reduceamount.toFixed(2)
-        );
+        if (!this.totalamtFlag) {
+          this.dueform.controls["onlineamount"].setValue(this.reduceamount);
+        } else {
+          this.dueform.controls["onlineamount"].setValue(
+            this.reduceamount.toFixed(2)
+          );
+        }
         this.amountcheck();
       });
     }
