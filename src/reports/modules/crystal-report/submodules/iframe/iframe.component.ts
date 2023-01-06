@@ -51,5 +51,17 @@ export class IframeComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngAfterViewInit() {
+    const iframeEle: any = document.getElementById("crystalreportiframe");
+    const loadingEle: any = document.getElementById("loading");
+
+    iframeEle.addEventListener("load", function () {
+      // Hide the loading indicator
+      loadingEle.style.display = "none";
+      // Bring the iframe back
+      iframeEle.style.opacity = 1;
+    });
+  }
+
   ngOnDestroy(): void {}
 }

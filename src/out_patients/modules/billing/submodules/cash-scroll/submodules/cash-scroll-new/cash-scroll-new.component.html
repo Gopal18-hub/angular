@@ -78,18 +78,19 @@
             </div>
           </div>
           <div class="w-1/5 flex p-1 justify-content-end mr-2">
-            <div>
+            <div accessControl
+            masterModule="2"
+            moduleId="7"
+            featureId="66"
+            actionId="162"
+            >
               <button
                 mat-raised-button
                 color="primary"
                 class="button"
                 type="submit"
                 (click)="viewscrolldetails()"
-                [disabled]="queryparamssearch"
-                masterModule="2"
-                moduleId="7"
-                featureId="66"
-                actionId="162"
+                [disabled]="queryparamssearch"              
               >
                 <img src="assets/lens.svg" class="cashscrollnew-icon" />
                 <span class="ml-4 font-sm">Search</span>
@@ -100,8 +101,7 @@
                 mat-raised-button
                 color="primary"
                 class="button ml-2"
-                (click)="resetcashscrollnew()"
-                accessControl
+                (click)="resetcashscrollnew()"                
               >
                 Clear
               </button>
@@ -132,34 +132,34 @@
                 >Back to scroll search</mat-label
               >
             </div>
-            <div>
+            <div accessControl  masterModule="2"
+            moduleId="7"
+            featureId="66"
+            actionId="163">
               <button
                 mat-raised-button
                 color="primary"
                 type="submit"
                 class="ml-2 button"
                 [disabled]="scrolldetailsexists"
-                (click)="savecashscroll()"
-                masterModule="2"
-                moduleId="7"
-                featureId="66"
-                actionId="163"
+                (click)="savecashscroll()"               
               >
                 Save
               </button>
             </div>
-            <div>
+            <div accessControl
+            masterModule="2"
+            moduleId="7"
+            featureId="66"
+            actionId="164"
+            >
               <button
                 mat-raised-button
                 color="primary"
                 type="submit"
                 class="ml-2 button"
                 [disabled]="printsexists"
-                (click)="print()"
-                masterModule="2"
-                moduleId="7"
-                featureId="66"
-                actionId="164"
+                (click)="print()"              
               >
                 Print
               </button>

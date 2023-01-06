@@ -2,11 +2,12 @@
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
 
-import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Injectable, Inject, PLATFORM_ID, InjectionToken } from "@angular/core";
+import { DOCUMENT, isPlatformBrowser } from "@angular/common";
+import { MaxHealthStorage } from "./storage";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class CookieService {
   private readonly documentIsAccessible: boolean;
@@ -44,17 +45,23 @@ export class CookieService {
    * @param name Cookie name
    * @returns property value
    */
+  // get(name: string): string {
+  //   if (this.documentIsAccessible && this.check(name)) {
+  //     name = encodeURIComponent(name);
+
+  //     const regExp: RegExp = this.getCookieRegExp(name);
+  //     const result: any = regExp.exec(this.document.cookie);
+
+  //     return this.safeDecodeURIComponent(result[1]);
+  //   } else {
+  //     return "";
+  //   }
+  // }
   get(name: string): string {
-    if (this.documentIsAccessible && this.check(name)) {
-      name = encodeURIComponent(name);
-
-      const regExp: RegExp = this.getCookieRegExp(name);
-      const result: any = regExp.exec(this.document.cookie);
-
-      return this.safeDecodeURIComponent(result[1]);
-    } else {
-      return '';
-    }
+    let cookieValue = MaxHealthStorage.getSession(name);
+    if (cookieValue != undefined && cookieValue != null)
+      return MaxHealthStorage.getSession(name).toString();
+    else return "";
   }
 
   /**
@@ -68,10 +75,11 @@ export class CookieService {
     const cookies: { [key: string]: string } = {};
     const document: any = this.document;
 
-    if (document.cookie && document.cookie !== '') {
-      document.cookie.split(';').forEach((currentCookie: any) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[this.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = this.safeDecodeURIComponent(cookieValue);
+    if (document.cookie && document.cookie !== "") {
+      document.cookie.split(";").forEach((currentCookie: any) => {
+        const [cookieName, cookieValue] = currentCookie.split("=");
+        cookies[this.safeDecodeURIComponent(cookieName.replace(/^ /, ""))] =
+          this.safeDecodeURIComponent(cookieValue);
       });
     }
 
@@ -87,7 +95,15 @@ export class CookieService {
    * @param secure   Secure flag
    * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
    */
-  set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'): void;
+  // set(
+  //   name: string,
+  //   value: string,
+  //   expires?: number | Date,
+  //   path?: string,
+  //   domain?: string,
+  //   secure?: boolean,
+  //   sameSite?: "Lax" | "None" | "Strict"
+  // ): void;
 
   /**
    * Cookie's parameters:
@@ -102,17 +118,17 @@ export class CookieService {
    * @param value    Cookie value
    * @param options  Body with cookie's params
    */
-  set(
-    name: string,
-    value: string,
-    options?: {
-      expires?: number | Date;
-      path?: string;
-      domain?: string;
-      secure?: boolean;
-      sameSite?: 'Lax' | 'None' | 'Strict';
-    }
-  ): void;
+  // set(
+  //   name: string,
+  //   value: string,
+  //   options?: {
+  //     expires?: number | Date;
+  //     path?: string;
+  //     domain?: string;
+  //     secure?: boolean;
+  //     sameSite?: "Lax" | "None" | "Strict";
+  //   }
+  // ): void;
 
   set(
     name: string,
@@ -121,65 +137,76 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict'
+    sameSite?: "Lax" | "None" | "Strict"
   ): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
+    MaxHealthStorage.setSession(name, value);
+    // if (!this.documentIsAccessible) {
+    //   return;
+    // }
 
-    if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
-      const optionsBody = {
-        expires: expiresOrOptions,
-        path,
-        domain,
-        secure,
-        sameSite: sameSite ? sameSite : 'Lax',
-      };
+    // if (
+    //   typeof expiresOrOptions === "number" ||
+    //   expiresOrOptions instanceof Date ||
+    //   path ||
+    //   domain ||
+    //   secure ||
+    //   sameSite
+    // ) {
+    //   const optionsBody = {
+    //     expires: expiresOrOptions,
+    //     path,
+    //     domain,
+    //     secure,
+    //     sameSite: sameSite ? sameSite : "Lax",
+    //   };
 
-      this.set(name, value, optionsBody);
-      return;
-    }
+    //   this.set(name, value, optionsBody);
+    //   return;
+    // }
 
-    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+    // let cookieString: string =
+    //   encodeURIComponent(name) + "=" + encodeURIComponent(value) + ";";
 
-    const options = expiresOrOptions ? expiresOrOptions : {};
+    // const options = expiresOrOptions ? expiresOrOptions : {};
 
-    if (options.expires) {
-      if (typeof options.expires === 'number') {
-        const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
+    // if (options.expires) {
+    //   if (typeof options.expires === "number") {
+    //     const dateExpires: Date = new Date(
+    //       new Date().getTime() + options.expires * 1000 * 60 * 60 * 24
+    //     );
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
-      } else {
-        cookieString += 'expires=' + options.expires.toUTCString() + ';';
-      }
-    }
+    //     cookieString += "expires=" + dateExpires.toUTCString() + ";";
+    //   } else {
+    //     cookieString += "expires=" + options.expires.toUTCString() + ";";
+    //   }
+    // }
 
-    if (options.path) {
-      cookieString += 'path=' + options.path + ';';
-    }
+    // if (options.path) {
+    //   cookieString += "path=" + options.path + ";";
+    // }
 
-    if (options.domain) {
-      cookieString += 'domain=' + options.domain + ';';
-    }
+    // if (options.domain) {
+    //   cookieString += "domain=" + options.domain + ";";
+    // }
 
-    if (options.secure === false && options.sameSite === 'None') {
-      options.secure = true;
-      console.warn(
-        `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
-      );
-    }
-    if (options.secure) {
-      cookieString += 'secure;';
-    }
+    // if (options.secure === false && options.sameSite === "None") {
+    //   options.secure = true;
+    //   console.warn(
+    //     `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
+    //       `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+    //   );
+    // }
+    // if (options.secure) {
+    //   cookieString += "secure;";
+    // }
 
-    if (!options.sameSite) {
-      options.sameSite = 'Lax';
-    }
+    // if (!options.sameSite) {
+    //   options.sameSite = "Lax";
+    // }
 
-    cookieString += 'sameSite=' + options.sameSite + ';';
+    // cookieString += "sameSite=" + options.sameSite + ";";
 
-    this.document.cookie = cookieString;
+    // this.document.cookie = cookieString;
   }
 
   /**
@@ -187,19 +214,37 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
-    const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
-    this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
+  delete(
+    name: string,
+    path?: string,
+    domain?: string,
+    secure?: boolean,
+    sameSite: "Lax" | "None" | "Strict" = "Lax"
+  ): void {
+    // if (!this.documentIsAccessible) {
+    //   return;
+    // }
+    // const expiresDate = new Date("Thu, 01 Jan 1970 00:00:01 GMT");
+    // this.set(name, "", {
+    //   expires: expiresDate,
+    //   path,
+    //   domain,
+    //   secure,
+    //   sameSite,
+    // });
+    MaxHealthStorage.deleteSession(name);
   }
 
   /**
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  deleteAll(
+    path?: string,
+    domain?: string,
+    secure?: boolean,
+    sameSite: "Lax" | "None" | "Strict" = "Lax"
+  ): void {
     if (!this.documentIsAccessible) {
       return;
     }
@@ -211,6 +256,7 @@ export class CookieService {
         this.delete(cookieName, path, domain, secure, sameSite);
       }
     }
+    sessionStorage.clear();
   }
 
   /**
@@ -218,9 +264,15 @@ export class CookieService {
    * @returns property RegExp
    */
   private getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
+    const escapedName: string = name.replace(
+      /([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi,
+      "\\$1"
+    );
 
-    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
+    return new RegExp(
+      "(?:^" + escapedName + "|;\\s*" + escapedName + ")=(.*?)(?:;|$)",
+      "g"
+    );
   }
 
   private safeDecodeURIComponent(encodedURIComponent: string): string {

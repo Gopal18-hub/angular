@@ -93,13 +93,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
         ).search
       );
       let stateId = checkingState.get("state");
-      if (localStorage.getItem("oidc." + stateId)) {
+      if (sessionStorage.getItem("oidc." + stateId)) {
         this.showLoginForm = true;
         this.processLoginForm();
       } else {
         this.authService.startAuthentication();
       }
     } else {
+      //await this.adauth.clearCookies().toPromise();
+
       await this.authService.manager.clearStaleState();
       this.authService.startAuthentication();
     }
@@ -318,6 +320,22 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
+  async createSession() {
+    let userId = Number(this.userId);
+    let locationId = Number(this.locationdetail!.hspLocationId);
+    let stationId = Number(this.stationdetail!.stationid);
+    let token = "";
+    let moduleId = 0;
+    this.adauth
+      .sessionCreation(userId, token, locationId, stationId, moduleId)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        async (data) => {
+          //console.log('createSession-Data',data);
+        },
+        (error) => {}
+      );
+  }
   loginSubmit() {
     let status;
     if (this.loginForm.valid) {
@@ -341,13 +359,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
                   "You have logged in another session. Do you want to delete other active session?"
                 );
                 dialogRef.afterClosed().subscribe((res) => {
-                  console.log("res", res);
                   if (res.type == "yes") {
                     this.adauth
                       .ClearExistingLogin(this.userId)
                       .pipe(takeUntil(this._destroying$))
                       .subscribe(async (resdata: any) => {
                         await this.validUser(data);
+                        await this.createSession();
                       });
                   } else {
                     this.loginForm.reset();
