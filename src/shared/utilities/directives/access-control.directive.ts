@@ -14,15 +14,18 @@ export class AccessControlDirective implements OnInit {
     private elementRef: ElementRef,
     private permission: PermissionService
   ) {}
-
+ 
   ngOnInit() {
     this.elementRef.nativeElement.style.pointerEvents = "none";
     this.elementRef.nativeElement.style.opacity = 0.4;
     this.checkAccess();
   }
-  checkAccess() {
-    
-    const accessControls: any = this.permission.getAccessControls();
+  async checkAccess() {
+    let accessControls: any = this.permission.getAccessControls();
+    if(accessControls && accessControls.length <= 0){
+     await this.permission.getPermissionsRoleWise();
+     accessControls = this.permission.getAccessControls();
+    }
     const exist: any =
       accessControls[this.masterModule][this.moduleId][this.featureId][
         this.actionId
