@@ -85,9 +85,9 @@ export namespace CrystalReport {
       environment.ReportsSampleUrl
     }MAXHIS/Billing/OTBilling/ConsumabaleEntryDetails?billno=${
       params.billno
-    }&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&MAXID=${
-      params.MAXID
-    }&exportflagEnable=${params.exportflagEnable == "true" ? 1 : 0}`;
+    }&locationID=${params.locationId}&MAXID=${params.MAXID}&exportflagEnable=${
+      params.exportflagEnable == "true" ? 1 : 0
+    }`;
   };
 
   export const HappyFamilyPlanAllocationReport = (params: any) => {
