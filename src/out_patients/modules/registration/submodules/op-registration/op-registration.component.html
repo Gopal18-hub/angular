@@ -501,39 +501,39 @@
 
               <!-- SAVE MODIFY BUTTON -->
               <div class="flex w-full justify-between flex-wrap flex-column">
-                <div class="flex justify-between mb-3 mt-0">
-                  <div  accessControl
-                  masterModule = "2"
-                  moduleId="7"
-                  featureId="60"
-                  actionId="140">
+                <div class="flex justify-between mb-3 mt-0">                
                   <button
                   mat-raised-button
                   color="primary"
                   class="w-1/45"
                   type="submit"
                   [disabled]="!OPRegForm.valid || MaxIDExist || expiredPatient"
-                  (click)="registationFormSubmit()"                   
+                  (click)="registationFormSubmit()"    
+                  accessControl
+                  masterModule = "2"
+                  moduleId="7"
+                  featureId="60"
+                  actionId="140"               
                 >
                   Save
                 </button>
-                  </div>
-                 <div  accessControl
-                 masterModule = "2"
-                 moduleId="7"
-                 featureId="60"
-                 actionId="141">
+                
                  <button
                  mat-raised-button
                  color="primary"
                  class="w-1/45"
                  type="button"
                  [disabled]="!OPRegForm.valid || !MaxIDExist || expiredPatient"
-                 (click)="onModifyDetail()"                   
+                 (click)="onModifyDetail()"
+                 accessControl
+                 masterModule = "2"
+                 moduleId="7"
+                 featureId="60"
+                 actionId="141"                   
                >
                  Modify
                </button>
-                 </div>                 
+                              
                 </div>
                 <div class="flex justify-between">
                   <button
