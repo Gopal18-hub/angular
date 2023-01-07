@@ -74,17 +74,13 @@ export namespace MaxHealthStorage {
   }
 
   export function getCookie(name: any) {
-    //   var value = "; " + document.cookie;
-    //   var parts: any = value.split("; " + name + "=");
-    //   if (parts.length == 2) {
-    //     const temp = unescape(parts.pop().split(";").shift());
-    //     return temp;
-    //   } else {
-    //     return false;
-    //   }
-    let cookieValue = MaxHealthStorage.getSession(name);
-    if (cookieValue != undefined && cookieValue != null)
-      return MaxHealthStorage.getSession(name).toString();
-    else return "";
+    var value = "; " + document.cookie;
+    var parts: any = value.split("; " + name + "=");
+    if (parts.length == 2) {
+      const temp = unescape(parts.pop().split(";").shift());
+      return temp;
+    } else {
+      return false;
+    }
   }
 }
