@@ -62,7 +62,7 @@ export class ConsumableDetailsComponent implements OnInit {
     },
   };
   procedureDataForConsumable: any = [];
-  LocationID: any = Number(this.cookie.get("HSPLocationId"));
+  //LocationID: any = Number(this.cookie.get("HSPLocationId"));
   billno: any;
   constructor(
     private reportService: ReportService,
@@ -161,7 +161,7 @@ export class ConsumableDetailsComponent implements OnInit {
         {
           MAXID: this.billingservice.activeMaxId.maxId,
           billno: this.billingservice.billNo || '',
-          locationId: this.LocationID,
+          locationID: this.cookie.get("HSPLocationId"),
           exportflagEnable: exist,
         }
       );
