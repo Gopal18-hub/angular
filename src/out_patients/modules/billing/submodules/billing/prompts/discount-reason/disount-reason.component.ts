@@ -409,7 +409,15 @@ export class DisountReasonComponent implements OnInit {
       } else if (res.data.col == "discAmt") {
         let item =
           this.calculateBillService.discountSelectedItems[res.data.index];
-        item.discAmt = parseFloat(item.discAmt);
+        //added check for greater than amount entered
+        if (parseFloat(item.discAmt) > item.price) {
+          item.discAmt = item.price;
+        } else if (parseFloat(item.discAmt) < 0) {
+          item.discAmt = 0;
+        } else {
+          parseFloat(item.discAmt);
+        }
+
         item.disc = (parseFloat(item.discAmt) / item.price) * 100;
         item.totalAmt = item.price - item.discAmt;
       }
