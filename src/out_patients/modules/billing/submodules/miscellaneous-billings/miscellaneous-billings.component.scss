@@ -1,0 +1,117 @@
+.billing-page-wrapper {
+    background-color: #fff;
+    .text-color {
+      color: #5a5a5a;
+      font-weight: 400;
+    }
+    .iom-color {
+      color: #45c0be;
+      font-weight: 500;
+    }
+    .special-checkbox {
+      ::ng-deep .mat-checkbox-label {
+        color: #45c0be !important;
+        text-decoration: underline;
+      }
+    }
+  
+    .isDisabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .api-loader {
+      background: rgba(0, 0, 0, 0.15);
+    }
+    mat-label {
+      font-weight: 500;
+    }
+    .width-13 {
+      width: 13%;
+    }
+    .width-15 {
+      width: 15%;
+    }
+    .second-row-action-items {
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+    }
+    .bg-secondary {
+      background-color: #f6f6f6;
+    }
+    .bg-white {
+      background-color: #fff;
+    }
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+    }
+    ::ng-deep {
+      .min-width-initial {
+        min-width: initial !important;
+      }
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+  
+      .mat-tab-header {
+        border-bottom: none;
+      }
+      .mat-tab-links {
+        background-color: #45c0be;
+        border-radius: 13px 13px 0 0;
+        border: 4px solid #45c0be;
+        border-bottom: 0;
+        a {
+          color: #fff;
+          background-color: #bfe8e7;
+          border-radius: 13px 13px 0 0;
+          margin-right: 4px;
+          color: #08504f;
+          opacity: 1;
+          &.mat-tab-link {
+            height: 26px;
+          }
+          &.mat-tab-label-active {
+            background-color: #fff;
+            color: #08504f;
+            font-weight: 600;
+          }
+        }
+      }
+      .mat-ink-bar {
+        display: none;
+      }
+    }
+    .billing-panel-wrapper {
+      border: 4px solid #45c0be;
+      border-top: 0;
+      border-radius: 0 0 13px 13px;
+      padding: 0 0.75rem;
+      height: calc(100vh - 310px);
+    }
+   
+    .w-80
+    {
+      width : 80%
+    }
+    .txt-blue
+{   
+   color: #45C0BE;
+   font-style: italic;
+   text-decoration: underline;
+   font-weight:550;
+
+   ::ng-deep .mat-checkbox-label
+   {
+    text-decoration: underline;
+    margin-left: 0.3rem;
+   }
+}
+    
+  }
+  

@@ -1,0 +1,45 @@
+<form
+  (ngSubmit)="submit()"
+  [formGroup]="formGroup"
+  class="mt-4 mb-6 px-12 py-6 prompt-report-form"
+  autocomplete="off"
+>
+  <div
+    class="flex justify-between flex-wrap max-health-primary-color align-items-center"
+    [ngClass]="{ 'form-column': reportConfig.layout == 'single' }"
+  >
+    <div
+      *ngFor="let question of questions; let i = index"
+      class="form-control-element mb-2 w-145 w-1/45 mt-error {{
+        reportConfig.form?.layout && reportConfig.form?.layout[question.key]
+      }}"
+      [ngClass]="{
+        'hidden display-none': question.type == 'hidden'
+      }"
+    >
+      <maxhealth-question
+        [question]="question"
+        [form]="formGroup"
+        [questions]="questions"
+        [index]="i"
+      ></maxhealth-question>
+    </div>
+  </div>
+  <div
+    class="text-center prompt-form-action mt-4 max-health-primary-color mx-8 flex justify-between"
+    *ngIf="reportConfig.form?.actionItems"
+  >
+    <ng-container *ngFor="let button of reportConfig.form?.actionItems">
+      <button
+        mat-raised-button
+        color="primary"
+        class="w-5/2 mt-2"
+        type="button"
+        [disabled]="!formGroup.valid"
+        (click)="buttonAction(button)"
+      >
+        {{ button.label }}
+      </button>
+    </ng-container>
+  </div>
+</form>

@@ -1,0 +1,29 @@
+<section class="h-full gst-tax-wrapper">
+    <!-- Header & Cross Icon-->
+    <div>
+        <mat-label class="max-health-primary-color font-lg font-semi-bold mt-2">GST Tax</mat-label>
+        <mat-icon mat-dialog-close class="float-right cursor-pointer max-dialog-close-icon" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+    </div>
+
+    <!-- Table -->
+    <div class="h-7/10 mt-3">
+        <maxhealth-table      
+        [config]="config"
+        [data]="data.gstdetail"
+        ></maxhealth-table>
+    </div>
+
+    <div class="w-full mt-3 flex">
+        <mat-label class="max-health-primary-color font-semi-bold">Sac Code</mat-label>
+        <div class="ml-2 w-1/2">
+            <maxhealth-question 
+                  [question]="question[0]"
+                  [form]="gstTaxForm"
+                  [questions]="question[0]"
+                  [index]="0"
+                >
+            </maxhealth-question> 
+        </div>
+    </div>
+
+</section>

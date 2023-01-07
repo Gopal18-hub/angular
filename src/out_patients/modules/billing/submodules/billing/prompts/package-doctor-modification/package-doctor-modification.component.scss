@@ -1,0 +1,15 @@
+.package-doctor-modification {
+  ::ng-deep {
+    maxhealth-table {
+      .mat-form-field.mat-form-field-appearance-outline {
+        .mat-form-field-wrapper {
+          padding: 0.5em 0 !important;
+          margin-bottom: 0.5em !important;
+        }
+      }
+    }
+  }
+  .package-content-area {
+    height: 100px;
+  }
+}

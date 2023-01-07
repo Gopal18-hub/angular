@@ -1,0 +1,53 @@
+<div
+  class="flex align-items-center justify-center flex-column max-health-primary-color relative"
+>
+  <!-- <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button> -->
+  <img src="assets/warning-yellow.svg" width="100" class="mb-4" />
+  <p class="mb-3 font-bold">
+    This Patient have Due Amount of
+    {{ data.dueAmount | currency: "INR":undefined:undefined:"en-IN" }}
+  </p>
+  <button
+    mat-raised-button
+    color="primary"
+    class="font-sm min-width-initial"
+    type="button"
+    mat-dialog-close
+    (click)="paynow()"
+  >
+    Pay Now
+  </button>
+  <p class="my-3">OR</p>
+  <p class="my-0 font-bold">Select Reason to Skip Due settlement</p>
+  <mat-form-field appearance="outline" floatLabel="never" class="mb-2">
+    <mat-select
+      [(ngModel)]="skipReason"
+      [panelClass]="'im-select-dropdown'"
+      disableOptionCentering
+    >
+      <ng-container *ngFor="let opt of skipReasonsList">
+        <mat-option [value]="opt.value">
+          {{ opt.title }}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+  <button
+    mat-raised-button
+    color="primary"
+    class="font-sm min-width-initial"
+    type="button"
+    [disabled]="!skipReason"
+    (click)="saveReason()"
+  >
+    Save
+  </button>
+</div>

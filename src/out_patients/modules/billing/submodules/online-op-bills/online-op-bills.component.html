@@ -1,0 +1,84 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel onlineopbillwrapper">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Online Bill Generate</a>
+      </li>
+    </ul>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div
+    *ngIf="apiProcessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+    <div class="h-full w-full">
+      <form [formGroup]="onlineopbillsForm" class="h-full w-full">
+           <!---------------------------------FIRST ROW----------------------------------------------------->
+             
+        <div class="flex justify-between p-2 ml-2  mt-2 mr-3 border-radius-lg bg-grey  items-center">
+
+          <div class="flex w-1/3 h-full bg-lightgrey border-radius-md">
+            <div class="mt-2 ml-2">
+              <p class="max-health-primary-color  font-semi-bold wt-nowrap ">From Date </p>
+            </div>
+            <div class="w-3/10 mt-2 border-radius-lg h-full ml-2 bg-white clr-primary  default-label-none">
+              <maxhealth-question [question]="questions[0]" [form]="onlineopbillsForm" [questions]="questions[0]"
+                [index]="0"></maxhealth-question>
+            </div>
+            <div class="mt-2 ml-4">
+              <p class="max-health-primary-color  font-semi-bold wt-nowrap ">To Date</p>
+            </div>
+            <div class="w-3/10 mt-2 border-radius-lg h-full ml-2 bg-white clr-primary  default-label-none">
+              <maxhealth-question [question]="questions[1]" [form]="onlineopbillsForm" [questions]="questions[1]"
+                [index]="1"></maxhealth-question>
+            </div>
+          </div>
+         
+          <div class="flex h-full w-2/5">
+            <div>
+              <mat-label class="max-health-primary-color wt-nowrap font-semi-bold">Specialisation</mat-label>
+            </div>
+            <div class="w-5/9 ml-2  bg-white clr-primary">
+              <maxhealth-question [question]="questions[2]" [form]="onlineopbillsForm" [questions]="questions[2]"
+                [index]="2"></maxhealth-question>
+            </div>
+          </div>
+         
+          <div class="flex w-1/5 float-right online-op-button">
+            
+              <button mat-raised-button color="primary" type="submit" class="mr-5" (click)="displayallspecialisation()" [disabled]="!onlineopbillsForm.valid">
+                  <img src="assets/lens.svg" class="onlineoplens-icon">
+  
+                 <span class="ml-3 font-sm">Search</span> 
+  
+              </button>
+              <button mat-raised-button color="primary" class="mr-5" (click)="printonlineopbillreceipt()" [disabled]="!MaxIDExist">
+                Print
+            </button>
+            <button mat-raised-button color="primary" (click)="resetonlineopbill()">
+                Clear
+            </button>
+              
+        </div>
+
+        </div>
+   <!---------------------------------SECOND ROW----------------------------------------------------->
+  
+   <div class="px-3 pt-2 pb-2 w-full h-4/5">
+    <ng-container>
+      <maxhealth-table class="onlineoptable"  [config]="onlineopbillsconfig" [data]="onlineopbillList" #onlineopbillstable></maxhealth-table>
+    </ng-container>
+  </div>
+      </form>
+    </div>
+  </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between mx-5 max-health-primary-color">
+  <p>Last Update By: {{ lastUpdatedBy }}</p>
+  <div class="right">
+    Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+    {{ moment().format("LT") }}
+  </div>
+</div>

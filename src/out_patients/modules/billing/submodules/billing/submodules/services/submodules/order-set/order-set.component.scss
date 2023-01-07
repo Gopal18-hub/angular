@@ -1,0 +1,26 @@
+.order-set-wrapper {
+  ::ng-deep {
+    maxhealth-table {
+      table {
+        width: 140% !important;
+        .mat-column-precaution {
+          text-align: center;
+        }
+      }
+    }
+    .mat-select{
+      padding: 2px !important;
+    }
+  }
+}
+::ng-deep {
+  .mat-option-multiple.mat-active {
+    .mat-option-text {
+      color: #fff !important;
+    }
+  }
+}
+
+.service-table-height {
+  height: calc(100% - 38px);
+}

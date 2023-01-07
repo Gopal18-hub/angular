@@ -1,0 +1,126 @@
+<div
+  class="flex flex-column h-full relative health-plan-details"
+  *ngIf="planType != 'otherPlanDetails'"
+>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">Plan Details</h2>
+  <div class="h-3/4">
+    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+  </div>
+  <div class="flex mt-4 flex-row-reverse">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      type="button"
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-5"
+      type="button"
+      (click)="save()"
+      [disabled]="tableRows && tableRows.selection.selected == 0"
+    >
+      Ok
+    </button>
+  </div>
+</div>
+
+<div
+  class="flex flex-column h-full relative other-plan-details"
+  *ngIf="planType == 'otherPlanDetails'"
+>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">Other Health Plan Utilization</h2>
+  <div class="h-4/5">
+    <maxhealth-table
+      [config]="otherPlanConfig"
+      [data]="data"
+      #table
+    ></maxhealth-table>
+  </div>
+  <div class="flex mt-4 justify-between">
+    <div class="w-1/3">
+      <ng-container *ngIf="isConsultationExist">
+        <div>
+          <mat-form-field
+            class="full-width clearfix clear"
+            appearance="outline"
+            floatLabel="never"
+          >
+            <input
+              matInput
+              placeholder=""
+              [formControl]="selectedDoctor"
+              required="true"
+              [matAutocomplete]="auto"
+              autocomplete="off"
+              placeholder="--Select Doctor--"
+            />
+            <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="displayFn"
+              (opened)="arrowIcon = 'arrow_drop_up'"
+              (closed)="arrowIcon = 'arrow_drop_down'"
+              panelWidth="auto"
+            >
+              <mat-option
+                *ngFor="let opt of filteredOptions | async"
+                [value]="opt"
+                [ngStyle]="opt.ngStyle"
+              >
+                {{ opt.title }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </ng-container>
+    </div>
+    <div>
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm min-width-initial"
+        type="button"
+        (click)="cancel()"
+        class="mr-4"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm min-width-initial mr-5"
+        type="button"
+        (click)="save()"
+        [disabled]="
+          (tableRows && tableRows.selection.selected == 0) ||
+          (isConsultationExist && !selectedDoctor.valid)
+        "
+      >
+        Ok
+      </button>
+    </div>
+  </div>
+</div>

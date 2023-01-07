@@ -1,0 +1,170 @@
+
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper op-billing-wrapper">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+      <ul class="list-unstyled flex items-end">
+        <li class="ml-3">
+          <a mat-tab-link [active]="true"> OP Order Request</a>
+        </li>
+      </ul>
+      <div class="maxhealth-spacer"></div>
+      <div *ngFor="let icon of categoryIcons" class="flex mr-2">
+        <img
+          [src]="icon['src']"
+          [alt]="icon['tooltip']"
+          width="45px"
+          class="cursor-pointer"
+          [matTooltip]="icon['tooltip']"
+         (click)="doCategoryIconAction(icon)" 
+        />
+      </div>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <div
+        class="shadow-2 flex flex-column h-full w-full h-full px-4 py-0 pb-2 billing-page-wrapper"
+      >
+        <!-- First Row -->
+        <div class=" flex w-full p-1 mt-2 bg-secondary border-radius-xlg">
+          <form
+            [formGroup]="formGroup"
+            autocomplete="off"
+            class="w-full flex align-items-center"
+          >
+            <mat-label class="max-health-primary-color mr-1">Max ID</mat-label>
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[0]"
+                [form]="formGroup"
+                [questions]="questions[0]"
+                [index]="0"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-1"
+              >Mobile No.</mat-label
+            >
+            <div class="bg-white w-1/10 mr-2 default-label-none mt-error">
+              <maxhealth-question
+                [question]="questions[1]"
+                [form]="formGroup"
+                [questions]="questions[1]"
+                [index]="1"
+              >
+              </maxhealth-question>
+            </div>
+            <div class="flex w-68 ml-3 align-items-center">            
+               
+                  <mat-label class="max-health-primary-color"
+                    >Name:
+              </mat-label>
+                   <span class="text-color w-2/10 text-wrap ml-1" matTooltip="{{patientName}}">{{ patientName }}</span>
+                  
+               
+             
+                  <mat-label class="max-health-primary-color ml-3"
+                    >Age: </mat-label
+                  >
+                  <span class="text-color w-1/15 ml-1" matTooltip="{{age}}">{{ age }}</span>
+               
+                  <mat-label class="max-health-primary-color ml-3"
+                    >Gender:</mat-label
+                  >
+                   <span class="text-color w-1/10 ml-1" matTooltip="{{gender}}">{{ gender }}</span>
+              
+         
+                  <mat-label class="max-health-primary-color ml-3"
+                    >DOB:</mat-label
+                  >
+                  <span class="text-color w-1/7 ml-1" matTooltip="{{dob}}">{{ dob }}</span>
+          
+              
+                  <mat-label class="max-health-primary-color ml-3 "
+                    >Nationality:
+                   </mat-label
+                  >
+                  <span class="text-color w-1/15 ml-1" matTooltip="{{country}}">{{ country }}</span>
+          
+                  <mat-label class="max-health-primary-color ml-3"
+                    >SSN: </mat-label
+                  >
+                  <span class="text-color w-1/15 ml-1" matTooltip="{{ssn}}">{{ ssn }}</span>
+                  <button class="min-width-initial mr-1" color="primary" mat-raised-button (click)="clear()"[disabled]="!formGroup.dirty">
+                    Clear
+                  </button>
+              </div>
+          </form>
+        
+          
+      
+
+        </div>
+  
+        <div
+          *ngIf="apiProcessing"
+          class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+        >
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
+  
+      
+        <div [class.isDisabled]="!patient || expiredPatient" class="h-full w-full">
+         
+          <div class="mt-2 w-full">
+            <nav mat-tab-nav-bar class="w-full">
+              <div class="w-4/5">
+                <a
+                mat-tab-link
+                *ngFor="let link of links"
+                [routerLink]="link.path"
+                routerLinkActive
+                #rla="routerLinkActive"
+                (click)="activeLink = link"
+                [active]="rla.isActive || activeLink.path == link.path"
+              >
+                {{ link.title }}
+              </a>
+              </div>
+             
+              <div
+              class="max-health-primary-color font-bold float-right text-underline w-2/10 ml-13"
+              *ngIf="opOrderRequestService.totalCost > 0 && enableTotalestimate "
+            >
+              <span>Total Estimation:</span>
+              {{
+                opOrderRequestService.totalCost
+                  | currency: "INR":undefined:undefined:"en-IN"
+              }}
+            </div>
+             
+            </nav>
+            
+ 
+            
+          
+              <router-outlet></router-outlet>
+           
+            <!-- *ngIf="activeLink==View Request" -->
+        
+          </div>
+        </div>
+      </div>
+    
+    </mat-tab-nav-panel>
+    
+  </section>
+  <div class="flex ml-4 mr-4 justify-between font-xs">
+    <div class="left flex">
+      <span
+        >Last updated by: Username ( id: {{ cookie.get("UserName") }} ) on
+        07-03-2022 | 10:10:00</span
+      >
+      <span class="mat-error font-semi-bold ml-4"
+        >* Apply Patient/Company Discount after final calculation. * Need special
+        approval for red highlighted investigations in case of PSU patients</span
+      >
+    </div>
+    <div class="right">
+      Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+      {{ moment().format("LT") }}
+    </div>
+  </div>
+  

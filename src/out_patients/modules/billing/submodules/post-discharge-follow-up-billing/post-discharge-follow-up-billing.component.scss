@@ -1,0 +1,172 @@
+.post-billing-page-wrapper {
+    background-color: #fff;
+    .isDisabled {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+    mat-label {
+      font-weight: 500;
+    }
+    .width-8 {
+      width: 9%;
+    }
+    .width-9 {
+        width: 9%;
+      }
+    .w-11{
+        width: 11%;
+    }
+    .w-12{
+        width: 12%;
+    }
+    .w-13{
+        width: 13%;
+    }
+    .second-row-action-items {
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+    }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .bg-secondary {
+      background-color: #f6f6f6;
+    }
+    .bg-white {
+      background-color: #fff;
+    }
+    .clr-blue{
+      ::ng-deep .mat-checkbox-label {
+        color: #45c0be !important;
+        text-decoration: underline;
+      }
+    }
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+    }
+    .iom-button {
+      padding: 0;
+      min-width: initial;
+      .iom-color {
+        color: #45c0be;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-decoration: underline;
+      }
+    }
+    .api-loader {
+      background: rgba(0, 0, 0, 0.15);
+    }
+    .iom-message {
+      position: absolute;
+      top: 154px;
+      color: red;
+      left: 45.7%;
+    }
+    .category-icons {
+      img {
+        object-fit: cover;
+      }
+      ::ng-deep .bg-vilot {
+        background-color: violet;
+      }
+    }
+    ::ng-deep {
+      .min-width-initial {
+        min-width: initial !important;
+      }
+      .mat-form-field-flex{
+        align-items: normal;
+      }
+      mat-form-field.mat-form-field-appearance-outline .mat-form-field-suffix{
+          top: 0.25rem;
+      }
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+        min-width: initial !important;
+      }
+      // .mat-raised-button{
+      //     min-width: auto !important;
+      //     padding: 0 10px;
+      // }
+      // .mat-tab-header {
+      //   border-bottom: none;
+      // }
+      .mat-checkbox-layout .mat-checkbox-label{
+        color: #00B2A9;
+      }
+      .post-tab{
+        height: 28px !important;
+      }
+      .services-tab-header-container {
+        background-color: #45c0be;
+        border-radius: 13px 13px 0 0;
+        border: 4px solid #45c0be;
+        border-bottom: 0;
+        .mat-tab-header {
+          border-bottom: none;
+        }
+        .mat-tab-links {
+          background-color: #45c0be;
+          border-radius: 13px 13px 0 0;
+          //border: 4px solid #45c0be;
+          border-bottom: 0;
+          a {
+            color: #fff;
+            background-color: #bfe8e7;
+            border-radius: 13px 13px 0 0;
+            margin-right: 4px;
+            color: #08504f;
+            opacity: 1;
+            &.mat-tab-link {
+              height: 26px;
+            }
+            &.mat-tab-label-active {
+              background-color: #fff;
+              color: #08504f;
+              font-weight: 600;
+            }
+            &.mat-tab-disabled {
+              opacity: 0.4;
+            }
+          }
+        }
+        .mat-ink-bar {
+          display: none;
+        }
+        .qms-container {
+          .text-white {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .billing-panel-wrapper {
+      border: 4px solid #45c0be;
+      border-top: 0;
+      border-radius: 0 0 13px 13px;
+      padding: 0 0.75rem;
+      height: calc(100vh - 310px);
+    }
+
+    
+  }
+.clr-red{
+    color: #EB0000;
+}
+.default-label-none{
+  ::ng-deep mat-label{
+      display:none;
+  }
+}
+
+
+  

@@ -1,0 +1,21 @@
+.service-table-height {
+  height: calc(100% - 38px);
+  ::ng-deep .max-table-wrapper {
+    table {
+      .mat-column-precaution {
+        text-align: center;
+      }
+    }
+  }
+}
+.service-type{
+  ::ng-deep{
+    .mat-select{
+      padding: 2px !important;
+    }
+    // .mat-select-arrow{
+    //   color: #000;
+    // }
+  }
+}
+

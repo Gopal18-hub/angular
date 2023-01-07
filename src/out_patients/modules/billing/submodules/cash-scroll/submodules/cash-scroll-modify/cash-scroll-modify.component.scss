@@ -1,0 +1,239 @@
+.cash-scroll-modify{
+    .api-loader {
+        background: rgba(0, 0, 0, 0.15);
+    }
+    .text-wrap{
+        white-space: nowrap;
+    }
+    .bg-lightgray{
+        background :#F6F6F6; 
+         
+    }
+    .bg-darkgray{
+        
+        background: #d8d8d8;
+    }
+    .p-0-15{
+        padding:0.15rem ;
+    }
+    .p-0-35{
+        padding:0.35rem ;
+    }
+    .border-class{
+       border: 1px ridge  black;
+       border-radius: 5px;
+    }
+    .h-20{
+        height:20%;
+    }
+    .input-padding{
+        ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+            padding-bottom: 0rem !important;  
+        }
+    }
+    .ml-16{
+        margin-left:3.4rem;
+    }
+    .ml-20{
+        margin-left:5.1rem;
+    }
+    .pt-0-5{
+        padding:0.5%;
+    }
+    .mt-6p{
+        margin-top:6%
+    }
+    .button{
+        height:1.875rem;
+        min-width:initial !important;
+        line-height: 1.875rem  !important;
+    }
+    .w-18{
+        width:18%
+    }
+    .w-35{
+        width: 35%;
+    }
+    .p-0-15{
+        padding:0.15rem;
+    }
+    .w-8{
+        width:8%;
+    }
+    .bg-white{
+        background: white;
+    }
+    .w-28{
+        width: 28%;
+    }
+    .w-55{
+        width: 55%;
+    }
+    .w-37{
+        width:37%;
+    }
+    .scroll-input{
+        ::ng-deep .mat-form-field-infix{
+            text-align: right;
+        }
+    }
+    .scroll-table{
+        ::ng-deep .mat-form-field{
+            display: block !important;
+            background-color: #fff;
+            color: #000;
+            border-radius: 6px;
+        }
+        ::ng-deep .mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper{
+            padding-bottom: 0;
+        }
+        ::ng-deep mat-form-field.mat-form-field-appearance-outline .mat-form-field-infix
+        {
+            width: 100px;
+        }
+        ::ng-deep .max-table-wrapper table{
+            tr.rowcolorchange{
+                background-color: #004084 !important;
+                td{
+                    color: #fff !important;
+                }
+            }
+        }
+        .modified{
+            ::ng-deep .max-table-wrapper table{
+                tbody tr td:nth-child(5),
+                tbody tr td:nth-child(6),
+                tbody tr td:nth-child(7),
+                tbody tr td:nth-child(8)
+                {
+                    text-align: right !important;
+                }
+                tbody tr td:nth-child(5)
+                {
+                    padding-right: 8rem !important
+                }
+                tbody tr td:nth-child(6)
+                {
+                    padding-right: 5rem !important
+                }
+                tbody tr td:nth-child(7),
+                tbody tr td:nth-child(8)
+                {
+                    padding-right: 5rem !important
+                }
+            }
+        }
+        .unmodified{
+            ::ng-deep .max-table-wrapper table{
+                tbody tr td:nth-child(5),
+                tbody tr td:nth-child(6),
+                tbody tr td:nth-child(7),
+                tbody tr td:nth-child(8),
+                tbody tr td:nth-child(9),
+                tbody tr td:nth-child(10),
+                tbody tr td:nth-child(11),
+                tbody tr td:nth-child(14),
+                tbody tr td:nth-child(17),
+                tbody tr td:nth-child(20),
+                tbody tr td:nth-child(23),
+                tbody tr td:nth-child(25),
+                tbody tr td:nth-child(28),
+                tbody tr td:nth-child(29),
+                tbody tr td:nth-child(30),
+                tbody tr td:nth-child(31),
+                tbody tr td:nth-child(33)
+                {
+                    text-align: right !important;
+                }
+                tbody tr td:nth-child(5)
+                {
+                    padding-right: 5rem !important
+                }
+                tbody tr td:nth-child(6)
+                {
+                    padding-right: 2rem !important
+                }
+                tbody tr td:nth-child(7),
+                tbody tr td:nth-child(8),
+                tbody tr td:nth-child(9),
+                tbody tr td:nth-child(20),
+                tbody tr td:nth-child(23)
+                {
+                    padding-right: 2rem !important
+                }
+                tbody tr td:nth-child(9),
+                tbody tr td:nth-child(10),
+                tbody tr td:nth-child(11),
+                tbody tr td:nth-child(28),
+                tbody tr td:nth-child(29),
+                tbody tr td:nth-child(30),
+                tbody tr td:nth-child(31)
+                {
+                    padding-right: 4rem !important
+                }
+                tbody tr td:nth-child(25),
+                tbody tr td:nth-child(33)
+                {
+                    padding-right: 3rem !important
+                }
+                tbody tr td:nth-child(14)
+                {
+                    padding-right: 4rem !important
+                }
+                thead tr th:nth-child(14)
+                {
+                    padding-left: 2rem;
+                }
+                thead tr th:nth-child(17)
+                {
+                    padding-left: 2rem;
+                }
+                thead tr th:nth-child(20)
+                {
+                    padding-left: 2.5rem;
+                }
+                thead tr th:nth-child(28)
+                {
+                    padding-left: 3rem;
+                }
+                thead tr th:nth-child(33)
+                {
+                    padding-left: 0.5rem;
+                }
+                tbody tr td:nth-child(17)
+                {
+                    padding-right: 1.5rem !important
+                }
+                tbody tr td:nth-child(13),
+                tbody tr td:nth-child(15),
+                tbody tr td:nth-child(18),
+                tbody tr td:nth-child(21),
+                tbody tr td:nth-child(24),
+                tbody tr td:nth-child(26),
+                tbody tr td:nth-child(32),
+                tbody tr td:nth-child(34)
+                {
+                    ::ng-deep .mat-form-field{
+                        text-align: right;
+                    }
+                }
+                // thead tr th:nth-child(13)
+                // {
+                //     padding-left: 2.5rem;
+                // }
+                // thead tr th:nth-child(15)
+                // {
+                //     padding-left: 1rem;
+                // }
+            }
+        }
+        
+    }
+    .makereadonly{
+        ::ng-deep .mat-form-field
+        {
+            pointer-events: none;
+        }  
+    }
+    
+}

@@ -1,0 +1,60 @@
+<div class="relative">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <div class="confirm-message-dialog-title text-center mb-6">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="70"
+      height="70"
+      viewBox="0 0 70 70"
+    >
+      <g
+        id="question_mark"
+        data-name="question mark"
+        transform="translate(0.349 2.495)"
+      >
+        <path
+          id="Ellipse_93"
+          data-name="Ellipse 93"
+          d="M35,0A35,35,0,1,1,0,35,35,35,0,0,1,35,0Z"
+          transform="translate(-0.349 -2.495)"
+          fill="#45c0be"
+        />
+        <path
+          id="Path_758"
+          data-name="Path 758"
+          d="M8.465-12.554a5.358,5.358,0,0,0,2.021,4.2L13.647-9.7a3.451,3.451,0,0,1-1.4-2.539c0-2.28,2.021-3.627,4.249-5.182,2.746-1.917,5.8-4.042,5.8-8.394,0-4.456-3.834-8.031-10.156-8.031A13.758,13.758,0,0,0,.9-28.565l2.591,2.8a9.641,9.641,0,0,1,8.239-4.249c4.093,0,6.114,2.228,6.114,4.819,0,2.643-2.124,4.093-4.4,5.648C11.056-17.839,8.465-16.025,8.465-12.554ZM8.724-1.1a2.875,2.875,0,0,0,2.85,2.85,2.875,2.875,0,0,0,2.85-2.85,2.875,2.875,0,0,0-2.85-2.85A2.875,2.875,0,0,0,8.724-1.1Z"
+          transform="translate(23.051 48.612)"
+          fill="#fff"
+        />
+      </g>
+    </svg>
+  </div>
+  <div
+    mat-dialog-content
+    class="max-health-primary-color font-bold text-center mb-6"
+  >
+    {{data.message}}
+  </div>
+
+  <div mat-dialog-actions class="text-center flex justify-center">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      (click)="yes()"
+    >
+      Yes
+    </button>
+    <button mat-stroked-button class="font-sm min-width-initial" (click)="no()">
+      No
+    </button>
+  </div>
+</div>

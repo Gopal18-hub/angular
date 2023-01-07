@@ -1,0 +1,36 @@
+<div class="flex flex-column h-full relative">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">Unbilled Orders</h2>
+  <div class="h-7/10">
+    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+  </div>
+  <div class="flex mt-4 flex-row-reverse mb-2">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      type="button"
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-7"
+      type="button"
+      (click)="process()"
+      [disabled]="disableProcess || tableRows?.selection?.selected.length == 0"
+    >
+      Process To Bill
+    </button>
+  </div>
+</div>

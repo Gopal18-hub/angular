@@ -1,0 +1,131 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel" >
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">DMG Mapping</a> 
+            </li>
+        </ul>
+        <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex mr-2">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+       
+      />
+    </div>
+    </nav>
+    <!-- (click)="doCategoryIconAction(icon)" -->
+    <mat-tab-nav-panel #tabPanel>
+        <div class="p-2 h-full">
+        <!---------------------------------FIRST ROW----------------------------------------------------->
+      <div class=" flex align-items-center w-full bg-dmg border-radius-xlg p-1 input-padding ">
+          <div class="w-4/5 ml-2 ">
+        <form [formGroup]="dmgMappingForm">
+          <div class="flex">
+            <mat-label class="font-semi-bold max-health-primary-color">Max ID</mat-label>
+            <div class="ml-0-27 w-12 bg-white mt-error">
+            <maxhealth-question
+            [question]="questions[0]"
+            [form]="dmgMappingForm"
+            [questions]="questions[0]"
+            [index]="0"
+            >
+            </maxhealth-question>
+            </div>
+
+            <mat-label class="ml-1-34 font-semi-bold max-health-primary-color">Mobile No.</mat-label>
+            <div class="ml-0-27 w-12 bg-white default-label-none mt-error">
+            <maxhealth-question
+            [question]="questions[1]"
+            [form]="dmgMappingForm"
+            [questions]="questions[1]"
+            [index]="1">
+            </maxhealth-question>
+            </div>
+
+          </div>
+        </form>
+         </div>
+        <div class="w-2/10 flex">
+            <div class="float-right ml-2" >
+            <button mat-raised-button color="primary" type="submit" (click)="onMaxidEnter(dmgMappingForm.value.maxid)" class="button-height">
+                <img src="assets/lens.svg" class="lens-icon">
+
+            <span class="text-position">  Search</span>  
+
+            </button>
+            <button mat-raised-button color="primary" class="ml-2 button-height2" (click)="dmgsave()" [disabled]="disablebutton" >
+                <span class="text-position2">Save</span>
+             </button>
+             <button mat-raised-button color="primary" class="ml-2 button-height2" (click)="dmgMappingForm.reset();clearData()" [disabled]="disableClear" >
+                <span class="text-position2">Clear</span>
+             </button>
+
+             </div>
+        </div> 
+    </div>
+    <!------------------------------------------SECOND ROW----------------------------------------->
+    <div class="flex w-full bg-dmg border-radius-xlg p-2  mt-1">
+        <div  class="w-1/7 font-wrapper">
+        <mat-label  class="font-semi-bold max-health-primary-color" >Name:</mat-label>
+        <span class="ml-2" matTooltip="{{name}}">{{name}}</span>
+        </div>
+
+        <div class="w-1/10  font-wrapper">
+        <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
+        <span class="ml-2" matTooltip="{{age}}"> {{age}}</span>
+        </div>  
+
+        <div  class="w-1/10  font-wrapper">
+        <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
+        <span class="ml-2" matTooltip="{{gender}}">{{gender}}</span>
+         </div>
+
+         <div  class="w-12  font-wrapper ">
+        <mat-label  class="font-semi-bold max-health-primary-color">DOB:</mat-label>
+        <span class="ml-2" matTooltip="{{dob}}">{{dob}}</span>
+         </div>
+
+
+         <div  class="w-1/15 font-wrapper">
+        <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
+        <span class="ml-2" matTooltip="{{nationality}}">{{nationality}}</span>
+         </div>
+
+         <div  class="w-1/6  font-wrapper">
+        <mat-label  class="font-semi-bold max-health-primary-color">SSN:</mat-label>
+        <span class="ml-2" matTooltip="{{ssn}}">{{ssn}}</span>
+         </div>
+    </div>
+    <!-----------------------------------------THIRD ROW------------------------------------------------------------->
+    <div class="border-radius-lg border-dmgtable mt-2 h-74"  >
+        <div class="p-1 border-tableheader">
+            <p class="ml-2  mb-1">Disease Management Groups - Organ (DMG)</p>
+        </div>
+        <div class="ml-5  mb-2 h-89 overflow-y-auto"  *ngIf="showCheckboxgrid" >
+                <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT;let i=index"  >
+                    <mat-checkbox class="checkbox_color" [(ngModel)]=" dmgPatientDetails.dmgMappingDataDT[i].isChecked" 
+                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId,$event);" 
+                    value="dmgPatientDetails.dmgMappingDataDT[i].docId" color="primary">
+                    {{diseasegroup.docName}} 
+                    </mat-checkbox>
+                </div>
+        </div>
+    </div>
+    <div *ngIf="apiprocessing"  class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+</div>
+        
+      
+    
+    </mat-tab-nav-panel>
+</section> 
+<div class="flex justify-between max-health-primary-color font-xs">
+    <p class="ml-4"cl>Last updated by: {{ lastUpdatedBy }} </p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>
+

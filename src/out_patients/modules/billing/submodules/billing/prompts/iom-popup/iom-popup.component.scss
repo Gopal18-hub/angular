@@ -1,0 +1,35 @@
+#iom-content {
+  ::ng-deep {
+    border: 1px solid grey;
+    table {
+      width: 100%;
+    }
+  }
+}
+
+.iomcloseicon {
+  top: 0;
+  right: 0;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  position: absolute;
+  justify-content: end;
+  ::ng-deep .material-icons {
+    font-size: 18px;
+  }
+}
+
+.iomcontent {
+  position: absolute;
+  top: 1.5rem;
+  height: 90%;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+.mainsection {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}

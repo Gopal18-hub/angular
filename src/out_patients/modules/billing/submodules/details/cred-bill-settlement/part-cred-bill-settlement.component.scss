@@ -1,0 +1,242 @@
+.bg-deposit{
+    background-color: #F6F6F6;
+    color:#004084;
+}
+.credit-wrapper {
+    ::ng-deep mat-label {
+    //   color: var(--primary-color);
+      color: #333333;
+      font-weight: 600;
+    }
+    .change-password {
+      color: var(--primary-color);
+    }
+    ::ng-deep .input1 .mat-form-field-infix{
+        text-align: right !important;  
+    }
+    ::ng-deep .mat-input-element 
+    {
+        color: black;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+
+        padding-bottom: 0 !important;
+        padding: 0 !important;
+    
+    }
+    ::ng-deep .mat-radio-button .mat-radio-ripple {
+        position: absolute;
+        left: calc(50% - 13px);
+        top: calc(50% - 13px);
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        z-index: 1;
+        pointer-events: none;
+    }
+        
+    ::ng-deep .patient-lbl
+  {
+    color: black;
+  }
+  ::ng-deep .mat-checkbox-label
+  {
+       color: var(--primary-color);
+    font-weight: 600;
+  }
+  }
+
+//   
+
+  .w-7
+  {
+      width: 7.9%;
+  }
+
+.btn-md{
+ 
+    height: 82%
+      
+}
+.btn-16
+{
+width: 18%;
+}
+.bg-white{
+    background-color:white;
+}
+
+.wt-nowrap{
+    white-space: nowrap;
+}
+.wt-mid{
+    width: 8.5%;  
+}
+.h-white-banner
+{
+ height: 8%;   
+}
+.bg-billdetails{
+    
+    height: 76%;
+    background-color:#45C0BE; 
+}
+.bg-blue
+{
+   
+    background-color: #BFE8E7;
+}
+.txt-blue
+{   
+   color: #45C0BE;
+   font-style: italic;
+   text-decoration: underline;
+   font-weight:550;
+}
+.h-service
+{
+    height: 92%;
+    border-radius: 0% 0.5rem 0.5rem 0.5rem;
+    margin-left: 0.3%;
+    margin-right: 0.3%;
+}
+// .h-9/20
+.h-table
+{
+    height: 36%;
+}
+
+.bg-paymet
+{
+    width: 87.6%;
+    height: 10%;
+}
+.mx-content
+{
+    height: 75%;
+}
+
+
+
+
+.w-6{
+    width: 7%;
+}
+
+.w-2
+{
+    width: 11%;
+    
+
+}
+.w-2
+{
+    ::ng-deep .mat-raised-button {
+        min-width: 6rem !important;
+    }
+}
+.w-12
+{
+    width: 12%;
+}
+.w-17{
+    width: 17%;
+}
+.payment-mode
+{
+    background: #F6F6F6;
+}
+.h-btn{
+    height: 4.95vh;
+   
+}
+.m-pannel
+{
+margin-top: 0.19rem;
+}
+
+.radio-payment{
+
+    width: fit-content;
+    ::ng-deep .mat-radio-outer-circle 
+    {
+        height: 13px !important;
+        width: 13px !important;
+        // border: #004084;
+    }
+    ::ng-deep .mat-radio-inner-circle
+    {
+        height: 13px !important;
+        width: 13px !important;
+    }
+    ::ng-deep .mat-radio-button
+    {
+padding: 0%;
+    }
+
+    ::ng-deep .mat-radio-label
+    {
+        margin-top: 12%;
+            //   color: var(--primary-color);
+            color: #333333;
+        font-weight: 600;
+        width: fit-content;
+    }
+    ::ng-deep .mat-radio-group
+    {
+      width: fit-content;  
+      margin-right: 1px;
+    }
+    ::ng-deep .mat-radio-label-content
+    {
+        // padding-left: 1px;
+        padding-bottom: 2px
+      
+    }
+    ::ng-deep .mat-radio-outer-circle 
+    {
+        // height: 16px;
+        // width: 16px;
+        // border-color: #004084;
+        height: 14px;
+        width: 14px;
+              border: 1px solid #004084;
+    }
+    ::ng-deep .mat-radio-inner-circle
+    {
+        height: 15px;
+        width: 15px;
+    }
+    ::ng-deep .mat-radio-label-content
+    {
+        padding-left: 0.0px;
+        padding-bottom: 2px;
+        margin-bottom: 3px;
+    }
+    ::ng-deep .mat-radio-button
+    {
+padding: 0%;
+    }
+
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
+}
+
+.font-400{
+    ::ng-deep mat-label{
+        font-weight: 400 !important;
+    }
+}
+.btn{
+    ::ng-deep .mat-raised-button{
+        min-width: fit-content !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+}
+.margin-top-1{
+    margin-top: 0.1rem;
+}

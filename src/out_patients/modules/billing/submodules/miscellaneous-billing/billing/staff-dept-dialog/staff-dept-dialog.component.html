@@ -1,0 +1,91 @@
+<div
+  class="relative max-health-primary-color appointment-search-dialog-wrapper"
+>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <section class="overflow-x-none overflow-y-none">
+    <h2 mat-dialog-title class="max-health-primary-color">
+      Employee Verification
+    </h2>
+    <div
+      class="h-full flex w-full align-items-center bg-secondary border-radius-md"
+    >
+      <form [formGroup]="staffForm" class="flex w-full align-items-center">
+        <div class="w-full bg-secondary border-radius-xlg align-items-center">
+          <div class="flex mt-0">
+            <div class="h-dropdown max-health-primary-color w-1/4">
+              <maxhealth-question
+                [question]="question[0]"
+                [form]="staffForm"
+                [questions]="question[0]"
+                [index]="0"
+                class="bg-white"
+              >
+              </maxhealth-question>
+            </div>
+            <div class="ml-1 h-dropdown max-health-primary-color w-1/4">
+              <maxhealth-question
+                [question]="question[1]"
+                [form]="staffForm"
+                [questions]="question[1]"
+                [index]="1"
+              >
+              </maxhealth-question>
+            </div>
+            <!-- TARRIF PRICE BLOCK -->
+            <div class="ml-1 h-full max-health-primary-color w-1/4">
+              <maxhealth-question
+                [question]="question[2]"
+                [form]="staffForm"
+                [questions]="question[2]"
+                [index]="2"
+              >
+              </maxhealth-question>
+            </div>
+
+            <div class="w-1/45"></div>
+            <div class="float-right">
+              <button
+                mat-raised-button
+                color="primary"
+                class="btn-md addbtn mt-3 ml-3"
+                type="submit"
+                (click)="clear()"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="mt-3 w-full h-62">
+      <maxhealth-table
+        [config]="staffFormConfig"
+        [data]="staffDetail"
+        (columnClick)="staffColumnClick($event)"
+      ></maxhealth-table>
+      <!-- </ng-container> -->
+    </div>
+    <div class="float-right">
+      <button
+        mat-raised-button
+        color="primary"
+        class="btn-md addbtn mt-3 ml-3"
+        type="submit"
+        (click)="submit()"
+        [disabled]="!selectedCode"
+      >
+        Submit
+      </button>
+    </div>
+    <div></div>
+  </section>
+</div>

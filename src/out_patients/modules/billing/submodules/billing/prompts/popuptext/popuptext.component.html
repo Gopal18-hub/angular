@@ -1,0 +1,47 @@
+<div class="flex flex-column h-full relative popuptext-details">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">Investigation Instruction</h2>
+  <div class="h-3/4 relative flex flex-column">
+    <div class="flex w-full justify-between">
+      <div class="w-7/20">
+        <h4 class="max-health-primary-color">Item Name</h4>
+      </div>
+      <div class="w-3/5">
+        <h4 class="max-health-primary-color">Description</h4>
+      </div>
+    </div>
+    <ng-container *ngFor="let instruction of popuptext">
+      <div class="flex w-full justify-between">
+        <div class="w-7/20">
+          <mat-form-field appearance="outline" class="w-full">
+            <textarea matInput rows="5">{{ instruction.name }}</textarea>
+          </mat-form-field>
+        </div>
+        <div class="w-3/5">
+          <mat-form-field appearance="outline" class="w-full">
+            <textarea matInput rows="5">{{ instruction.description }}</textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="flex mt-4 justify-end">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-6"
+      type="button"
+      (click)="printbtn()"
+    >
+      Print 
+    </button>
+  </div>
+</div>

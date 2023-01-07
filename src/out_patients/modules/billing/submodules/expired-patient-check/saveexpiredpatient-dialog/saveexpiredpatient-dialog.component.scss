@@ -1,0 +1,13 @@
+.min-width{
+    min-width: initial !important;
+}
+.iconclass{
+width:75px;
+height:75px;
+
+}
+.dialog-height{
+    ::ng-deep .mat-dialog-container{
+        height:96% !important;
+    }
+}

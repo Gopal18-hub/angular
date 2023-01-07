@@ -1,0 +1,37 @@
+<section class="h-full deposit-details-wrapper">
+  <!-- Header & Cross Icon-->
+  <div>
+    <mat-label class="max-health-primary-color font-lg font-semi-bold"
+      >Deposit Details</mat-label
+    >
+    <mat-icon
+      mat-dialog-close      
+      class="float-right cursor-pointer max-dialog-close-icon"
+      aria-hidden="false"
+      aria-label="Example home icon"
+      >close</mat-icon
+    >
+  </div>
+
+  <!-- Table -->
+  <div class="h-4/5 mt-3">
+    <maxhealth-table
+      [config]="config"
+      [data]="depoDetails"
+      #depoTable
+      (columnClick)="listRowClick()"
+    ></maxhealth-table>
+  </div>
+
+  <div class="w-full mt-3 depositbutton">
+    <button
+      class="float-right"
+      mat-raised-button
+      color="primary"
+      (click)="submit()"
+      [disabled]="depoTable.selection.selected.length == 0"
+    >
+      Submit
+    </button>
+  </div>
+</section>

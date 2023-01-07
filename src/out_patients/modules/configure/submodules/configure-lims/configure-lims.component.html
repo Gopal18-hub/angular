@@ -1,0 +1,53 @@
+
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel" >
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Regenerate LIMS Message</a> 
+            </li>
+        </ul>
+    </nav>
+
+    <mat-tab-nav-panel #tabPanel>
+        <div class="p-1 h-full w-full">
+            <div class=" p-2 flex w-full bg-lightgray align-items-center input-padding border-radius-xlg">
+                <div class="w-60 flex ">
+                    <mat-label class="max-health-primary-color font-semi-bold">
+                        Create LIMS Requests
+                    </mat-label>
+                    <mat-label class="ml-4 max-health-primary-color">
+                        OP Bill No
+                    </mat-label>
+                    <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="limsconfigureform"
+                    [questions]="questions[0]"
+                    [index]="0"
+                    class="ml-4 w-2/10 bg-white"
+                    >
+                    </maxhealth-question>
+                </div>
+                <div class="w-40 flex justify-content-end">
+                    <button mat-raised-button color="primary" type="submit" class="button-height" (click)="getdata()">
+                        <img src="assets/lens.svg" class="lens-icon" >
+        
+                    <span class="text-position">  Search</span>  
+        
+                    </button>
+                     
+                    
+                     <button mat-raised-button color="primary" class="button-height2 ml-2" (click)="getdata()" [disabled]="limsconfigureList.length == 0 "><span class="text-position2">Refresh</span></button>
+                     <button mat-raised-button color="primary" class="ml-2 button-height2 "(click)="recreateClick()" [disabled]="limsconfigureList.length == 0 "><span class="text-position2">Recreate</span></button>
+                     <button mat-raised-button color="primary" class="button-height2  ml-2" (click)="cleardata()"[disabled]="!(limsconfigureform.dirty)"><span class="text-position2">Clear</span></button>
+                </div>
+            </div>
+            <div class="h-80 mt-2">
+                <maxhealth-table #limstable [config]="config" [data]="limsconfigureList" class="checkbox-margin"></maxhealth-table>
+            </div>
+            <div *ngIf="apiprocessing"  class="flex align-items-center justify-center  h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+                <mat-spinner strokeWidth="2"></mat-spinner>
+            </div>
+        </div>
+    </mat-tab-nav-panel>    
+</section> 
+

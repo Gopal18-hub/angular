@@ -1,0 +1,23 @@
+<section class="h-full printrdue">
+    <div>
+        <mat-label class="max-health-primary-color font-semi-bold font-base">Print Due Settlement Receipt</mat-label>
+        <mat-icon mat-dialog-close  class="float-right cursor-pointer max-dialog-close-icon" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+    </div>
+    <div class="flex mt-6 h-1/2">
+        <mat-label class="max-health-primary-color font-semi-bold white-nowrap">Receipt Number</mat-label>
+        <div class="ml-4 w-3/4 bg-white border-radius-md label">
+            <maxhealth-question
+                [question]="questions[0]"
+                [form]="printdueform"
+                [questions]="questions[0]"
+                [index]="0"
+            >
+            </maxhealth-question>
+        </div>
+    </div>
+    <div class="flex btn justify-content-end">
+        <button mat-raised-button color="primary" type="submit" (click)="printbtn()" [disabled]="!printdueform.valid">Print</button>
+        <button mat-raised-button color="primary" class="ml-2" type="submit" (click)="clearbtn()" [disabled]="!printdueform.dirty">Clear</button>
+    </div>
+
+</section>

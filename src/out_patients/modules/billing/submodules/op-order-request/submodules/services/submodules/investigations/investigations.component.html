@@ -1,0 +1,84 @@
+<div class="flex flex-column h-full">
+  <div class="flex justify-between w-full">
+    <form
+      [formGroup]="formGroup"
+      autocomplete="off"
+      class="w-3/4 flex align-items-center"
+    >
+      <div class="flex align-items-center w-2/5">
+        <mat-label class="max-health-primary-color mr-2 font-bold"
+          >Service Type</mat-label
+        >
+        <maxhealth-question
+          [question]="questions[0]"
+          [form]="formGroup"
+          [questions]="questions[0]"
+          [index]="0"
+          class="w-3/5"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="flex  w-3/5 align-items-center">
+        <mat-label class="max-health-primary-color mr-2 font-bold"
+          >Investigations</mat-label
+        >
+        <!-- <div class="max-width"> -->
+          <maxhealth-question
+          [question]="questions[1]"
+          [form]="formGroup"
+          [questions]="questions[1]"
+          [index]="1"
+          class="w-9/10 max-width"
+          [class.fontcolor]="outsource" 
+        >
+        </maxhealth-question>
+        <!-- </div> -->
+       
+      </div>
+    </form>
+    <div class="flex w-36 align-items-center justify-end">
+
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 min-width-initial"
+        type="button"
+        [disabled]="!formGroup.valid"
+        (click)="add()"
+      >
+        Add
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 min-width-initial"
+        type="button"
+        (click)="save()"
+        [disabled]="!(opOrderRequestService.investigationItems.length || opOrderRequestService.procedureItems.length) || opOrderRequestService.getSaveButtononPriority() || opOrderRequestService.getSaveButtonondocrequiredProc()||opOrderRequestService.getSaveButtonondocrequiredInv()"
+      >
+        Save
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 mr-1 min-width-initial"
+        type="button"
+        (click)="view()"
+        
+      >
+        View
+      </button>
+     </div>
+  </div>
+  <div class="mt-2 gridheight">
+    <maxhealth-table
+      [config]="config"
+      [data]="data"
+      #table
+      (rowRwmove)="rowRwmove($event)"
+    ></maxhealth-table>
+  </div>
+</div>
+<!-- [ngClass]="fontcolor: variable" -->
+<!-- [ngClass]="fontcolor:questions.options.outsourceTest == 1" -->

@@ -1,0 +1,44 @@
+<section class="pat-iden w-2/10 relative height-box z-10">
+  <div class="flex flex-column w-full bg-grey p-2 absolute mt-5">
+    <div class="flex flex-column justify-between">
+      <mat-label class="max-health-primary-color">Mobile No.</mat-label>
+      <div class="w-full border-radius-lg h-full bg-white align-items-center clr-primary textboxfontbold">
+        <maxhealth-question
+          [question]="questions[0]"
+          [form]="patientidentityform"
+          [questions]="questions[0]"
+          [index]="0"
+        ></maxhealth-question>
+      </div>
+    </div>
+    <div class="flex flex-column justify-between mt-2">
+      <mat-label class="max-health-primary-color">Email ID</mat-label>
+      <div class="w-full border-radius-lg h-full bg-white align-items-center clr-primary textboxfontbold">
+        <maxhealth-question
+          [question]="questions[1]"
+          [form]="patientidentityform"
+          [questions]="questions[1]"
+          [index]="1"
+        ></maxhealth-question>
+      </div>
+    </div>
+    <div class="mt-2 clr-primary patientidentityradiobutton">
+      <maxhealth-question
+        [question]="questions[3]"
+        [form]="patientidentityform"
+        [questions]="questions[3]"
+        [index]="2"
+      ></maxhealth-question>
+    </div>
+    <div
+      class="w-full h-full border-radius-lg mt-2 bg-white pancardtext"
+    >
+      <maxhealth-question
+        [question]="questions[2]"
+        [form]="patientidentityform"
+        [questions]="questions[2]"
+        [index]="3"
+      ></maxhealth-question>
+    </div>
+  </div>
+</section>

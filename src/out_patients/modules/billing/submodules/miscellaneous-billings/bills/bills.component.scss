@@ -1,0 +1,138 @@
+.sub-bill-overall {
+  ::ng-deep mat-form-field {
+    .mat-form-field-wrapper {
+      margin: 0;
+      padding: 0;
+      
+    }
+  }
+
+  .h-dropdown{
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+        height: 0.7rem;
+    line-height: 0.7rem;
+      }
+    }
+    
+  }
+    ::ng-deep .max-table-wrapper {
+      table {
+        width: 110% !important;
+      }
+    }
+    .w-12 {
+      width: 12%;
+    }
+    .w-13 {
+      width: 13%;
+    }
+    .w-86 {
+      width: 87.25%;
+    }
+    .w-26 {
+      width: 26%;
+    }
+    .h-30vh {
+      height: 30vh;
+    }
+    .h-22vh {
+      height: 22vh;
+    }
+    .w-44 {
+      width: 44%;
+    }
+    .bg-blue {
+      background-color: #bfe8e7;
+    }
+    .pr5int-button {
+      background-color: #5a5a5a;
+    }
+    .bg-deposit {
+      background-color: #f6f6f6;
+    }
+    ::ng-deep {
+      .sub-bill-form {
+        mat-form-field {
+          background-color: #fff;
+        }
+        button {
+          height: 26px;
+          line-height: 26px;
+        }
+        .mat-checkbox-layout .mat-checkbox-label {
+          color: inherit !important;
+        }
+      }
+      mat-radio-group {
+        flex-direction: row;
+        width: 100%;
+        mat-radio-button {
+          margin-right: 1.2rem;
+        }
+      }
+      .w-tarrif{
+width:7%;
+      }
+      ::ng-deep {
+        .min-width-initial {
+          min-width: 82px !important;
+        }
+        button {
+          height: 1.875rem;
+          line-height: 1.875rem;
+        }
+    
+        .mat-tab-header {
+          border-bottom: none;
+        }
+        .mat-tab-links {
+          background-color: #45c0be;
+          border-radius: 13px 13px 0 0;
+          border: 4px solid #45c0be;
+          border-bottom: 0;
+          a {
+            color: #fff;
+            background-color: #bfe8e7;
+            border-radius: 13px 13px 0 0;
+            margin-right: 4px;
+            color: #08504f;
+            opacity: 1;
+            &.mat-tab-link {
+              height: 26px;
+            }
+            &.mat-tab-label-active {
+              background-color: #fff;
+              color: #08504f;
+              font-weight: 600;
+            }
+          }
+        }
+        .mat-ink-bar {
+          display: none;
+        }
+      }
+    }
+    .addbtn
+    {
+      width : 8% !important
+    }
+    .w-Reff
+    {
+      width: 93%
+    }
+    .icon-more
+{   
+ 
+        background-color:#D2D0D0;
+        border-radius: 4px;
+        color: black;
+        margin-left: 1px;
+        height: 22.9px;
+
+   
+}
+  }
+  

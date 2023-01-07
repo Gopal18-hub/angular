@@ -1,0 +1,17 @@
+.other-plan-details {
+  ::ng-deep {
+    table {
+      .cdk-column-availnooftimes {
+        text-align: center;
+      }
+    }
+  }
+}
+
+.health-plan-details {
+  ::ng-deep {
+    .mat-column-select {
+      text-align: center;
+    }
+  }
+}

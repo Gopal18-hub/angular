@@ -1,0 +1,71 @@
+.max-acd-main-page {
+  .acd-page-wrapper {
+    background-color: #fff;
+    .width-8 {
+      width: 9%;
+    }
+    .second-row-action-items {
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+    }
+    .bg-secondary {
+      background-color: #f6f6f6;
+    }
+    .bg-white {
+      background-color: #fff;
+    }
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+    }
+    ::ng-deep {
+      .min-width-initial {
+        min-width: initial !important;
+      }
+
+      .mat-tab-header {
+        border-bottom: none;
+      }
+      .mat-tab-links {
+        background-color: #45c0be;
+        border-radius: 13px 13px 0 0;
+        border: 4px solid #45c0be;
+        border-bottom: 0;
+        a {
+          color: #fff;
+          background-color: #bfe8e7;
+          border-radius: 13px 13px 0 0;
+          margin-right: 4px;
+          color: #08504f;
+          opacity: 1;
+          &.mat-tab-link {
+            height: 26px;
+          }
+          &.mat-tab-label-active {
+            background-color: #fff;
+            color: #08504f;
+            font-weight: 600;
+          }
+        }
+      }
+      .mat-ink-bar {
+        display: none;
+      }
+    }
+    .acd-panel-wrapper {
+      border: 4px solid #45c0be;
+      border-top: 0;
+      border-radius: 0 0 13px 13px;
+      padding: 0 0.45rem;
+      height: calc(113vh - 310px);
+    }
+    ::ng-deep .mat-typography p {
+      margin: 0 0 0px !important;
+    }
+  }
+}
+

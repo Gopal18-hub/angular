@@ -1,0 +1,47 @@
+.credit-details-wrapper {
+  .width-49 {
+    width: 49%;
+  }
+  ::ng-deep {
+    maxhealth-question {
+      mat-label {
+        color: var(--primary-color);
+      }
+    }
+  }
+  .special-checkbox {
+    ::ng-deep .mat-checkbox-label {
+      color: #45c0be !important;
+      text-decoration: underline;
+    }
+  }
+  .iom-button {
+    padding: 0;
+    min-width: 32px;
+    .iom-color {
+      color: #45c0be;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-decoration: underline;
+    }
+  }
+  .creditoutpatientbill{
+    .mat-raised-button{
+    //  min-width: initial !important;
+      height: 1.875rem !important;
+      line-height: 1.875rem  !important;
+  }
+  }
+  .iom-message{
+    position: absolute;
+    margin-left: 7%;
+   // top: 50.3%;
+    top:330px;// for ticket GAV -1335
+    color: red;
+}
+.corporate{
+  ::ng-deep .mat-form-field{
+    margin-top: 3% !important;
+  }
+}
+}

@@ -1,0 +1,114 @@
+<section class="refunddialogwrapper relative">
+    <div class="h-full w-full">
+      <!-- Cross Icon -->
+      <div class="close-height">
+        <button
+        mat-icon-button
+        aria-label="close dialog"
+        mat-dialog-close
+        class="absolute max-dialog-close-icon"
+        type="button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      </div>
+ 
+
+    <!-- Blue Banner -->
+    <div class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight">
+        <mat-label class="font-lg col-white ml-2">Refund Receipt</mat-label>
+    </div>
+
+    <!-- Service Type -->
+   
+
+        <max-service-deposit [data]="servicedeposittype"></max-service-deposit>
+  
+
+    <!-- Payment Methods -->
+    <div class="w-full height"> 
+
+        <!-- payment Methods left  -->
+        <payment-methods [config]="config" [Refundavalaiblemaount]="Refundavalaiblemaount"></payment-methods>
+
+        <!-- payment Methods right -->
+        <div class="width mt-2 remarksheight float-right border-radius-md">
+            <div class="w-full h-full back-primary p-3 col-white">
+                <mat-label class="font-base">Refund Summary</mat-label>
+                <div class="mt-1">
+                    <mat-label>Available Amount</mat-label>
+                    <mat-label class="float-right">{{avalaiblemaount}}</mat-label>
+                </div>              
+                <div class="mt-2">
+                    <mat-label class="font-base">Payable Name</mat-label>
+                    <div class="bg-white border-radius-md mt-1 payabletextbox">
+                        <maxhealth-question
+                        [question]="questions[0]"
+                        [form]="refundform"
+                        [questions]="questions[0]"
+                        [index]="0"
+                        ></maxhealth-question>
+                    </div>
+                </div>
+                <div class="mt-1">
+                    <mat-label class="font-base">Remarks</mat-label>
+                    <div class="h-full bg-white border-radius-lg mt-1 ta">
+                        <maxhealth-question
+                        [question]="questions[1]"
+                        [form]="refundform"
+                        [questions]="questions[1]"
+                        [index]="1"
+                        ></maxhealth-question>
+                    </div>
+                </div>
+                <div class="flex mt-2">
+                    <div class="w-1/2 font-medium">
+                        <button
+                            mat-raised-button
+                            type="submit" 
+                            class="btn secondary col-white" 
+                            (click)="sendotpclick()" [disabled]="otpsenttomobile">
+                          {{ SendOTP }}
+                        </button>
+                        
+                    </div>
+                    
+                    <div class="w-1/2  border-radius-lg h-full bg-white otptextcnt">
+                        <maxhealth-question
+                        [question]="questions[4]"
+                        [form]="refundform"
+                        [questions]="questions[4]"
+                        [index]="4"
+                        ></maxhealth-question>
+                    </div>
+                </div>
+                <div class="mt-1 wt-nowrap">
+                    <mat-label class="mr-1">OTP will be sent to Reg. Mob. No.  {{mobileno}}</mat-label>
+                </div>
+                <div class="w-full mt-2">
+                        <button
+                            mat-raised-button
+                            type="submit" 
+                            class="w-full btn bg-btn" (click)="resendotpclick()" [disabled]="!otpresenttomobile">
+                            {{ResendOTP}}
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Part -->
+    <div class="bottom">
+        <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
+   
+
+    <!-- button -->
+    <div class="flex float-right refunddepositbutton right-0 absolute">       
+            <button mat-raised-button color="primary" type="submit" [disabled]="!checkmandatoryRefund()" (click)="saverefunddialog()">Submit</button>
+     
+            <button mat-raised-button color="primary" type="submit" class="ml-3" (click)="clear()">Clear</button>
+      
+    </div>
+</div>
+</div>
+</section>

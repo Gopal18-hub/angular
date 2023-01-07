@@ -1,0 +1,36 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true"> Find Patient</a>
+      </li>
+    </ul>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+   
+    <!-- <mat-progress-spinner mode="indeterminate" value="25" diameter="60"  *ngIf="!defaultUI && showspinner" 
+   class="spinner">
+    </mat-progress-spinner> -->
+    <div
+    *ngIf="!defaultUI && showspinner"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+    <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+
+    <div class="p-3 w-full h-9/10 display-block" *ngIf="!defaultUI">
+      <ng-container *ngIf="isAPIProcess">
+        <maxhealth-table
+          [config]="config"
+          [data]="patientList"
+          #table
+        ></maxhealth-table>
+      </ng-container>
+    </div>
+    <div  class="w-full h-full" *ngIf="defaultUI">
+      <empty-placeholder [icon]="findpatientimage" [message]="findpatientmessage">
+   
+     </empty-placeholder>
+   </div>
+  </mat-tab-nav-panel>
+</section>

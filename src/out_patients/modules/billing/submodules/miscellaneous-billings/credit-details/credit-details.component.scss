@@ -1,0 +1,24 @@
+.credit-details-wrapper {
+    .width-49 {
+      width: 49%;
+    }
+    ::ng-deep {
+      maxhealth-question {
+        mat-label {
+          color: var(--primary-color);
+        }
+      }
+    }
+    .iom-color {
+      color: #45c0be;
+      font-weight: 600;
+    }
+    .creditoutpatientbilling{
+      .mat-raised-button{
+        //min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+    }
+  }
+  

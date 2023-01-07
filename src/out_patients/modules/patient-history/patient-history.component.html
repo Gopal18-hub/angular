@@ -1,0 +1,164 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper patient-history-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a  mat-tab-link [active]="true">Patient Transaction History</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="w-full h-full p-2">
+            <!-- First Row -->
+            <div class="flex w-full border-radius-xlg p-1 bg-secondary">
+                <div class="flex align-items-center w-3/10">
+                    <div>
+                        <mat-label class="max-health-primary-color font-semi-bold">Max ID</mat-label>
+                    </div>
+                    <div class="ml-1 w-3/10 bg-white border-radius-md">
+                        <maxhealth-question
+                            [question]="questions[0]"
+                            [form]="patienthistoryform"
+                            [questions]="questions[0]"
+                            [index]="0"
+                        >
+                        </maxhealth-question>
+                    </div>
+                    <div class="ml-7">
+                        <mat-label class="max-health-primary-color font-semi-bold">Mobile No.</mat-label>
+                    </div>
+                    <div class="ml-1 w-3/10 bg-white border-radius-md label">
+                        <maxhealth-question
+                            [question]="questions[1]"
+                            [form]="patienthistoryform"
+                            [questions]="questions[1]"
+                            [index]="1"
+                        >
+                        </maxhealth-question>
+                    </div>
+                </div>
+                <div class="flex w-3/10 ml-7 bg-grey p-1 align-items-center border-radius-md">
+                    <div class="ml-3">
+                        <mat-label class="max-health-primary-color font-semi-bold">From Date</mat-label>
+                    </div>
+                    <div class="ml-1 w-27 bg-white border-radius-md">
+                        <maxhealth-question
+                            [question]="questions[2]"
+                            [form]="patienthistoryform"
+                            [questions]="questions[2]"
+                            [index]="2"
+                        >
+                        </maxhealth-question>
+                    </div>
+                    <div class="ml-3">
+                        <mat-label class="max-health-primary-color font-semi-bold">To Date</mat-label>
+                    </div>
+                    <div class="ml-1 w-27 bg-white border-radius-md">
+                        <maxhealth-question
+                            [question]="questions[3]"
+                            [form]="patienthistoryform"
+                            [questions]="questions[3]"
+                            [index]="3"
+                        >
+                        </maxhealth-question>
+                    </div>
+                </div>
+                <!-- ml-7 -->
+                <div class="flex align-items-center w-3/10 ml-3">
+                    <div>
+                        <mat-label class="max-health-primary-color font-semi-bold wt-nowrap">Transaction Type</mat-label>
+                    </div>
+                    <div class="ml-1 w-5/9 bg-white border-radius-md">
+                        <maxhealth-question
+                            [question]="questions[4]"
+                            [form]="patienthistoryform"
+                            [questions]="questions[4]"
+                            [index]="4"
+                        >
+                        </maxhealth-question>
+                    </div>
+                </div>
+                <div class="w-2/5 flex">
+                    <div class="mr-2 float-right btn">
+                        <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="searchbtn" (click)="patienthistorysearch()">
+                            <img src="assets/lens.svg" class="lens-icon" [ngClass]="{disableclass:searchbtn}">
+                            Search
+                        </button>
+                    </div>
+                    <div class="mr-2 float-right">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="clearbtn">
+                            <!-- <img src="assets/lens.svg" class="lens-icon"> -->
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Row -->
+            <div class="w-full flex mt-1 border-radius-xlg p-1 bg-secondary">
+                <div class="flex w-9/10 align-items-center">
+                    <div class="w-1/4 text-overflow">
+                        <mat-label class="max-health-primary-color font-semi-bold">Patient Name:</mat-label>
+                        <span matTooltip="{{pname}}" class="ml-2">{{pname}}</span>
+                    </div>
+                    <div class="w-1/10 ml-5 text-overflow">
+                        <mat-label class="max-health-primary-color font-semi-bold">Age:</mat-label>
+                        <span matTooltip="{{age}}" class="ml-2">{{age}}</span>
+                    </div>
+                    <div class="w-1/10 ml-5 text-overflow">
+                        <mat-label class="max-health-primary-color font-semi-bold">Gender:</mat-label>
+                        <span matTooltip="{{gender}}" class="ml-2">{{gender}}</span>
+                    </div>
+                    <div class="w-1/10 ml-5 text-overflow">
+                        <mat-label class="max-health-primary-color font-semi-bold">DOB:</mat-label>
+                        <span matTooltip="{{dob}}" class="ml-2">{{dob}}</span>
+                    </div >
+                    <div class="w-1/15 ml-7 text-overflow">
+                        <mat-label class="max-health-primary-color font-semi-bold">Nationality:</mat-label>
+                        <span matTooltip="{{nationality}}" class="ml-2">{{nationality}}</span>
+                    </div>
+                    <div class="w-1/10 text-overflow">
+                        <mat-label class="max-health-primary-color font-semi-bold">SSN:</mat-label>
+                        <span matTooltip="{{ssn}}" class="ml-2">{{ssn}}</span>
+                    </div>
+                </div>
+                <!-- <div class="w-1/10">
+                    <div class="mr-2 float-right">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="clearbtn">
+                            Clear
+                        </button>
+                    </div>
+                </div> -->
+            </div>
+
+            <!-- Table -->
+            <div
+            *ngIf="apiProcessing"
+            class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+          >
+            <mat-spinner strokeWidth="3"></mat-spinner>
+          </div>
+  
+            <div class="mt-2 h-74" *ngIf="showtable">
+                <maxhealth-table
+                [config]="config"
+                [data]="patienthistorylist"
+                (columnClick)="printrow($event)"
+                #table
+                ></maxhealth-table>
+            </div>
+
+            <!-- Button -->
+            <!-- <div class="flex float-right mt-5">
+                <div class="mr-4">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="printbtn" (click)="printdialog()">Print</button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="!patienthistoryform.dirty">Clear</button>
+                </div>
+            </div> -->
+
+        </div>
+    </mat-tab-nav-panel>
+   
+</section>
+

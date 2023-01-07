@@ -1,0 +1,76 @@
+.bg-grey{
+    background:#F6F6F6;
+}
+.bg-lightgrey{
+    background-color: #D2D0D0;
+}
+.clr-primary{
+    color: #004084;
+}
+.bg-white{
+    background-color: #fff;
+    //color: #000;
+}
+.online-deposit-wrapper{
+    // ::ng-deep .max-table-wrapper table{
+    //     // width: auto !important;
+    //     white-space: nowrap !important;
+    //     // table-layout: auto !important;
+    // }
+
+    ::ng-deep .mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper {
+        margin: 0 !important;
+        padding-bottom: 0.8rem;
+        padding: 0%;
+    }
+    // .mat-table-fixed-layout {
+    //     table-layout: auto !important;
+    // }
+}
+.w-29{
+    width:29%;
+    }
+    .input-padding{
+        ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+            padding-bottom: 0rem !important;  
+        }
+    }.text-wrap{
+        white-space: nowrap;
+    }
+    .bg-lightgray{
+        background :#F6F6F6; 
+         
+    }
+    .bg-darkgray{
+    
+        background: #d8d8d8;
+    }
+    .p-0-35{
+        padding:0.35rem;
+    }
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 25%;
+      }
+      .button{
+        min-width: 95px !important;
+        height: 1.875rem;
+        line-height: 1.875rem;  
+      }
+      .button1{
+        min-width: initial !important;
+        height: 1.875rem;
+        line-height: 1.875rem;  
+        
+      }
+     .whitespace-nowrap{
+::ng-deep .max-table-wrapper table{
+        // width: auto !important;
+        white-space: nowrap !important;
+        // table-layout: auto !important;
+    }
+      }
+      

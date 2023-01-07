@@ -1,0 +1,37 @@
+.formsixty-wrapper{
+.w-49{
+    width: 49%;
+}
+.bg-secondary{
+    background-color: #F6F6F6;
+}
+.bg-white{
+    background-color: #fff;
+}   
+::ng-deep .mat-form-field-wrapper{
+    padding-bottom: 0 !important;
+}
+.aadharerror{ 
+::ng-deep .mat-error{
+    margin-top: 5% !important;
+}
+}
+.documentno{ 
+    ::ng-deep .mat-error{
+        margin-top: 2% !important;
+        font-size: 10px !important;
+    }
+    }
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+} 
+.formsixtybutton{
+    .mat-raised-button{    
+        min-width: auto !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+}
+}

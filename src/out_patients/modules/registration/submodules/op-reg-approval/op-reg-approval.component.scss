@@ -1,0 +1,38 @@
+.spinner {
+  margin-left: 47%;
+  margin-top: 13%;
+}
+.banner {
+  background: #004084;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+  a {
+    color: #fff;
+    opacity: 1;
+  }
+}
+.activebutton{
+  color:#004084;
+  background: white;
+  font-weight: 600;
+}
+
+.subbtn-class{
+  line-height:27px;
+  margin-bottom:3px;
+}
+::ng-deep .cdk-column-uForeigner {
+  text-align: center;
+}
+.h-84{
+  height: 84% !important;
+}
+.op-approval-table-wrapper{
+  ::ng-deep .max-table-wrapper {
+    table{
+      width: 120% !important;  
+    }  
+    
+}
+}
+

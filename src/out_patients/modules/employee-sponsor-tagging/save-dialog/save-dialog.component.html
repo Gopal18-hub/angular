@@ -1,0 +1,17 @@
+
+<!-- <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon> -->
+<div class="w-full h-full">
+    <div class=" w-full h-1/10">
+        <span class="material-icons float-right cursor-pointer max-dialog-close-icon" mat-dialog-close>close</span>
+    </div>
+    <div class="w-full h-2/5 flex align-items-center justify-content-center warningicon">
+        <mat-icon svgIcon="warning" ></mat-icon>
+    </div>
+    <div class="w-full h-1/10 text-center">
+        <p class="max-health-primary-color font-medium">Do you want to save?</p> 
+    </div>
+    <div class="flex w-full h-1/10 justify-content-center">
+        <button mat-raised-button (click)="savesuccess()" class="min-width max-health-primary-color" mat-dialog-close >OK</button>
+        <button mat-raised-button color="primary"  mat-dialog-close class="ml-6 min-width">Cancel</button>
+    </div>
+</div>

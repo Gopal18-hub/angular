@@ -1,0 +1,440 @@
+.bg-deposit{
+    background-color: #F6F6F6;
+    color:#004084;
+}
+.isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.bill-service-wrapper
+{
+    ::ng-deep .mat-tab-link
+    {
+        min-width: auto;
+        font-weight: 600 !important;
+    }
+    
+}
+.categoryIcons{
+    img{
+        object-fit: cover;
+    }
+}
+.BServiceForm {   
+    ::ng-deep .input1 .mat-form-field-infix{
+        text-align: right !important;  
+    }
+    
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 28%;
+    }
+    ::ng-deep .mat-raised-button{
+        min-width: fit-content !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+    .btn{
+        ::ng-deep .mat-raised-button{
+            min-width: auto !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
+        } 
+    }
+    .searchbtn{
+        ::ng-deep .mat-raised-button{
+            min-width: auto !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
+        }
+        ::ng-deep .mat-button-wrapper{
+            padding-left: 20px !important;
+        }
+    }
+    // .searchbtn{
+    //     ::ng-deep .mat-raised-button{
+    //         min-width: 100px !important;
+    //         padding-left: 40px !important;
+    //     }
+    //     mat-button-wrapper{
+    //         padding-left: 25px;
+    //     }
+    // }
+
+    ::ng-deep mat-label{
+        color: var(--primary-color);
+        font-weight: 600 !important;
+      }
+      ::ng-deep mat-tab-link
+      {
+        font-weight: 600 !important;
+      }
+    ::ng-deep .mat-input-element 
+    {
+        color: black;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+
+        padding-bottom: 0 !important;
+        padding: 0 !important;
+    
+    }
+        
+    ::ng-deep .patient-lbl
+  {
+    color: black;
+  }
+  ::ng-deep .mat-checkbox-label
+  {
+       color: var(--primary-color);
+    font-weight: 600;
+  }
+
+ 
+  }
+  .max-body-wrapper{
+  ::ng-deep .mat-form-field-wrapper
+  {
+    padding-bottom: 0.42rem;  
+    
+  }
+  ::ng-deep mat-label{
+    color: var(--primary-color);
+    font-weight: 600 !important;
+  }
+  
+}
+
+  .h-white-banner
+  {
+    ::ng-deep {
+        .mat-tab-header {
+           border-bottom: none;
+         }
+         .mat-tab-links {
+           background-color: #45c0be;
+           border-radius: 13px 13px 0 0;
+           border: 4px solid #45c0be;
+           border-bottom: 0;
+           a {
+             color: #fff;
+             background-color: #bfe8e7;
+             border-radius: 13px 13px 0 0;
+             margin-right: 4px;
+             color: #08504f;
+             opacity: 1;
+             &.mat-tab-link {
+               height: 34px;
+             }
+             &.mat-tab-label-active {
+               background-color: #fff;
+               color: #08504f;
+               font-weight: 600;
+             }
+             &.mat-tab-disabled {
+                opacity: 0.7;
+            }
+           }
+         }
+         .mat-ink-bar {
+             display: none;
+           }
+           .mat-tab-links
+           {
+               margin-left: 0px;
+           }
+     }
+    
+  }
+
+  .w-7
+  {
+      width: 7.9%;
+  }
+
+.btn-md{
+ 
+    height: 1.875rem;
+    width: 9.5rem;
+    line-height:1.875rem !important;
+    // ::ng-deep .mat-input-element{
+    //     height: 1.7rem
+    // }
+      
+}
+.div-otp
+{
+    ::ng-deep .mat-form-field-wrapper
+    {
+      padding-bottom: 0;  
+      
+    } 
+}
+.input-otp
+{
+    width: 9.5rem;
+    height: 100%;
+    margin-top: 5px;
+    // margin-bottom: 0px;
+    padding: 0px;
+    // ::ng-deep .mat-form-field-wrapper
+    // {
+    //     margin-top: 10px;
+    //   padding-bottom: 0;  
+      
+    // } 
+    ::ng-deep .mat-form-field{
+        line-height: 1.6;
+    }
+}
+.btn-otp
+{
+    height: 75%;
+    width: 9.5rem;
+}
+.bg-white{
+    background-color:white;
+}
+
+.wt-nowrap{
+    white-space: nowrap;
+}
+.wt-mid{
+    width: 14%;  
+}
+.bg-deposit
+{
+    ::ng-deep .bg-darkgray
+    {
+        padding: 1px;
+    }
+}
+.h-white-banner
+{
+ height: 8%;   
+}
+.bg-billdetails{
+    
+    height: 75%;
+    background-color:#45C0BE; 
+}
+.text-black
+{
+    color: #333333 !important;
+}
+.bg-blue
+{
+   
+    background-color: #BFE8E7;
+}
+.btn-blue
+{
+background-color: #45C0BE;
+
+}
+.txt-blue
+{   
+   color: #45C0BE;
+   font-style: italic;
+   text-decoration: underline;
+   font-weight:550;
+}
+.h-service
+{
+    height: 59%;
+    border-radius: 0% 0.5rem 0.5rem 0.5rem;
+    margin-left: 0.3%;
+    margin-right: 0.3%;
+    // margin-top: 0.1%;
+}
+// .h-9/20
+.h-table
+{
+    height: 54%;
+}
+
+.bg-paymet
+{
+    width: 87.6%;
+    height: 10%;
+}
+.icon-more
+{   
+ 
+        background-color:#D2D0D0;
+        border-radius: 4px;
+        color: black;
+        margin-left: 1px;
+        height: 22.9px;
+
+   
+}
+.grid-container
+{
+    ::ng-deep .mat-radio-group {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2px;
+        height: 0.1vh;
+        padding: 0px;
+        // margin-top: 1px;
+        //  margin-bottom: 10px;
+    }
+    ::ng-deep .mat-radio-outer-circle 
+    {
+        height: 16px;
+        width: 16px;
+    }
+    ::ng-deep .mat-radio-inner-circle
+    {
+        height: 15px;
+        width: 15px;
+    }
+    ::ng-deep .mat-radio-button
+    {
+padding: 0%;
+    }
+}
+
+
+.txt-blue
+{
+    ::ng-deep .mat-checkbox-label
+    {
+        color: #45C0BE;
+        font-style: normal;
+        font-weight: 500;
+       padding-bottom: 0.25rem;
+    } 
+}
+
+.w-6{
+    width: 7%;
+}
+
+.w-2
+{
+    width: 11%;
+    
+
+}
+.w-2
+{
+    ::ng-deep .mat-raised-button {
+        min-width: 6rem !important;
+    }
+}
+
+// .bg-darkgray
+// {​​​
+//     background: #d8d8d8;
+
+//     }
+
+.w-12
+{
+    width: 12%;
+}
+
+.bg-deposit{
+    ::ng-deep .mat-checkbox-inner-container
+    {
+        margin: 2px 1px 1px 1px;
+        height: 2vh;
+        width: 2vh;
+    
+    }
+}
+// .h-btn{
+//     height: 4.95vh;
+//     min-width: fit-content !important;
+// }
+.m-pannel
+{
+margin-top: 0.19rem;
+}
+
+// .lens-icon{
+//     position: absolute;
+//     left: 2px;
+//     top: 2px;
+//     height: 90%;
+//     width: 32%;
+// }
+
+.bg-darkgray{
+    
+    background: #d8d8d8;
+}
+.checkbox-bottom{
+    ::ng-deep mat-checkbox label span{
+        margin-bottom:2px;
+    }
+}
+.w-31{
+    width:80%
+}
+.w-27{
+    width:27%;
+    }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.w-13{
+    width: 13%;
+}
+.w-86{
+    width: 86%;
+}
+.w-14{
+    width: 14%;
+}
+.w-15{
+    width: 15%;
+}
+.w-11{
+    width: 11%;
+}
+.w-12{
+    width: 12%;
+}
+.w-16{
+    width: 16%;
+}
+.w-17{
+    width: 17%;
+}
+.w-18{
+    width: 18%;
+}
+.w-19{
+    width: 19%;
+}
+.w-23{
+    width: 23%;
+}
+.clr-black{
+    color: #000;
+}
+.mar-left-12{
+    margin-left: 6.7rem;
+}
+.w-36{
+    width: 36%;
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
+}
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }

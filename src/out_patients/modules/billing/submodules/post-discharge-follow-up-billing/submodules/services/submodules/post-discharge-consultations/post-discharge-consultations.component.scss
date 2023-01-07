@@ -1,0 +1,40 @@
+.consultation-wrapper{
+    ::ng-deep{
+        .max-table-wrapper{
+            border: 1px solid #707070;
+        }
+        .mat-table thead{
+            white-space: nowrap !important;
+        }
+        .mat-error{
+            display: none !important;
+        }
+    }
+    .table{
+        ::ng-deep{
+            .mat-form-field{
+                display: block !important;
+                background-color: #fff;
+                color: #000;
+                border-radius: 6px;
+            }
+            .max-table-wrapper {
+                table {
+                  .mat-row {
+                    &:hover {
+                      background-color: transparent !important;
+                      .mat-cell {
+                        color: initial !important;
+                      }
+                    }
+                  }
+                }
+            }
+        }
+        
+    }
+    
+}
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+}

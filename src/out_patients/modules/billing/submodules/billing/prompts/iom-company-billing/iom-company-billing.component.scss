@@ -1,0 +1,17 @@
+.iomcompanybillingbanner{
+    .iomradiobutton{
+    ::ng-deep mat-radio-group {
+        flex-direction: row !important;
+        justify-content: space-between;
+        gap:10px;
+    }
+}
+    .iomcompanybillingbutton{
+        ::ng-deep .mat-raised-button{
+            min-width: initial !important;
+            height: 1.875rem !important;
+            line-height: 1.875rem  !important;
+        }
+    }
+
+}

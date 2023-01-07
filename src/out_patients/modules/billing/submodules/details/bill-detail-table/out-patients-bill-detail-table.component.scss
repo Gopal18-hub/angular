@@ -1,0 +1,224 @@
+.bg-deposit{
+    background-color: #F6F6F6;
+    color:#004084;
+}
+.miscForm {
+    
+    ::ng-deep mat-label {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .change-password {
+      color: var(--primary-color);
+    }
+    ::ng-deep .input1 .mat-form-field-infix{
+        text-align: right !important;  
+    }
+    ::ng-deep .mat-input-element 
+    {
+        color: black;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+
+        padding-bottom: 0 !important;
+        padding: 0 !important;
+    
+    }
+    ::ng-deep .max-table-wrapper {
+        table {
+            .mat-checkbox-inner-container-no-side-margin{
+               margin-left: 8px; 
+            }
+          .mat-row {
+            &:hover {
+              background-color: transparent !important;
+              .mat-cell {
+                color: initial !important;
+              }
+            }
+          }
+        }
+      }   
+    ::ng-deep .patient-lbl
+  {
+    color: black;
+  }
+  ::ng-deep .mat-checkbox-label
+  {
+       color: var(--primary-color);
+    font-weight: 600;
+  }
+  }
+
+//   
+
+  .w-7
+  {
+      width: 7.9%;
+  }
+
+.btn-md{
+ 
+    height: 82%
+      
+}
+.btn-16
+{
+width: 18%;
+}
+.bg-white{
+    background-color:white;
+}
+
+.wt-nowrap{
+    white-space: nowrap;
+}
+.wt-mid{
+    width: 8.5%;  
+}
+.h-white-banner
+{
+ height: 8%;   
+}
+.bg-billdetails{
+    
+    height: 76%;
+    background-color:#45C0BE; 
+}
+.bg-blue
+{
+   
+    background-color: #BFE8E7;
+}
+.txt-blue
+{   
+   color: #45C0BE;
+   font-style: italic;
+   text-decoration: underline;
+   font-weight:550;
+}
+.h-service
+{
+    height: 92%;
+    border-radius: 0% 0.5rem 0.5rem 0.5rem;
+    margin-left: 0.3%;
+    margin-right: 0.3%;
+}
+// .h-9/20
+.h-table
+{
+    height: -webkit-fill-available;
+}
+
+.bg-paymet
+{
+    width: 87.6%;
+    height: 10%;
+}
+.icon-more
+{   
+ 
+        background-color:#D2D0D0;
+        border-radius: 4px;
+        color: black;
+        margin-left: 1px;
+        height: 22.9px;
+
+   
+}
+.mx-table
+{
+    height: -webkit-fill-available;
+}
+
+
+.txt-blue
+{
+    ::ng-deep .mat-checkbox-label
+    {
+        color: #45C0BE;
+        font-style: normal;
+        font-weight: 500;
+       padding-bottom: 0.25rem;
+    } 
+}
+
+.w-6{
+    width: 7%;
+}
+
+.w-2
+{
+    width: 11%;
+    
+
+}
+.w-2
+{
+    ::ng-deep .mat-raised-button {
+        min-width: 6rem !important;
+    }
+}
+.w-12
+{
+    width: 12%;
+}
+
+.bg-deposit{
+    ::ng-deep .mat-checkbox-inner-container
+    {
+        margin: 2px 1px 1px 1px;
+        height: 2vh;
+        width: 2vh;
+    
+    }
+}
+.h-btn{
+    height: 4.95vh;
+   
+}
+.m-pannel
+{
+margin-top: 0.19rem;
+}
+
+.bill-detail-table{
+    ::ng-deep .max-table-wrapper{
+        table{
+            .mat-header-row .mat-column-select{
+                width: 100px !important;
+                // text-align: inherit !important;
+            }
+            tbody tr td:nth-child(4)
+            {
+                text-align: right;
+                padding-right: 130px !important;
+                // padding-left: 25px !important
+            }
+            tbody tr td:nth-child(5){
+                text-align: right;
+                padding-right: 130px !important;
+                // padding-left: 50px !important
+            }
+        }
+    }
+    ::ng-deep .max-table-wrapper table{
+        tr.cancelledrefund{
+            background-color: #fff !important;
+            td{
+                pointer-events: none;
+                opacity: 0.5;
+            }
+        }
+
+    }
+}
+
+.disable-table-check{
+    ::ng-deep .max-table-wrapper table .mat-header-row .mat-column-select{
+        pointer-events: none;
+        div mat-checkbox{
+            opacity: 0.5;
+        }
+    }
+}

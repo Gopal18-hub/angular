@@ -1,0 +1,196 @@
+.refund-bill-dialog{
+    .api-loader {
+        background: rgba(0, 0, 0, 0.15);
+    }
+    .col-black{
+        color: #000;
+    }
+    .col-white{
+        color: #fff;
+    }
+    .back-primary{
+        background-color: #004084;
+    }
+    .bold{
+        font-weight: bold;
+    }
+    .lighter{
+        font-weight: lighter;
+    }
+    .wt-nowrap{
+        white-space: nowrap;
+    }
+    .pointer{
+        cursor: pointer;
+    }
+    .secondary{
+        background-color: #45C0BE;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    .white-nowrap{
+        white-space: nowrap;
+    }
+    .bg-white{
+        background-color: #fff;
+        color: #000;
+    }
+    .clr-primary{
+        color: #004084;
+    }
+    .height-47{
+        height: 47vh;
+    }
+    .height-56{
+        height: 56vh;
+    }
+    .width-34{
+        width: 34% !important;
+    }
+    .bg-grey{
+        background:#F6F6F6;
+    }
+    .bg-lightgrey{
+        background-color: #D2D0D0;
+    }
+    .bg-btn{
+        background-color: #C8C8C8;
+    }
+    .mg-top-1{
+        margin-top: 1px;
+    }
+    ::ng-deep mat-radio-group {
+        flex-direction: row !important;
+        gap: 15px;
+    }
+    .btn{
+        ::ng-deep .mat-raised-button{
+            // min-width: auto !important;
+        }
+    }
+    ::ng-deep .mat-radio-button{
+        margin-left: 10px;
+        padding-bottom: 0 !important;
+        padding-top: 0 !important;
+        margin-bottom: 10px;
+    }
+    .bottom{
+        ::ng-deep .mat-radio-button{
+            margin-left: 10px;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            padding-top: 0 !important;
+            margin-top: 8px;
+        }
+    }
+    ::ng-deep .ta textarea{
+        min-height: 120px !important;
+    }
+    
+    .otptextcnt{
+        ::ng-deep .mat-form-field{
+            line-height: 2 !important;
+        }
+    }
+    
+    ::ng-deep .refundheight{
+        height: 5vh !important;
+    }
+    .payabletextbox{
+    ::ng-deep .mat-form-field{
+    line-height: 1.25 !important;
+    }
+    }
+    .w-64{
+        width: 60%;
+    }
+    ::ng-deep .mat-dialog-container{
+        overflow: hidden !important;
+        padding: 10px 24px 24px 24px;
+    }
+
+    .height{
+        height: 63vh;
+    }
+    ::ng-deep .mat-tab-label{
+        height: 30px !important;
+        color: #004084 ;
+        opacity: 1 !important;
+        font-weight: 500!important;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
+    {
+        height: 50vh !important;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels .mat-tab-label:nth-child(8){
+        border-bottom: 0 !important;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active{
+        background-color:#004084;
+        opacity: 1;
+        color: white;
+        border-bottom: none !important;
+        border-radius: 5px;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+        border-right: none !important;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body-content{
+        height: 55vh !important;
+    }
+    ::ng-deep .mat-dialog-container{
+        overflow: hidden !important;
+        padding: 10px 24px 24px 24px;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+        width: auto !important;
+    }
+    ::ng-deep .mat-tab-label{
+        padding: 0 24px !important;
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
+        display: flex !important;
+        row-gap: 10px !important;
+    }
+    .input1{
+        ::ng-deep  .mat-form-field-infix {
+            text-align: right !important;
+        }
+    }
+    ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body{
+        left: 50px !important;
+    }
+    .width{
+        width: 65%!important;
+    }
+    .creditbuttonwidth
+    {
+        .mat-raised-button
+        {
+            min-width: initial !important;
+            height: 1.875rem !important;
+            line-height: 1.875rem  !important;
+        }
+    // ::ng-deep .mat-raised-button {
+    //     min-width: 120px !important;
+    // }
+    }
+    .input-label{
+        ::ng-deep {
+            mat-label{
+                color: #004084;
+            }
+            .mat-error{
+                margin-top: 10px;
+            }
+        }
+        
+    }
+    .mat-raised-button.mat-button-base.mat-button-disabled{
+        background-color:rgb(200, 200, 200) !important;
+        color: rgba(0, 0, 0, 0.26) !important;    
+    }
+}
+
+

@@ -1,0 +1,198 @@
+<section
+  class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel cashscrollnewwrapper"
+>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Cash Scroll</a>
+      </li>
+    </ul>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div
+      *ngIf="apiProcessing"
+      class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+    <form [formGroup]="cashscrollnewForm" class="w-full h-full">
+      <div class="w-full h-full p-2">
+        <div
+          class="flex w-full max-health-primary-color text-wrap bg-lightgray border-radius-lg input-padding"
+        >
+          <div class="flex align-items-center p-2 w-1/45 font-semi-bold">
+            <mat-label> Employee Name</mat-label>
+            <div class="w-7/20 ml-2 bg-white">
+              <maxhealth-question
+                [question]="questions[0]"
+                [form]="cashscrollnewForm"
+                [questions]="questions[0]"
+                [index]="0"
+              >
+              </maxhealth-question>
+            </div>
+
+            <mat-label class="ml-3">Taken At</mat-label>
+            <div class="w-1/3 ml-2 bg-white">
+              <maxhealth-question
+                [question]="questions[2]"
+                [form]="cashscrollnewForm"
+                [questions]="questions[2]"
+                [index]="2"
+              >
+              </maxhealth-question>
+            </div>
+          </div>
+
+          <div class="flex p-1 w-2/5">
+            <div
+              class="flex align-items-center bg-darkgray border-radius-lg w-full mr-12"
+            >
+              <mat-label class="ml-2"> From Date</mat-label>
+              <div class="w-1/3 ml-2 border-radius-lg">
+                <maxhealth-question
+                  [question]="questions[3]"
+                  [form]="cashscrollnewForm"
+                  [questions]="questions[3]"
+                  [index]="3"
+                  [ngClass]="{
+                    bgwhite: fromdatedisable == true
+                  }"
+                >
+                </maxhealth-question>
+              </div>
+
+              <mat-label class="ml-2">To Date</mat-label>
+              <div class="w-1/3 ml-2 bg-white border-radius-lg">
+                <maxhealth-question
+                  [question]="questions[4]"
+                  [form]="cashscrollnewForm"
+                  [questions]="questions[4]"
+                  [index]="4"
+                  [ngClass]="{
+                    bgwhite: todatedisable == true
+                  }"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+          </div>
+          <div class="w-1/5 flex p-1 justify-content-end mr-2">
+            <div accessControl
+            masterModule="2"
+            moduleId="7"
+            featureId="66"
+            actionId="162"
+            >
+              <button
+                mat-raised-button
+                color="primary"
+                class="button"
+                type="submit"
+                (click)="viewscrolldetails()"
+                [disabled]="queryparamssearch"              
+              >
+                <img src="assets/lens.svg" class="cashscrollnew-icon" />
+                <span class="ml-4 font-sm">Search</span>
+              </button>
+            </div>
+            <div>
+              <button
+                mat-raised-button
+                color="primary"
+                class="button ml-2"
+                (click)="resetcashscrollnew()"                
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+        <!---Second row-->
+        <div
+          class="p-1 flex bg-lightgray mt-1 border-radius-lg align-items-center"
+        >
+          <div class="w-3/10 flex max-health-primary-color font-semi-bold">
+            <mat-label class="ml-1"> Scroll No.</mat-label>
+            <div class="w-3/10 ml-2 bg-white input-padding">
+              <maxhealth-question
+                [question]="questions[1]"
+                [form]="cashscrollnewForm"
+                [questions]="questions[1]"
+                [index]="1"
+              >
+              </maxhealth-question>
+            </div>
+          </div>
+          <div class="w-7/10 flex justify-content-end mr-2">
+            <div class="w-1/15 mt-1">
+              <mat-label
+                class="max-health-primary-color font-semi-bold cursor-pointer"
+                (click)="navigatetomain()"
+                >Back to scroll search</mat-label
+              >
+            </div>
+            <div accessControl  masterModule="2"
+            moduleId="7"
+            featureId="66"
+            actionId="163">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                class="ml-2 button"
+                [disabled]="scrolldetailsexists"
+                (click)="savecashscroll()"               
+              >
+                Save
+              </button>
+            </div>
+            <div accessControl
+            masterModule="2"
+            moduleId="7"
+            featureId="66"
+            actionId="164"
+            >
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                class="ml-2 button"
+                [disabled]="printsexists"
+                (click)="print()"              
+              >
+                Print
+              </button>
+            </div>
+            <div>
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                class="ml-2 button"
+                [disabled]="excelexists"
+                (click)="exportTable()"
+              >
+                Excel
+              </button>
+            </div>
+          </div>
+        </div>
+        <!---third row-->
+        <div class="mt-2 table">
+          <maxhealth-table
+            [config]="cashscrollnewconfig"
+            [data]="scrolldetailsList"
+            class="cashsscrolltable"
+            #cashscrollnewtable
+            [footerData]="tableFooterData"
+          ></maxhealth-table>
+        </div>
+      </div>
+    </form>
+  </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between mx-5 max-health-primary-color">
+  <p>Last Update By: {{ lastUpdatedBy }}</p>
+  <P> Date: {{ currentTime }} </P>
+</div>

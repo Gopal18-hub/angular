@@ -1,0 +1,743 @@
+<section
+  class="ml-4 shadow-1 mr-4 max-body-wrapper h-auto"
+  *ngIf="!formProcessingFlag"
+>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true"> OP Registration</a>
+      </li>
+    </ul>
+    <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex mr-2">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+        (click)="doCategoryIconAction(icon)"
+      />
+    </div>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div
+          *ngIf="apiProcessing"
+          class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+          >
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
+    <div
+      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg pb-1"
+      >
+      <div class="w-6/7 flex h-full">
+        <form [formGroup]="OPRegForm" class="mt-1 mb-0" autocomplete="off">
+          <div class="flex flex-wrap">
+            <div class="wc-35-6 flex">
+              <div class="font-sm mr-3 w-3/10">
+                <maxhealth-question
+                  [question]="questions[0]"
+                  [form]="OPRegForm"
+                  [questions]="questions[0]"
+                  [index]="0"
+                ></maxhealth-question>
+              </div>
+              <div class="font-sm mr-3 w-3/10">
+                <maxhealth-question
+                  [question]="questions[1]"
+                  [form]="OPRegForm"
+                  [questions]="questions[1]"
+                  [index]="1"
+                ></maxhealth-question>
+              </div>
+              <div class="font-sm w-1/3">
+                <maxhealth-question
+                  [question]="questions[2]"
+                  [form]="OPRegForm"
+                  [questions]="questions[2]"
+                  [index]="2"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+            <div class="w-1/4 flex">
+              <div class="font-sm w-3/10">
+                <maxhealth-question
+                  [question]="questions[3]"
+                  [form]="OPRegForm"
+                  [questions]="questions[3]"
+                  [index]="3"
+                ></maxhealth-question>
+              </div>
+              <div class="font-sm w-7/10">
+                <maxhealth-question
+                  [question]="questions[4]"
+                  [form]="OPRegForm"
+                  [questions]="questions[4]"
+                  [index]="4"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+
+            <div class="w-1/3 flex">
+              <div class="font-sm mr-2 w-5/9">
+                <maxhealth-question
+                  [question]="questions[5]"
+                  [form]="OPRegForm"
+                  [questions]="questions[5]"
+                  [index]="5"
+                ></maxhealth-question>
+              </div>
+
+              <div class="font-sm w-1/45">
+                <maxhealth-question
+                  [question]="questions[6]"
+                  [form]="OPRegForm"
+                  [questions]="questions[6]"
+                  [index]="6"
+                ></maxhealth-question>
+              </div>
+            </div>
+          </div>
+          <!-- --------------------------------------------second row ---------------------------------------------------------- -->
+
+          <div class="flex flex-wrap">
+            <div class="wc-35-6 flex">
+              <div class="autocomplete font-sm mr-3 w-3/10">
+                <maxhealth-question
+                  [question]="questions[7]"
+                  [form]="OPRegForm"
+                  [questions]="questions[7]"
+                  [index]="7"
+                ></maxhealth-question>
+              </div>
+              <div class="font-sm mr-3 w-3/10">
+                <maxhealth-question
+                  [question]="questions[8]"
+                  [form]="OPRegForm"
+                  [questions]="questions[8]"
+                  [index]="8"
+                ></maxhealth-question>
+              </div>
+
+              <!-- AGE CONTAINER -->
+              <div class="flex age-container font-sm w-1/3">
+                <div class="w-1/3">
+                  <maxhealth-question
+                    [question]="questions[9]"
+                    [form]="OPRegForm"
+                    [questions]="questions[9]"
+                    [index]="9"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-2/3">
+                  <maxhealth-question
+                    [question]="questions[10]"
+                    [form]="OPRegForm"
+                    [questions]="questions[10]"
+                    [index]="10"
+                  ></maxhealth-question>
+                </div>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+            <div class="w-1/4 flex">
+              <!-- EMAIL ID -->
+              <div class="w-full font-sm">
+                <maxhealth-question
+                  [question]="questions[11]"
+                  [form]="OPRegForm"
+                  [questions]="questions[11]"
+                  [index]="11"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+
+            <div class="w-1/3 flex">
+              <!-- FATHER/SPOUSE CONTAINER -->
+              <div class="flex flex-column w-1/2 mr-4 font-sm">
+                <mat-label>Father/Spouse Name</mat-label>
+                <div class="flex age-container items-center">
+                  <div class="w-3/8 font-sm">
+                    <maxhealth-question
+                      [question]="questions[12]"
+                      [form]="OPRegForm"
+                      [questions]="questions[12]"
+                      [index]="12"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/3 mr-2 font-sm">
+                    <maxhealth-question
+                      [question]="questions[13]"
+                      [form]="OPRegForm"
+                      [questions]="questions[13]"
+                      [index]="13"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MOTHER NAME -->
+              <div class="w-1/45 font-sm">
+                <maxhealth-question
+                  [question]="questions[14]"
+                  [form]="OPRegForm"
+                  [questions]="questions[14]"
+                  [index]="14"
+                ></maxhealth-question>
+              </div>
+            </div>
+          </div>
+
+          <!-- --------------------------------------------------3RD ROW----------------------------------------------------------- -->
+          <!-- ------------------------------------------------3RD ROW----------------------------------------------------- -->
+          <div class="flex flex-wrap font-sm">
+            <div class="wc-35-6 flex">
+              <div class="w-1/3 mr-2">
+                <maxhealth-question
+                  [question]="questions[15]"
+                  [form]="OPRegForm"
+                  [questions]="questions[15]"
+                  [index]="15"
+                ></maxhealth-question>
+              </div>
+
+              <div class="flex age-container w-2/3">
+                <div class="w-2/5">
+                  <maxhealth-question
+                    [question]="questions[16]"
+                    [form]="OPRegForm"
+                    [questions]="questions[16]"
+                    [index]="16"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-5/9">
+                  <maxhealth-question
+                    [question]="questions[17]"
+                    [form]="OPRegForm"
+                    [questions]="questions[17]"
+                    [index]="17"
+                  ></maxhealth-question>
+                </div>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+            <div class="w-1/4 flex">
+              <div class="w-full">
+                <maxhealth-question
+                  [question]="questions[18]"
+                  [form]="OPRegForm"
+                  [questions]="questions[18]"
+                  [index]="18"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+
+            <div class="w-1/3 flex">
+              <div class="w-full">
+                <maxhealth-question
+                  [question]="questions[19]"
+                  [form]="OPRegForm"
+                  [questions]="questions[19]"
+                  [index]="19"                
+                ></maxhealth-question>
+              </div>
+            </div>
+          </div>
+
+          <!-- -----------------------------------------------4th row--------------------------------------- -->
+
+          <div class="flex flex-wrap font-sm w-full">
+            <!-- -------------------------------------------------ADDRESS------------------------------------------------ -->
+
+            <!-- PINCODE -->
+            <div class="flex flex-column wc-35-6">
+              <div class="w-full">
+                <maxhealth-question
+                  [question]="questions[20]"
+                  [form]="OPRegForm"
+                  [questions]="questions[20]"
+                  [index]="20"
+                ></maxhealth-question>
+              </div>
+              <div class="flex w-full justify-between">
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[21]"
+                    [form]="OPRegForm"
+                    [questions]="questions[21]"
+                    [index]="21"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[22]"
+                    [form]="OPRegForm"
+                    [questions]="questions[22]"
+                    [index]="22"
+                  ></maxhealth-question>
+                </div>
+              </div>
+
+              <!-- HIDDEN OTHER TEXT FIELD FOR LOCALITY-->
+              <div class="w-1/2" hidden>
+                <maxhealth-question
+                  [question]="questions[23]"
+                  [form]="OPRegForm"
+                  [questions]="questions[23]"
+                  [index]="23"
+                ></maxhealth-question>
+              </div>
+              <div class="flex w-full justify-between">
+                <!-- CITY/TOWN -->
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[24]"
+                    [form]="OPRegForm"
+                    [questions]="questions[24]"
+                    [index]="24"
+                  ></maxhealth-question>
+                </div>
+
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[25]"
+                    [form]="OPRegForm"
+                    [questions]="questions[25]"
+                    [index]="25"
+                  ></maxhealth-question>
+                </div>
+              </div>
+              <div class="flex w-full justify-between">
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[26]"
+                    [form]="OPRegForm"
+                    [questions]="questions[26]"
+                    [index]="26"
+                  ></maxhealth-question>
+                </div>
+
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[27]"
+                    [form]="OPRegForm"
+                    [questions]="questions[27]"
+                    [index]="27"
+                  ></maxhealth-question>
+                </div>
+              </div>
+              <div class="flex w-full justify-between items-center">
+                <!-- NATIONALITY -->
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[28]"
+                    [form]="OPRegForm"
+                    [questions]="questions[28]"
+                    [index]="28"
+                  ></maxhealth-question>
+                </div>
+                <!-- FOREIGN CHECKBOX -->
+                <!-- (click)="openForeign()" -->
+                <div class="w-1/45 justify-between items-center flex">
+                  <div class="w-1/45">
+                    <maxhealth-question
+                      [question]="questions[29]"
+                      [form]="OPRegForm"
+                      [questions]="questions[29]"
+                      [index]="29"
+                      (click)="foreignCLick($event)"
+                      [ngClass]="{'foreignernone': disableforeigner}"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-1/45">
+                    <!-- (click)="seaferrorCLick($event)" -->
+                    <maxhealth-question
+                      [question]="questions[30]"
+                      [form]="OPRegForm"
+                      [questions]="questions[30]"
+                      [index]="30"
+                      [hidden]="!isNSSHLocation"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+
+            <div
+              class="opd-reg-wrapper-box-check flex justify-between flex-wrap w-1/4"
+            >
+              <mat-card
+                class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color height-max-content"
+              >
+                <!-- (click)="hotlistClick($event)" -->
+                <div class="flex">
+                  <div class="w-3/4">
+                    <maxhealth-question
+                      [question]="questions[31]"
+                      [form]="OPRegForm"
+                      [questions]="questions[31]"
+                      [index]="31"
+                      accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="597"
+                    actionId="1555"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/5">
+                    <!-- (click)="openVIP($event)" -->
+                    <maxhealth-question
+                      [question]="questions[32]"
+                      [form]="OPRegForm"
+                      [questions]="questions[32]"
+                      [index]="32"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="w-3/4">
+                    <!-- (click)="NotesClick($event)" -->
+
+                    <maxhealth-question
+                      [question]="questions[33]"
+                      [form]="OPRegForm"
+                      [questions]="questions[33]"
+                      [index]="33"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/5">
+                    <!-- (click)="hwcClick($event)" -->
+
+                    <maxhealth-question
+                      [question]="questions[34]"
+                      [form]="OPRegForm"
+                      [questions]="questions[34]"
+                      [index]="34"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[35]"
+                    [form]="OPRegForm"
+                    [questions]="questions[35]"
+                    [index]="35"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[36]"
+                    [form]="OPRegForm"
+                    [questions]="questions[36]"
+                    [index]="36"
+                  ></maxhealth-question>
+                </div>
+
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[37]"
+                    [form]="OPRegForm"
+                    [questions]="questions[37]"
+                    [index]="37"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[38]"
+                    [form]="OPRegForm"
+                    [questions]="questions[38]"
+                    [index]="38"
+                  ></maxhealth-question>
+                  <maxhealth-question
+                    [question]="questions[39]"
+                    [form]="OPRegForm"
+                    [questions]="questions[39]"
+                    [index]="39"
+                  ></maxhealth-question>
+                </div>
+              </mat-card>
+            </div>
+            <div class="mx-3">&nbsp;</div>
+
+            <div class="opd-reg-wrapper-box-radio flex flex-column w-1/3">
+              <mat-card class="w-full opd-reg-wrapper-box-checboxcontainer">
+                <h3 class="max-health-primary-color font-semi-bold">
+                  Payment Mode
+                </h3>
+                <!-- CASH RADIO BUTTON -->
+                <div class="flex flex-wrap max-health-primary-color">
+                  <div class="w-full">
+                    <maxhealth-question
+                      [question]="questions[40]"
+                      [form]="OPRegForm"
+                      [questions]="questions[40]"
+                      [index]="40"
+                    ></maxhealth-question>
+                  </div>
+                  <!-- <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[41]"
+                      [form]="OPRegForm"
+                      [questions]="questions[41]"
+                      [index]="41"
+                    ></maxhealth-question>
+                  </div> -->
+                </div>
+              </mat-card>
+              <div class="w-full mt-2">
+                <maxhealth-question
+                  [question]="questions[41]"
+                  [form]="OPRegForm"
+                  [questions]="questions[41]"
+                  [index]="41"
+                ></maxhealth-question>
+              </div>
+
+              <!-- SAVE MODIFY BUTTON -->
+              <div class="flex w-full justify-between flex-wrap flex-column">
+                <div class="flex justify-between mb-3 mt-0">                
+                  <button
+                  mat-raised-button
+                  color="primary"
+                  class="w-1/45"
+                  type="submit"
+                  [disabled]="!OPRegForm.valid || MaxIDExist || expiredPatient"
+                  (click)="registationFormSubmit()"    
+                  accessControl
+                  masterModule = "2"
+                  moduleId="7"
+                  featureId="60"
+                  actionId="140"               
+                >
+                  Save
+                </button>
+                
+                 <button
+                 mat-raised-button
+                 color="primary"
+                 class="w-1/45"
+                 type="button"
+                 [disabled]="!OPRegForm.valid || !MaxIDExist || expiredPatient"
+                 (click)="onModifyDetail()"
+                 accessControl
+                 masterModule = "2"
+                 moduleId="7"
+                 featureId="60"
+                 actionId="141"                   
+               >
+                 Modify
+               </button>
+                              
+                </div>
+                <div class="flex justify-between">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-1/45"
+                    type="button"
+                    [disabled]="!MaxIDExist || expiredPatient"
+                    (click)="openReportModal('PrintLabel')"
+                  >
+                    Print Label
+                  </button>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-1/45"
+                    type="button"
+                    [disabled]="!isOrganDonor || expiredPatient"
+                    (click)="openReportModal('PrintOrganDonorForm')"
+                  >
+                    Print OD
+                  </button>
+                </div>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="w-1/7 flex flex-column fourth-column">
+        <div
+          class="mt-2 px-4 py-4 h-3/10 flex flex-column justify-between hash-background"
+        >
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-full font-sm"
+            type="button"
+            [disabled]="appointmentSearchClicked"
+            (click)="openDialog()"
+          >
+            Appointment Search
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-full"
+            type="button"
+            [disabled]="!MaxIDExist || expiredPatient"
+            (click)="getPatientDMSDetail()"
+          >
+            DMS
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-full"
+            type="button"
+            [disabled]="true"
+          >
+            Verify Health ID
+          </button>
+        </div>
+        
+        <div class="px-4 py-2 flex justify-center flex-wrap h-2/5 items-center">
+          <!-- <svg
+            width="242"
+            height="239"
+            viewBox="0 0 242 239"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="width: 150px; height: 150px"
+          >
+            <path
+              d="M230 0H12C5.37258 0 0 5.37258 0 12V227C0 233.627 5.37258 239 12 239H230C236.627 239 242 233.627 242 227V12C242 5.37258 236.627 0 230 0Z"
+              fill="white"
+            />
+            <path
+              d="M230 0.5H12C5.64873 0.5 0.5 5.64873 0.5 12V227C0.5 233.351 5.64873 238.5 12 238.5H230C236.351 238.5 241.5 233.351 241.5 227V12C241.5 5.64873 236.351 0.5 230 0.5Z"
+              stroke="#707070"
+            />
+            <path
+              d="M191 162H54V161.8C54 161.7 54 161.593 54 161.491C53.97 151.195 55.7934 140.977 59.383 131.326C61.089 126.758 63.2032 122.352 65.7 118.163C68.128 114.092 70.9276 110.255 74.063 106.7C77.1279 103.224 80.5228 100.054 84.2 97.234C87.8233 94.4591 91.7229 92.0648 95.837 90.089C104.154 86.081 113.268 83.9996 122.501 83.9996C131.733 83.9996 140.847 86.081 149.164 90.089C153.278 92.0648 157.177 94.4591 160.8 97.234C164.477 100.054 167.872 103.224 170.937 106.7C174.072 110.255 176.872 114.092 179.3 118.163C181.796 122.352 183.91 126.757 185.616 131.325C189.206 140.975 191.029 151.191 191 161.487C191 161.656 191 161.829 191 161.999V162Z"
+              fill="#E5E5E5"
+            />
+            <path
+              d="M122.5 116C150.943 116 174 92.4949 174 63.5C174 34.5051 150.943 11 122.5 11C94.0573 11 71 34.5051 71 63.5C71 92.4949 94.0573 116 122.5 116Z"
+              fill="#F2F2F2"
+            />
+          </svg> -->
+          <!-- <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="124"
+            height="170"
+            viewBox="0 0 124 170"
+          >
+            <g id="Group_941" data-name="Group 941" transform="translate(1)">
+              <path
+                id="Subtraction_2"
+                data-name="Subtraction 2"
+                d="M95,54H0v-.141c0-.071,0-.143,0-.214A59.321,59.321,0,0,1,3.733,32.764a56.16,56.16,0,0,1,4.379-9.112,53.183,53.183,0,0,1,5.8-7.939,49.649,49.649,0,0,1,7.03-6.551,46.091,46.091,0,0,1,8.069-4.946,42.653,42.653,0,0,1,36.978,0,46.091,46.091,0,0,1,8.069,4.946,49.647,49.647,0,0,1,7.03,6.551,53.183,53.183,0,0,1,5.8,7.939,56.16,56.16,0,0,1,4.379,9.112A59.32,59.32,0,0,1,95,53.645c0,.117,0,.237,0,.354Z"
+                transform="translate(14 51)"
+                fill="#e5e5e5"
+              />
+              <ellipse
+                id="Ellipse_27"
+                data-name="Ellipse 27"
+                cx="35.5"
+                cy="36.5"
+                rx="35.5"
+                ry="36.5"
+                transform="translate(26)"
+                fill="#f2f2f2"
+              />
+              <text
+                id="Upload_image"
+                data-name="Upload image"
+                transform="translate(3 128)"
+                fill="#ababab"
+                font-size="19"
+                font-family="ProximaNova-Regular, Proxima Nova"
+              >
+                <tspan x="0" y="0">Upload image</tspan>
+              </text>
+              <text
+                id="Or_Capture_image"
+                data-name="Or
+          Capture image"
+                transform="translate(61 145)"
+                fill="#ababab"
+                font-size="15"
+                font-family="ProximaNova-Regular, Proxima Nova"
+              >
+                <tspan x="-8.212" y="0">Or</tspan>
+                <tspan font-size="19">
+                  <tspan x="-61.465" y="21">Capture image</tspan>
+                </tspan>
+              </text>
+            </g>
+          </svg> -->
+          <div class="img-banner-container" fxLayout="column">
+            <div class="img-banner-top" fxLayoutAlign="end center">&nbsp;
+              &nbsp;
+            </div>
+            <div class="no-img-banner-body" 
+            [ngClass]="{ 'img-banner-body': !isNoImage }"
+            fxLayoutAlign="center center">
+                <img width="100%" [src]="patientImage" class="imgHeight cursor-pointer" (click)="openImageUploadDialog()"
+                 *ngIf="patientImage != undefined && patientImage != null && patientImage != ''">
+            </div>
+            <div class="img-banner-bottom" *ngIf="isNoImage" >
+              &nbsp;&nbsp;&nbsp;
+              <!-- <a class="cursor-pointer click-here-link " (click)="openImageUploadDialog()" >Click here</a> 
+              <span *ngIf="isNoImage" class="font-click-here"> to capture photo</span> -->
+              <a class="cursor-pointer click-here-link" (click)="openImageUploadDialog()">Capture Photo</a> 
+            </div>
+        </div>
+        </div>
+        <div>
+          
+        </div>
+        <div class="mt-4 px-4 py-0 h-1/5 flex flex-column">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="mt-1 mb-2"
+            [disabled]="clearClicked"
+            (click)="clear()"
+          >
+            Clear
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="mt-1"
+            [disabled]="!MaxIDExist || expiredPatient"
+            (click)="openReportModal('PrintFormReport')"
+          >
+          Print Form
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-tab-nav-panel>
+</section>
+
+<div class="flex ml-4 mr-4 justify-between font-xs">
+  <p *ngIf="MaxIDExist && !LastupdateExist">Registered by: {{ registeredBy }} on {{lastupdatedDate}}</p>
+  <p *ngIf="MaxIDExist && LastupdateExist">Last updated by: {{ lastUpdatedBy }} on {{lastupdatedDate}} </p>
+  <p *ngIf="!MaxIDExist">Registered by: {{ registeredBy }} on 
+    {{ moment().format("DD-MM-YYYY") }} |  {{ moment().format("LT") }} </p>
+
+  <div class="right" *ngIf="!MaxIDExist">
+    Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+    {{ moment().format("LT") }}
+  </div>
+  <div class="right" *ngIf="MaxIDExist && !LastupdateExist">
+    Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+    {{ moment().format("LT") }}
+  </div>
+  <div class="right" *ngIf="MaxIDExist && LastupdateExist">
+    <p>Registered by:  {{ registeredBy }} on {{lastregisteredDate}} </p>
+  
+  </div>
+</div>

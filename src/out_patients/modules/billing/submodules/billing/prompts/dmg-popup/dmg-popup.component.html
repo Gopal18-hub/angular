@@ -1,0 +1,33 @@
+<div class="flex relative">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<div class="w-full h-85 flex mt-6">
+  <div class="w-1/2 ">
+    <h2 class="max-health-primary-color">
+      Disease Management Groups - Organ (DMG)
+    </h2>
+    <div class="dmg-radio">
+      <maxhealth-question
+      [question]="questions[0]"
+      [form]="dmgform"
+      [questions]="questions[0]"
+      [index]="0"
+      ></maxhealth-question>
+  </div>
+  </div>
+  <div class="w-1/2">
+    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+  </div>
+</div>
+<div class="flex mt-2 dmg-btn">
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+  <button mat-raised-button color="primary" class="ml-2" (click)="cancel()">Cancel</button>
+</div>

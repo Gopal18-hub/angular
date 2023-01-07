@@ -1,0 +1,164 @@
+<div
+  class="relative max-health-primary-color appointment-search-dialog-wrapper"
+>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+   
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <section class="overflow-x-none overflow-y-none">
+    <h2 mat-dialog-title class="max-health-primary-color">
+      Discount Reason
+    </h2>
+    <div class="h-full flex w-full align-items-center bg-secondary border-radius-md">
+      <form
+        [formGroup]="discAmtForm"
+        class="flex w-full align-items-center"
+      >
+      <div class="w-full bg-secondary border-radius-xlg align-items-center">
+        <div class="flex  mt-0 ">
+          <div class="h-dropdown max-health-primary-color w-1/6">          
+              <maxhealth-question 
+                [question]="question[0]"
+                [form]="discAmtForm"
+                [questions]="question[0]"
+                [index]="0"
+                class="bg-white"
+              >
+              </maxhealth-question>           
+            </div>         
+            <div class="ml-1 h-dropdown max-health-primary-color w-1/6">
+              <maxhealth-question
+                [question]="question[1]"
+                [form]="discAmtForm"
+                [questions]="question[1]"
+                [index]="1"
+              >
+              </maxhealth-question>
+            </div>
+          <!-- TARRIF PRICE BLOCK -->
+            <div class="ml-1  h-full max-health-primary-color w-1/6">
+              <maxhealth-question
+                [question]="question[2]"
+                [form]="discAmtForm"
+                [questions]="question[2]"
+                [index]="2"
+              >
+              </maxhealth-question>
+            </div>
+
+            <!-- QTY BLOCK -->
+            <div class="ml-1   h-full max-health-primary-color w-tarrif">
+              <maxhealth-question
+                [question]="question[3]"
+                [form]="discAmtForm"
+                [questions]="question[3]"
+                [index]="3"
+              >
+              </maxhealth-question>
+            </div> 
+            <!-- REQUIRED AMOUNT BLOCK -->
+            <div class="ml-1   h-full max-health-primary-color w-tarrif">
+              <maxhealth-question
+                [question]="question[4]"
+                [form]="discAmtForm"
+                [questions]="question[4]"
+                [index]="4"
+              >
+              </maxhealth-question>
+            </div>
+            <div class="w-1/45"></div>
+            <div class="float-right">
+              <button
+            mat-raised-button
+            color="primary"
+            class="btn-md addbtn mt-3 ml-3"
+            type="submit"
+            (click)="clear()"
+          >
+           Add
+          </button>
+            </div>
+           
+            </div>
+          
+            
+          
+      </div>
+      </form>
+    </div>
+    <div class="mt-3 w-full h-62">  
+      <maxhealth-table      
+        [config]="discAmtFormConfig"
+        [data]="discountRows"
+        (columnClick)="listRowClick($event)" 
+      ></maxhealth-table>
+      <!-- </ng-container> -->
+    </div>
+    <div class="h-full flex w-full align-items-center bg-secondary border-radius-md">
+      <form
+        [formGroup]="discAmtForm"
+        class="flex w-full align-items-center"
+      >
+      <div class="w-full bg-secondary border-radius-xlg align-items-center">
+        <div class="flex  mt-0 ">
+          <div class="h-dropdown max-health-primary-color w-1/6">          
+              <maxhealth-question 
+                [question]="question[5]"
+                [form]="discAmtForm"
+                [questions]="question[5]"
+                [index]="5"
+                class="bg-white"
+              >
+              </maxhealth-question>           
+            </div>         
+            <div class="ml-1 h-dropdown max-health-primary-color w-1/6">
+              <maxhealth-question
+                [question]="question[6]"
+                [form]="discAmtForm"
+                [questions]="question[6]"
+                [index]="6"
+              >
+              </maxhealth-question>
+            </div>
+          <!-- TARRIF PRICE BLOCK -->
+            <div class="ml-1  h-full max-health-primary-color w-1/6">
+              <maxhealth-question
+                [question]="question[7]"
+                [form]="discAmtForm"
+                [questions]="question[7]"
+                [index]="7"
+                (click)="employeeCode()"
+              >
+              </maxhealth-question>
+            </div>
+
+          
+            <div class="w-1/45"></div>
+            <div class="float-right">
+              <button
+            mat-raised-button
+            color="primary"
+            class="btn-md addbtn mt-3 ml-3"
+            type="submit"
+            (click)="applyDiscount()"
+          >
+           Apply Discount
+          </button>
+            </div>
+           
+            </div>
+          
+            
+          
+      </div>
+      </form>
+    </div>
+    <div></div>
+  </section>
+</div>

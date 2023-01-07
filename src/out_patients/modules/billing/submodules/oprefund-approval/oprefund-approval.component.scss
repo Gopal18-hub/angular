@@ -1,0 +1,43 @@
+.banner {
+    background: #004084;
+    color: #fff;
+    border-radius: 10px 10px 0 0;
+    a {
+      color: #fff;
+      opacity: 1;
+    }
+  }
+
+  .activebutton{
+    color:#004084;
+    background: white;
+    font-weight: 600;
+  }
+
+  .subbtn-class{
+    line-height:27px;
+    margin-bottom:3px;
+  }
+
+  .spinner {
+    margin-left: 47%;
+    margin-top: 13%;
+  }
+
+ 
+.input-align{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(9){
+   
+    text-align:right;
+    padding-right: 52px !important;
+  }
+}
+.input-align2{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(8){
+    
+    text-align:right;
+    padding-right: 55px !important;
+  }
+}
+
+ 

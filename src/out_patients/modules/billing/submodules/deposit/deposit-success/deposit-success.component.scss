@@ -1,0 +1,13 @@
+.depositsuccess{
+.rupeeicon-class{
+    height:60%;
+    width:20%
+}
+ .depositsuccessok{
+    ::ng-deep  .mat-raised-button{
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+  }
+}

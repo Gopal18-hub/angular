@@ -1,0 +1,112 @@
+<div class="w-full" *ngIf="!addDoctor">
+  <div class="flex align-items-center search justify-between">
+    <mat-form-field appearance="outline" class="w-9/10">
+      <input
+        matInput
+        placeholder="Search"
+        autocomplete="off"
+        [formControl]="term"
+        (click)="$event.stopPropagation()"
+      />
+    </mat-form-field>
+    <button mat-icon-button color="primary" (click)="initiateForm($event)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <div class="body-wrapper">
+    <div class="header flex">
+      <span class="w-1/2">External Doctor</span>
+      <span class="w-1/2">Specialisation</span>
+    </div>
+    <div class="flex content-body h-full">
+      <ul class="flex w-full p-0 list-unstyled flex-column">
+        <li
+          class="flex w-full cursor-pointer"
+          *ngFor="let docotr of doctorsList"
+          (click)="selectedDoctor(docotr)"
+        >
+          <span class="w-1/2">{{ docotr.name }}</span>
+          <span class="w-1/2">{{ docotr.specialisation }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="w-full" *ngIf="addDoctor">
+  <div [class.display-none]="alreadyDoctorsExist.length > 0">
+    <h3 class="pl-2 mb-1">Enter a new doctor details</h3>
+    <form
+      [formGroup]="formGroup"
+      autocomplete="off"
+      class="w-full flex flex-column align-items-center create-doctor-form relative"
+      (click)="$event.stopPropagation()"
+    >
+      <ng-container *ngFor="let question of questions; let i = index">
+        <maxhealth-question
+          [question]="question"
+          [form]="formGroup"
+          [questions]="question"
+          [index]="i"
+        >
+        </maxhealth-question>
+      </ng-container>
+      <div
+        class="action-items absolute bottom-20-px w-full flex align-items-center justify-center"
+      >
+        <button
+          mat-stroked-button
+          color="primary"
+          class="mt-2 mr-2 min-width-initial"
+          type="button"
+          (click)="cancelCreateDoctor($event)"
+        >
+          Cancel
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mt-2 min-width-initial"
+          type="button"
+          [disabled]="!formGroup.valid"
+          (click)="createDoctor($event)"
+        >
+          Ok
+        </button>
+      </div>
+    </form>
+  </div>
+  <div [class.display-none]="alreadyDoctorsExist.length == 0">
+    <maxhealth-table
+      [config]="config"
+      [data]="alreadyDoctorsExist"
+      #table
+    ></maxhealth-table>
+    <div
+      class="action-items absolute bottom-20-px w-full flex align-items-center justify-center"
+    >
+      <button
+        mat-stroked-button
+        color="primary"
+        class="mt-2 mr-2 min-width-initial"
+        type="button"
+        (click)="
+          alreadyDoctorsExist = [];
+          $event.stopPropagation();
+          acceptToCreateNew = true
+        "
+      >
+        Back to Create
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="mt-2 min-width-initial"
+        type="button"
+        (click)="selectDoctorFromTable()"
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+</div>

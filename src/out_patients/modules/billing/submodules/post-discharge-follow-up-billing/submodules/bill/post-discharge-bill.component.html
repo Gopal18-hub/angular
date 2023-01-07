@@ -1,0 +1,45 @@
+<section class="h-full w-full p-1 post-bill-wrapper">
+    <div class="h-85">
+        <maxhealth-table
+        [config]="config"
+        [data]="data"
+        #table
+        (rowRwmove)="rowRwmove($event)"
+        ></maxhealth-table>
+    </div>
+    <div class="h-15 bg-grey flex justify-between align-items-center mt-2 border-radius-lg">
+        <div class="flex ml-2">
+            <mat-label>Coupon</mat-label>
+            <div class="ml-4 w-full bg-white flex relative">
+                <maxhealth-question
+                  [question]="questions[0]"
+                  [form]="billform"
+                  [questions]="questions[0]"
+                  [index]="0"
+                >
+                </maxhealth-question>
+                <div class="ml-2 check absolute right-5">
+                    <mat-checkbox [ngModel]="couponcheck" *ngIf="IsValidateCoupon"></mat-checkbox>
+                </div>
+              </div>
+              <div class="ml-2 check">
+                <!-- <maxhealth-question
+                [question]="questions[1]"
+                [form]="billform"
+                [questions]="questions[1]"
+                [index]="1"
+              >
+              </maxhealth-question> -->
+              
+              </div>
+        </div>
+        <div class="flex">
+            <div class="mr-2">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!makebillbtn" (click)="makebill()">Make Bill</button>
+            </div>
+            <div class="mr-1">
+                <button mat-raised-button color="primary" type="submit" [disabled]="printbill" (click)="print()">Print Bill</button>
+            </div>
+        </div>
+    </div>
+</section>

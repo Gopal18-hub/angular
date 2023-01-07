@@ -1,0 +1,70 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel monthlyopconsult-body-wrapper">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner justify-between">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a mat-tab-link [active]="true">OP Consultation Perform</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <Section class="h-full w-full flex justify-center items-center bg-image">
+            <div class="h-1/2 w-35 border-radius border-radius-xlg bg-white">
+                <div class="pt-3 pb-3 border-xlg text-center bg-top">
+                    <mat-label class="max-health-primary-color font-bold font-base">OP Consultation Perform</mat-label>
+                </div>
+        <div class="flex w-4/10 ml-7 p-1 mt-10 align-items-center border-radius-md ">
+            <div class="ml-1 font-semi-bold max-health-primary-color mb-3">
+                <mat-label class="clr-primary">From Date</mat-label>
+            </div>
+            <div class="ml-1 w-3/10 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="OpConsultform"
+                    [questions]="questions[0]"
+                    [index]="0"
+                >
+                </maxhealth-question>
+            </div>
+            <div class="ml-3 font-semi-bold max-health-primary-color mb-3">
+                <mat-label class="clr-primary">To Date</mat-label>
+            </div>
+            <div class="ml-1 w-3/10 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="OpConsultform"
+                    [questions]="questions[1]"
+                    [index]="1"
+                >
+                </maxhealth-question>
+            </div>
+        </div>
+        <div>
+            <div class="ml-9 mt-3 ml-1">
+                <mat-label class="max-health-primary-color font-semi-bold label">Location <span class="mandatory">*</span></mat-label>
+            </div>
+            <div class="ml-2 w-5 bg-white border-radius-md mt-2 label">
+                <maxhealth-question
+                    [question]="questions[2]"
+                    [form]="OpConsultform"
+                    [questions]="questions[2]"
+                    [index]="2"
+                >
+                </maxhealth-question>
+            </div>
+        </div>
+        <div class="flex searchbtn ml-12 mt-5">
+            <button mat-raised-button color="primary" type="submit" class="searchbtn" (click)="PerformQuery()"  [disabled]="!OpConsultform.valid">
+                Perform Query
+            </button>
+        
+            <button mat-raised-button class="ml-12" color="primary" type="submit" (click)="clickbtn()" [disabled]="!OpConsultform.dirty">Clear</button>
+        </div>
+        <div class="w-full text-center mt-4">
+            <span class="clr-blue font-semi-bold">
+                {{msgresponse}}</span>
+        </div>
+            </div>
+        </Section>
+    </mat-tab-nav-panel>
+</section>
+

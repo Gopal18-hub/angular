@@ -1,0 +1,74 @@
+<!-- <form [formGroup]="unmergeSearchForm">
+  <div class="flex flex-row">
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Max ID</mat-label>
+      <input matInput placeholder="Max ID" formControlName="maxid" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>SSN</mat-label>
+      <input matInput placeholder="SSN" formControlName="ssn" >
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="col-m3 h-1/2 ml-3" type="button" 
+    (click)="searchPatient()">Search</button>
+  </div> 
+</form> -->
+<section class="ml-4 mr-4 shadow-1 max-body-wrapper whitePanel">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Registration Unmerging</a>
+      </li>
+    </ul>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <!-- <mat-progress-spinner
+      mode="indeterminate"
+      value="25"
+      diameter="60"
+      *ngIf="!defaultUI && showunmergespinner"
+      class="spinner"
+    >
+    </mat-progress-spinner> -->
+    <div
+    *ngIf="!defaultUI && showunmergespinner"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+    <div class="w-full h-full" *ngIf="!defaultUI">
+      <div class="p-2 w-full h-4/5 display-block">
+        <ng-container *ngIf="isAPIProcess" class="w-full h-4/5">
+          <maxhealth-table
+            class="w-full"
+            [config]="config"
+            [data]="unmergingList"
+            #table
+          ></maxhealth-table>
+        </ng-container>
+      </div>
+      <div class="float-right mt-1 mb-3 mr-3">
+        <div  accessControl
+        masterModule="2"
+        moduleId="7"
+        featureId="461"
+        actionId="1183">
+        <button
+        mat-raised-button
+        color="primary"
+        class="w-full"
+        (click)="unMerge()"
+        [disabled]="unmergebuttonDisabled"         
+      >
+        Unmerge
+      </button>
+        </div>
+      
+      </div>
+    </div>
+
+    <div class="w-full h-full" *ngIf="defaultUI">
+      <empty-placeholder [icon]="unmergeimage" [message]="unmergemessage">
+      </empty-placeholder>
+    </div>
+  </mat-tab-nav-panel>
+</section>

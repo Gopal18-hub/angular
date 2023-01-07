@@ -1,0 +1,10 @@
+.warningicon{
+    ::ng-deep mat-icon{
+        height: 60% !important;
+        width: 60% !important;
+    }
+}
+.min-width{
+    min-width: initial !important;
+ }
+

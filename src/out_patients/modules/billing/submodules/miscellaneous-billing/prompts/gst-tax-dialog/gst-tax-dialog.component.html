@@ -1,0 +1,39 @@
+<div class="relative max-health-primary-color modify-dialog-wrapper mt-1">
+    <label class="max-health-primary-color font-lg font-bold text-center"
+      >GST Tax</label
+    >
+    <button
+      mat-icon-button
+      aria-label="close dialog"
+      mat-dialog-close
+      class="absolute max-dialog-close-icon"
+      type="button"
+    >
+      <mat-icon (click)="close()">close</mat-icon>
+    </button>
+    <section class="overflow-x-none overflow-y-none  justify-between">
+
+        <div class="mt-2">
+            <maxhealth-table [config]="taxConfig" [data]="taxData"></maxhealth-table>
+        </div>
+    <form [formGroup]="gstTaxForm">
+        <div class="w-full flex mt-4">
+            <div class="flex">       
+                <mat-label class="font-semi-bold ml-8">Sac Code</mat-label>
+                <div class="ml-2 flex">
+                    <maxhealth-question  [question]="questions[0]" [form]="gstTaxForm"
+                        [questions]="questions[0]" [index]="0">
+                    </maxhealth-question>
+                </div>
+            </div>
+            </div>
+        </form>
+
+        <!-- <div class=" mt-4  float-right mr-6" >
+            <button mat-raised-button color="primary" class="ml-3"
+                >Save</button>
+                <button mat-raised-button color="primary" class="ml-3"
+                >Cancel</button>
+        </div> -->
+    </section>
+</div>  

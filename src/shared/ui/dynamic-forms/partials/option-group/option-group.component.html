@@ -1,0 +1,12 @@
+<ng-container *ngIf="opt?.child">
+  <mat-optgroup [label]="''">
+    <ng-container *ngFor="let child of opt.child">
+      <mat-option [value]="child.id">
+        {{ child.name }}
+      </mat-option>
+      <ng-container *ngIf="child?.child">
+        <app-option-group [opt]="child"></app-option-group>
+      </ng-container>
+    </ng-container>
+  </mat-optgroup>
+</ng-container>

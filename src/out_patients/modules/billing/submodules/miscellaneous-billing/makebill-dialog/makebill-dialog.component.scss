@@ -1,0 +1,19 @@
+.rupeeicon-class{
+    height:60%;
+    width:20%
+}
+
+.closeicon{
+    color: #ababab;
+}
+
+.yesbtncss{
+    border: 1px solid #004084;
+    color: #004084;
+}
+
+.makedepositbtn{
+::ng-deep .mat-raised-button{
+  min-width: 65px !important;
+} 
+}

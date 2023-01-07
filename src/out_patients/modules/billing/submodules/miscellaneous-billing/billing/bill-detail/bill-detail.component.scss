@@ -1,0 +1,140 @@
+.sub-bill-overall {
+  ::ng-deep .max-table-wrapper {
+    table {
+      width: 120% !important;
+
+      .mat-column-qty,
+      .mat-column-disc,
+      .mat-column-gst,
+      .mat-column-precaution {
+        text-align: center;
+      }
+    }
+  }
+  .w-12 {
+    width: 12%;
+  }
+  .w-14 {
+    width: 14%;
+  }
+  .w-86 {
+    width: 85.5%;
+  }
+  .w-21 {
+    width: 21%;
+  }
+  .w-23 {
+    width: 23%;
+  }
+  .w-26 {
+    width: 26%;
+  }
+  .w-27 {
+    width: 27%;
+  }
+  .h-30vh {
+    height: 50% !important;
+  }
+  .h-22vh {
+    height: 22vh;
+  }
+  .w-44 {
+    width: 44%;
+  }
+  .w-42 {
+    width: 38%;
+  }
+  .mr-24 {
+    margin-right: 2.4rem !important;
+  }
+  .bg-blue {
+    background-color: #bfe8e7;
+  }
+  .print-button {
+    background-color: #5a5a5a;
+  }
+  .bg-deposit {
+    background-color: #f6f6f6;
+    &.mat-button-base {
+      padding: 0 !important;
+      height: 24px;
+      line-height: 24px;
+      ::ng-deep .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-self: center;
+        mat-icon {
+          height: auto !important;
+        }
+      }
+    }
+  }
+  ::ng-deep {
+    .sub-bill-form {
+      mat-form-field {
+        background-color: #fff;
+      }
+      button {
+        height: 26px;
+        line-height: 26px;
+      }
+      .mat-checkbox-layout .mat-checkbox-label {
+        color: inherit !important;
+      }
+    }
+    mat-radio-group {
+      flex-direction: row;
+      width: 100%;
+      mat-radio-button {
+        margin-right: 1.2rem;
+      }
+    }
+    .w-tarrif{
+      width:7%;
+            }
+            .h-dropdown{
+              ::ng-deep mat-form-field {
+                .mat-form-field-wrapper {
+                  margin: 0;
+                  padding: 0;
+                  height: 0.7rem;
+              line-height: 0.7rem;
+                }
+              }
+            }
+            .bill-label{
+              ::ng-deep mat-label {
+                color: var(--primary-color);
+                font-weight: 600;
+              }    
+            }
+            ::ng-deep  .addbtn
+            {
+              min-width: fit-content !important;
+              min-height: fit-content !important;
+            }
+            ::ng-deep .tableh
+  {
+    height : 35% !important
+  }
+  .isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .billdetailtable{
+   
+    ::ng-deep .max-table-wrapper {
+        border: 1px solid #707070 !important;
+        table {
+          width: 135% !important;
+         .mat-column-maxRemoveRow{
+          width: 3% !important
+         }
+        }
+   
+}
+  }
+              
+        
+  }
+}

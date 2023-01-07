@@ -1,0 +1,42 @@
+.post-bill-wrapper{
+    .h-85{
+        height: 84%;
+    }
+    .h-15{
+        height: 13%;
+    }
+    .bg-grey{
+        background-color: #F2F2F2;
+    }
+    .bg-white{
+        background-color: #fff;
+    }
+    // ::ng-deep .mat-table-fixed-layout{
+    //     table-layout: auto !important;
+    // }
+    ::ng-deep .mat-table thead{
+        white-space: nowrap !important;
+    }
+    ::ng-deep{
+        .max-table-wrapper {
+            border: 1px solid #707070 !important;
+            table{
+                width: max-content !important;
+                .mat-row {
+                    &:hover {
+                      background-color: transparent !important;
+                      .mat-cell {
+                        color: initial !important;
+                      }
+                    }
+                  }
+            }
+        }
+    }
+    .check{
+        pointer-events: none;
+        ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+            background-color: #08504F !important;
+          }
+    }
+}

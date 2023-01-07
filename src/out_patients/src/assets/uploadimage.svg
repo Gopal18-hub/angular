@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="124" height="170" viewBox="0 0 124 170">
+  <g id="Group_941" data-name="Group 941" transform="translate(1)">
+    <path id="Subtraction_2" data-name="Subtraction 2" d="M95,54H0v-.141c0-.071,0-.143,0-.214A59.321,59.321,0,0,1,3.733,32.764a56.16,56.16,0,0,1,4.379-9.112,53.183,53.183,0,0,1,5.8-7.939,49.649,49.649,0,0,1,7.03-6.551,46.091,46.091,0,0,1,8.069-4.946,42.653,42.653,0,0,1,36.978,0,46.091,46.091,0,0,1,8.069,4.946,49.647,49.647,0,0,1,7.03,6.551,53.183,53.183,0,0,1,5.8,7.939,56.16,56.16,0,0,1,4.379,9.112A59.32,59.32,0,0,1,95,53.645c0,.117,0,.237,0,.354Z" transform="translate(14 51)" fill="#e5e5e5"/>
+    <ellipse id="Ellipse_27" data-name="Ellipse 27" cx="35.5" cy="36.5" rx="35.5" ry="36.5" transform="translate(26)" fill="#f2f2f2"/>
+    <text id="Upload_image" data-name="Upload image" transform="translate(3 128)" fill="#ababab" font-size="19" font-family="ProximaNova-Regular, Proxima Nova"><tspan x="0" y="0">Upload image</tspan></text>
+    <text id="Or_Capture_image" data-name="Or
+Capture image" transform="translate(61 145)" fill="#ababab" font-size="15" font-family="ProximaNova-Regular, Proxima Nova"><tspan x="-8.212" y="0">Or</tspan><tspan font-size="19"><tspan x="-61.465" y="21">Capture image</tspan></tspan></text>
+  </g>
+</svg>

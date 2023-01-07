@@ -1,0 +1,49 @@
+<div class="flex flex-column h-full">
+  <div class="flex justify-between w-full">
+    <div class="max-health-primary-color">
+      <h3 class="mb-0 font-bold">Consumables</h3>
+    </div>
+    <div class="flex w-36 align-items-center justify-end">
+      <!-- <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        <span>Total Estimation:</span>
+        {{
+          billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
+        }}
+      </div> -->
+
+      <!-- <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 min-width-initial"
+        type="button"
+      >
+        Add
+      </button> -->
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 min-width-initial"
+        type="button"
+        [disabled]="
+          !billingService.checkServicesAdded() ||
+          billingService.getBillTabStatus()
+        "
+        (click)="goToBill()"
+      >
+        Bill
+      </button>
+      <!-- <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 min-width-initial print-button"
+        type="button"
+        [disabled]="!billingService.checkServicesAdded()"
+      >
+        <mat-icon>print</mat-icon>
+      </button> -->
+    </div>
+  </div>
+  <div class="mt-2 service-table-height">
+    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+  </div>
+</div>

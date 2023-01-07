@@ -1,0 +1,86 @@
+.cashscrollwrapper{
+    .bg-cashscroll {
+        background-color: #F6F6F6;
+        color: #004084;
+    }
+    
+    .bg-white {
+        background-color: white;
+        color: rgba(0, 0, 0, 0.87) !important;
+        ::ng-deep .mat-error{
+            margin-top: 7% !important;
+        }
+    }
+    
+    ::ng-deep .mat-form-field-wrapper {
+    
+        padding-bottom: 0 !important;
+    
+    }
+    .bg-black {
+        color: rgba(0, 0, 0, 0.87);
+    }
+    .wt-nowrap {
+        white-space: nowrap;
+    }
+    
+    .serachcss {
+        position: relative !important;
+    }
+    
+    .iconcss {
+        ::ng-deep {
+            position: absolute !important;
+            padding-top: 1% !important;
+            padding-left: 1% !important;
+            border-radius: 4px !important;
+            left: 1px !important;
+        }
+    
+    }
+    .cashscrollradiobutton {
+        ::ng-deep .mat-radio-group {
+            flex-direction: row !important;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+    }
+    .cashscroll-matnav {
+        ::ng-deep .mat-tab-link {
+            min-width: 0px !important;
+        }
+    }
+    
+    .initiatelens-icon {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 25%;
+    }
+    
+    .maxidwidth{
+        width: 12.5% !important;
+    }
+    .wserach{
+        width: 8% !important;
+    }
+    .namewidth{
+        width: 22% !important;
+    }
+    .cashscrollbutton{
+        .mat-raised-button{
+            min-width: initial !important;
+            height: 1.875rem !important;
+            line-height: 1.875rem  !important;
+        }
+    }  
+    .cashscroll{
+        ::ng-deep .mat-header-cell.cdk-header-cell.cdk-column-select.mat-column-select{
+            width: 20px !important;
+        }
+    }
+   
+   
+    }

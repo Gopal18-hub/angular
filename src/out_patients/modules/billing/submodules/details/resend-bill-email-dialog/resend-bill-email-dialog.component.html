@@ -1,0 +1,61 @@
+<section class="h-full resendbill">
+    <div>
+        <mat-label class="max-health-primary-color font-semi-bold font-base">Email and Mobile for PDF</mat-label>
+        <mat-icon mat-dialog-close class="float-right cursor-pointer max-dialog-close-icon" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+    </div>
+    <div class="mt-6 h-3/5">
+        <div class="flex">
+            <mat-label class="max-health-primary-color font-semi-bold white-nowrap">Online Payment</mat-label>
+            <div class="ml-4 w-3/4 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="resendbillform"
+                    [questions]="questions[0]"
+                    [index]="0"
+                >
+                </maxhealth-question>
+            </div>
+        </div>
+        <div>
+            <!-- <mat-label class="max-health-primary-color font-semi-bold">Online Payment Receipt</mat-label> -->
+            <div class="w-3/4 bg-white border-radius-md font-semi-bold">
+                <maxhealth-question
+                    [question]="questions[3]"
+                    [form]="resendbillform"
+                    [questions]="questions[3]"
+                    [index]="3"
+                >
+                </maxhealth-question>
+            </div>
+        </div>    
+        <div class="flex justify-between mt-2">
+            <mat-label class="max-health-primary-color font-semi-bold">Email ID</mat-label>
+            <div class="ml-4 w-3/4 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="resendbillform"
+                    [questions]="questions[1]"
+                    [index]="1"
+                >
+                </maxhealth-question>
+            </div>
+        </div>    
+        <div class="flex justify-between mt-1">
+            <mat-label class="max-health-primary-color font-semi-bold">Mobile No.</mat-label>
+            <div class="ml-4 w-3/4 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[2]"
+                    [form]="resendbillform"
+                    [questions]="questions[2]"
+                    [index]="2"
+                >
+                </maxhealth-question>
+            </div>
+        </div>    
+    </div>
+    <div class="mt-4 flex btn justify-content-end">
+        <button mat-raised-button color="primary" type="submit" (click)="printbtn()" [disabled]="!resendbillform.valid">Print</button>
+        <button mat-raised-button color="primary" class="ml-2" type="submit" (click)="clearbtn()" [disabled]="!resendbillform.dirty">Clear</button>
+    </div>
+
+</section>

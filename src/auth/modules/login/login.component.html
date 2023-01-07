@@ -1,0 +1,65 @@
+<div class="login-wrapper h-screen w-screen flex items-center justify-center">
+  <div
+    class="shadow-2 w-1/4 login-wrapper-box flex flex-column p-8 border-radius-xxlg" *ngIf="showLoginForm"
+  >
+    <div>
+      <img src="assets/brandLogo.svg" class="w-2/5" />
+    </div>
+    <form
+      *ngIf="Authentication"
+      (ngSubmit)="loginSubmit()"
+      [formGroup]="loginForm"
+      class="mt-4 mb-6"
+    >
+      <div class="flex justify-between flex-wrap flex-column">
+        <div
+          *ngFor="let question of questions; let i = index"
+          class="form-row {{ question?.properties?.question_wrapper_class }}"
+          [ngClass]="{ 'hidden display-none': question.type == 'hidden' }"
+        >
+          <maxhealth-question
+            [question]="question"
+            [form]="loginForm"
+            [questions]="questions"
+            [index]="i"
+          ></maxhealth-question>
+        </div>
+        <button
+          mat-raised-button
+          color="primary"
+          class="w-1/3"
+          type="submit"
+          [disabled]="!loginForm.valid"
+        >
+          Login <mat-icon>east</mat-icon>
+        </button>
+        <a (click)="redirectToResetPassword()" class="mt-2 change-password"
+          >Change Password</a
+        >
+      </div>
+    </form>
+    <div
+      *ngIf="!Authentication"
+      class="flex justify-between flex-wrap flex-column mt-4 mb-6"
+    >
+      <div class="mt-6 mb-6 mr-12">
+        <label class="mb-6 mt-6 mr-12 font-base color-red"
+          >User authentication error</label
+        >
+      </div>
+      <div class="mt-6 mb-12 ml-1 font-sm">
+        Username/password is incorrect.
+        <a class="cursor-pointer login-link" (click)="reLoginForm()">Click here</a> to
+        login again
+      </div>
+      <button
+        mat-raised-button
+        color="primary"
+        class="w-1/3"
+        (click)="reLoginForm()"
+      >
+        Login <mat-icon>east</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+.wt-nowrap{
+    white-space: nowrap;
+}
+.bg-white{
+    background-color: #fff;
+}
+.bg-secondary{
+    background-color: #F6F6F6;
+}
+.bg-grey{
+    background-color: #D8D8D8;
+}
+.h-65{
+    height: 65%;
+}
+.w-27{
+    width: 30%;
+}
+.w-14{
+    width: 14.122%;
+}
+.w-12{
+    width: 12%;
+}
+.h-74{
+    height: 74%;
+}
+.text-overflow{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 28%;
+}
+.patient-history-wrapper{
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper{
+        margin-top: 18px !important;
+    }
+    .label ::ng-deep  mat-label{
+        display: none;
+    }
+    ::ng-deep .max-table-wrapper{
+        border: 1px solid #707070;
+        table{
+            white-space: nowrap !important;
+            thead tr th:nth-child(6){
+                padding-left: 25px;
+            }
+            tbody tr td:nth-last-child(1) div{ 
+                display: flex;
+                justify-content: center;
+                cursor: pointer;
+                img{
+                    width: 20px !important;
+                }
+            }
+            tbody tr:hover td:nth-last-child(1){
+                div img{
+                    filter:  brightness(0) invert(1);
+                }
+            }
+
+            
+            tbody tr td:nth-child(7),
+            tbody tr td:nth-child(8),
+            tbody tr td:nth-child(9),
+            tbody tr td:nth-child(10)
+            {
+                text-align: right !important;
+                padding-right: 30px !important
+            }
+            tbody tr td:nth-child(6){
+                text-align: right !important;
+                padding-right: 38px !important
+            }
+        }
+        // .mat-table-fixed-layout{
+        //     table-layout: auto !important;
+        // }
+
+    }
+    .btn{
+        ::ng-deep .mat-button-wrapper{
+            margin-left: 20px;
+        }
+    } 
+    .disableclass{
+        color: currentColor;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.2;
+    }  
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+    .api-loader {
+        background: rgba(0, 0, 0, 0.15);
+      }
+}
+
+

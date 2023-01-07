@@ -1,0 +1,142 @@
+.max-billing-main-page {
+  .op-billing-wrapper {
+    .category-icons {
+      img {
+        object-fit: cover;
+      }
+    }
+    ::ng-deep .bg-vilot {
+      background-color: violet;
+    }
+  }
+
+  .billing-page-wrapper {
+    background-color: #fff;
+    .text-color {
+      color: #000;
+      font-weight: 400;
+    }
+    .iom-button {
+      padding: 0;
+      min-width: initial;
+      .iom-color {
+        color: #45c0be;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-decoration: underline;
+      }
+    }
+    .iom-message {
+      position: absolute;
+      // top: 23.5%;
+      top:152px;// for ticket GAV -1335
+      color: red;
+      left: 47.1%;
+    }
+    .special-checkbox {
+      ::ng-deep .mat-checkbox-label {
+        color: #45c0be !important;
+        text-decoration: underline;
+      }
+    }
+
+    ::ng-deep .isDisabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .api-loader {
+      background: rgba(0, 0, 0, 0.15);
+    }
+    mat-label {
+      font-weight: 500;
+    }
+    .overflow-ellipsis {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .width-8 {
+      width: 10.5%;
+    }
+    .width-11{
+      width: 12.2%;
+    }
+	
+    .second-row-action-items {
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+    }
+    .bg-secondary {
+      background-color: #f6f6f6;
+    }
+    .bg-white {
+      background-color: #fff;
+    }
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+    }
+    ::ng-deep {
+      .min-width-initial {
+        min-width: initial !important;
+      }
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+      .services-tab-header-container {
+        background-color: #45c0be;
+        border-radius: 13px 13px 0 0;
+        border: 4px solid #45c0be;
+        border-bottom: 0;
+        .mat-tab-header {
+          border-bottom: none;
+        }
+        .mat-tab-links {
+          background-color: #45c0be;
+          border-radius: 13px 13px 0 0;
+          //border: 4px solid #45c0be;
+          border-bottom: 0;
+          a {
+            color: #fff;
+            background-color: #bfe8e7;
+            border-radius: 13px 13px 0 0;
+            margin-right: 4px;
+            color: #08504f;
+            opacity: 1;
+            &.mat-tab-link {
+              height: 26px;
+            }
+            &.mat-tab-label-active {
+              background-color: #fff;
+              color: #08504f;
+              font-weight: 600;
+            }
+            &.mat-tab-disabled {
+              opacity: 0.4;
+            }
+          }
+        }
+        .mat-ink-bar {
+          display: none;
+        }
+        .qms-container {
+          .text-white {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .billing-panel-wrapper {
+      border: 4px solid #45c0be;
+      border-top: 0;
+      border-radius: 0 0 13px 13px;
+      padding: 0 0.75rem;
+      height: calc(100vh - 310px);
+    }
+  }
+}

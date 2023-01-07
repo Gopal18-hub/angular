@@ -1,0 +1,107 @@
+::ng-deep {
+  .referral-doctor-menu {
+    border-radius: 8px !important;
+    min-height: auto !important;
+    &.w-12vw {
+      width: 12vw;
+    }
+    .mat-menu-content {
+      padding: 0 !important;
+    }
+    button {
+      height: 26px;
+      line-height: 26px;
+      &:not(:last-child) {
+        border-bottom: 1px solid #707070;
+      }
+      &:hover {
+        background-color: #bfe8e7 !important;
+      }
+    }
+  }
+  .referral-internal-doctor-wrapper {
+    border-radius: 8px !important;
+    width: 400px;
+    height: 400px;
+    max-width: 400px !important;
+    background-color: #bfe8e7;
+    border-color: 1px solid #707070;
+    overflow: hidden !important;
+    .search {
+      padding: 0 0.25em;
+      margin-bottom: 0.5em;
+      mat-form-field {
+        background-color: #fff;
+        .mat-form-field-wrapper {
+          padding-bottom: 0 !important;
+        }
+      }
+    }
+    .body-wrapper {
+      height: 362px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+    .header {
+      background-color: #45c0be;
+      width: 100%;
+      padding: 0 0.25em;
+    }
+    .content-body {
+      width: 100%;
+      ul {
+        li {
+          padding: 0 0.25em;
+          border-bottom: 1px solid #958a8a;
+        }
+      }
+    }
+  }
+  .referral-external-doctor-wrapper {
+    border-radius: 8px !important;
+    width: 400px;
+    height: 400px;
+    max-width: 400px !important;
+    background-color: #bfe8e7;
+    border-color: 1px solid #707070;
+    overflow: hidden !important;
+    .search {
+      padding: 0 0.25em;
+      margin-bottom: 0.5em;
+      mat-form-field {
+        background-color: #fff;
+        .mat-form-field-wrapper {
+          padding-bottom: 0 !important;
+        }
+      }
+      button {
+        background-color: #fff;
+        border-radius: 8px;
+        height: 32px;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    .body-wrapper {
+      height: 362px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+    .header {
+      background-color: #45c0be;
+      width: 100%;
+      padding: 0 0.25em;
+    }
+    .content-body {
+      width: 100%;
+      ul {
+        li {
+          padding: 0 0.25em;
+          border-bottom: 1px solid #958a8a;
+        }
+      }
+    }
+  }
+}

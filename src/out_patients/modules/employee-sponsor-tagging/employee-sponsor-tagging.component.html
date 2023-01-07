@@ -1,0 +1,204 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel" >
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Employee Sponsor Tagging</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="h-full w-full p-2">
+        <!-- <div >
+        <form  [formGroup]="employeesponsorForm"> -->
+            <!------------------------------------------- FIRST ROW------------------------------------------>
+            <div class="bg-lightgray border-radius-xlg">
+                <div class="flex w-4/5 p-2 align-items-center input-padding">
+                        <div class="text-wrap max-health-primary-color font-semi-bold" >
+                            <mat-label>Max ID</mat-label>
+                        </div>
+                        <div class="ml-0-27 w-12 bg-white mt-error">
+                            <maxhealth-question
+                                [question]="questions[0]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[0]"
+                                [index]="0"
+                            >
+                            </maxhealth-question>
+                        </div>
+                        <div class="ml-1-34 text-wrap max-health-primary-color font-semi-bold">
+                            <mat-label>Mobile No</mat-label>
+                        </div>
+                        <div class="ml-0-27 w-12 bg-white default-label-none mt-error" >
+                            <maxhealth-question
+                                [question]="questions[1]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[1]"
+                                [index]="1"
+                                
+                            >
+                            </maxhealth-question>
+                        </div>
+                        <!-- <span  class="maxid-error">{{maxiderrormessage}}</span> -->
+                        <div class="ml-1-34 text-wrap max-health-primary-color font-semi-bold" >
+                            <mat-label >Employee Code</mat-label>
+                        </div>
+                        <div class="ml-0-21 w-1/10 bg-white mt-error">
+                            <maxhealth-question
+                                [question]="questions[2]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[2]"
+                                [index]="2"
+                            >
+                            </maxhealth-question>
+                        </div>
+                        <div class="ml-1-34 max-health-primary-color font-semi-bold">
+                            <mat-label>Company</mat-label>
+                        </div>
+                        <div class="ml-0-21">
+                            <a class="text-underline font-style-iom"  (click)="iomClick()" [ngClass]="{disableiomclass:disableIOM}" >IOM</a>
+                        </div>
+                        <span class="iom-message">{{iommessage}}</span>
+                        <div class="ml-0-21 w-1/15 bg-white dropdown-width">
+                            <maxhealth-question
+                                [question]="questions[3]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[3]"
+                                [index]="3"
+                                class="dropdown-width"
+                            >
+                            </maxhealth-question>
+                        </div>
+                        <div class ="ml-1-34 max-health-primary-color font-semi-bold">
+                            <mat-label>Corporate</mat-label>
+                        </div>
+                        <div class="ml-0-21 w-12">
+                            <maxhealth-question
+                                [question]="questions[4]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[4]"
+                                [index]="4"
+                            >
+                            </maxhealth-question>
+                        </div>
+                        <!-- <div class="flex align-items-center"> -->
+                            <div class="ml-3 w-1/10">
+                                <button mat-raised-button color="primary" (click)="employeeSave()" class="button-style" [disabled]="disableButton" ><span  class="text-position">Save</span></button>
+                            </div>
+                           <div class="ml-3 w-1/10">
+                            <button mat-raised-button color="primary" class="button-style"   (click)="employeeDelete()" [disabled]="disableDelete" ><span class="text-position">Delete</span></button>
+                           </div>
+                           <div class="ml-3 w-1/10">
+                            <button mat-raised-button color="primary" class="button-style" (click)="cleardata()" [disabled]="disableClear" ><span class="text-position">Clear</span></button>
+                           </div>
+                        <!-- </div> -->
+                        
+           
+          
+                </div>
+            </div>
+           
+       <!-- </form>
+     </div> -->
+      <!---------------------------------------------SECOND ROW-------------------------------------------------->
+     <div class="bg-lightgray border-radius-xlg mt-1 w-full">
+        <div class="flex  ml-1 p-1-5 align-items-center input-padding  w-full">
+            <div class="w-2/10  font-wrapper">
+                    <mat-label  class="max-health-primary-color font-semi-bold">Name:</mat-label>
+                <span class="ml-2" matTooltip="{{name}}" >{{name}}</span>
+            </div>
+            <div class="ml-1-5 w-1/10 font-wrapper">
+                    <mat-label class="max-health-primary-color font-semi-bold">Age:</mat-label>
+                <span class=" ml-2 "  matTooltip="{{age}}" >{{age}}</span>
+            </div>
+            <div class="ml-1-5 w-12 font-wrapper">
+                    <mat-label class="max-health-primary-color font-semi-bold">Gender:</mat-label>
+                    <span class=" ml-2 " matTooltip="{{gender}}">{{gender}}</span>
+            </div>
+            <div class="ml-1 w-12 font-wrapper">
+                    <mat-label class="max-health-primary-color font-semi-bold">DOB:</mat-label>
+                <span class=" ml-2 " matTooltip="{{dob}}">{{dob}}</span>
+            </div>
+            <div class="ml-2 w-1/15 font-wrapper">
+                    <mat-label class="max-health-primary-color font-semi-bold">Nationality:</mat-label>
+                    <span class=" ml-2 "matTooltip="{{nationality}}">{{nationality}}</span>
+            </div>
+            <div class="ml-3 w-12 font-wrapper">
+                    <mat-label class="max-health-primary-color font-semi-bold">SSN:</mat-label>
+                    <span class=" ml-2 "  matTooltip="{{ssn}}">{{ssn}}</span>
+            </div>
+            <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-4  w-32" >
+                <div class="ml-2 checkbox-bottom-margin">
+                    <maxhealth-question
+                    [question]="questions[5]"
+                    [form]="employeesponsorForm"
+                    [questions]="questions[5]"
+                    [index]="5"
+                    (click)="oncheckboxClick($event)"
+                    >
+                    </maxhealth-question>
+                </div>
+                <div class="ml-2 text-wrap">
+                    <mat-label>From Date</mat-label>
+                </div>
+                <div class="ml-2 w-29 bg-white border-radius-md" >
+                    <maxhealth-question
+                [question]="questions[6]"
+                [form]="employeesponsorForm"
+                [questions]="questions[6]"
+                [index]="6"
+                >
+                </maxhealth-question>
+                </div>
+                <div class="text-wrap ml-3">
+                    <mat-label>To Date</mat-label>
+                </div>
+                <div class="ml-2 w-29 bg-white border-radius-md" >
+                    <maxhealth-question
+                    [question]="questions[7]"
+                    [form]="employeesponsorForm"
+                    [questions]="questions[7]"
+                    [index]="7"
+                    >
+                    </maxhealth-question>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+     <div class="h-3/4 mt-1">
+        <div class="pl-2  employeeclass">
+            <mat-label class="max-health-primary-color font-style ">Employee Dependent Details</mat-label>
+        </div>
+        <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
+        <div class="h-43 mt-1 whitespace-nowrap">
+            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width remarks-sort"></maxhealth-table>
+        </div>
+        <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
+        <div class="h-40 mt-2">
+            <maxhealth-table [config]="config2" [data]="updatedTableList" class="gridcheckbox-margin-right"></maxhealth-table>
+        </div>
+        <!-- <div class="float-right mt-2 ">
+            <button mat-raised-button color="primary" (click)="employeeSave()" class="mr-8 button-style" [disabled]="disableButton" >Save</button>
+            <button mat-raised-button color="primary" class="ml-3 mr-6 button-style"   (click)="employeeDelete()" [disabled]="disableDelete" >Delete</button>
+            <button mat-raised-button color="primary" class="ml-3 button-style" (click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
+        </div> -->
+    </div>
+    <div *ngIf="apiprocessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div> 
+    </div>
+      
+    
+    </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between max-health-primary-color font-xs">
+    <p class="ml-4"cl>Last updated by: {{ lastUpdatedBy }}</p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>
+<!-- [disabled]="disableButton"> -->
+<!-- [disabled]="disableClear" -->
+<!-- (click)="oncheckboxClick($event)" -->
+<!-- (columnClick)="checkboxClick($event)" -->
+<!-- (keydown.enter)="onMaxidEnter(employeesponsorForm.value.maxId)" -->

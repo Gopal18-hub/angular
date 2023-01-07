@@ -1,0 +1,16 @@
+<div class="h-full w-full depositsuccess">
+    <div class=" w-full h-1/10">
+        <span class="material-icons float-right cursor-pointer max-dialog-close-icon" mat-dialog-close>close</span>
+    </div>
+    <div class="w-full h-1/10 flex align-items-center justify-content-center">
+        <mat-icon [svgIcon]="'rupeeicon'" class="rupeeicon-class"></mat-icon>
+    </div>
+    <div class="h-1/10 mt-1 max-health-primary-color flex justify-content-center font-bold font-base">
+        <p>{{data.message}}</p>
+    </div>
+    <div class="h-1/15  mt-3 flex justify-content-center depositsuccessok">
+        <button mat-raised-button color="primary" class="w-1/50 text-center" type="button" (click)="depositok()" >
+            OK
+             </button>  </div>
+   
+</div>

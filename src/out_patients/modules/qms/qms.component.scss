@@ -1,0 +1,35 @@
+.border-xlg{
+    border-radius: 0.75rem 0.75rem 0 0 ;
+}
+.bg-image{
+    background-image:url("../../src/assets/backgroundimage.png");
+    background-position: center;
+    background-size: 100% 100%;
+    height:100%;
+}
+.bg-white{
+    background-color: #fff;
+}
+.bg-top{
+    background-color: #DAE9F8;
+}
+.border-radius{
+    border: 1px solid #707070;
+}
+.mr-28{
+    margin-right: 19% !important;
+}
+.mandatory{
+    color: red;
+}
+.qms-body-wrapper{
+    .label ::ng-deep  mat-label{
+        display: none;
+    }
+    ::ng-deep .mat-tab-link{
+        min-width: auto !important;
+    }
+}
+.w-35{
+    width: 35%;
+}

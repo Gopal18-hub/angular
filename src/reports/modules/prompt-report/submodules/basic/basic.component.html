@@ -1,0 +1,29 @@
+<ng-container *ngIf="reportConfig">
+  <ng-container *ngIf="reportConfig.layout == 'single'">
+    <div
+      class="flex align-items-center justify-center w-full h-full prompt-form {{
+        reportName
+      }}"
+    >
+      <div
+        class="w-2/5 shadow-1 background-white border-radius-xlg {{
+          reportName
+        }}-box"
+      >
+        <mat-toolbar>
+          <span>{{ reportConfig.reportName }}</span>
+        </mat-toolbar>
+        <reports-single [reportConfig]="reportConfig"> </reports-single>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="reportConfig.layout == 'tabs'">
+    <div
+      class="flex align-items-center justify-center w-full h-full prompt-form"
+    >
+      <div class="w-2/5 shadow-1 background-white border-radius-xlg">
+        <reports-tabs [reportConfig]="reportConfig"></reports-tabs>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,24 @@
+<div class="billing-page-wrapper">
+  <div class="overflow-y-auto display-block billing-panel-wrapper ">
+<div class="flex flex-column h-full sub-bill-overall">
+  <div class="p-1  border-radius-lg w-full flex">
+    <mat-label class="w-9/10 max-health-primary-color ml-2 mt-2  font-semi-bold">View Request List</mat-label>
+    <div class="w-1/10 flex justify-content-end  mt-1" >
+        <button mat-raised-button color="primary" class="min-width-initial" (click)="delete()" [disabled]="unchecked" >
+          Delete
+          </button> 
+    </div>
+    
+  </div>
+  <div class="mt-1 w-full sub-bill-ovrall-table gridheight mb-2 ">
+    <maxhealth-table [config]="config" [data]="data" #table class="gridcheckbox-margin-bottom table"(columnClick)="columnClick($event)"></maxhealth-table>
+  </div>
+  <div
+  *ngIf="apiprocessing"
+  class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+>
+  <mat-spinner  strokeWidth="3"></mat-spinner>
+</div>
+</div>
+</div>
+</div>

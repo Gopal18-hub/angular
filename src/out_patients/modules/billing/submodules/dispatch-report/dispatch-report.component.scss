@@ -1,0 +1,92 @@
+.bg-secondary{
+    background-color: #F6F6F6;
+}
+.bg-grey{
+    background-color: #D8D8D8;
+}
+.bg-white{
+    background-color: #fff;
+}
+.wt-nowrap{
+    white-space: nowrap;
+}
+.h-68{
+    height: 76%;
+}
+.dispatch-body-wrapper{
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+    ::ng-deep mat-radio-group {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap:15px;
+        .mat-radio-button{
+            padding-bottom: 0 !important;
+            padding-top: 0 !important;
+        }
+    }
+    ::ng-deep .max-table-wrapper{
+        border: 1px solid #707070;
+    }
+    // ::ng-deep .mat-table-fixed-layout{
+    //     table-layout: auto !important;
+    // }
+    ::ng-deep .mat-table thead{
+        white-space: nowrap !important;
+    }
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper{
+        margin-top: 1.375rem !important;
+    }
+    .table{
+        ::ng-deep .mat-form-field{
+            display: block !important;
+            background-color: #fff;
+            color: #000;
+            border-radius: 6px;
+        }
+        ::ng-deep .mat-datepicker-toggle{
+            display: none;
+        }
+    }
+    .label{
+        ::ng-deep mat-label{
+            display: none !important;
+        }
+    } 
+    ::ng-deep .editable-textarea-label{
+        border: 1px solid #a7a7a7;
+        background-color: #fff;
+        color: #000;
+        border-radius: 5px;
+        padding-left: 7px;
+    }
+    .dis-mar-left-12{
+        margin-left: 6.7rem;
+    }
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 28%;
+    }
+    .searchbtn{
+        ::ng-deep .mat-button-wrapper{
+            padding-left: 20px !important;
+        }
+    }
+    .api-loader {
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+}
+    
+
+

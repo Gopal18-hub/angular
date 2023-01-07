@@ -1,0 +1,180 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel" >
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Expired Patient Check</a> 
+            </li>
+        </ul>
+        <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex mr-2">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+       
+      />
+    </div>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="h-full bg-image p-2" >
+
+            <!-------------------------------------FIRST ROW------------------------------------------------------>
+        <div class="flex align-items-center h-2/10  bg-row  border-radius-lg p-1"  >
+            <div class="w-3/4 h-full  input-padding">
+                <form [formGroup]="expiredpatientForm">
+                    <div class="flex h-full ">
+                        <div class="ml-2  max-health-primary-color">
+                            <mat-label class="font-semi-bold" >Max ID</mat-label>
+                        </div>  
+                        <div class="ml-0-27 w-12 h-full bg-white mt-error">
+                            <maxhealth-question
+                            [question]="questions[0]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[0]"
+                            [index]="0"
+                            >
+                            </maxhealth-question>
+                        </div>
+                        <div class="ml-1-34 max-health-primary-color">
+                            <mat-label  class="font-semi-bold">Mobile No.</mat-label>
+                        </div>
+                        <div class="ml-0-27 w-12 bg-white mt-error default-label-none">
+                            <maxhealth-question
+                            [question]="questions[1]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[1]"
+                            [index]="1">
+                            </maxhealth-question>
+                        </div>
+                
+                    </div>
+                </form>
+            </div>
+            <div class="w-1/4 ">
+                <div class=" float-right mr-2">          
+                     <button mat-raised-button color="primary" type="submit"  (click)="onMaxidSearch(expiredpatientForm.value.maxid)" class="button-height">
+
+                            <img src="assets/lens.svg" class="lens-icon">
+
+                            <span class="text-position">  Search</span>
+
+                        </button>
+                </div>
+            </div>
+        </div>
+        <!----------------------------------------SECOND ROW--------------------------------------------------------------->
+        <div class=" flex align-items-center h-2/10 mt-1 p-0-6 bg-row border-radius-lg">
+        <div  class="w-1/7  font-wrapper">
+            <mat-label  class="font-semi-bold max-health-primary-color">Name:</mat-label>
+            <span class="ml-2" matTooltip="{{name}}">{{name}}</span>
+            </div>
+    
+            <div class="w-1/10  font-wrapper">
+            <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
+            <span class="ml-2" matTooltip="{{age}}">{{age}}</span>
+            </div>  
+    
+            <div  class="w-1/10  font-wrapper">
+            <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
+            <span class="ml-2" matTooltip="{{gender}}">{{gender}}</span>
+             </div>
+    
+             <div  class="w-12  font-wrapper">
+            <mat-label  class="font-semi-bold max-health-primary-color ">DOB:</mat-label>
+            <span class="ml-2" matTooltip="{{dob}}">{{dob}}</span>
+             </div>
+    
+    
+             <div  class="w-1/15  font-wrapper">
+            <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
+            <span class="ml-2" matTooltip="{{nationality}}">{{nationality}}</span>
+             </div>
+    
+             <div  class="w-1/6  font-wrapper">
+            <mat-label  class="font-semi-bold max-health-primary-color">SSN:</mat-label>
+            <span class="ml-2" matTooltip="{{ssn}}">{{ssn}}</span>
+             </div>
+    
+        </div>
+        <!-------------------------------------------THIRD ROW------------------------------------------------------------------>
+        <div  class="h-1/2 w-full flex justify-content-center align-items-center  ">
+            <!-- <div class="w-2/10">
+        
+            </div> -->
+            <div class=" h-full w-1/45 mt-8 border-radius-xlg   card-class" >
+                <div class="flex ml-8  pt-8 h-1/3 w-full">
+                    <div class=" justify-content-center checkbox-bottom">
+                        <maxhealth-question
+                        [question]="questions[2]"
+                        [form]="expiredpatientForm"
+                        [questions]="questions[2]"
+                        [index]="2">
+                        </maxhealth-question>  
+                    </div>
+                    <div class=" flex ml-3  w-2/10">
+                        <mat-label class="max-health-primary-color font-semi-bold">Expired patient</mat-label>
+                    </div>
+                    <div  class="flex ml-3 w-3/10">
+                        <mat-label class="max-health-primary-color font-semi-bold">Date of Expiry Intimation</mat-label>
+                    </div>
+                    <div class=" w-3/10">
+                        <div class="w-2/3">
+                            <maxhealth-question
+                            [question]="questions[3]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[3]"
+                            [index]="3"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex w-full ml-8 h-3/5">
+                    <div>
+                        <mat-label class="max-health-primary-color font-semi-bold">Remarks</mat-label>
+                        <span class="asterisk-color">*</span>
+                    </div>
+                    <div class="w-1/2 ml-8 text-scrollbar" >
+                        <!-- <div class="w-137"> -->
+                            <maxhealth-question
+                            [question]="questions[4]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[4]"
+                            [index]="4"
+                            ></maxhealth-question>
+                        <!-- </div> -->
+                      
+                    </div>
+                </div>
+
+            </div>
+            <!-- <div class="w-2/10">
+
+            </div> -->
+        </div>
+        <!-----------------------------------------FOURTH ROW------------------------------------------------------------------------->
+        <div class="float-right flex mt-6p h-1/10 button-height">
+            <div>
+                 <button mat-raised-button color="primary" (click)="saveExpiredpatient()"
+                 [disabled]="disableButton" class=" button-height2"><span class="text-position2">Save</span></button>
+            </div>
+            <div>
+                <button mat-raised-button color="primary" class="ml-4 button-height2" [disabled]="disableButton" (click)="deleteExpiredpatient()" ><span class="text-position2">Delete</span></button>
+           </div>
+           <div>
+            <button mat-raised-button color="primary"class="ml-4 mr-2 button-height2" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()"><span class="text-position2">Clear</span></button>
+            </div>
+        </div>
+        <div  *ngIf="apiprocessing"  class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+            <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
+        </div> 
+    </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between max-health-primary-color font-xs">
+    <p class="ml-4"cl>Last updated by: {{ lastUpdatedBy }}</p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>        
+   

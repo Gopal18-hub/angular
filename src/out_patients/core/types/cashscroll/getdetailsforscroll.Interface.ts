@@ -1,0 +1,30 @@
+export interface GetDetailsForScroll {
+  stationslno: number;
+  fromdatetime: string;
+  todatetime: string;
+  scrolldatetime: string;
+  name: string;
+  operatorid: number;
+  amount: number;
+  ackCashier: string;
+  flag: number;
+  ackCashierUser: string;
+  totCash: number;
+  modifiedcash: number;
+  ccAmt: number;
+  modifiedCCAmt: number;
+  cheq: number;
+  modifiedCheqAmt: number;
+  totDD: number;
+  modifiedDDAmt: number;
+  totMobilePayment: number;
+  modifiedMobilePayment: number;
+  totOnlinePayment: number;
+  modifiedOnlinePayment: number;
+  stationID: number;
+  station: string;
+  totDonationAmount: number;
+  modifiedDonationAmount: number;
+  upiAmt: number;
+  modifiedUPIAmt: number;
+}

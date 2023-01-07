@@ -1,0 +1,241 @@
+.sub-bill-overall {
+  .padding-1
+  {
+    padding: 0.26rem;
+  }
+  .w-12 {
+    width: 12%;
+  }
+
+  .w-86 {
+    width: 87.25%;
+  }
+
+  .w-26 {
+    width: 26%;
+  }
+
+  .h-30vh {
+    height: 30vh;
+  }
+
+  .h-22vh {
+    height: 22vh;
+  }
+
+  .w-44 {
+    width: 44%;
+  }
+
+  .bg-blue {
+    background-color: #bfe8e7;
+  }
+
+  .print-button {
+    background-color: #5a5a5a;
+  }
+
+  .bg-deposit {
+    background-color: #f6f6f6;
+  }
+
+  ::ng-deep {
+    .sub-bill-form {
+      mat-form-field {
+        background-color: #fff;
+      }
+
+      button {
+        height: 26px;
+        line-height: 26px;
+      }
+    }
+
+    mat-radio-group {
+      flex-direction: row;
+      width: 100%;
+
+      mat-radio-button {
+        margin-right: 1.2rem;
+      }
+    }
+  }
+  ::ng-deep  .api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+
+.checkbox-bottom-margin{
+    ::ng-deep mat-checkbox label span{
+        margin-bottom:2px;
+    }
+}
+
+::ng-deep .mat-raised-button {
+  min-width: fit-content !important;
+  min-height: fit-content !important;
+}
+
+.checkboxh {
+  height: 20px
+}
+
+::ng-deep .mat-typography p {
+  margin: 0 0 0px;
+}
+
+::ng-deep tr.Billed {
+  background-color: #9FF1AC !important;
+}
+::ng-deep tr.Billed:hover {
+  background-color: #54c767 !important;
+}
+::ng-deep tr.Partially {
+  background-color: #F9FCA6 !important;
+}
+::ng-deep tr.Partially:hover {
+  background-color: #FFDD00 !important;  
+}
+::ng-deep tr.Denied {
+  background-color: #FFCAA7 !important;
+}
+::ng-deep tr.Denied:hover {
+  background-color: #FF7777 !important; 
+}
+
+::ng-deep tr.isBilled1
+{
+  background-color: #9FF1AC !important;
+}
+::ng-deep tr.isBilled2
+{
+  background-color: #FFCAA7 !important;
+}
+::ng-deep tr.isBilled1:hover
+{
+  background-color: #54c767 !important;
+}
+::ng-deep tr.isBilled2:hover
+{
+  background-color: #FF7777 !important;
+}
+
+
+
+::ng-deep td mat-form-field .mat-form-field-wrapper {
+  width: 175% !important
+}
+.dateW {
+  width: 27% !important;
+}
+
+.btnW {
+  width: 28.4% !important;
+}
+
+.denyBtn {
+  width: 18% !important;
+}
+
+.tableh {
+  height: 52% !important;
+}
+
+.iconcss {
+  ::ng-deep {
+    position: absolute !important;
+    padding: 1px !important;
+    border-radius: 4px !important;
+    left: 1px !important;
+  }
+}
+
+.searchbtn {    
+  line-height: 1.675rem;    
+  height: 1.7rem !important;
+  width: 5vw !important;
+}
+.clr {
+  height: 1.7rem !important;
+  line-height: 1.675rem;
+}
+.serachcss{
+  
+  ::ng-deep .max-table-wrapper{        
+      border-radius: 0.75rem;
+      border: solid #707070 !important;
+     
+  }
+}
+.tokentxt {
+  color: #00B2A9;
+}
+
+.patientInfo {
+  color: #00B2A9;
+}
+
+.remarksw {
+  width: 37%
+}
+
+.bg-lightgray {
+  background: #ECECEC;
+
+  .medicinew {
+    width: 22%
+  }
+
+}
+
+.bg-lightgrayb {
+  background: #ECECEC;
+  width: 48%
+}
+
+.bg-darkgray {
+  background: #d8d8d8;
+  width: 32%;
+  height: 31px;
+}
+
+.bg-white {
+  background-color: white;
+  color: rgba(0, 0, 0, 0.87);
+}
+.lens-icon{
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  height: 90%;
+  width: 28%;
+}
+.input-align{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(8){
+   
+    text-align:right;
+    padding-right: 42px !important;
+  } 
+}
+}
+
+::ng-deep mat-option[maxvalue="Billed"] {
+  background-color: #9ff1ac !important;
+}
+::ng-deep mat-option[maxvalue="Partially Billed"] {
+  background-color: #f9fca6 !important;
+}
+::ng-deep mat-option[maxvalue="Denied"] {
+  background-color: #ffcaa7 !important;
+}
+::ng-deep mat-option[maxvalue="Billed"]:hover {
+  background-color: #219935 !important;
+}
+
+::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
+  background-color: #b8a52f !important;
+}
+
+::ng-deep mat-option[maxvalue="Denied"]:hover {
+  background-color: #ff7777 !important;
+}

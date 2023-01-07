@@ -1,0 +1,136 @@
+.submodule-wrapper {
+  height: 3.525em;
+  align-items: center;
+  &-left {
+    width: 39vw;
+    height: 2.625em;
+    .home-icon {
+      svg {
+        width: 42px;
+        height: 42px;
+      }
+    }
+    ::ng-deep mat-form-field {
+      width: 90%;
+      font-size: 14px;
+      background: #fff;
+      border-radius: 0.5em;
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+        .mat-form-field-flex {
+          padding: 0.35em 1em;
+        }
+        input {
+          font-size: 12px;
+          width: 96%;
+        }
+        .mat-form-field-outline-start,
+        .mat-form-field-outline-end {
+          border: none;
+        }
+        .mat-form-field-prefix {
+          color: #afafaf;
+        }
+        .mat-form-field-suffix {
+          top: 0.4em;
+        }
+      }
+      .search-pointer-trigger {
+        .mat-menu-trigger {
+          position: absolute;
+          left: 136px;
+          top: 1em;
+        }
+      }
+    }
+  }
+  &-right {
+    width: 67.5%;
+    background-color: #fff;
+    padding: 0 1em;
+    border-radius: 0 0 0 1em;
+    display: flex;
+    align-items: center;
+    ul {
+      height: 3.525em;
+      align-items: center;
+      width: 100%;
+      li {
+        white-space: nowrap;
+        font-size: 0.875rem;
+        &.active {
+          background: var(--primary-color);
+          color: #fff;
+          border-radius: 5px;
+          padding: 0.35rem;
+          font-weight: 500;
+        }
+        &:hover {
+          background: var(--primary-color);
+          color: #fff;
+          border-radius: 5px;
+          padding: 0.35rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .sub-header-menu {
+    //width: 100%;
+    //height: vh;
+    overflow: hidden;
+    max-width: initial;
+    .max-width {
+      max-width: 50vw !important;
+      &.min-width {
+        width: min-content;
+      }
+    }
+
+    .mat-menu-content {
+      height: 100%;
+      button {
+        text-align: left;
+        &:hover {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  .search-header-menu {
+    width: 40vw;
+
+    max-width: initial !important;
+    margin-left: 5%;
+    margin-top: 3%;
+
+    maxhealth-question {
+      > div {
+        display: flex;
+        align-items: center;
+        mat-label {
+          width: 35%;
+          font-size: 12px;
+        }
+        mat-form-field {
+          width: 75% !important;
+          font-size: 12px;
+          .mat-form-field-wrapper {
+            padding-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+.search-note {
+  font-size: 10px;
+  font-family: proxima;
+  font-style: normal;
+  //color: red;
+  float: left;
+}

@@ -1,0 +1,155 @@
+<section class="h-full discount-reason-wrapper">
+  <!-- Header & Cross Icon-->
+  <div>
+    <mat-label class="max-health-primary-color font-lg font-semi-bold"
+      >Discount Reason</mat-label
+    >
+    <mat-icon
+      mat-dialog-close
+      class="float-right cursor-pointer max-dialog-close-icon"
+      aria-hidden="false"
+      aria-label="Example home icon"
+      >close</mat-icon
+    >
+  </div>
+  <!-- First Row -->
+  <div class="w-full height-4 max-health-primary-color mt-2 head-section">
+    <div class="flex float-left w-4/5">
+      <div class="w-2/10">
+        <maxhealth-question
+          [question]="question[0]"
+          [form]="discAmtForm"
+          [questions]="question[0]"
+          [index]="0"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="w-2/10 ml-2">
+        <maxhealth-question
+          [question]="question[1]"
+          [form]="discAmtForm"
+          [questions]="question[1]"
+          [index]="1"
+          matTooltip="{{ head }}"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="w-2/5 ml-2">
+        <maxhealth-question
+          [question]="question[2]"
+          [form]="discAmtForm"
+          [questions]="question[2]"
+          [index]="2"
+          matTooltip="{{ reasontitle }}"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="w-1/10 ml-2">
+        <maxhealth-question
+          [question]="question[3]"
+          [form]="discAmtForm"
+          [questions]="question[3]"
+          [index]="3"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="w-1/10 ml-2">
+        <maxhealth-question
+          [question]="question[4]"
+          [form]="discAmtForm"
+          [questions]="question[4]"
+          [index]="4"
+        >
+        </maxhealth-question>
+      </div>
+    </div>
+    <div
+      class="float-right w-2/10 height-3 flex justify-content-end align-items-center"
+    >
+      <button
+        class="float-right mr-4"
+        mat-raised-button
+        color="primary"
+        [disabled]="
+          disableAdd || data?.disableAdd || checkRequiredFieldsSelected()
+        "
+        (click)="prepareData()"
+      >
+        Add
+      </button>
+      <button
+        class="float-right"
+        mat-raised-button
+        color="primary"
+        (click)="clear()"
+        [disabled]="selectedItems.length == 0 || data?.disableClear"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="h-7/10">
+    <maxhealth-table
+      [config]="discAmtFormConfig"
+      [data]="selectedItems"
+      (rowRwmove)="rowRwmove($event)"
+      class="discounttable"
+      #table
+    ></maxhealth-table>
+  </div>
+
+  <div class="flex mt-2 justify-between footer-section">
+    <div class="flex mt-1 gap-5">
+      <mat-label
+        class="max-health-primary-color font-semi-bold mat-form-field-required-marker"
+        >Authorised By</mat-label
+      >
+      <div class="w-2/10">
+        <maxhealth-question
+          [question]="question[5]"
+          [form]="discAmtForm"
+          [questions]="question[5]"
+          [index]="5"
+        >
+        </maxhealth-question>
+      </div>
+      <mat-label class="max-health-primary-color font-semi-bold"
+        >Coupon Code</mat-label
+      >
+      <div class="w-1/10">
+        <maxhealth-question
+          [question]="question[6]"
+          [form]="discAmtForm"
+          [questions]="question[6]"
+          [index]="6"
+        >
+        </maxhealth-question>
+      </div>
+      <mat-label class="max-health-primary-color font-semi-bold"
+        >Employee Code</mat-label
+      >
+      <div class="w-1/10">
+        <maxhealth-question
+          [question]="question[7]"
+          [form]="discAmtForm"
+          [questions]="question[7]"
+          [index]="7"
+        >
+        </maxhealth-question>
+      </div>
+    </div>
+    <div>
+      <button
+        class="float-right"
+        mat-raised-button
+        color="primary"
+        (click)="applyDiscount()"
+        [disabled]="!discAmtForm.valid || selectedItems.length == 0"
+      >
+        Apply Discount
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,87 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper patient-history-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a  mat-tab-link [active]="true">Acknowledgement Scroll Amount Report</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+    <div class="w-full h-full p-2">
+        <!-- first row -->
+        <div class="flex w-full border-radius-xlg bg-secondary p-2">
+            <div class="flex align-items-center w-3/10 bg-grey p-2" >
+                <div>
+                    <mat-label class="max-health-primary-color font-semi-bold">From Date</mat-label>
+                </div>
+                <div class="ml-1 w-3/10 bg-white border-radius-md">
+                    <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="acknowledgementForm"
+                    [questions]="questions[0]"
+                    [index]="0"
+                    >
+                    </maxhealth-question>
+                </div>
+                <div class="ml-7">
+                    <mat-label class="max-health-primary-color font-semi-bold">To Date</mat-label>
+                </div>
+                <div class="ml-1 w-3/10 bg-white border-radius-md label">
+                    <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="acknowledgementForm"
+                    [questions]="questions[1]"
+                    [index]="0"
+                    >
+                    </maxhealth-question>
+                </div>
+            </div>
+
+            <!-- ml-7 -->
+            <div class="flex align-items-center w-3/10 ml-3">
+                <div>
+                    <mat-label class="max-health-primary-color font-semi-bold wt-nowrap">Scroll No.</mat-label>
+                </div>
+                <div class="ml-1 w-5/9 bg-white border-radius-md">
+                    <maxhealth-question  
+                    [question]="questions[2]"
+                    [form]="acknowledgementForm"
+                    [questions]="questions[2]"
+                    [index]="0">
+                    
+                    </maxhealth-question>
+                </div>
+            </div>
+        </div>
+    <!-- Table -->
+    <!-- <div
+    *ngIf="apiProcessing"
+    class="flex align-items-center justify-center mb-12 h-full"
+    > -->
+    <!-- <mat-spinner strokeWidth="2"></mat-spinner> -->
+    <!-- </div> -->
+    <div class="mt-2 h-65" >
+        <maxhealth-table
+        [config]="config"
+        [data]="acknowledgementscroll"
+        #table
+        ></maxhealth-table>
+    </div>
+     <div class="flex float-right mt-5">
+        <div >
+            <button mat-raised-button color="primary" type="submit" (click)="Viewbtn()">View</button>
+        </div>
+        <div class="ml-3">
+            <button mat-raised-button color="primary" [disabled]="true" type="submit">Print</button>
+        </div>
+                <div class="ml-3">
+                    <button mat-raised-button color="primary" [disabled]="true" type="submit">Excel</button>
+                </div>
+                <div class="ml-3">
+                    <button mat-raised-button color="primary" [disabled]="!acknowledgementForm.dirty" (click)="clear()" type="submit">Clear</button>
+                </div>
+            </div>
+    </div>
+    </mat-tab-nav-panel>
+</section>
+

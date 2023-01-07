@@ -1,0 +1,36 @@
+<div class="max-acd-main-page">
+  <section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+      <ul class="list-unstyled flex items-end">
+        <li class="ml-3">
+          <a mat-tab-link [active]="true" class="font-bold">ACD Dashboard</a>
+        </li>
+      </ul>
+    </nav>
+
+    <mat-tab-nav-panel #tabPanel>
+      <div
+        class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 acd-page-wrapper"
+      >
+        <div class="mt-2">
+          <nav mat-tab-nav-bar>
+            <a
+              mat-tab-link
+              *ngFor="let link of links"
+              [routerLink]="link.path"
+              routerLinkActive
+              #rla="routerLinkActive"
+              (click)="activeLink = link"
+              [active]="rla.isActive || activeLink.path == link.path"
+            >
+              {{ link.title }}
+            </a>
+          </nav>
+          <div class="overflow-y-auto display-block acd-panel-wrapper">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </mat-tab-nav-panel>
+  </section>
+</div>

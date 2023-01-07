@@ -1,0 +1,118 @@
+<section class="h-full search-dialog-wrapper">
+    <!-- Header & Cross Icon-->
+    <div>
+        <mat-label class="max-health-primary-color font-base font-semi-bold">Find Bill Details</mat-label>
+        <mat-icon mat-dialog-close class="float-right cursor-pointer max-dialog-close-icon" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+    </div>
+    <!-- First Row -->
+    <div class="w-full flex align-items-center p-1 border-radius-lg mt-1" style="background-color: #F6F6F6;">
+        <div>
+            <mat-label class="nowrap clr-primary">Bill No.</mat-label>
+        </div>
+        <div class="ml-1 w-1/10 bg-white border-radius-md">
+            <maxhealth-question
+                [question]="questions[0]"
+                [form]="searchform"
+                [questions]="questions[0]"
+                [index]="0"
+            >
+            </maxhealth-question>
+        </div>
+        <div class="ml-2">
+            <mat-label class="nowrap clr-primary">Max ID</mat-label>
+        </div>
+        <div class="ml-1 w-1/10 bg-white border-radius-md">
+            <maxhealth-question
+                [question]="questions[1]"
+                [form]="searchform"
+                [questions]="questions[1]"
+                [index]="1"
+            >
+            </maxhealth-question>
+        </div>
+        <div class="ml-2">
+            <mat-label class="nowrap clr-primary">Mobile No</mat-label>
+        </div>
+        <div class="ml-1 w-1/10 bg-white border-radius-md label">
+            <maxhealth-question
+                [question]="questions[2]"
+                [form]="searchform"
+                [questions]="questions[2]"
+                [index]="2"
+            >
+            </maxhealth-question>
+        </div>
+        <div class="h-full flex w-2/5 p-1 border-radius-md ml-1" style="background-color:#D8D8D8;">
+            <div class="ml-1 h-full">
+                <maxhealth-question
+                    [question]="questions[3]"
+                    [form]="searchform"
+                    [questions]="questions[3]"
+                    [index]="3"
+                >
+                </maxhealth-question>
+            </div>
+            <div class="ml-1">
+                <mat-label class="clr-primary">From Date</mat-label>
+            </div>
+            <div class="ml-1 w-3/10 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[4]"
+                    [form]="searchform"
+                    [questions]="questions[4]"
+                    [index]="4"
+                >
+                </maxhealth-question>
+            </div>
+            <div class="ml-3">
+                <mat-label class="clr-primary">To Date</mat-label>
+            </div>
+            <div class="ml-1 w-3/10 bg-white border-radius-md">
+                <maxhealth-question
+                    [question]="questions[5]"
+                    [form]="searchform"
+                    [questions]="questions[5]"
+                    [index]="5"
+                >
+                </maxhealth-question>
+            </div>
+        </div>
+        <div class="flex searchbtn ml-3">
+            <button mat-raised-button color="primary" type="submit" class="searchbtn" (click)="search()">
+                <img src="assets/lens.svg" class="lens-icon">
+                Search
+            </button>
+        </div>
+        <div class="float-right btn">
+            <button mat-raised-button class="ml-1" color="primary" type="submit" (click)="clear()">Clear</button>
+        </div>
+    </div>
+    <!-- Second Row -->
+    <div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+    <div class="w-full h-4/5 mt-2">
+        <maxhealth-table
+            [config]="config"
+            [data]="getsearchopbillslist"
+            #table
+        ></maxhealth-table>
+    </div>
+    <!-- Third Row -->
+    <div class="mt-3 flex btn">
+        <button mat-raised-button class="bg-pink pointer-disable" type="submit">Cancelled Bill(s)</button>
+        <button mat-raised-button class="bg-orange pointer-disable ml-3" type="submit">Partial Cancelled Bill(s)</button>
+        <button mat-raised-button class="bg-blue pointer-disable ml-3" type="submit">New Bill(s)</button>
+        <button mat-raised-button class="pointer-disable ml-3 btn-white" type="submit">Valid Bill(s)</button>
+        <button mat-raised-button class="pointer-disable ml-3 btn-white est" type="submit">* Estimated Age</button>
+    </div>
+    <!-- Fourth Row -->
+    <div class="w-full mt-2">
+        <div class="float-left">
+            
+        </div>
+        
+    </div>   
+        
+
+</section>

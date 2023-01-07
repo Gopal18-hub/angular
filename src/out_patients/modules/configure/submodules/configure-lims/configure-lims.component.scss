@@ -1,0 +1,66 @@
+.bg-lightgray{
+    background :#F6F6F6; 
+     
+}
+.input-padding{
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
+}
+.text-position{
+    position:relative;
+    bottom:5px;
+    left:10px;
+  
+}
+.text-position2{
+    position:relative;
+    bottom:5px;
+  
+}
+.button-height{
+ //   ::ng-deep button{
+        height:1.875rem;
+       // min-width: initial !important;
+       min-width:92px !important;
+  //  }
+}
+.button-height2{
+    height:1.875rem;
+    min-width: initial !important;
+
+}
+.lens-icon{
+
+    position: absolute;
+    left: 2px;
+    top: 1px;
+    height: 98%;
+    width: 30%;
+
+}
+.h-80{
+    height:80%;
+}
+.w-60{
+    width: 60%;
+
+}
+.w-40{
+    width: 40%;
+
+}
+.ml-34{
+    margin-left:34%
+}
+.bg-white{
+    background:white;
+}
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .checkbox-margin{
+    ::ng-deep mat-checkbox .mat-checkbox-inner-container-no-side-margin{
+        margin-bottom:3px !important;
+    }
+}

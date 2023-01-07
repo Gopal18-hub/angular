@@ -1,0 +1,93 @@
+.depositdialogwrapper{
+::ng-deep .textarea-length textarea{
+    min-height: 294px !important;
+}
+
+::ng-deep mat-radio-group{
+    flex-direction: row !important;
+    gap: 10px !important;
+}
+
+::ng-deep .mat-form-field-wrapper{
+
+    padding-bottom: 0 !important;
+
+}
+
+// .mat-dialog-content{
+//     white-space: break-spaces !important;
+// }
+
+.bg-white{
+    background-color: white;
+}
+
+.text-white{
+    color:white;
+}
+
+.bg-blue{
+    background-color: #004084;
+}
+.close-height{
+    height: 2vh;
+}
+
+.bg-lightgray{
+    background-color:#F6F6F6;
+}
+
+.bg-gray{
+    background-color:#D2D0D0;
+}
+.h-60{
+    height:43vh;
+}
+.h-90{
+    height:90%;
+}
+.h-97{
+    height: 60vh;
+}
+::ng-deep .mat-dialog-container{
+    overflow:hidden !important;
+    padding: 10px 24px 24px 24px;
+}
+
+::ng-deep .mat-radio-button{
+    padding-bottom: 0 !important;
+
+}
+.bg-lightblue{
+    background-color:#45C0BE;
+    height: 4vh !important;
+}
+.width{
+    width: 30% !important;
+}
+.font-white{
+    color:white;
+}
+.textarea-length{
+::ng-deep textarea{
+
+    min-height: 319px !important;
+}
+}
+.depositdialogbutton{
+    .mat-raised-button{    
+        min-width: auto !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+}
+.bottom {
+    ::ng-deep .mat-radio-button {
+      margin-left: 10px;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      padding-top: 0 !important;
+      margin-top: 8px;
+    }
+  }
+}

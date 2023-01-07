@@ -1,0 +1,68 @@
+<section class="h-full reason-for-no-reason-wrapper">
+  <!-- Header & Cross Icon-->
+  <div>
+    <mat-label class="max-health-primary-color font-lg font-semi-bold"
+      >Reason For Due Bill</mat-label
+    >
+    <mat-icon
+      mat-dialog-close
+      class="float-right cursor-pointer max-dialog-close-icon"
+      aria-hidden="false"
+      aria-label="Example home icon"
+      >close</mat-icon
+    >
+  </div>
+  <div class="flex mt-4 justify-between">
+    <mat-label class="max-health-primary-color font-semi-bold"
+      >Reason</mat-label
+    >
+    <div class="w-3/4">
+      <maxhealth-question
+        [question]="question[0]"
+        [form]="reasonForDueBillForm"
+        [questions]="question[0]"
+        [index]="0"
+      >
+      </maxhealth-question>
+    </div>
+  </div>
+  <div class="flex justify-between mt-4">
+    <mat-label class="max-health-primary-color font-semi-bold"
+      >Remarks<span class="astreik">*</span></mat-label
+    >
+    <div class="w-3/4 bg-grey">
+      <maxhealth-question
+        [question]="question[1]"
+        [form]="reasonForDueBillForm"
+        [questions]="question[1]"
+        [index]="1"
+      >
+      </maxhealth-question>
+    </div>
+  </div>
+  <div class="flex justify-between mt-4">
+    <mat-label class="max-health-primary-color font-semi-bold"
+      >Authorised By</mat-label
+    >
+    <div class="w-3/4">
+      <maxhealth-question
+        [question]="question[2]"
+        [form]="reasonForDueBillForm"
+        [questions]="question[2]"
+        [index]="2"
+      >
+      </maxhealth-question>
+    </div>
+  </div>
+  <div class="flex justify-end gap-05 mt-4">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!reasonForDueBillForm.valid"
+      (click)="authorize()"
+    >
+      Save
+    </button>
+    <button mat-raised-button color="primary"  (click)="Close()">Cancel</button>
+  </div>
+</section>

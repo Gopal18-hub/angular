@@ -1,0 +1,36 @@
+<div class="w-full">
+  <mat-form-field
+    appearance="outline"
+    class="w-full"
+    [matMenuTriggerFor]="dropdown"
+  >
+    <input
+      matInput
+      placeholder="-Select-"
+      [(ngModel)]="referralDoctorName"
+      autocomplete="off"
+      readonly="true"
+    />
+    <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
+  </mat-form-field>
+  <mat-menu #dropdown="matMenu" class="referral-doctor-menu w-12vw">
+    <button mat-menu-item [matMenuTriggerFor]="internal">
+      Internal Doctor
+    </button>
+    <button mat-menu-item [matMenuTriggerFor]="external">
+      External Doctor
+    </button>
+  </mat-menu>
+
+  <mat-menu #internal="matMenu" class="referral-internal-doctor-wrapper">
+    <out-patients-referral-internal-doctor
+      (selectedDoctorEvent)="selectedDoctor($event)"
+    ></out-patients-referral-internal-doctor
+  ></mat-menu>
+
+  <mat-menu #external="matMenu" class="referral-external-doctor-wrapper">
+    <out-patients-referral-external-doctor
+      (selectedDoctorEvent)="selectedDoctor($event)"
+    ></out-patients-referral-external-doctor>
+  </mat-menu>
+</div>

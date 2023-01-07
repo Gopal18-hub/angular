@@ -1,0 +1,171 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel dispatch-body-wrapper">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a mat-tab-link [active]="true">Dispatch Report</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="w-full h-full p-2">
+            <!-- First Row -->
+            <div class="w-full flex align-items-center border-radius-xlg p-1 bg-secondary">
+                <div class="flex align-items-center w-1/5">
+                    <div class="w-2/5 ml-1">
+                        <mat-label class="max-health-primary-color font-semi-bold">Billed Location</mat-label>
+                    </div>
+                    <div class="w-3/5 bg-white border-radius-md label">
+                        <maxhealth-question
+                        [question]="questions[0]"
+                        [form]="dispatchhistoryform"
+                        [questions]="questions[0]"
+                        [index]="0"
+                        ></maxhealth-question>
+                    </div>
+                </div>
+                <!-- Inside grey part -->
+                <div class="flex align-items-center border-radius-md ml-6 bg-grey p-1 w-3/10">
+                    <div class="w-auto  wt-nowrap ml-3">
+                        <mat-label class="max-health-primary-color font-semi-bold">From Date</mat-label>
+                    </div>
+                    <div class="ml-1 w-3/10 bg-white border-radius-md label">
+                        <maxhealth-question
+                        [question]="questions[2]"
+                        [form]="dispatchhistoryform"
+                        [questions]="questions[2]"
+                        [index]="2"
+                        ></maxhealth-question>
+                    </div>
+                    <div class="w-auto wt-nowrap ml-3">
+                        <mat-label class="max-health-primary-color font-semi-bold">To Date</mat-label>
+                    </div>
+                    <div class="w-3/10 ml-1 bg-white border-radius-md label">
+                        <maxhealth-question
+                        [question]="questions[3]"
+                        [form]="dispatchhistoryform"
+                        [questions]="questions[3]"
+                        [index]="3"
+                        ></maxhealth-question>
+                    </div>
+                </div>
+                <!-- radio inputs -->
+                <div class="w-1/5 flex flex-wrap ml-6">
+                    <div class="w-full flex flex-wrap max-health-primary-color font-semi-bold">
+                        <maxhealth-question
+                        [question]="questions[4]"
+                        [form]="dispatchhistoryform"
+                        [questions]="questions[4]"
+                        [index]="4"
+                    ></maxhealth-question>
+                    </div>
+                </div>
+                <!-- buttons -->
+                <div class="float-right flex w-1/10 dis-mar-left-12">
+                    <div class="mr-2 searchbtn"  accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="67"
+                    actionId="165">
+                        <button 
+                        mat-raised-button 
+                        color="primary" 
+                        type="submit" 
+                        (click)="dispatchreportsearch()" 
+                        [disabled]="!dispatchhistoryform.valid"
+                       >
+                            <img src="assets/lens.svg" class="lens-icon">
+                            Search
+                        </button>
+                    </div>
+                    <div class=" mr-2">
+                        <button mat-raised-button color="primary" type="submit" (click)="pendingreportsearch()" [disabled]="pendingbtn">Pending Reports</button>
+                    </div>
+                    <!-- clear btn -->
+                </div>
+                
+            </div>
+            <!-- Table -->
+            <div class="flex w-full mt-1 align-items-center">
+                <div class="float-left w-9/10">
+                    <div class="ml-1" *ngIf="show">
+                        <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
+                    </div>
+                    <div class="ml-1" *ngIf="pendingreport">
+                        <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
+                    </div>
+                </div>
+                <div class="flex align-items-center">
+                    <div class="mr-2">
+                        <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
+                    </div>
+                    <div class="mr-2"  accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="67"
+                    actionId="166">
+                        <button 
+                        mat-raised-button 
+                        color="primary" 
+                        type="submit" 
+                        [disabled]="savebtn" 
+                        (click)="savedialog()"
+                       >Save</button>
+                    </div>
+                    <div class="mr-2"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="67"
+                    actionId="167">
+                        <button 
+                        mat-raised-button 
+                        color="primary" 
+                        type="submit" 
+                        (click)="print()" 
+                        [disabled]="printbtn"
+                      >Print</button>
+                    </div>
+                    <div class="mr-1">
+                        <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class=" h-68">
+                <!-- <div class="ml-1" *ngIf="show">
+                    <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
+                </div>
+                <div class="ml-1" *ngIf="pendingreport">
+                    <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
+                    <div class="flex h-1/5 float-right align-items-center">
+                        <div class="mr-4">
+                            <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
+                        </div>
+                        <div class="mr-4">
+                            <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
+                        </div>
+                        <div class="mr-1">
+                            <button mat-raised-button color="primary" type="submit" (click)="print()" [disabled]="printbtn">Print</button>
+                        </div>
+                        
+                    </div>
+                </div> -->
+                <ng-container *ngIf="reporttable">
+                    <div class="h-full w-full mt-2 table">
+                        <maxhealth-table
+                        [config]="config"
+                        [data]="data"
+                        (columnClick)="printrow($event)"
+                        #showtable
+                        ></maxhealth-table>
+                    </div>
+                </ng-container>
+                <div *ngIf="apiprocessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+                    <mat-spinner strokeWidth="3"></mat-spinner>
+                </div>
+            </div>
+            
+        </div>
+    </mat-tab-nav-panel>
+   
+</section>
+

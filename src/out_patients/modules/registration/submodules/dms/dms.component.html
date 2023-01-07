@@ -1,0 +1,40 @@
+<div
+  class="relative max-health-primary-color h-full flex flex-column dms-warapper"
+>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">DMS</h2>
+
+  <div class="table-height">
+    <ng-container>
+      <maxhealth-table [config]="config" [data]="data.list" #table></maxhealth-table>
+    </ng-container>
+  </div>
+  <div class="float-left mt-4">
+    <button
+      mat-raised-button
+      color="primary"
+      class="mb-2 min-width-initial"
+      type="button"
+      (click)="uploadkycclick()"
+    >
+      Upload KYC
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="left-15 mb-2 min-width-initial"
+      type="button"
+      (click)="RefreshDMSbtn()"
+    >
+      Refresh
+    </button>
+  </div>
+</div>

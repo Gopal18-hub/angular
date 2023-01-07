@@ -1,0 +1,109 @@
+.refunddialogwrapper{
+.col-black{
+    color: #000;
+}
+.col-white{
+    color: #fff;
+}
+.close-height{
+    height: 2vh;
+  }
+.back-primary{
+    background-color: #004084;
+}
+.bold{
+    font-weight: bold;
+}
+.lighter{
+    font-weight: lighter;
+}
+.wt-nowrap{
+    white-space: nowrap;
+}
+.pointer{
+    cursor: pointer;
+}
+.secondary{
+    background-color: #45C0BE;
+}
+::ng-deep .mat-form-field-wrapper{
+    padding-bottom: 0 !important;
+}
+.bg-white{
+    background-color: #fff;
+    color: #000;
+}
+.clr-primary{
+    color: #004084;
+}
+.height{
+    height: 39vh;
+}
+.remarksheight{
+    height: 62vh !important;
+}
+.width{
+    width: 31% !important;
+}
+.bg-grey{
+    background:#F6F6F6;
+}
+.bg-lightgrey{
+    background-color: #D2D0D0;
+}
+.bg-btn{
+    background-color: #C8C8C8;
+}
+::ng-deep mat-radio-group {
+    flex-direction: row !important;
+    justify-content: space-between;
+}
+::ng-deep .mat-radio-button{
+    margin-left: 10px;
+    padding-bottom: 0 !important;
+}
+::ng-deep .ta textarea{
+    min-height: 120px !important;
+}
+
+.otptextcnt{
+    ::ng-deep .mat-form-field{
+        line-height: 2 !important;
+    }
+}
+.refunddepositbutton{
+    .mat-raised-button{    
+        min-width: auto !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+}
+::ng-deep .refundheight{
+    height: 4vh !important;
+}
+.payabletextbox{
+::ng-deep .mat-form-field{
+line-height: 1.25 !important;
+}
+}
+::ng-deep .mat-dialog-container{
+    overflow:hidden !important;
+    padding: 10px 24px 24px 24px;
+}
+    .mat-raised-button.mat-button-base.mat-button-disabled{
+        background-color:rgb(200, 200, 200) !important;
+        color: rgba(0, 0, 0, 0.26) !important;    
+    }
+    .bottom {
+        ::ng-deep .mat-radio-button {
+          margin-left: 10px;
+          margin-bottom: 0 !important;
+          padding-bottom: 0 !important;
+          padding-top: 0 !important;
+          margin-top: 8px;
+        }
+      }
+      ::ng-deep .paymentmethod-wrapper .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+        width: 23%!important;
+      }
+}

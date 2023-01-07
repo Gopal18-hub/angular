@@ -1,0 +1,20 @@
+.table{
+    ::ng-deep .max-table-wrapper{
+        border: 0px;
+        table{
+            white-space: nowrap !important;
+        }
+    }
+
+    ::ng-deep .cdk-column-amount {
+        text-align: justify;      
+      }
+    
+}
+.table{
+    border: none;
+}
+.h-85{
+    height: 85%;
+}
+

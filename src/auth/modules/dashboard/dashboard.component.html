@@ -1,0 +1,17 @@
+<maxhealth-header></maxhealth-header>
+
+<section class="ml-4 shadow-1 mr-4 h-4/5 max-body-wrapper whitePanel">
+  <mat-progress-spinner mode="indeterminate" value="25" diameter="60"  *ngIf="!defaultUI && showspinner" 
+  class="spinner">
+   </mat-progress-spinner>
+  <div class="p-3 w-full h-full display-block" *ngIf="!defaultUI">
+    <ng-container *ngIf="apiProcessing">
+      <maxhealth-table [config]="config" [data]="patientList" #table></maxhealth-table>
+    </ng-container>
+  </div>
+  <div  class="w-full h-full" *ngIf="defaultUI">
+    <empty-placeholder [icon]="findpatientimage" [message]="findpatientmessage">
+ 
+   </empty-placeholder>
+ </div>
+</section>

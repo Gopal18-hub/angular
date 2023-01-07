@@ -1,0 +1,17 @@
+.services-container-wrapper {
+    height: 100%;
+    .services-tab {
+      background-color: #45c0be;
+      height: 95%;
+      button {
+        background-color: #bfe8e7;
+        height: 32px;
+        line-height: 32px;
+        min-width: initial !important;
+        &.active {
+          background-color: #fff;
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,17 @@
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+$measures: (
+  vw: vw, 
+  px: px, 
+  vh: vh, 
+  rem: rem, 
+  em: em, 
+  \%: "%"
+) !default;
+
+$prefix: "" !default;

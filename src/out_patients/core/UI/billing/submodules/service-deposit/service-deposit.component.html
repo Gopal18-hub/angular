@@ -1,0 +1,46 @@
+<section class="servicedeposit-wrapper">
+<div class="h-1/10 mt-2 w-full flex" >
+    <div class="flex w-2/3"  *ngIf="!onRefundpage">
+        <mat-label class="max-health-primary-color font-base font-medium">Service Type:</mat-label>
+        <div class="ml-2 w-3/4 servicedropdown">
+            <maxhealth-question
+            [question]="questions[0]"
+            [form]="servicedepositForm"
+            [questions]="questions[0]"
+            [index]="0"
+            ></maxhealth-question>
+        </div>
+    </div>
+
+    <div class="flex w-9/10 "  *ngIf="onRefundpage">
+        <mat-label class="max-health-primary-color  font-base font-medium">Service Type:</mat-label>
+        <div *ngIf="onRefundpage" class="ml-2 w-4/5 wt-nowrap">
+            <p>{{servicetype}}</p>
+        </div>
+    </div>
+    
+ 
+    
+    <div class="flex ml-2 w-2/5"  *ngIf="!onRefundpage">
+        <mat-label class="max-health-primary-color font-base font-medium">Deposit Head:</mat-label>
+        <div class="ml-2 w-2/3 servicedropdown">
+            <maxhealth-question
+            [question]="questions[1]"
+            [form]="servicedepositForm"
+            [questions]="questions[1]"
+            [index]="1"
+         
+            ></maxhealth-question>
+        </div>
+    </div>
+    <div class="flex ml-2 w-2/5 "  *ngIf="onRefundpage">
+        <mat-label class="max-health-primary-color  font-base font-medium">Deposit Head:</mat-label>
+        <div class="ml-2 wt-nowrap w-3/5">
+        <p>{{deposithead}}</p>
+    </div>
+    </div>
+   
+   
+   
+</div>
+</section>

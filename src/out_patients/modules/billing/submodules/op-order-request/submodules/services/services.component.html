@@ -1,0 +1,28 @@
+<div class="billing-page-wrapper w-full h-full ">
+<div class="overflow-y-auto display-block billing-panel-wrapper">
+<div class="flex w-full h-full services-container-wrapper">
+  <div class="w-1/7 services-tab border-radius-xlg my-3">
+    <div
+      class="flex flex-column align-items-center  h-full py-2"
+    >
+      <ng-container *ngFor="let tab of tabs">
+        <button
+          mat-raised-button
+          class="font-sm w-6/7 max-health-primary-color border-radius-xlg mat-elevation-z0 mt-3 mb-1"
+          type="button"
+          (click)="tabChange(tab)"
+          [ngClass]="{ active: activeTab?.id == tab.id }"
+        >
+          {{ tab.title }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="w-6/7 p-2  h-full flex services-tab-container">
+    <ng-template [cdkPortalOutlet]="selectedComponent"></ng-template>
+  </div>
+</div>
+
+    </div>
+    </div>
+   

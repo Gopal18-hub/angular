@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="41" height="18.135" viewBox="0 0 41 18.135">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#45c0be"/>
+      <stop offset="0.519" stop-color="#07b3ab"/>
+      <stop offset="1" stop-color="#00b2a9"/>
+    </linearGradient>
+  </defs>
+  <g id="hwc" transform="translate(0 0)">
+    <g id="Group_416" data-name="Group 416">
+      <rect id="Rectangle_164" data-name="Rectangle 164" width="41" height="18.135" rx="9.067" fill="url(#linear-gradient)"/>
+      <path id="Rectangle_164_-_Outline" data-name="Rectangle 164 - Outline" d="M9.067,1a8.067,8.067,0,0,0,0,16.135H31.933A8.067,8.067,0,0,0,31.933,1H9.067m0-1H31.933a9.067,9.067,0,0,1,0,18.135H9.067A9.067,9.067,0,0,1,9.067,0Z" fill="#fff"/>
+    </g>
+    <path id="Path_712" data-name="Path 712" d="M-11.973-4.186v-7.888H-13.8v3.1h-4.034v-3.1h-1.818v7.888h1.818V-7.5H-13.8v3.311Zm10.142,0L.6-12.074H-1.447l-1.485,5.7-1.613-5.7H-5.967l-1.626,5.7-1.5-5.7h-2.036l2.446,7.888h1.934L-5.263-9.6l1.5,5.416Zm7.107.142A4.018,4.018,0,0,0,8.913-5.983l-1.562-.7A2.345,2.345,0,0,1,5.276-5.534a2.538,2.538,0,0,1-2.612-2.59,2.538,2.538,0,0,1,2.612-2.59A2.37,2.37,0,0,1,7.351-9.567l1.562-.71A4,4,0,0,0,5.276-12.2,4.175,4.175,0,0,0,.794-8.124,4.175,4.175,0,0,0,5.276-4.044Z" transform="translate(25.872 17.191)" fill="#fff"/>
+  </g>
+</svg>

@@ -1,0 +1,65 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">        
+         <ul class="list-unstyled flex items-end w-full">
+            <li class="ml-3"  *ngFor="let link of link1">
+              <a mat-tab-link class="cursor-pointer"  [active]="activeLink1 == link ? true : false"  (click)="showmain(link)" > {{link.value}}</a>
+            </li>
+            <li class="maxhealth-spacer"></li>
+            <li class="ml-3 float-right" *ngFor="let link of link2">
+                <button mat-raised-button color="primary"  [ngClass]="{'activebutton': activeLink2 == link}" (click)="showgrid(link)"  class="subbtn-class"> {{link.value}}</button>
+              </li>
+          </ul>            
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+        <!-- <mat-progress-spinner
+        mode="indeterminate"
+        value="25"
+        diameter="60"
+        *ngIf="showapprovalspinner"
+        class="spinner"
+      >
+      </mat-progress-spinner> -->
+      <div
+        *ngIf="showapprovalspinner"
+        class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+        >
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
+        <div class=" h-full w-full p-3 " *ngIf="defaultUI" >
+           <div class="h-4/5" >
+            <ng-container *ngIf="isPendingList"  >
+                <maxhealth-table #oprefundpending
+                [config]="oprefundConfig"
+                [data]="oprefundPendingList"
+                class="input-align"
+                ></maxhealth-table>
+            </ng-container>
+            <ng-container *ngIf="isApprovedList" >
+              <maxhealth-table #oprefundapproved
+              [config]="oprefundapproveConfig"
+              [data]="oprefundApprovedList"
+              class="input-align2"
+              ></maxhealth-table>
+          </ng-container>
+          <ng-container *ngIf="isRejectedList"  >
+            <maxhealth-table #oprefundapproved
+            [config]="oprefundrejectConfig"
+            [data]="oprefundRejectedList"
+            class="input-align2" 
+            ></maxhealth-table>
+        </ng-container>
+          </div> 
+          <div class="h-1/5 float-right mt-6">
+            <button mat-raised-button color="primary"  class="mr-8" (click)="onApprove()" *ngIf="isPendingList">Approve</button>
+            <button mat-raised-button color="primary" *ngIf="isPendingList "  (click)="onReject(activeLink2)">Reject</button>
+          </div>  
+        </div> 
+        <div class="h-full w-full" *ngIf="!defaultUI">
+          <empty-placeholder [icon]="oprefundicon" [message]="oprefundmessage">
+          </empty-placeholder> 
+          </div> 
+        
+  
+    </mat-tab-nav-panel>
+</section>
+<!-- (click)="oprefundReject()" -->

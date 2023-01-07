@@ -1,0 +1,219 @@
+<section>
+    <div class="flex justify-content-end">
+        <mat-icon class="max-dialog-close-icon" mat-dialog-close>close</mat-icon>
+    </div>
+    <div class="h-full">
+        <mat-label class="max-health-primary-color font-lg font-bold">Form 60</mat-label>
+        <div class="flex mt-3">
+            <mat-label class="max-health-primary-color">Aadhar No.</mat-label>
+            <div class="ml-3">
+                <maxhealth-question
+                [question]="questions[0]"
+                [form]="form60form"
+                [questions]="questions[0]"
+                [index]="0"
+              ></maxhealth-question>  
+            </div>
+        </div>
+        <div class="flex mt-2">
+            <div>
+                <maxhealth-question
+                [question]="questions[1]"
+                [form]="form60form"
+                [questions]="questions[1]"
+                [index]="1"
+              ></maxhealth-question>  
+            </div>
+            <mat-label class="max-health-primary-color ml-3">Applied for PAN</mat-label>
+        </div>
+        <div class="w-full flex justify-between mt-2">
+            <div class="w-49 float-left p-2 pb-4 border-radius-lg bg-secondary">
+                <div class="flex w-full">
+                    <div class="w-1/2">
+                        <mat-label class="max-health-primary-color">Date of Application</mat-label>
+                    </div>
+                    <div class="w-1/2 bg-white">
+                    <maxhealth-question
+                    [question]="questions[2]"
+                    [form]="form60form"
+                    [questions]="questions[2]"
+                    [index]="2"
+                    ></maxhealth-question>  
+                    </div>
+                </div>
+                <div class="flex w-full mt-2">
+                    <div class="w-1/2">
+                        <mat-label class="max-health-primary-color">Application No.</mat-label>
+                    </div>
+                    <div class="w-1/2 bg-white">
+                    <maxhealth-question
+                    [question]="questions[3]"
+                    [form]="form60form"
+                    [questions]="questions[3]"
+                    [index]="3"
+                    ></maxhealth-question>  
+                    </div>
+                </div>
+            </div>
+            <div class="w-49 float-right p-2 border-radius-lg bg-secondary">
+                <div class="flex w-full">
+                    <div class="w-1/2">
+                        <mat-label class="max-health-primary-color">Agricultural Income</mat-label>
+                    </div>
+                    <div class="w-1/2 bg-white">
+                    <maxhealth-question
+                    [question]="questions[4]"
+                    [form]="form60form"
+                    [questions]="questions[4]"
+                    [index]="4"
+                    ></maxhealth-question>  
+                    </div>
+                </div>
+                <div class="flex w-full">
+                    <div class="w-1/2">
+                        <mat-label class="max-health-primary-color">Other than Agricultural Income</mat-label>
+                    </div>
+                    <div class="w-1/2 h-full mt-2 bg-white">
+                    <maxhealth-question
+                    [question]="questions[5]"
+                    [form]="form60form"
+                    [questions]="questions[5]"
+                    [index]="5"
+                    ></maxhealth-question>  
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex mt-2">
+            <mat-label class="max-health-primary-color font-lg font-bold">Document For ID Proof</mat-label>
+        </div>
+
+        <div class="p-2 mt-2 border-radius-lg bg-secondary">
+            <div class="flex w-full">
+                <div class="w-1/4">
+                    <mat-label class="max-health-primary-color">Document Type</mat-label>
+                </div>
+                <div class="w-3/4 bg-white">
+                    <maxhealth-question
+                    [question]="questions[6]"
+                    [form]="form60form"
+                    [questions]="questions[6]"
+                    [index]="6"
+                  ></maxhealth-question>  
+                </div>
+            </div>
+            <div class="flex w-full mt-2">
+                <div class="w-1/4">
+                    <mat-label class="max-health-primary-color">Document Identity No</mat-label>
+                </div>
+                <div class="w-3/4 bg-white">
+                    <maxhealth-question
+                    [question]="questions[7]"
+                    [form]="form60form"
+                    [questions]="questions[7]"
+                    [index]="7"
+                  ></maxhealth-question>  
+                </div>
+            </div>
+            <div class="flex w-full mt-2">
+                <div class="w-1/4">
+                    <mat-label class="max-health-primary-color">Name of Authority</mat-label>
+                </div>
+                <div class="w-3/4 bg-white">
+                    <maxhealth-question
+                    [question]="questions[8]"
+                    [form]="form60form"
+                    [questions]="questions[8]"
+                    [index]="8"
+                  ></maxhealth-question>  
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex mt-2">
+            <div class="">
+                <maxhealth-question
+                [question]="questions[9]"
+                [form]="form60form"
+                [questions]="questions[9]"
+                [index]="9"
+              ></maxhealth-question>  
+            </div>
+            <mat-label class="max-health-primary-color float-left ml-3">Tick if Same Document for Address Proof</mat-label>
+        </div>
+
+        <div class="flex mt-2">
+            <mat-label class="max-health-primary-color font-lg font-bold">Document For Address Proof</mat-label>
+        </div>
+
+        <div class="p-2 mt-2 border-radius-lg bg-secondary">
+            <div class="flex w-full">
+                <div class="w-1/4">
+                    <mat-label class="max-health-primary-color">Document Type</mat-label>
+                </div>
+                <div class="w-3/4 bg-white">
+                    <maxhealth-question
+                    [question]="questions[10]"
+                    [form]="form60form"
+                    [questions]="questions[10]"
+                    [index]="10"
+                  ></maxhealth-question>  
+                </div>
+            </div>
+            <div class="flex w-full mt-2">
+                <div class="w-1/4">
+                    <mat-label class="max-health-primary-color">Document Identity No</mat-label>
+                </div>
+                <div class="w-3/4 bg-white">
+                    <maxhealth-question
+                    [question]="questions[11]"
+                    [form]="form60form"
+                    [questions]="questions[11]"
+                    [index]="11"
+                  ></maxhealth-question>  
+                </div>
+            </div>
+            <div class="flex w-full mt-2">
+                <div class="w-1/4">
+                    <mat-label class="max-health-primary-color">Name of Authority</mat-label>
+                </div>
+                <div class="w-3/4 bg-white">
+                    <maxhealth-question
+                    [question]="questions[12]"
+                    [form]="form60form"
+                    [questions]="questions[12]"
+                    [index]="12"
+                  ></maxhealth-question>  
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex w-full mt-2 p-2">
+            <div class="w-1/4">
+                <mat-label class="max-health-primary-color">Remarks</mat-label>
+            </div>
+            <div class="w-3/4">
+                <maxhealth-question
+                [question]="questions[13]"
+                [form]="form60form"
+                [questions]="questions[13]"
+                [index]="13"
+              ></maxhealth-question>  
+            </div>
+           
+        </div>
+
+        <div class="flex float-right mt-2">
+            <div class="mr-4">
+                <button mat-raised-button color="primary" type="submit" (click)="saveform60()">Save</button>
+            </div>
+            <div class="">
+                <button mat-raised-button color="primary" type="submit" (click)="clearform60()">Clear</button>
+            </div>
+        </div>
+
+    </div>
+</section>

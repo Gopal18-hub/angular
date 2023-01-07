@@ -1,0 +1,53 @@
+form.prompt-report-form {
+  > div {
+    line-height: 2rem;
+    gap: 1rem;
+  }
+  .form-control-element {
+    &:not(.w-full) {
+      ::ng-deep {
+        maxhealth-question {
+          > div {
+            display: flex;
+            align-items: center;
+            mat-label {
+              white-space: nowrap;
+              margin-right: 0.75rem;
+            }
+            mat-form-field {
+              width: 70%;
+              color: black;
+              .mat-form-field-wrapper {
+                padding-bottom: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .prompt-form-action {
+    button {
+      margin-right: 1rem;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  ::ng-deep {
+    mat-radio-group {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}
+// .mt-error{
+//   ::ng-deep .mat-error{
+//       margin-top:3%;
+//   }
+// }
+::ng-deep .mat-input-element 
+{
+    color: black;
+}
+

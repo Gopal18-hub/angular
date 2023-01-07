@@ -1,0 +1,64 @@
+
+
+  .wc-35-6 {
+    width: 34.666%;
+  }
+  .img-upload{
+    border: 0px solid #d0d3d4;
+  }
+  .border-left{
+    border-left: 2px solid #d0d3d4;
+  }
+  .img-upload-container{
+    max-width: 250px;
+    
+    height:11rem;
+    width:12rem;
+    .img-banner-body {
+       height: 13vh !important;
+    }
+  }
+  .img-banner-container {
+    max-width: 250px;
+    border-radius: 25px;
+    border: 1px solid #d0d3d4;
+    height:11rem;
+    width:12rem;
+
+    .img-banner-body {
+       height: 21vh !important;
+    }
+    .img-banner-bottom {
+      text-align:center;
+    }
+  
+    .pl-4{
+      padding-left: 1rem;
+    }
+    
+    .imgHeight{
+        height: 100% !important;
+    }
+  
+    .transparent-btn.mat-stroked-button{
+        border:none;
+        box-shadow: none;
+        padding:0px;
+        min-width:20x;
+        line-height:35px;
+    }
+  
+    #video {
+      background-color: #000000;
+       height:100% !important;
+       width:100% !important;
+    }
+
+    #canvas {
+        display: none;
+        height:100% !important;
+        width:100% !important;
+    }
+
+  }
+  

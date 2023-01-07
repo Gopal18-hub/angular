@@ -1,0 +1,113 @@
+.bg-dept{
+    background-color: #F6F6F6;    
+    color:#004084;
+}
+
+.iconcss {
+    ::ng-deep {
+        position: absolute !important;
+        padding: 1px !important;
+        border-radius: 4px !important;
+        left: 1px !important;
+    }
+}
+.disableclass{
+    color: currentColor;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.2;
+}  
+
+::ng-deep .searchbtn
+{
+    min-width:110px  
+}
+.serachcss{
+    ::ng-deep .max-table-wrapper{        
+        border-radius: 0.75rem;
+        border: solid #707070 !important;
+    }
+}
+::ng-deep .clearbtn
+{
+    height:81% !important
+}
+::ng-deep .gridh{    
+    height: 72% !important;
+}
+::ng-deep .nameW
+{
+    width:37.5% !important;
+}
+
+.employeeclass{
+    color: #004084;
+    font:Proxima Nova;
+}
+.bg-lightgray{
+    background :#F6F6F6; 
+    // background-color: #707070;
+     
+}
+.bg-darkgray{
+    
+    background: #d8d8d8;
+}
+
+::ng-deep .bg-white{
+    background-color:white;
+}
+
+//REMOVE PADDING FOR INPUT CONTROLS
+// ::ng-deep .input .mat-form-field-wrapper{
+
+//     padding-bottom: 0 !important;
+
+// }
+
+.input-padding{
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
+}
+
+.text-wrap{
+    white-space:nowrap;
+}
+
+.w-12{
+    width:12%;
+}
+.w-8{
+    width:9%
+}
+.color-blue{
+    color:#45C0BE;
+}
+
+//DISPLAY TABLE HEADERS IN A SINGLE LINE
+::ng-deep .whitespace-nowrap .mat-sort-header-content{
+    white-space:nowrap;
+}
+
+.iom-message{
+    position:absolute;
+    margin-left: 58%;
+    top: 25%;
+    color:red;
+
+}
+.disableiomclass{
+color: currentColor;
+cursor: not-allowed;
+pointer-events: none;
+opacity: 0.5;
+//text-decoration: none;
+}
+.lens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 25%;
+  }

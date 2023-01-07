@@ -1,0 +1,115 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper expired-deposit-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a  mat-tab-link [active]="true">Expired Deposit</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+    </mat-tab-nav-panel>
+    <!--------------------------------------------First Row ----------------------------------------->
+        <div class="w-full h-full p-2">
+            <form [formGroup]="ExpiredDepositform">
+            <!-- First Row -->
+            <div class="flex w-full border-radius-xlg p-1 bg-secondary">
+                <div class="flex align-items-center w-3/10">
+                    <div>
+                        <mat-label class="max-health-primary-color font-semi-bold">Max ID</mat-label>
+                    </div>
+                    <div class="ml-1 w-3/10 bg-white border-radius-md label error">                        
+                        <maxhealth-question
+                            [question]="questions[0]"
+                            [form]="ExpiredDepositform"
+                            [questions]="questions[0]"
+                            [index]="0"
+                        >
+                        </maxhealth-question>
+                    </div>
+                    <div class="ml-7">
+                        <mat-label class="max-health-primary-color font-semi-bold">Mobile No.</mat-label>
+                    </div>
+                    <div class="ml-1 w-3/10 bg-white border-radius-md label error">
+                        <maxhealth-question
+                            [question]="questions[1]"
+                            [form]="ExpiredDepositform"
+                            [questions]="questions[1]"
+                            [index]="1"
+                        >
+                        </maxhealth-question>
+                    </div>
+                </div>
+                <div class="flex w-3/10 ml-7 bg-grey p-1 align-items-center border-radius-md">
+                    <div class="ml-3">
+                        <mat-label class="max-health-primary-color font-semi-bold">From Date</mat-label>
+                    </div>
+                    <div class="ml-1 w-27 bg-white border-radius-md">
+                        <maxhealth-question
+                            [question]="questions[2]"
+                            [form]="ExpiredDepositform"
+                            [questions]="questions[2]"
+                            [index]="2"
+                        >
+                        </maxhealth-question>
+                    </div>
+                    <div class="ml-3">
+                        <mat-label class="max-health-primary-color font-semi-bold">To Date</mat-label>
+                    </div>
+                    <div class="ml-1 w-27 bg-white border-radius-md">
+                        <maxhealth-question
+                            [question]="questions[3]"
+                            [form]="ExpiredDepositform"
+                            [questions]="questions[3]"
+                            [index]="3"
+                        >
+                        </maxhealth-question>
+                    </div>
+                </div>
+                <div class="w-2/5 flex">
+                    <div class="ml-2 float-right btn">
+                        <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="searchbtn" (click)="expireddepositsearch()">
+                            <img src="assets/lens.svg" class="lens-icon">
+                            <span class="ml-4"> Search</span>
+                        </button>
+                    </div>
+                    <div class="mr-8 ml-14 float-right btn">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
+                    </div>
+                </div>
+            </div>
+            </form>
+            <!----------------------------------------------Table Grid---------------------------------------->
+            <div
+            *ngIf="apiProcessing"
+            class="flex align-items-center justify-center  h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+            >
+            <mat-spinner strokeWidth="3"></mat-spinner>
+            </div>
+             <div class="mt-2 h-74" *ngIf="showtable">
+                <maxhealth-table 
+                #expireTable
+                [config]="ExpiredDepositconfig"
+                [data]="ExpiredDepositformlist"
+                (columnClick)="activeClick($event)"
+                ></maxhealth-table>
+            </div>
+            
+            
+            <!-- <div class="float-right mt-1">
+                <button mat-raised-button color="primary" class="mr-8">
+                    Clear
+                </button>
+            </div> -->
+            <div class="row w-full flex">
+            <div class='box pink text-float left mb-2 border-radius-md w-1/3'></div>
+            <p class="mt-1 w-1/3">Refunded Deposit</p>
+              <!-- Button -->
+              <div class="flex float-right w-1/3">
+                <div class="ml-13 mt-1">
+                    <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Excel</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>

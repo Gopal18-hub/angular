@@ -1,0 +1,25 @@
+<div class="relative max-health-primary-color">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 mat-dialog-title>Patient with Similar Details Exists</h2>
+  <div mat-dialog-content>
+    <div class="overflow-x-none">
+      <div class="relative table-height">
+        <ng-container>
+          <maxhealth-table
+            #patientDetail
+            [config]="config"
+            [data]="data.searchResults"
+          ></maxhealth-table>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

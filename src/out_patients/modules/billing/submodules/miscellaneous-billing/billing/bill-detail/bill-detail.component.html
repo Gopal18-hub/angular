@@ -1,0 +1,418 @@
+<div class="flex flex-column h-full sub-bill-overall  ">
+  <form [formGroup]="miscServBillForm">
+    <div class="flex flex-column h-full w-full">
+
+      <div class="w-full bg-secondary border-radius-xlg align-items-center">
+        <div class="flex w-full mt-0 bill-label">
+          <!-- Service Type -->
+          <div class=" w-1/4  h-dropdown">
+
+            <maxhealth-question [question]="question[0]" [form]="miscServBillForm" [questions]="question[0]" [index]="0"
+              class="bg-white">
+            </maxhealth-question>
+
+          </div>
+          <!-- Item -->
+          <div class="ml-1  w-1/4 h-dropdown">
+            <maxhealth-question [question]="question[1]" [form]="miscServBillForm" [questions]="question[1]" 
+              [index]="1">
+            </maxhealth-question>
+          </div>
+
+          <!-- TARRIF PRICE BLOCK -->
+          <div class="ml-1 w-tarrif h-full">
+            <maxhealth-question [question]="question[2]" [form]="miscServBillForm" [questions]="question[2]"
+              [index]="2">
+            </maxhealth-question>
+          </div>
+
+          <!-- QTY BLOCK -->
+          <div class="ml-1  w-tarrif h-full">
+            <maxhealth-question [question]="question[3]" [form]="miscServBillForm" [questions]="question[3]"
+              [index]="3">
+            </maxhealth-question>
+          </div>
+          <!-- REQUIRED AMOUNT BLOCK -->
+          <div class="ml-1  w-tarrif h-full">
+            <maxhealth-question [question]="question[4]" [form]="miscServBillForm" [questions]="question[4]"
+              [index]="4">
+            </maxhealth-question>
+          </div>
+
+          <!-- PROCEDURE DOCTOR BLOCK-->
+          <div class="ml-1 w-1/6 h-dropdown">
+            <maxhealth-question [question]="question[5]" [form]="miscServBillForm" [questions]="question[5]"
+              [index]="5">
+            </maxhealth-question>
+          </div>
+
+          <!-- REMARK BLOCK -->
+          <div class="ml-1 w-1/6 h-dropdown">
+            <maxhealth-question [question]="question[6]" [form]="miscServBillForm" [questions]="question[6]"
+              [index]="6">
+            </maxhealth-question>
+          </div>
+
+
+          <button mat-raised-button color="primary" class="addbtn mt-3 ml-3" type="submit"  [disabled]="!enableItemsService"
+            (click)="addService()">
+            Add
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="w-full mt-1 billdetailtable-table h-30vh" >
+    <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" #selectedServices -->
+    <!-- <ng-container class="w-full h-table"> -->
+    <maxhealth-table [data]="serviceselectedList" [config]="config" (columnClick)="tablerow($event)"class = billdetailtable (rowRwmove)="rowRwmove($event)"></maxhealth-table>
+    <!-- </ng-container> -->
+
+  </div>
+
+
+  <div class="mt-1 mb-1 tableh">
+    <form [formGroup]="miscServBillForm" class="sub-bill-form h-full">
+      <div class="flex w-full h-full">
+        <div
+          class="w-14 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center"
+        >
+          <div class="ml-2 mb-4 mt-2 mr-2 w-auto relative" [class.isDisabled]="!isEnableBillBtn">
+            <div class="absolute right-0 bottom-25-px">
+              <maxhealth-question
+                [question]="question[7]"
+                [form]="miscServBillForm"
+                [questions]="question[7]"
+                [index]="7"
+              >
+              </maxhealth-question>
+            </div>
+           
+            <mat-label class="mat-form-field-required-marker"
+              >Referral Doctor</mat-label
+            >
+            <out-patients-referral
+              (selectedDoctorEvent)="selectedReferralDoctor($event)"
+              [referralDoctorName]="miscPatient.referralDoctor?.name"
+            ></out-patients-referral>
+          </div>
+          <div class="ml-2 mr-2 mb-4 w-auto"  [class.isDisabled]="!isEnableBillBtn">
+            <maxhealth-question
+              [question]="question[9]"
+              [form]="miscServBillForm"
+              [questions]="question[9]"
+              [index]="9"
+            >
+            </maxhealth-question>
+          </div>
+        </div>
+        <!-- -------------------------------------------grey billing block------------------------------------------------------------------------- -->
+        <div
+          class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86"
+        >
+          <div class="ml-2 flex-column w-27 flex justify-between" [class.isDisabled]="!isEnableBillBtn">
+            <div>
+              <div class="flex">
+                <mat-label class="wt-nowrap mr-12">Bill Amount</mat-label>
+                <maxhealth-question
+                  [question]="question[10]"
+                  [form]="miscServBillForm"
+                  [questions]="question[10]"
+                  class="w-1/45 ml-9"
+                  [index]="10"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <!------------------------------------------- AVAIL DISC CHECKBOX ---------------------------------------->
+                <maxhealth-question
+                  [question]="question[11]"
+                  [form]="miscServBillForm"
+                  [questions]="question[11]"
+                  [index]="11"
+                >
+                </maxhealth-question>
+                <!------------------------------------------- AVAIL DISC INPUT ---------------------------------------->
+
+                <maxhealth-question
+                  [question]="question[12]"
+                  [form]="miscServBillForm"
+                  [questions]="question[12]"
+                  class="w-1/45 ml-5"
+                  [index]="12"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <!------------------------------------------- DISCOUNT AMOUNT CHECKBOX ---------------------------------------->
+
+                <maxhealth-question
+                  [question]="question[13]"
+                  [form]="miscServBillForm"
+                  [questions]="question[13]"
+                  class="mr-1"
+                  [index]="13"
+                >
+                </maxhealth-question>
+                <!------------------------------------------- DISCOUNT AMOUNT INPUT ---------------------------------------->
+
+                <div class="w-1/45 flex">
+                  <maxhealth-question
+                    [question]="question[14]"
+                    [form]="miscServBillForm"
+                    [questions]="question[14]"
+                    class="w-4/5"
+                    [index]="14"
+                  >
+                  </maxhealth-question>
+                  <div class="text-center ml-2">
+                    <button
+                      mat-raised-button
+                      class="min-width-initial p-0 bg-deposit"
+                      (click)="opendiscAmtDialog()"
+                      type="button"
+                      [disabled]="!enableDialogHoriz"
+                      
+                    >
+                      <mat-icon class="icon-more p-0 font-xs"
+                        >more_horiz</mat-icon
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <!------------------------------------------- DIPO AMOUNT CHECKBOX ---------------------------------------->
+
+                <maxhealth-question
+                  [question]="question[15]"
+                  [form]="miscServBillForm"
+                  [questions]="question[15]"
+                  [index]="15"
+                >
+                  <!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
+                </maxhealth-question>
+                <maxhealth-question
+                  [question]="question[16]"
+                  [form]="miscServBillForm"
+                  [questions]="question[16]"
+                  class="w-23 mb-1 ml-3 mr-1"
+                  [index]="16"
+                >
+                </maxhealth-question>
+                <maxhealth-question
+                  [question]="question[27]"
+                  [form]="miscServBillForm"
+                  [questions]="question[27]"
+                  class="w-21 mb-1"
+                  [index]="27"
+                  (click)="clearDis()"
+                  (focusout)="unClearDis()"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+          </div>
+
+          <div class="ml-2 flex-column w-1/5 flex justify-between"  [class.isDisabled]="!isEnableBillBtn">
+            <div>
+              <div class="flex">
+                <mat-label class="wt-nowrap mr-5">Patient Disc.</mat-label>
+                <maxhealth-question
+                  [question]="question[17]"
+                  [form]="miscServBillForm"
+                  [questions]="question[17]"
+                  class="w-5/9"
+                  [index]="17"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <mat-label class="wt-nowrap mr-1">Company Disc.</mat-label>
+
+                <maxhealth-question
+                  [question]="question[18]"
+                  [form]="miscServBillForm"
+                  [questions]="question[18]"
+                  class="w-5/9"
+                  [index]="18"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <mat-label class="wt-nowrap mr-24">Plan Amt.</mat-label>
+
+                <maxhealth-question
+                  [question]="question[19]"
+                  [form]="miscServBillForm"
+                  [questions]="question[19]"
+                  class="w-5/9"
+                  [index]="19"
+                >
+                </maxhealth-question>
+              </div>
+            </div>            
+          </div>
+          <div
+            class="ml-2 flex-column w-1/6 flex border-radius-lg justify-between" [class.isDisabled]="!isEnableBillBtn"
+          >
+            <div>
+              <div class="flex">
+                <mat-label class="wt-nowrap mr-2">Co-Payment %</mat-label>
+                <maxhealth-question
+                  [question]="question[21]"
+                  [form]="miscServBillForm"
+                  [questions]="question[21]"
+                  class="w-1/45"
+                  [index]="21"
+                  (click) = "clearCoPay()"
+                  (focusout)="unClearCoPay()"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <mat-label class="wt-nowrap mr-7">Credit Limit</mat-label>
+
+                <maxhealth-question
+                  [question]="question[22]"
+                  [form]="miscServBillForm"
+                  [questions]="question[22]"
+                  class="w-1/45"
+                  [index]="22"
+                  (click)="clearCredit()"
+                  (focusout)="unClearCredit()"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+            <div>
+              <div class="flex my-2">
+                <mat-label class="wt-nowrap mr-5">GST Tax</mat-label>
+
+                <div class="w-1/45 flex">
+                  <maxhealth-question
+                    [question]="question[23]"
+                    [form]="miscServBillForm"
+                    [questions]="question[23]"
+                    class="w-7/10 ml-7"
+                    [index]="23"
+                  >
+                  </maxhealth-question>
+                  <div class="text-center ml-2">
+                    <button
+                      mat-raised-button
+                      class="p-0 bg-deposit min-width-initial"
+                      (click)="openGstTaxDialog()"
+                      type="button"
+                    >
+                      <mat-icon class="icon-more p-0 font-xs"
+                        >more_horiz</mat-icon
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-deposit flex-column ml-4 w-42 flex justify-between">
+            <div class="flex">
+              <mat-label class="mr-6" [class.isDisabled]="!isEnableBillBtn">Amt. Paid by Patient</mat-label>
+              <div class="flex w-1/45">
+                <maxhealth-question
+                  [question]="question[24]"
+                  [form]="miscServBillForm"
+                  [questions]="question[24]"
+                  class="w-7/10 mr-1"
+                  [index]="24"
+                  [class.isDisabled]="!isEnableBillBtn"
+                >
+                </maxhealth-question>
+                <div accessControl
+                masterModule = "2"
+                moduleId="7"
+                featureId="604"
+                actionId="1562">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  class="btn-md min-width-initial"
+                  [disabled]="!isEnableBillBtn"
+                  type="submit"                  
+                  (click)="openMakeBilldialog()"
+                  type="button"
+                  
+                >
+                  Make Bill
+                </button>
+              </div>
+              </div>
+            </div>
+            <div class="flex">
+              <mat-label class="wt-nowrap mr-2" [class.isDisabled]="!isEnableBillBtn">Amt. Paid by Company</mat-label>
+
+              <div class="flex w-1/45">
+                <maxhealth-question
+                  [question]="question[25]"
+                  [form]="miscServBillForm"
+                  [questions]="question[25]"
+                  [class.isDisabled]="!isEnableBillBtn"
+                  class="w-7/10 mr-1"
+                  [index]="25"
+                >
+                </maxhealth-question>
+                <div  accessControl
+                masterModule = "2"
+                moduleId="7"
+                featureId="62"
+                actionId="147"  > 
+                <button
+                mat-raised-button
+                color="primary"
+                class="btn-md min-width-initial"
+                type="submit"                  
+                (click)="print()"
+                type="button"    
+                [disabled]="!enablePrint"                            
+              >
+                Print Bill&nbsp;
+              </button>
+                </div>            
+              </div>
+            </div>
+            <div
+              class="flex border-radius-lg bg-blue px-1 py-0 align-items-center mr-3 shadow-1 " [class.isDisabled]="!isEnableBillBtn"
+            >
+              <mat-label class="wt-nowrap mr-4 ml-12 inline"
+                >Bill Type</mat-label
+              >
+              <div class="grid-container w-1/2 ml-8">
+                <maxhealth-question
+                  [question]="question[26]"
+                  [form]="miscServBillForm"
+                  [questions]="question[26]"
+                  class="h-1/20 mb-5"
+                  [index]="26"
+                >
+                </maxhealth-question>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

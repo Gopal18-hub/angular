@@ -1,0 +1,29 @@
+<div class="bg-white h-full border-radius-lg mt-0">
+    <div class="mt-0 mr-1 border-radius-lg mx-table flex w-auto">
+        <form [formGroup]="miscServBillForm " class="w-full miscForm">
+           
+<!-- ---------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------TABLE BLOCK----------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------- -->
+
+<div class="h-table m-1 bill-detail-table">
+<!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" -->
+<ng-container class="w-full" >
+<maxhealth-table  #selectedServices
+[config]="config"
+[data]="data"
+[class.disable-table-check]="headercheck"
+></maxhealth-table>
+</ng-container>
+
+
+</div>
+ </form>
+        </div>
+
+
+    </div>
+<!-- </div> -->
+
+
+<!-- </div> -->

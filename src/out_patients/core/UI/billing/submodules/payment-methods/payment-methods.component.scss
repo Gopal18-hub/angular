@@ -1,0 +1,75 @@
+.paymentmethod-wrapper{
+.height{
+    height: 63vh;
+}
+::ng-deep .mat-tab-label{
+    height: 30px !important;
+    color: #004084 ;
+    opacity: 1 !important;
+    font-weight: 500!important;
+}
+::ng-deep mat-label{
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
+{
+    height: 50vh !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels .mat-tab-label:nth-child(8){
+    border-bottom: 0 !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active{
+    background-color:#004084;
+    opacity: 1;
+    color: white;
+    border-bottom: none !important;
+    border-radius: 5px;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+    border-right: none !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body-content{
+    height: 66vh !important;
+}
+::ng-deep .mat-dialog-container{
+    overflow: hidden !important;
+    padding: 10px 24px 24px 24px;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+    width: auto !important;
+}
+::ng-deep .mat-tab-label{
+    padding: 0 24px !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
+    display: flex !important;
+    row-gap: 10px !important;
+}
+.input1{
+    ::ng-deep  .mat-form-field-infix {
+        text-align: right !important;
+    }
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body{
+    left: 50px !important;
+}
+.width{
+    width: 65%!important;
+}
+::ng-deep .mat-error{
+    margin-top: 6% !important;
+}
+.creditbuttonwidth
+{
+    .mat-raised-button
+    {
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+// ::ng-deep .mat-raised-button {
+//     min-width: 120px !important;
+// }
+}
+}

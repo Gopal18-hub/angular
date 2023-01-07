@@ -1,0 +1,72 @@
+.onlineopbillwrapper{
+.bg-grey {
+    background: #F6F6F6;
+}
+
+.bg-lightgrey {
+    background-color: #D2D0D0;
+}
+
+.clr-primary {
+    color: #004084;
+}
+
+.bg-white {
+    background-color: #fff;
+    color: #000;
+    ::ng-deep .mat-error{
+        margin-top: 7% !important;
+    }
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+.serachcss {
+    position: relative !important;
+}
+
+.iconcss {
+    ::ng-deep {
+        position: absolute !important;
+        padding: 1px !important;
+        border-radius: 4px !important;
+        left: 1px !important;
+    }
+
+}
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}
+.onlineoptable{
+    ::ng-deep .max-table-wrapper{
+        border-radius: 0.75rem;
+        border: 1px solid #707070 !important;
+    }
+    ::ng-deep .mat-header-cell.cdk-header-cell.cdk-column-select.mat-column-select{
+        width: 40px !important;
+    }
+}
+
+.onlineoplens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 25%;
+} 
+::ng-deep .online-op-button{
+    .mat-raised-button{
+        min-width: initial !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+}
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+}
+}
+   

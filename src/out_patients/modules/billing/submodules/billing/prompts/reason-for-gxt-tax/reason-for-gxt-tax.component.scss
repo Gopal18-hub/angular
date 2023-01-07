@@ -1,0 +1,9 @@
+.reason-for-gxt-tax-wrapper{
+    ::ng-deep{
+        .mat-raised-button{
+            min-width: initial !important;
+            height: 1.875rem !important;
+            line-height: 1.875 !important;
+        }
+    }
+}

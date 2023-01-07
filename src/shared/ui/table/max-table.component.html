@@ -1,0 +1,695 @@
+<div class="border-radius-lg border max-table-wrapper" *ngIf="initiateTable">
+  <form [formGroup]="tableForm" novalidate class="h-full">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+      (matSortChange)="announceSortChange($event)"
+      [class.row-click]="config.clickedRows"
+      fixedLayout="true"
+      multiTemplateDataRows
+      [class.h-full]="dataSource.data.length == 0"
+    >
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="flex align-items-center">
+            <ng-container *ngIf="config.clickSelection != 'single'">
+              <mat-checkbox
+                (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                [aria-label]="checkboxLabel()"
+                color="primary"
+              >
+              </mat-checkbox>
+            </ng-container>
+
+            <span
+              *ngIf="config.selectCheckBoxLabel"
+              class="ml-1 max-health-primary-color"
+              >{{ config.selectCheckBoxLabel }}</span
+            >
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container
+            *ngIf="
+              config?.groupby?.parentcolumn &&
+              childrensData[row[config.groupby.parentcolumn]]
+            "
+          >
+            <button
+              type="button"
+              mat-icon-button
+              aria-label="expand row"
+              (click)="
+                expandedElement = expandedElement === row ? null : row;
+                $event.stopPropagation()
+              "
+            >
+              <mat-icon *ngIf="expandedElement !== row"
+                >keyboard_arrow_down</mat-icon
+              >
+              <mat-icon *ngIf="expandedElement === row"
+                >keyboard_arrow_up</mat-icon
+              >
+            </button>
+          </ng-container>
+
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)"
+            color="primary"
+            [disabled]="row.disablecheckbox"
+            [indeterminate]="row.disablecheckbox ? true : false"
+          >
+          </mat-checkbox>
+        </td>
+        <ng-container *ngIf="config.footer">
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngFor="let col of displayedColumns">
+        <ng-container
+          [matColumnDef]="col"
+          *ngIf="
+            col != 'select' && col != 'actionItems' && col != 'maxRemoveRow'
+          "
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [disabled]="config?.columnsInfo[col]?.disabledSort"
+            [style.width]="config?.columnsInfo[col]?.style?.width"
+            class="header-type-{{ displayColumnsInfo[col]?.type }}"
+          >
+            {{ displayColumnsInfo[col].title }}
+          </th>
+          <ng-container *ngIf="!config.columnsInfo[col]?.tooltipColumn">
+            <td
+              mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              (click)="columnClickFun(element, col)"
+              class="type-{{ displayColumnsInfo[col]?.type }}"
+            >
+              <ng-container *ngIf="displayColumnsInfo[col]?.type">
+                <ng-container
+                  [ngTemplateOutlet]="
+                    getTemplate(displayColumnsInfo[col], element, col)
+                  "
+                  [ngTemplateOutletContext]="{
+                    $implicit: {
+                      output: element[col],
+                      config: config,
+                      col: col,
+                      element: element,
+                      index: i,
+                      tableForm: tableForm
+                    }
+                  }"
+                >
+                </ng-container>
+              </ng-container>
+            </td>
+          </ng-container>
+
+          <ng-container *ngIf="config.columnsInfo[col]?.tooltipColumn">
+            <td
+              mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              matTooltipClass="example-tooltip-red"
+              [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
+              (click)="columnClickFun(element, col)"
+            >
+              <ng-container
+                *ngIf="displayColumnsInfo[col].type"
+                [ngTemplateOutlet]="
+                  getTemplate(displayColumnsInfo[col], element, col)
+                "
+                [ngTemplateOutletContext]="{
+                  $implicit: {
+                    output: element[col],
+                    config: config,
+                    col: col,
+                    element: element,
+                    index: i,
+                    tableForm: tableForm
+                  }
+                }"
+              ></ng-container>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="config.footer">
+            <td mat-footer-cell *matFooterCellDef>{{ footerData[col] }}</td>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="config?.removeRow">
+        <ng-container matColumnDef="maxRemoveRow">
+          <th mat-header-cell *matHeaderCellDef aria-label="row remove-row">
+            &nbsp;
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element; let i = dataIndex"
+            class="pl-4"
+          >
+            <button
+              type="button"
+              mat-icon-button
+              color="accent"
+              (click)="removeRow(i)"
+            >
+              <div class="remove-row-icon-wrapper">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 25 25"
+                >
+                  <g
+                    id="Group_2547"
+                    data-name="Group 2547"
+                    transform="translate(-471 -581)"
+                  >
+                    <circle
+                      id="Ellipse_58"
+                      data-name="Ellipse 58"
+                      cx="12.5"
+                      cy="12.5"
+                      r="12.5"
+                      transform="translate(471 581)"
+                      fill="#d8d8d8"
+                    />
+                    <g
+                      id="Group_924"
+                      data-name="Group 924"
+                      transform="translate(561.636 -167.7) rotate(45)"
+                    >
+                      <rect
+                        id="Rectangle_362"
+                        data-name="Rectangle 362"
+                        width="2"
+                        height="19"
+                        rx="1"
+                        transform="translate(482 584)"
+                        fill="#df0b0b"
+                      />
+                      <rect
+                        id="Rectangle_363"
+                        data-name="Rectangle 363"
+                        width="2"
+                        height="19"
+                        rx="1"
+                        transform="translate(492.5 592.5) rotate(90)"
+                        fill="#df0b0b"
+                      />
+                    </g>
+                  </g>
+                </svg>
+              </div>
+            </button>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="config.footer">
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+      </ng-container>
+
+      <ng-container matColumnDef="actionItems">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+          &nbsp;
+        </th>
+        <td mat-cell *matCellDef="let element" class="pl-4">
+          <div class="more-actions cursor-pointer" [matMenuTriggerFor]="menu">
+            <mat-icon>more_horiz</mat-icon>
+          </div>
+          <mat-menu #menu="matMenu" class="table-more-actions">
+            <ng-container *ngFor="let item of config.actionItemList">
+              <ng-container [ngSwitch]="item.actionType">
+                <ng-container *ngSwitchCase="'link'">
+                  <button mat-menu-item [routerLink]="item.routeLink">
+                    {{ item.title }}
+                  </button>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <button
+                    mat-menu-item
+                    (click)="actionItemClick(item, element)"
+                  >
+                    {{ item.title }}
+                  </button>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </mat-menu>
+        </td>
+        <ng-container *ngIf="config.footer">
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container *ngIf="config?.groupby">
+        <ng-container matColumnDef="expandedDetail">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <div
+              class="child-element-detail"
+              [@detailExpand]="
+                element == expandedElement ? 'expanded' : 'collapsed'
+              "
+            >
+              <ng-container
+                *ngIf="childrensData[element[config.groupby.parentcolumn]]"
+              >
+                <maxhealth-table
+                  [config]="childTableConfig"
+                  [data]="childrensData[element[config.groupby.parentcolumn]]"
+                  #childTable
+                  [childTableRefId]="element[config.groupby.parentcolumn]"
+                  [parentTable]="this"
+                ></maxhealth-table>
+              </ng-container>
+            </div>
+          </td>
+        </ng-container>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <ng-container *ngIf="config.clickedRows">
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [class.row-is-clicked]="selection.isSelected(row)"
+          class="{{ rowClass(row) }}"
+          [class.row-highlight]="config.rowHighlightOnHover"
+        ></tr>
+      </ng-container>
+      <ng-container *ngIf="config.selectBox && !config.clickedRows">
+        <!-- <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="selection.toggle(row)"
+      ></tr> -->
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="{{ rowClass(row) }}"
+          [class.row-highlight]="config.rowHighlightOnHover"
+        ></tr>
+      </ng-container>
+      <ng-container *ngIf="!config.selectBox && !config.clickedRows">
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="{{ rowClass(row) }}"
+          [class.row-is-clicked]="selection.isSelected(row)"
+          [class.row-highlight]="config.rowHighlightOnHover"
+        ></tr>
+      </ng-container>
+      <ng-container *ngIf="config.groupby">
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['expandedDetail']"
+          class="child-detail-row"
+        ></tr>
+      </ng-container>
+      <ng-container *ngIf="config.footer">
+        <tr
+          mat-footer-row
+          *matFooterRowDef="displayedColumns; sticky: true"
+        ></tr>
+      </ng-container>
+
+      <tr class="mat-row" *matNoDataRow [attr.rowspan]="'10'">
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="flex align-items-center flex-column justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="60"
+              height="60"
+              viewBox="0 0 112.471 88.473"
+            >
+              <g
+                id="Group_543"
+                data-name="Group 543"
+                transform="translate(-495.274 -432.96)"
+              >
+                <ellipse
+                  id="Ellipse_48"
+                  data-name="Ellipse 48"
+                  cx="8"
+                  cy="8.5"
+                  rx="8"
+                  ry="8.5"
+                  transform="translate(495.274 432.96)"
+                  fill="#ababab"
+                />
+                <rect
+                  id="Rectangle_249"
+                  data-name="Rectangle 249"
+                  width="63"
+                  height="17"
+                  rx="8.5"
+                  transform="translate(519.274 432.96)"
+                  fill="#ababab"
+                />
+                <ellipse
+                  id="Ellipse_48-2"
+                  data-name="Ellipse 48"
+                  cx="8"
+                  cy="8.5"
+                  rx="8"
+                  ry="8.5"
+                  transform="translate(495.274 457.96)"
+                  fill="#ababab"
+                />
+                <rect
+                  id="Rectangle_249-2"
+                  data-name="Rectangle 249"
+                  width="62"
+                  height="17"
+                  rx="8.5"
+                  transform="translate(519.274 457.96)"
+                  fill="#ababab"
+                />
+                <circle
+                  id="Ellipse_48-3"
+                  data-name="Ellipse 48"
+                  cx="8"
+                  cy="8"
+                  r="8"
+                  transform="translate(495.274 483.96)"
+                  fill="#ababab"
+                />
+                <rect
+                  id="Rectangle_249-3"
+                  data-name="Rectangle 249"
+                  width="43"
+                  height="16"
+                  rx="8"
+                  transform="translate(519.274 483.96)"
+                  fill="#ababab"
+                />
+                <path
+                  id="Union_18"
+                  data-name="Union 18"
+                  d="M12.813,47.092V28.914a14.437,14.437,0,1,1,3.245,0V47.092a1.623,1.623,0,1,1-3.245,0ZM3.244,14.5A11.192,11.192,0,1,0,14.437,3.259,11.231,11.231,0,0,0,3.244,14.5Z"
+                  transform="translate(552.878 486.981) rotate(-45)"
+                  fill="#707070"
+                />
+              </g>
+            </svg>
+            <p>No Data Available</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <!-- <mat-paginator
+    [pageSizeOptions]="[10, 15, 20]"
+    showFirstLastButtons
+    aria-label="Select page of periodic elements"
+  >
+  </mat-paginator> -->
+  </form>
+</div>
+
+<ng-template #string let-data>
+  <span *ngIf="data?.output" [innerHtml]="data.output"></span>
+</ng-template>
+<ng-template #stringLink let-data>
+  <span
+    *ngIf="data?.output"
+    class="cursor-pointer text-underline"
+    (click)="stringLinkClick(data)"
+    [innerHtml]="data.output"
+  ></span>
+</ng-template>
+<ng-template #number let-data>
+  <span>{{ data?.output }}</span>
+</ng-template>
+<ng-template #currency let-data>
+  <span class="currency-data">{{
+    data?.output | currency : "INR" : undefined : undefined : "en-IN"
+  }}</span>
+</ng-template>
+<ng-template #date let-data>
+  <span *ngIf="data?.output">{{
+    data.output | date : data.config.dateformat
+  }}</span>
+</ng-template>
+<ng-template #datetime let-data>
+  <span *ngIf="data?.output">{{
+    data.output | date : data.config.datetimeformat
+  }}</span>
+</ng-template>
+<ng-template #image let-data>
+  <div *ngIf="data?.output" class="flex">
+    <img
+      [src]="image.src"
+      *ngFor="let image of data.output"
+      [width]="data.config.columnsInfo[data.col]?.width"
+      [height]="data.config.columnsInfo[data.col]?.height"
+      [matTooltip]="image?.tooltip"
+    />
+  </div>
+</ng-template>
+<ng-template #checkbox let-data>
+  <mat-checkbox
+    [checked]="!!data.output"
+    disabled
+    color="primary"
+  ></mat-checkbox>
+</ng-template>
+
+<ng-template #checkboxActive let-data>
+  <mat-checkbox
+    [checked]="!!data.output"
+    color="primary"
+    [(ngModel)]="data.element[data.col]"
+  ></mat-checkbox>
+</ng-template>
+
+<ng-template #input let-data>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-input-control"
+        >
+          <input
+            matInput
+            type="text"
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            (change)="controlValueChange($event, data)"
+          />
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #inputPrice let-data>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-input-control"
+        >
+          <input
+            matInput
+            type="text"
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            class="text-right"
+            (change)="controlValueChange($event, data)"
+          />
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #textarea let-data>
+  <ng-container *ngIf="data.element[data.col + '_disabled']">
+    <div>{{ data.isOpen }} {{ data.output }}</div>
+  </ng-container>
+  <ng-container *ngIf="!data.element[data.col + '_disabled']">
+    <div
+      (click)="data.element['isOpen'] = true"
+      (keydown.enter)="data.element['isOpen'] = true"
+      cdkOverlayOrigin
+      #trigger="cdkOverlayOrigin"
+      class="cursor-pointer editable-textarea-label"
+      [attr.tabindex]="0"
+    >
+      {{ data.isOpen }} {{ data.output }} &nbsp;
+    </div>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="data.element['isOpen']"
+      (detach)="data.element['isOpen'] = false"
+      [cdkConnectedOverlayHasBackdrop]="true"
+      (backdropClick)="data.element['isOpen'] = false"
+    >
+      <div
+        class="editable-textarea"
+        cdkTrapFocus
+        [cdkTrapFocusAutoCapture]="true"
+      >
+        <!-- <div
+        [(ngModel)]="data.element[data.col]"
+        contenteditable
+        class="text-area-edit"
+      >
+        {{ data.element[data.col] }}
+      </div> -->
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="text-area-edit"
+        >
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="5"
+            [(ngModel)]="data.element[data.col]"
+            [value]="data.element[data.col]"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #inputDate let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [matDatepicker]="datepicker"
+      autocomplete="off"
+    />
+    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker> </mat-datepicker>
+  </mat-form-field>
+</ng-template>
+
+<ng-template #inputDateTime let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [type]="'text'"
+      [ngxMatDatetimePicker]="picker"
+      autocomplete="off"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="$any(picker)"
+    ></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker [enableMeridian]="true">
+    </ngx-mat-datetime-picker>
+  </mat-form-field>
+</ng-template>
+
+<ng-template #dropdown let-data>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-select-dropdown"
+        >
+          <mat-select
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            [panelClass]="'im-select-dropdown'"
+            disableOptionCentering
+            (selectionChange)="controlValueChange($event, data)"
+            [required]="data.element[data.col + '_required']"
+            placeholder="--Select--"
+            [disabled]="data.element[data.col + '_disabled']"
+          >
+            <ng-container
+              *ngIf="
+                data.config.columnsInfo[data.col]?.moreOptions &&
+                data.config.columnsInfo[data.col]?.moreOptions[data.index]
+              "
+            >
+              <ng-container
+                *ngFor="
+                  let opt of data.config.columnsInfo[data.col].moreOptions[
+                    data.index
+                  ]
+                "
+              >
+                <mat-option [value]="opt.value">
+                  {{ opt.title }}
+                </mat-option>
+              </ng-container>
+            </ng-container>
+
+            <ng-container
+              *ngIf="!data.config.columnsInfo[data.col]?.moreOptions"
+            >
+              <ng-container
+                *ngFor="let opt of data.config.columnsInfo[data.col].options"
+              >
+                <mat-option [value]="opt.value">
+                  {{ opt.title }}
+                </mat-option>
+              </ng-container>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #button let-data>
+  <button
+    class="mt-1 mb-1"
+    color="primary"
+    mat-raised-button
+    (click)="btnClick(data)"
+    type="button"
+  >
+    {{ data.config.columnsInfo[data.col]?.title }}
+  </button>
+</ng-template>
+
+<ng-template #Changeablebutton let-data>
+  <button
+    class="mt-1 mb-1"
+    color="primary"
+    mat-raised-button
+    (click)="btnClick(data)"
+    type="button"
+  >
+    {{ data.element[data.col] }}
+  </button>
+</ng-template>

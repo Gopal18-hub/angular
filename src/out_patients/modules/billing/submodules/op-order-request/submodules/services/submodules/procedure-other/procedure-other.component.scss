@@ -1,0 +1,13 @@
+.text-wrap{
+    white-space: nowrap;
+}
+.table{
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(3) span{
+        margin-left:8px;
+    }
+}
+.gridheight{
+    height:90%;
+  }
+   
+

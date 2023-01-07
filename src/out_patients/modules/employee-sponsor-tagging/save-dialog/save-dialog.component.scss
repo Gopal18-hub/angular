@@ -1,0 +1,19 @@
+.warning-icon{
+    color: white;
+    background: red;
+    border-radius: 50%;
+    padding: 5px;
+ 
+}
+
+.warningicon{
+    ::ng-deep mat-icon{
+        height: 60% !important;
+        width: 60% !important;
+    }
+}
+.min-width{
+    min-width: initial !important;
+ }
+
+

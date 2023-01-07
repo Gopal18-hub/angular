@@ -1,0 +1,22 @@
+.consumable-details-popup {
+  .copy-reason {
+    position: absolute;
+    z-index: 1;
+    right: 4%;
+    top: 2%;
+    background-color: var(--primary-color);
+    button {
+      padding: 4px;
+      border-radius: 6px;
+      color: #fff;
+      width: 95px;
+      font-size: 12px;
+    }
+  }
+  ::ng-deep {
+    .mat-column-select {
+      width: 200px !important;
+      text-align: left;
+    }
+  }
+}

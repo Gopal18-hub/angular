@@ -1,0 +1,86 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+    <nav mat-tab-nav-bar class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Staff Dependent</a>
+            </li>
+        </ul>
+    </nav>
+
+    <mat-tab-nav-panel>
+        <div class="h-full w-full">
+            <form [formGroup]="staffForm">
+                <!------------------------------------------- FIRST ROW------------------------------------------>
+                <div
+                    class="bg-lightgray flex justify-between align-items-center border-radius-lg mt-1 ml-2 mr-3  bg-dept">
+                    <div class="w-full flex ">
+
+                        <div class="flex pt-2 w-1/4">
+                            <mat-label class="ml-2 font-semi-bold">Organisation</mat-label>
+
+                            <div class="w-3/5 ml-4">
+                                <maxhealth-question [question]="questions[0]" [form]="staffForm"
+                                    [questions]="questions[0]" [index]="0">
+                                </maxhealth-question>
+                            </div>
+                        </div>
+                        <div class="flex pt-2 w-1/4">
+                            <mat-label class="font-semi-bold">Employee Code</mat-label>
+                            <div class="w-5/9 ml-4">
+                                <maxhealth-question class="bg-white" [question]="questions[1]" [form]="staffForm"
+                                    [questions]="questions[1]" [index]="1">
+                                </maxhealth-question>
+                            </div>
+                        </div>
+                        <div class="flex pt-2 w-2/5">
+                            <mat-label class="font-semi-bold">OR</mat-label>
+                            <mat-label class="ml-4 font-semi-bold">Employee Name</mat-label>
+
+                            <div class="nameW ml-4">
+                                <maxhealth-question [question]="questions[2]" [form]="staffForm"
+                                    [questions]="questions[2]" [index]="2">
+                                </maxhealth-question>
+                            </div>
+                        </div>
+                        <div class="flex w-1/20"></div>
+                        <div class="flex">
+                            <div class="float-right flex clearbtn">
+                                <!-- <button mat-raised-button color="primary" (click)="search()" [disabled]="searchbtn">
+                                    <img src="assets/lens.svg" class="lens-icon mr-5" [ngClass]="{disableclass:searchbtn}">                                
+                                    <span class="ml-4">Search</span>
+                                </button> -->
+                                <button mat-raised-button color="primary" class="pl-9"(click)="search()" [disabled]="searchbtn">
+                                    <img src="assets/lens.svg" class="lens-icon " [ngClass]="{disableclass:searchbtn}">                                
+                                    Search
+                                </button>
+                                
+                            </div>
+                            <div class="float-right flex clearbtn">
+                                <button mat-raised-button color="primary" class="ml-3"
+                                    (click)="this.staffForm.reset();clear()">Clear</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </form>
+            <div class="h-1/2 pl-2 pr-2">
+
+                <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
+                <div class="gridh mt-2 ">
+                    <maxhealth-table [config]="staffListConfig" [data]="staffDetail" (columnClick)="staffColumnClick($event)">
+                    </maxhealth-table>
+                </div>
+                <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
+                <div class="pl-2 pt-3 employeeclass font-semi-bold font-base">
+                    <mat-label class="max-health-primary-color">Employee Dependent Detail</mat-label>
+                </div>
+                <div class="gridh mt-2">
+                    <maxhealth-table [config]="staffDetailConfig" [data]="staffDeptDetails"></maxhealth-table>
+                </div>
+               
+            </div>
+        </div>
+    </mat-tab-nav-panel>
+</section>

@@ -1,0 +1,420 @@
+<section class="refund-bill-dialog relative">
+    <!-- Cross Icon -->
+    <div class="flex justify-content-end">
+        <mat-icon mat-dialog-close class="cursor-pointer max-dialog-close-icon">close</mat-icon>
+    </div>
+
+    <!-- Blue Banner -->
+    <div class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight">
+        <mat-label class="font-lg col-white ml-2">Payment Receipt</mat-label>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="w-full height-47"> 
+
+        <!-- payment Methods left  -->
+        <!-- <payment-methods [config]="config"></payment-methods> -->
+        <section class="paymentmethod-wrapper"> 
+            <div class="width h-full float-left maxhealth-vertical-tab">
+                <div class="flex h-1/10">
+                        <div class="w-1/4">
+                            <mat-label class="max-health-primary-color font-medium font-base absolute mt-3">Payment Methods</mat-label>
+                        </div>
+                </div>
+                
+                <mat-tab-group class="mt-12 input-label" animationDuration="0ms" #mattab [(selectedIndex)]="selected">
+                    <mat-tab [disabled]="forcash" label="Cash">
+                        <div class="ml-8">
+                            <mat-label class="max-health-primary-color font-base font-medium ml-2">Cash Details</mat-label>
+                            <div class="flex w-1/2 mt-3">
+                                <!-- <mat-label class="max-health-primary-color font-medium">Amount:</mat-label> -->
+                                <div class="w-5/9 ml-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[1]"
+                                    [form]="dueform"
+                                    [questions]="questions[1]"
+                                    [index]="1"
+                                    ></maxhealth-question>
+                                </div>
+                            </div>
+                        </div> 
+                    </mat-tab>
+                    <mat-tab [disabled]="forcheque" label="Cheque">
+                        <div class="ml-8">
+                            <mat-label class="max-health-primary-color font-base font-medium ml-2">Cheque Details</mat-label>
+                            <div class="flex w-3/4 mt-3 flex-wrap">
+                                <!-- <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                                </div> -->
+                                <div class="w-2/5 ml-2 mb-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[2]"
+                                    [form]="dueform"
+                                    [questions]="questions[2]"
+                                    [index]="2"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[3]"
+                                    [form]="dueform"
+                                    [questions]="questions[3]"
+                                    [index]="3"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[4]"
+                                    [form]="dueform"
+                                    [questions]="questions[4]"
+                                    [index]="4"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[5]"
+                                    [form]="dueform"
+                                    [questions]="questions[5]"
+                                    [index]="5"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[6]"
+                                    [form]="dueform"
+                                    [questions]="questions[6]"
+                                    [index]="6"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[7]"
+                                    [form]="dueform"
+                                    [questions]="questions[7]"
+                                    [index]="7"
+                                    ></maxhealth-question>
+                                </div>
+                            </div>
+                            <!-- <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color font-medium white-nowrap">Cheque/NEFT No.</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Issue Date</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Validity</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
+                                </div>
+                                
+                            </div> -->
+                        </div>
+                    </mat-tab>
+                    <mat-tab [disabled]="forcredit" label="Credit Card">
+                        <div class="ml-8">
+                            <mat-label class="max-health-primary-color font-base font-medium ml-2">Credit Card Details</mat-label>
+                            <div class="flex w-3/4 mt-3 flex-wrap">
+                                <!-- <div class="w-2/5">
+                                    <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                                </div> -->
+                                <div class="w-2/5 ml-2 mb-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[8]"
+                                    [form]="dueform"
+                                    [questions]="questions[8]"
+                                    [index]="8"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[9]"
+                                    [form]="dueform"
+                                    [questions]="questions[9]"
+                                    [index]="9"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[10]"
+                                    [form]="dueform"
+                                    [questions]="questions[10]"
+                                    [index]="10"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[11]"
+                                    [form]="dueform"
+                                    [questions]="questions[11]"
+                                    [index]="11"
+                                    ></maxhealth-question>
+                                </div>
+                            </div>
+                            <!-- <div class="flex w-3/4 mt-1">
+                                <div class="w-2/5">
+                                    <mat-label class="max-health-primary-color  font-medium">Card type</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-2/5">
+                                    <mat-label class="max-health-primary-color  font-medium">Card No.</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-2/5">
+                                    <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
+                                </div>
+                                
+                            </div> -->
+                        </div>
+                    </mat-tab>
+                    <mat-tab [disabled]="foronline" label="Online Payment">
+                        <div class="ml-8">
+                            <mat-label class="max-health-primary-color font-base font-medium ml-2">Online Payment Details</mat-label>
+                            <div class="flex w-3/4 mt-3 flex-wrap">
+                                <!-- <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                                </div> -->
+                                <div class="w-2/5 ml-2 mb-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[12]"
+                                    [form]="dueform"
+                                    [questions]="questions[12]"
+                                    [index]="12"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[13]"
+                                    [form]="dueform"
+                                    [questions]="questions[13]"
+                                    [index]="13"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[14]"
+                                    [form]="dueform"
+                                    [questions]="questions[14]"
+                                    [index]="14"
+                                    ></maxhealth-question>
+                                </div>
+                            </div>
+                            <!-- <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-3/10">
+                                    <mat-label class="max-health-primary-color  font-medium">Booking ID</mat-label>
+                                </div>
+                                
+                            </div>   -->
+                        </div>
+                    </mat-tab>
+                    <mat-tab [disabled]="formobile" label="Mobile Payment">
+                        <div class="ml-8">
+                            <mat-label class="max-health-primary-color font-base font-medium ml-2">Mobile Payment Details</mat-label>
+                            
+                            <div class="flex w-3/4 mt-3 flex-wrap">
+                                <!-- <div class="w-1/2">
+                                    <mat-label class="max-health-primary-color font-medium">Amount</mat-label>
+                                </div> -->
+                                <div class="w-2/5 ml-2 mb-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[15]"
+                                    [form]="dueform"
+                                    [questions]="questions[15]"
+                                    [index]="15"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[16]"
+                                    [form]="dueform"
+                                    [questions]="questions[16]"
+                                    [index]="16"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[17]"
+                                    [form]="dueform"
+                                    [questions]="questions[17]"
+                                    [index]="17"
+                                    ></maxhealth-question>
+                                </div>
+                            </div>
+                            <!-- <div class="flex w-3/4 mt-1">
+                                <div class="w-5/9">
+                                    <mat-label class="max-health-primary-color font-medium">Transaction ID</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-5/9">
+                                    <mat-label class="max-health-primary-color font-medium">Merchant ID</mat-label>
+                                </div>
+                                
+                            </div> -->
+                        </div>
+                    </mat-tab>
+                    <mat-tab [disabled]="forupi" label="UPI">
+                        <div class="ml-8">
+                            <mat-label class="max-health-primary-color font-base font-medium ml-2">UPI Payment Details</mat-label>
+                            <div class="flex w-3/4 mt-3 flex-wrap">
+                                <!-- <div class="w-1/3">
+                                    <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
+                                </div> -->
+                                <div class="w-2/5 ml-2 mb-2 input1">
+                                    <maxhealth-question
+                                    [question]="questions[18]"
+                                    [form]="dueform"
+                                    [questions]="questions[18]"
+                                    [index]="18"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[19]"
+                                    [form]="dueform"
+                                    [questions]="questions[19]"
+                                    [index]="19"
+                                    ></maxhealth-question>
+                                </div>
+                                <div class="w-2/5 ml-2 mb-2">
+                                    <maxhealth-question
+                                    [question]="questions[20]"
+                                    [form]="dueform"
+                                    [questions]="questions[20]"
+                                    [index]="20"
+                                    ></maxhealth-question>
+                                </div>
+                            </div>
+                            <!-- <div class="flex w-3/4 mt-1">
+                                <div class="w-1/3">
+                                    <mat-label class="max-health-primary-color  font-medium">UPI No.</mat-label>
+                                </div>
+                                
+                            </div>
+                            <div class="flex w-3/4 mt-1">
+                                <div class="w-1/3">
+                                    <mat-label class="max-health-primary-color  font-medium">Batch No.</mat-label>
+                                </div>
+                                
+                            </div> -->
+                        </div>
+                    </mat-tab>            
+                </mat-tab-group>
+            </div>
+            
+        </section>
+        
+        <!-- payment Methods right -->
+        <div class="back-primary col-white width-34 height-56 mt-2 float-right">
+            <div class="p-3 border-radius-md">
+                <mat-label class="font-base">Refund Summary</mat-label>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Total Bill Amount: </mat-label>
+                    <span>{{billamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Pre-Paid Amount: </mat-label>
+                    <span>{{prepaidamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Deposit Amount: </mat-label>
+                    <span>{{depositamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Discount Amount: </mat-label>
+                    <span>{{discountamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Patient Due: </mat-label>
+                    <span>{{due | currency: "INR":undefined:undefined:"en-IN"}}</span>
+                </div>
+                <div class="mt-5 w-full flex justify-between">
+                    <mat-label>Total: </mat-label>
+                    <span>{{totaldue | currency: "INR":undefined:undefined:"en-IN"}}</span>
+                </div>
+            </div>
+
+
+            <div class="flex  p-3">
+                <div class="btn">
+                    <button
+                        mat-raised-button
+                        type="submit" 
+                        class="btn secondary col-white" 
+                        (click)="sendotpclick()" [disabled]="otpsenttomobile || submitbtnflag">
+                      {{ SendOTP }}
+                    </button>
+                    
+                </div>
+                
+                <div class="w-64 ml-2 border-radius-lg h-full bg-white otptextcnt">
+                    <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="dueform"
+                    [questions]="questions[0]"
+                    [index]="0"
+                    ></maxhealth-question>
+                </div>
+            </div>
+            <div class="wt-nowrap px-3">
+                <mat-label class="mr-1">OTP will be sent to Reg. Mob. No.  {{mobileno}}</mat-label>
+            </div>
+            <div class="w-full mt-1 p-3">
+                    <button
+                        mat-raised-button
+                        type="submit" 
+                        class="w-full btn bg-btn" (click)="resendotpclick()" [disabled]="!otpresenttomobile">
+                        {{ResendOTP}}
+                    </button>
+            </div>
+        </div>
+    </div>
+    <!-- Checkbox -->
+    <!-- Footer Part -->
+    <div class="bottom">
+        <patient-identity-info [data]="patientIdentityInfo" #patientidentity></patient-identity-info>
+        <div class="flex float-right creditbuttonwidth absolute right-0 bottom-0">
+            <div class="mr-3">
+                <button mat-raised-button color="primary" type="submit" [disabled]="submitbtnflag" class="mt-1 btn" (click)="submitbtn()">Submit</button>
+            </div>
+           
+            <div class="">
+                <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
+            </div>
+        </div>
+    </div>
+    <!-- Loader -->
+    <div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+
+    <!-- button -->
+    
+</section>

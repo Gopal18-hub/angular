@@ -1,0 +1,128 @@
+.opd-reg-wrapper {
+  &-box {
+    background-color: #fff;
+    background-position-y: 101%;
+    background-size: 55%;
+    background-position-x: 102%;
+    margin-left: 0%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-repeat: no-repeat;
+    form {
+      ::ng-deep mat-label {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+      .change-password {
+        color: var(--primary-color);
+      }
+    }
+
+    &-checboxcontainer {
+      background-color: #f6f6f6;
+      float: left;
+      // width: 30%;
+    }
+    &-checboxcontainer {
+      background-color: #f6f6f6;
+      font-weight: 600;
+      box-shadow: none;
+      > * {
+        margin-bottom: 0.5em;
+      }
+      // width: 30%;
+    }
+
+    ::ng-deep mat-radio-group {
+      flex-direction: row;
+      flex-wrap: wrap;
+      column-gap: 32%;
+    }
+
+    // &-imageblock {
+    //   height: 100%;
+    //   width: 100%;
+    //   float: left;
+    // }
+  }
+  
+}
+.foreignernone{
+  pointer-events: none;
+}
+.hash-background {
+  background-color: #f6f6f6;
+}
+.api-loader {
+  background: rgba(0, 0, 0, 0.15);
+}
+::ng-deep {
+  .table-height {
+    height: 65vh;
+  }
+}
+.wc-35-6 {
+  width: 34.666%;
+}
+
+.height-max-content {
+  height: max-content;
+}
+
+.fourth-column {
+  > :first-child {
+    height: 10rem !important;
+  }
+  > :nth-child(2) {
+    height: 12.5rem !important;
+  }
+}
+
+.img-banner-container {
+  border-radius: 9px;
+  border: 1px solid #d0d3d4;
+  height:11rem;
+  width:12rem;
+  
+  .no-img-banner-body {
+     height: 18vh !important;
+     .imgHeight{
+      height: 100% !important;
+  }
+  
+  }
+
+  .img-banner-body {
+    height: 21vh !important;
+    .imgHeight{
+     height: 100% !important;
+ }
+ 
+ }
+
+  .img-banner-bottom {
+    text-align:center;
+    width:88%;
+  }
+
+  .pl-4{
+    padding-left: 1rem;
+  }
+ 
+  .click-here-link{ 
+    background-color: transparent;
+    color: var(--primary-color);
+    text-decoration: underline;  
+    font-weight: 500 !important;
+    font-size: 15px !important
+}
+.font-click-here{ 
+  color: var(--primary-color);
+  font-weight: 500 !important;
+  font-size: 15px !important
+}
+  .imgHeight{
+      height: 100% !important;
+  }
+
+}

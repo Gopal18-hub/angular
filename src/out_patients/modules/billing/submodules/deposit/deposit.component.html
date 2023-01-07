@@ -1,0 +1,192 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel depositwrapper">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between deposit-matnav">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3 font-semi-bold">
+        <a mat-tab-link [active]="true">Deposit</a>
+      </li>
+    </ul>
+    <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex mr-2">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+        (click)="depositCategoryIconAction(icon)"
+      />
+    </div>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div
+    *ngIf="apiProcessing"
+    class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+    >
+      <mat-spinner strokeWidth="3"></mat-spinner>
+    </div>
+    <div class="h-full w-full">
+      <form [formGroup]="depositForm" class="w-full h-full p-2">
+        <!---------------------------------FIRST ROW----------------------------------------------------->
+        <div class="p-1 border-radius-lg flex w-auto  items-center bg-deposit">
+          <div class="w-full">
+            <div class="flex items-center">
+              <mat-label class="wt-nowrap font-semi-bold">Max ID</mat-label>
+              <div class="ml-1 w-9/100 h-full bg-white deposit">
+                <maxhealth-question [question]="questions[0]" [form]="depositForm" [questions]="questions[0]"
+                  [index]="0">
+                </maxhealth-question>
+              </div>
+
+              <mat-label class="ml-1 wt-nowrap font-semi-bold">Mobile No.</mat-label>
+              <div class="ml-1 w-9/100 h-full bg-white deposit default-label-none">
+                <maxhealth-question [question]="questions[1]" [form]="depositForm" [questions]="questions[1]"
+                  [index]="1">
+                </maxhealth-question>
+              </div>
+
+              <div class="w-1/4 ml-2 nationality_wt-nowrap">
+                <mat-label class="font-semi-bold">Name:</mat-label>
+                <span class="bg-black ml-1" matTooltip={{name}}>{{name}}</span>
+              </div>
+
+              <div class="w-1/10 ml-2 wt-nowrap">
+                <mat-label class="font-semi-bold">Age:</mat-label>
+                <span class="bg-black ml-1">{{age}}</span>
+              </div>
+
+              <div class="w-1/6 ml-2 wt-nowrap">
+                <mat-label class="font-semi-bold">Gender:</mat-label>
+                <span class="bg-black ml-1">{{gender}}</span>
+              </div>
+
+              <div class="w-1/10  ml-2 wt-nowrap">
+                <mat-label class="font-semi-bold">DOB:</mat-label>
+                <span class="bg-black ml-1">{{dob | date: 'dd/MM/yyyy'}}</span>
+              </div>
+
+
+              <div class="w-9/50  ml-2 nationality_wt-nowrap">
+                <mat-label class="font-semi-bold">Nationality:</mat-label>
+                <span class="bg-black ml-1" matTooltip="{{nationality}}">{{nationality}}</span>
+              </div>
+
+              <div class="w-1/15  ml-2 wt-nowrap">
+                <mat-label class="font-semi-bold">SSN:</mat-label>
+                <span class="bg-black ml-1">{{ssn}}</span>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+
+
+        <!---------------------------------SECOND ROW----------------------------------------------------->
+        <div [class.isDisabled]="expiredpatientexists" class="p-2  mt-2  border-radius-lg bg-deposit deposittableheight">
+          <div class="w-full">
+
+            <div class="mt-2 float-left font-base font-semi-bold">
+              <mat-label>Deposit and Refund Details</mat-label>
+            </div>
+
+            <div class="float-right w-1/45 font-sm flex second-row-depositbutton">
+
+            
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" [disabled]="!MaxIDExist"
+                (click)="openDepositdialog()">
+                Make Deposit
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10  ml-2 " type="button" [disabled]="!MaxIDdepositExist"
+                (click)="openrefunddialog()">
+                Refund
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="button" [disabled]="!MaxIDExist"
+              (click)="openinitiatedeposit()">
+              Initiate Deposit
+            </button>
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" [disabled]="!tableselectionexists"
+              (click)="printpatientreceipt()">
+                Print Receipt
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10 ml-2 clearwidth" type="button" (click)="clearDepositpage()">
+              Clear
+              </button>
+            </div>
+
+          </div>
+          <!---------------------------------THIRD ROW----------------------------------------------------->
+          <div class="flex w-full h-82">
+            <div class="mt-2  w-full deposittable">
+              <div class="h-full deposittable-table">
+                <ng-container>
+                  <maxhealth-table [config]="depositconfig" [data]="depoistList" #deposittable>
+                  </maxhealth-table>
+                </ng-container>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex w-full">
+                      
+              <div class="flex justify-between h-full w-full mt-1 mb-1">
+                <div class="flex w-7/20">
+                  <div class="ml-1 w-1/2 clr-primary font-medium depositradiobutton">
+                    <maxhealth-question [question]="questions[9]" [form]="depositForm" [questions]="questions[9]"
+                      [index]="9"></maxhealth-question>
+                  </div>
+                  <div class="h-full mt-3">
+                    <div class="w-3/5 border-radius-lg ml-3 bg-white deposit default-label-none">
+
+                      <maxhealth-question [question]="questions[8]" [form]="depositForm" [questions]="questions[8]"
+                        [index]="8"></maxhealth-question>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex mt-3 items-start w-3/5 mr-2 deposit">
+                  <div class=" wt-nowrap font-semi-bold">
+                    <mat-label class="ml-2 font-semi-bold">Total Deposit</mat-label>
+                  </div>
+
+                  <div class="w-1/5 ml-2 bg-thirdrow input1">
+                    <maxhealth-question [question]="questions[4]" [form]="depositForm" [questions]="questions[4]"
+                      [index]="4">
+                    </maxhealth-question>
+                  </div>
+                  <div class="wt-nowrap font-semi-bold">
+                    <mat-label class="ml-2 font-semi-bold">Avalaible Deposit</mat-label>
+                  </div>
+
+                  <div class="w-1/5 ml-2 bg-thirdrow input1">
+                    <maxhealth-question [question]="questions[5]" [form]="depositForm" [questions]="questions[5]"
+                      [index]="5">
+                    </maxhealth-question>
+                  </div>
+                  <div class="wt-nowrap font-semi-bold">
+                    <mat-label class="ml-2 font-semi-bold">Total Refund</mat-label>
+                  </div>
+
+                  <div class="w-1/5 ml-2 bg-thirdrow input1">
+                    <maxhealth-question [question]="questions[6]" [form]="depositForm" [questions]="questions[6]"
+                      [index]="6">
+                    </maxhealth-question>
+                  </div>
+                </div>
+            
+            </div>
+
+          </div>
+        </div>
+
+
+      </form>
+    </div>
+  </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between mx-5 max-health-primary-color font-xs">
+  <p>Last updated by: {{ lastUpdatedBy }}</p>
+  <div class="right">
+    Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+    {{ moment().format("LT") }}
+  </div>
+</div>

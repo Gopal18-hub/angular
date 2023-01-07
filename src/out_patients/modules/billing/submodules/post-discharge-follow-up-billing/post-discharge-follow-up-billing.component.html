@@ -1,0 +1,251 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper post-billing-page-wrapper">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+      <ul class="list-unstyled flex items-end">
+        <li class="ml-3">
+          <a class="post-tab" mat-tab-link [active]="true">Post Discharge Follow Up Billing</a>
+        </li>
+      </ul>
+      <div class="maxhealth-spacer"></div>
+      <div class="flex">
+        <div *ngFor="let icon of categoryIcons" class="flex mr-2">
+          <img
+            [src]="icon['src']"
+            [alt]="icon['tooltip']"
+            width="45px"
+            class="cursor-pointer"
+            [matTooltip]="icon['tooltip']"
+            (click)="doCategoryIconAction(icon)"
+          />
+        </div>
+      </div>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <div
+        class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 post-billing-page-wrapper"
+      >
+        <!-- First Row -->
+        <div class="w-full p-1 mt-2 bg-secondary border-radius-xlg">
+          <form
+            [formGroup]="formGroup"
+            autocomplete="off"
+            class="w-full flex align-items-center"
+          >
+            <mat-label class="max-health-primary-color mr-1">Max ID</mat-label>
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[0]"
+                [form]="formGroup"
+                [questions]="questions[0]"
+                [index]="0"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-1"
+              >Mobile No.</mat-label
+            >
+            <div class="bg-white w-1/10 mr-2 default-label-none">
+              <maxhealth-question
+                [question]="questions[1]"
+                [form]="formGroup"
+                [questions]="questions[1]"
+                [index]="1"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-1"
+              >Booking ID</mat-label
+            >
+            <div class="width-8 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[2]"
+                [form]="formGroup"
+                [questions]="questions[2]"
+                [index]="2"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-1"
+              >Company
+              <button
+              mat-button
+              class="iom-button"
+              [disabled]="!formGroup.value.company"
+              (click)="openIOM()"
+            >
+              <i class="iom-color">IOM</i>
+            </button> 
+            <span class="iom-message font-semi-bold font-xs" [hidden]="!formGroup.value.company">{{iomMessage}}</span>
+              </mat-label
+            >
+            <div class="width-8 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[3]"
+                [form]="formGroup"
+                [questions]="questions[3]"
+                [index]="3"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-1">Corporate</mat-label>
+            <div class="width-8 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[4]"
+                [form]="formGroup"
+                [questions]="questions[4]"
+                [index]="4"
+              >
+              </maxhealth-question>
+            </div>
+            <ng-container
+              *ngIf="narrationAllowedLocations.includes(cookie.get('HSPLocationId'))"
+            >
+              <mat-label class="max-health-primary-color mr-1">Narration</mat-label>
+             <div class="width-8 bg-white mr-2">
+               <maxhealth-question
+                 [question]="questions[5]"
+                 [form]="formGroup"
+                 [questions]="questions[5]"
+                 [index]="5"
+               >
+               </maxhealth-question>
+            </div>
+          </ng-container>
+            <div class="ml-2 clr-blue">
+              <maxhealth-question
+                [question]="questions[6]"
+                [form]="formGroup"
+                [questions]="questions[6]"
+                [index]="6"
+              >
+              </maxhealth-question>
+            </div>
+          </form>
+        </div>
+  
+      <!-- Spinner -->
+      <div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+        <mat-spinner strokeWidth="3"></mat-spinner>
+      </div>
+        <!-- Second Row -->
+        <div
+          class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
+        >
+          <div class="flex w-3/4 align-items-center">
+            <div class="w-1/4 text-overflow">
+              <mat-label class="max-health-primary-color">Name:</mat-label>
+              <span class="ml-2">{{ patientName }}</span>
+            </div>
+            <div class="w-1/6 text-overflow">
+              <mat-label class="max-health-primary-color">Age:</mat-label>
+              <span class="ml-2">{{ age }}</span>
+            </div>
+            <div class="w-1/6 text-overflow">
+              <mat-label class="max-health-primary-color">Gender:</mat-label>
+              <span class="ml-2">{{ gender }}</span>
+            </div>
+            <div class="w-1/6 text-overflow">
+              <mat-label class="max-health-primary-color">DOB:</mat-label>
+              <span class="ml-2">{{ dob }}</span>
+            </div>
+            <div class="w-1/6 text-overflow">
+              <mat-label class="max-health-primary-color">Nationality:</mat-label>
+              <span class="ml-2">{{ country }}</span>
+            </div>
+            <div class="w-1/6 text-overflow">
+              <mat-label class="max-health-primary-color">SSN:</mat-label>
+              <span class="ml-2">{{ ssn }}</span>
+            </div>
+          </div>
+          <div class="flex second-row-action-items">
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm"
+              type="button"
+              (click)="appointment_popup()"
+              [disabled]="patient"
+            >
+              Appt Search
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2 min-width-initial"
+              type="button"
+              (click)="dms()"
+              [disabled]="dmsProcessing || !patient"
+            >
+            {{ dmsProcessing ? "..." : "DMS" }}
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2 min-width-initial"
+              type="button"
+              (click)="visit_history()"
+              [disabled]="!patient"
+            >
+              Visit History
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2 min-width-initial"
+              type="button"
+              (click)="clear()"
+              [disabled]="!patient"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <div [class.isDisabled]="!patient || expiredPatient">
+          <div class="mt-2">
+            <div class="flex justify-between services-tab-header-container align-items-center pr-3">
+              <nav mat-tab-nav-bar>
+                <a
+                  mat-tab-link
+                  *ngFor="let link of links"
+                  [routerLink]="link.path"
+                  routerLinkActive
+                  #rla="routerLinkActive"
+                  queryParamsHandling="merge"
+                  [active]="rla.isActive"
+                  [disabled]="link.disabled"
+                >
+                  {{ link.title }}
+                </a>
+              </nav>
+              <div class="flex">
+                <div
+                  class="total-cost max-health-primary-color font-bold text-underline" 
+                  *ngIf="service.totalCost > 0">
+                  <span>Total Estimation:</span>
+                  {{
+                    service.totalCost
+                    | currency: "INR":undefined:undefined:"en-IN"
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="overflow-y-auto display-block billing-panel-wrapper">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab-nav-panel>
+  </section>
+  <div class="flex justify-between mx-5">
+      <div>
+        <!-- <p>Last Update By: {{ lastUpdatedBy }}</p> -->
+        <p>Last Update By: {{ userName }} (id: {{lastUpdatedBy}})</p>
+      </div>
+      <div class="flex justify-around">
+        <p class="clr-red font-xs font-bold">* Apply Patient/Company Discount after final calculation </p>
+      </div>
+      <div>
+        <P> Date: {{ currentDate }} | Time: {{currentTime}}</P>
+      </div>
+    
+  </div>

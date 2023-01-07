@@ -1,0 +1,40 @@
+.appointment-search-dialog-wrapper {
+    ::ng-deep {
+      .date-checkbox {
+        width: 3%;
+        mat-label {
+          display: none;
+        }
+      }
+      maxhealth-question {
+        mat-label {
+          margin-right: 0.25rem;
+        }
+      }
+      .mat-form-field-wrapper {
+        padding-bottom: 0 !important;
+      }
+      mat-form-field {
+        background-color: #fff;
+      }
+    }
+   .w-tarrif{
+width:7% ;
+      }
+    .wt-nowrap {
+      white-space: nowrap;
+    }
+    .bg-secondary {
+      background-color: #f6f6f6;
+    }
+    .bg-grey {
+      background-color: #d8d8d8;
+    }
+    .bg-white {
+      background-color: #fff;
+    }
+    .h-62 {
+      height: 45vh;
+    }
+  }
+  

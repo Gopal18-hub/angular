@@ -1,0 +1,84 @@
+<div class="flex flex-column h-full">
+  <div class="flex justify-between w-full">
+    <form
+      [formGroup]="formGroup"
+      autocomplete="off"
+      class="w-3/4 flex align-items-center"
+    >
+      <div class="flex align-items-center w-2/5">
+        <mat-label class="max-health-primary-color mr-2 font-bold text-wrap"
+          > Other Services</mat-label
+        >
+        <maxhealth-question
+          [question]="questions[0]"
+          [form]="formGroup"
+          [questions]="questions[0]"
+          [index]="0"
+          class="w-2/3"
+        >
+        </maxhealth-question>
+      </div>
+      <div class="flex ml-4 w-3/5 align-items-center">
+        <mat-label class="max-health-primary-color mr-2 font-bold"
+          >Procedure</mat-label
+        >
+        <maxhealth-question
+          [question]="questions[1]"
+          [form]="formGroup"
+          [questions]="questions[1]"
+          [index]="1"
+          class="w-9/10"
+        >
+        </maxhealth-question>
+      </div>
+    </form>
+    <div class="flex w-36 align-items-center justify-end">
+      <!-- <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        <span>Total Estimation:</span>
+        {{
+          billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
+        }}
+      </div> -->
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="font-sm ml-2 min-width-initial"
+        type="button"
+        [disabled]="!formGroup.valid"
+        (click)="add()"
+      >
+        Add
+      </button>
+      <button
+      mat-raised-button
+      color="primary"
+      class="font-sm ml-2 min-width-initial"
+      type="button"
+      [disabled]="!(opOrderrequestService.investigationItems.length || opOrderrequestService.procedureItems.length) || opOrderrequestService.getSaveButtononPriority() || opOrderrequestService.getSaveButtonondocrequiredProc()|| opOrderrequestService.getSaveButtonondocrequiredInv()"
+      (click)="save()"
+    >
+      Save
+    </button>
+    <button
+    mat-raised-button
+    color="primary"
+    class="font-sm ml-2 min-width-initial"
+    type="button"
+    
+    (click)="view()"
+  >
+    View
+  </button>
+       </div>
+  </div>
+  <div class="mt-2 gridheight">
+    <maxhealth-table
+      [config]="config"
+      [data]="data"
+      #table
+      (rowRwmove)="rowRwmove($event)"
+      class="table"
+    ></maxhealth-table>
+  </div>
+</div>

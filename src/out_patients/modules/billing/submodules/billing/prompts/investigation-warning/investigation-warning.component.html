@@ -1,0 +1,37 @@
+<div
+  class="flex align-items-center justify-center flex-column max-health-primary-color relative"
+>
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <img src="assets/warning-yellow.svg" width="100" class="mb-8" />
+  <p class="mb-3 font-bold">
+    There are some unbilled orders. Do you want to Bill?
+  </p>
+  <div class="flex mt-5">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-7"
+      type="button"
+      (click)="yes()"
+    >
+      Yes
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      type="button"
+      (click)="no()"
+    >
+      No
+    </button>
+  </div>
+</div>

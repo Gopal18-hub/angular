@@ -1,0 +1,46 @@
+<div class="flex flex-column h-full relative">
+    <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">Twice Consultation Remarks</h2>
+  <div class="flex flex-column">
+    <form
+    (ngSubmit)="save()"
+    [formGroup]="form"
+    class="mt-4 mb-6"
+    autocomplete="off"
+  >
+      <div
+        *ngFor="let question of questions; let i = index"
+        class="mb-1 w-full"
+      >
+        <maxhealth-question
+          [question]="question"
+          [form]="form"
+          [questions]="questions"
+          [index]="i"
+        ></maxhealth-question>
+      </div>
+      <div class="flex mt-4">
+        <button
+          mat-raised-button
+          color="primary"
+          class="font-sm min-width-initial mr-6"
+          type="submit"
+          (click)="save()"
+          [disabled]="!form.valid"
+        >
+          Save 
+        </button>
+      </div>
+  </form>
+  </div>
+  
+
+</div>

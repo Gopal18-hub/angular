@@ -1,0 +1,5 @@
+<mat-tab-group mat-align-tabs="start" class="prompt-report-tab-layout">
+  <mat-tab [label]="tab.reportName" *ngFor="let tab of reportConfig.childrens">
+    <reports-single [reportConfig]="tab"> </reports-single>
+  </mat-tab>
+</mat-tab-group>
