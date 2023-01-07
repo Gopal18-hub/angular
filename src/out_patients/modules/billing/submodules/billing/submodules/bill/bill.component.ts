@@ -717,38 +717,43 @@ export class BillComponent implements OnInit, OnDestroy {
 
   ///GAV-1473
   async applyCopay() {
-    if (this.formGroup.value.credLimit && this.formGroup.value.credLimit > 0) {
+    if (this.formGroup.value.paymentMode == 3) {
       if (
-        this.formGroup.value.coPay <= 100 &&
-        this.formGroup.value.coPay >= 0
+        this.formGroup.value.credLimit &&
+        this.formGroup.value.credLimit > 0
       ) {
-        this.checkCreditLimit();
-      } else if (this.formGroup.value.coPay > 100) {
-        ////GAV-1473
-        this.formGroup.controls["coPay"].setValue(0);
-        const copayStatus = await this.messageDialogService
-          .warning("Copay cannot exceeds 100%")
-          .afterClosed()
-          .toPromise()
-          .catch();
-        if (!copayStatus) {
-          return;
+        if (
+          this.formGroup.value.coPay <= 100 &&
+          this.formGroup.value.coPay >= 0
+        ) {
+          this.checkCreditLimit();
+        } else if (this.formGroup.value.coPay > 100) {
+          ////GAV-1473
+          this.formGroup.controls["coPay"].setValue(0);
+          const copayStatus = await this.messageDialogService
+            .warning("Copay cannot exceeds 100%")
+            .afterClosed()
+            .toPromise()
+            .catch();
+          if (!copayStatus) {
+            return;
+          }
+        } else {
+          ////GAV-1473
+          this.formGroup.controls["coPay"].setValue(0);
         }
       } else {
-        ////GAV-1473
-        this.formGroup.controls["coPay"].setValue(0);
-      }
-    } else {
-      if (this.formGroup.value.credLimit <= 0) {
-        this.formGroup.controls["coPay"].setValue(0);
-        this.formGroup.controls["credLimit"].setValue("0.00");
-        const credLimitStatus = await this.messageDialogService
-          .warning("Enter Credit Limit")
-          .afterClosed()
-          .toPromise()
-          .catch();
-        if (!credLimitStatus) {
-          return;
+        if (this.formGroup.value.credLimit <= 0) {
+          this.formGroup.controls["coPay"].setValue(0);
+          this.formGroup.controls["credLimit"].setValue("0.00");
+          const credLimitStatus = await this.messageDialogService
+            .warning("Enter Credit Limit")
+            .afterClosed()
+            .toPromise()
+            .catch();
+          if (!credLimitStatus) {
+            return;
+          }
         }
       }
     }
@@ -1474,8 +1479,7 @@ export class BillComponent implements OnInit, OnDestroy {
       exist = exist == undefined ? false : exist;
     }
     //direct print for ppg
-    if (
-      Number(this.cookie.get("HSPLocationId")) == 8) {
+    if (Number(this.cookie.get("HSPLocationId")) == 8) {
       this.reportService.directPrint("billingreport", {
         opbillid: this.billId,
         locationID: this.cookie.get("HSPLocationId"),
