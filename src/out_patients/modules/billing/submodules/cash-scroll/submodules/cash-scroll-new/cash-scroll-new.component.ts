@@ -258,7 +258,7 @@ export class CashScrollNewComponent implements OnInit {
       compName: {
         title: "Company Name",
         type: "string",
-        tooltipColumn:"compName",
+        tooltipColumn: "compName",
         style: {
           width: "10rem",
         },
@@ -282,8 +282,9 @@ export class CashScrollNewComponent implements OnInit {
   scrolldetailsList: any = [];
 
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
 
   fromdatedisable: boolean = false;
   todatedisable: boolean = false;
@@ -364,12 +365,25 @@ export class CashScrollNewComponent implements OnInit {
           cashdetails.getDetailsForMainScrollDatetime[0].todatetime;
         todatetime =
           cashdetails.getDetailsForMainScrollDatetime[0].currentDateTime;
-        this.cashscrollnewForm.controls["fromdate"].setValue(
-          this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
-        );
+
+        if(fromdatetime == null || fromdatetime == undefined || fromdatetime == "")
+        {
+          this.cashscrollnewForm.controls["fromdatetime"].setValue(
+            this.datepipe.transform(this.currentTime, "YYYY-MM-ddTHH:mm:ss")
+          );
+        }
+        else
+        {
+          this.cashscrollnewForm.controls["fromdate"].setValue(
+            this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
+          );
+        }
+       
         this.cashscrollnewForm.controls["todate"].setValue(
           this.datepipe.transform(todatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
         );
+      }, (error) =>{
+        console.log(error)
       });
   }
 
@@ -397,144 +411,153 @@ export class CashScrollNewComponent implements OnInit {
           )
         )
         .pipe(takeUntil(this._destroying$))
-        .subscribe((resultdata) => {
-          this.scrolldetailsList = resultdata as CashScrollNewDetail[];
-          if (this.scrolldetailsList.length == 0) {
-            this.scrolldetailsList = [];
-            this.apiProcessing = false;
-          } else {
-            this.scrolldetailsexists = false;
-            this.todatedisable = true;
-            this.cashscrollnewForm.controls["todate"].disable();
-            for (var i = 0; i < this.scrolldetailsList.length; i++) {
-              this.scrolldetailsList[i].sno = i + 1;
+        .subscribe(
+          (resultdata) => {
+            this.scrolldetailsList = resultdata as CashScrollNewDetail[];
+            if (this.scrolldetailsList.length == 0) {
+              this.scrolldetailsList = [];
+              this.apiProcessing = false;
+            } else {
+              this.scrolldetailsexists = false;
+              this.todatedisable = true;
+              this.cashscrollnewForm.controls["todate"].disable();
+              for (var i = 0; i < this.scrolldetailsList.length; i++) {
+                this.scrolldetailsList[i].sno = i + 1;
+              }
+              this.apiProcessing = false;
+              this.billamount = this.scrolldetailsList
+                .map((t: any) => t.billamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.refund = this.scrolldetailsList
+                .map((t: any) => t.refund)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.depositamount = this.scrolldetailsList
+                .map((t: any) => t.depositamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.discountamount = this.scrolldetailsList
+                .map((t: any) => t.discountamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.planamount = this.scrolldetailsList
+                .map((t: any) => t.planamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+
+              this.plandiscount = this.scrolldetailsList
+                .map((t: any) => t.plandiscount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.netamount = this.scrolldetailsList
+                .map((t: any) => t.netamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.cash = this.scrolldetailsList
+                .map((t: any) => t.cash)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.cheque = this.scrolldetailsList
+                .map((t: any) => t.cheque)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.duereceved = this.scrolldetailsList
+                .map((t: any) => t.duesrec)
+                .reduce((acc: any, value: any) => acc + value, 0);
+
+              this.dd = this.scrolldetailsList
+                .map((t: any) => t.dd)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.creditcard = this.scrolldetailsList
+                .map((t: any) => t.creditCard)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.mobilePayment = this.scrolldetailsList
+                .map((t: any) => t.mobilePayment)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.OnlinePayment = this.scrolldetailsList
+                .map((t: any) => t.onlinePayment)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.dues = this.scrolldetailsList
+                .map((t: any) => t.dues)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.tdsamount = this.scrolldetailsList
+                .map((t: any) => t.tdsamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.DonationAmount = this.scrolldetailsList
+                .map((t: any) => t.donationAmount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.UPIAmt = this.scrolldetailsList
+                .map((t: any) => t.upiAmt)
+                .reduce((acc: any, value: any) => acc + value, 0);
+
+              this.scrolldetailsList = this.scrolldetailsList.map(
+                (item: any) => {
+                  item.billamount = parseFloat(item.billamount).toFixed(2);
+                  item.refund = parseFloat(item.refund).toFixed(2);
+                  item.depositamount = parseFloat(item.depositamount).toFixed(
+                    2
+                  );
+                  item.planamount = parseFloat(item.planamount).toFixed(2);
+                  item.discountamount = parseFloat(item.discountamount).toFixed(
+                    2
+                  );
+                  item.plandiscount = parseFloat(item.plandiscount).toFixed(2);
+                  item.netamount = parseFloat(item.netamount).toFixed(2);
+                  item.cash = parseFloat(item.cash).toFixed(2);
+                  item.cheque = parseFloat(item.cheque).toFixed(2);
+                  item.dd = parseFloat(item.dd).toFixed(2);
+                  item.creditcard =
+                    item.creditcard == undefined
+                      ? "0.00"
+                      : parseFloat(item.creditcard).toFixed(2);
+                  item.mobilePayment =
+                    item.mobilePayment == undefined
+                      ? "0.00"
+                      : parseFloat(item.mobilePayment).toFixed(2);
+                  item.onlinePayment =
+                    item.onlinePayment == undefined
+                      ? "0.00"
+                      : parseFloat(item.onlinePayment).toFixed(2);
+                  item.tdsamount = parseFloat(item.tdsamount).toFixed(2);
+                  item.dues =
+                    item.dues == undefined
+                      ? "0"
+                      : parseFloat(item.dues).toFixed(2);
+                  item.donation =
+                    item.donation == undefined
+                      ? "0.00"
+                      : parseFloat(item.donation).toFixed(2);
+                  item.upiamount =
+                    item.upiamount == undefined
+                      ? "0.00"
+                      : parseFloat(item.upiamount).toFixed(2);
+                  item.totalamount = (
+                    parseFloat(item.billamount) + parseFloat(item.donation)
+                  ).toFixed(2);
+                  item.rowhighlight = "";
+                  return item;
+                }
+              );
+
+              this.tableFooterData = {
+                sno: "",
+                receiptNo: "TOTAL",
+                billamount: this.billamount.toFixed(2),
+                refund: this.refund.toFixed(2),
+                discountamount: this.discountamount.toFixed(2),
+                planamount: this.planamount.toFixed(2),
+                plandiscount: this.plandiscount.toFixed(2),
+                depositamount: this.depositamount.toFixed(2),
+                netamount: this.netamount.toFixed(2),
+                cash: this.cash.toFixed(2),
+                cheque: this.cheque.toFixed(2),
+                dd: this.dd.toFixed(2),
+                creditcard: this.creditcard.toFixed(2),
+                mobilePayment: this.mobilePayment.toFixed(2),
+                onlinePayment: this.OnlinePayment.toFixed(2),
+                dues: this.dues.toFixed(2),
+                tdsamount: this.tdsamount.toFixed(2),
+                upiamount: this.UPIAmt.toFixed(2),
+                donation: this.DonationAmount.toFixed(2),
+                totalamount: (this.billamount + this.DonationAmount).toFixed(2),
+                rowhighlight: "highlight",
+              };
+              console.log(resultdata);
             }
-            this.apiProcessing = false;
-            this.billamount = this.scrolldetailsList
-              .map((t: any) => t.billamount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.refund = this.scrolldetailsList
-              .map((t: any) => t.refund)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.depositamount = this.scrolldetailsList
-              .map((t: any) => t.depositamount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.discountamount = this.scrolldetailsList
-              .map((t: any) => t.discountamount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.planamount = this.scrolldetailsList
-              .map((t: any) => t.planamount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-
-            this.plandiscount = this.scrolldetailsList
-              .map((t: any) => t.plandiscount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.netamount = this.scrolldetailsList
-              .map((t: any) => t.netamount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.cash = this.scrolldetailsList
-              .map((t: any) => t.cash)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.cheque = this.scrolldetailsList
-              .map((t: any) => t.cheque)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.duereceved = this.scrolldetailsList
-              .map((t: any) => t.duesrec)
-              .reduce((acc: any, value: any) => acc + value, 0);
-
-            this.dd = this.scrolldetailsList
-              .map((t: any) => t.dd)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.creditcard = this.scrolldetailsList
-              .map((t: any) => t.creditCard)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.mobilePayment = this.scrolldetailsList
-              .map((t: any) => t.mobilePayment)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.OnlinePayment = this.scrolldetailsList
-              .map((t: any) => t.onlinePayment)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.dues = this.scrolldetailsList
-              .map((t: any) => t.dues)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.tdsamount = this.scrolldetailsList
-              .map((t: any) => t.tdsamount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.DonationAmount = this.scrolldetailsList
-              .map((t: any) => t.donationAmount)
-              .reduce((acc: any, value: any) => acc + value, 0);
-            this.UPIAmt = this.scrolldetailsList
-              .map((t: any) => t.upiAmt)
-              .reduce((acc: any, value: any) => acc + value, 0);
-
-            this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
-              item.billamount = parseFloat(item.billamount).toFixed(2);
-              item.refund = parseFloat(item.refund).toFixed(2);
-              item.depositamount = parseFloat(item.depositamount).toFixed(2);
-              item.planamount = parseFloat(item.planamount).toFixed(2);
-              item.discountamount = parseFloat(item.discountamount).toFixed(2);
-              item.plandiscount = parseFloat(item.plandiscount).toFixed(2);
-              item.netamount = parseFloat(item.netamount).toFixed(2);
-              item.cash = parseFloat(item.cash).toFixed(2);
-              item.cheque = parseFloat(item.cheque).toFixed(2);
-              item.dd = parseFloat(item.dd).toFixed(2);
-              item.creditcard =
-                item.creditcard == undefined
-                  ? "0.00"
-                  : parseFloat(item.creditcard).toFixed(2);
-              item.mobilePayment =
-                item.mobilePayment == undefined
-                  ? "0.00"
-                  : parseFloat(item.mobilePayment).toFixed(2);
-              item.onlinePayment =
-                item.onlinePayment == undefined
-                  ? "0.00"
-                  : parseFloat(item.onlinePayment).toFixed(2);
-              item.tdsamount = parseFloat(item.tdsamount).toFixed(2);
-              item.dues =
-                item.dues == undefined ? "0" : parseFloat(item.dues).toFixed(2);
-              item.donation =
-                item.donation == undefined
-                  ? "0.00"
-                  : parseFloat(item.donation).toFixed(2);
-              item.upiamount =
-                item.upiamount == undefined
-                  ? "0.00"
-                  : parseFloat(item.upiamount).toFixed(2);
-              item.totalamount = (parseFloat(item.billamount) + parseFloat(item.donation)).toFixed(2);
-              item.rowhighlight = "";
-              return item;
-            });
-
-            this.tableFooterData = {
-              sno: "",
-              receiptNo: "TOTAL",
-              billamount: this.billamount.toFixed(2),
-              refund: this.refund.toFixed(2),
-              discountamount: this.discountamount.toFixed(2),
-              planamount: this.planamount.toFixed(2),
-              plandiscount: this.plandiscount.toFixed(2),
-              depositamount: this.depositamount.toFixed(2),
-              netamount: this.netamount.toFixed(2),
-              cash: this.cash.toFixed(2),
-              cheque: this.cheque.toFixed(2),
-              dd: this.dd.toFixed(2),
-              creditcard: this.creditcard.toFixed(2),
-              mobilePayment: this.mobilePayment.toFixed(2),
-              onlinePayment: this.OnlinePayment.toFixed(2),
-              dues: this.dues.toFixed(2),
-              tdsamount: this.tdsamount.toFixed(2),
-              upiamount: this.UPIAmt.toFixed(2),
-              donation: this.DonationAmount.toFixed(2),
-              totalamount: (
-                this.billamount + this.DonationAmount
-              ).toFixed(2),
-              rowhighlight: "highlight",
-            };
-            console.log(resultdata);
-          }
-        },
-        (error) => {
+          },
+          (error) => {
             this.scrolldetailsList = [];
             this.apiProcessing = false;
             this.dialogservice.error("No search found");
@@ -646,7 +669,8 @@ export class CashScrollNewComponent implements OnInit {
       Todate: todatetime,
       Operatorid: this.operatorID,
       LocationID: this.hsplocationId,
-      EmployeeName: this.lastUpdatedBy,
+      EmployeeName: this.EmployeeName,
+      EmployeeID: this.lastUpdatedBy,
       TimeTakenAt: this.cashscrollnewForm.value.takenat,
       ack: 1,
       IsAckByOperator: false,
@@ -763,7 +787,7 @@ export class CashScrollNewComponent implements OnInit {
           item.cash = parseFloat(item.cash).toFixed(2);
           item.cheque = parseFloat(item.cheque).toFixed(2);
           item.dd = parseFloat(item.dd).toFixed(2);
-          item.dues= parseFloat(item.dues).toFixed(2);
+          item.dues = parseFloat(item.dues).toFixed(2);
           item.creditcard =
             item.creditcard == undefined
               ? "0.00"
@@ -813,9 +837,7 @@ export class CashScrollNewComponent implements OnInit {
           tdsamount: this.tdsamount.toFixed(2),
           upiamount: this.UPIAmt.toFixed(2),
           donation: this.DonationAmount.toFixed(2),
-          totalamount: (
-            this.billamount + this.DonationAmount
-          ).toFixed(2),
+          totalamount: (this.billamount + this.DonationAmount).toFixed(2),
         };
       });
   }
