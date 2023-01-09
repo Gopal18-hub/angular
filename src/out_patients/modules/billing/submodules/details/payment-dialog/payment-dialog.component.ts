@@ -944,10 +944,11 @@ export class PaymentDialogComponent implements OnInit {
       Number(this.dueform.controls["demandamount"].value) +
       Number(this.dueform.controls["onlineamount"].value);
     this.reduceamount = Number(this.totaldue) - Number(this.finalamount);
-    console.log(this.finalamount, this.totaldue);
+    console.log(this.finalamount, this.totaldue, this.reduceamount);
     if (
-      this.selected == 0 &&
-      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
+      this.selected == 0 && this.totalamtFlag == false
+        ? Number(this.reduceamount) < 0
+        : Number(this.reduceamount) < -1
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
@@ -965,8 +966,9 @@ export class PaymentDialogComponent implements OnInit {
         this.amountcheck();
       });
     } else if (
-      this.selected == 1 &&
-      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
+      this.selected == 1 && this.totalamtFlag == false
+        ? Number(this.reduceamount) < 0
+        : Number(this.reduceamount) < -1
     ) {
       console.log(this.finalamount, this.totaldue);
       let dialogref = this.messageDialogService.info(
@@ -985,8 +987,9 @@ export class PaymentDialogComponent implements OnInit {
         this.amountcheck();
       });
     } else if (
-      this.selected == 2 &&
-      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
+      this.selected == 2 && this.totalamtFlag == false
+        ? Number(this.reduceamount) < 0
+        : Number(this.reduceamount) < -1
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
@@ -1004,8 +1007,9 @@ export class PaymentDialogComponent implements OnInit {
         this.amountcheck();
       });
     } else if (
-      this.selected == 3 &&
-      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
+      this.selected == 3 && this.totalamtFlag == false
+        ? Number(this.reduceamount) < 0
+        : Number(this.reduceamount) < -1
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
@@ -1023,8 +1027,9 @@ export class PaymentDialogComponent implements OnInit {
         this.amountcheck();
       });
     } else if (
-      this.selected == 4 &&
-      Number(this.finalamount).toFixed(2) > Number(this.totaldue).toFixed(2)
+      this.selected == 4 && this.totalamtFlag == false
+        ? Number(this.reduceamount) < 0
+        : Number(this.reduceamount) < -1
     ) {
       let dialogref = this.messageDialogService.info(
         "Entered Amount can't be Greater than Due Amount"
