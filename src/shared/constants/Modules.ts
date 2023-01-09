@@ -408,6 +408,7 @@ export namespace MaxModules {
           defaultPath: "",
           childrens: [],
           moreOptions: false,
+          disabled: true,
         },
       ],
     },
