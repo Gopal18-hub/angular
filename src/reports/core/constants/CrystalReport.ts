@@ -85,7 +85,7 @@ export namespace CrystalReport {
       environment.ReportsSampleUrl
     }MAXHIS/Billing/OTBilling/ConsumabaleEntryDetails?billno=${
       params.billno
-    }&locationID=${params.locationId}&MAXID=${params.MAXID}&exportflagEnable=${
+    }&locationID=${params.locationID}&MAXID=${params.MAXID}&exportflagEnable=${
       params.exportflagEnable == "true" ? 1 : 0
     }`;
   };

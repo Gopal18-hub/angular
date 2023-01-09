@@ -89,20 +89,17 @@ export class AuthService {
   }
 
   public deleteToken() {
-    return MaxHealthStorage.deleteSession("accessToken");
+    // return MaxHealthStorage.deleteSession("accessToken");
+    this.cookieService.delete("accessToken");
   }
   public getToken() {
-    // return this.cookieService.get("accessToken");
-    return MaxHealthStorage.getSession("accessToken");
+    return this.cookieService.get("accessToken");
+    // return MaxHealthStorage.getSession("accessToken");
   }
 
   public setToken(token: string): void {
-    // this.cookieService.set("accessToken", token, {
-    //   path: "/",
-    //   domain: environment.cookieUrl,
-    //   secure: true,
-    // });
-    MaxHealthStorage.setSession("accessToken", token);
+    this.cookieService.set("accessToken", token);
+    // MaxHealthStorage.setSession("accessToken", token);
   }
 
   public logout(): any {
