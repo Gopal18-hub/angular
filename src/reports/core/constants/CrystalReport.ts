@@ -270,7 +270,7 @@ export namespace CrystalReport {
     )}&User=${MaxHealthStorage.getCookie("UserName")}`;
   };
   export const CashScrollReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}&ack=${params.ack}&IsAckByOperator=${params.IsAckByOperator}&ScrollNo=${params.ScrollNo}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}&ack=${params.ack}&IsAckByOperator=${params.IsAckByOperator}&ScrollNo=${params.ScrollNo}&EmployeeID=${params.EmployeeID}`;
   };
   export const SummaryReportForUtilisationReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?MembershipNo=${params.membershipno}`;
