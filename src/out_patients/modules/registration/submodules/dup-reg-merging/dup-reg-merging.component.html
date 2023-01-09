@@ -34,22 +34,23 @@
         </ng-container>
       </div>
       <div class="float-right mb-3 mr-3 mt-1">
-        <div    accessControl
-        masterModule="2"
-        moduleId="7"
-        featureId="460"
-        actionId="1181">
+     
         <button
         mat-raised-button
         color="primary"
         class="col-m3 center"
         type="button"
         (click)="openDialog()"
-        [disabled]="mergebuttonDisabled"       
+        [disabled]="mergebuttonDisabled"  
+        accessControl
+        masterModule="2"
+        moduleId="7"
+        featureId="460"
+        actionId="1181"     
       >
         Merge
       </button>
-        </div>       
+            
       </div>
     </div>
 

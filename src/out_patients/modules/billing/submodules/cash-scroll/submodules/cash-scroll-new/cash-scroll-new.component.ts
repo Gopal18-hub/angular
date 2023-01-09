@@ -281,9 +281,9 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList: any = [];
 
-  hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
-  stationId: any = Number(this.cookie.get("StationId"));
-  operatorID: any = Number(this.cookie.get("UserId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
 
   fromdatedisable: boolean = false;
   todatedisable: boolean = false;
@@ -375,7 +375,7 @@ export class CashScrollNewComponent implements OnInit {
 
   viewscrolldetails() {
     let todaysdate;
-    todaysdate = new Date();
+    todaysdate = new Date();   
     if (this.cashscrollnewForm.controls["todate"].value > todaysdate) {
       this.dialogservice.error("To Date Can Not be greater then Current Date");
     } else {
@@ -637,9 +637,13 @@ export class CashScrollNewComponent implements OnInit {
     this.openReportModal("CashScrollReport");
   }
   openReportModal(btnname: string) {
+    let todatetime =  this.datepipe.transform(
+      this.cashscrollnewForm.controls["todate"].value,
+      "yyyy-MM-ddTHH:mm:ss"
+    ) || "";
     this.reportService.openWindow(btnname, btnname, {
       Fromdate: this.cashscrollnewForm.controls["fromdate"].value,
-      Todate: this.cashscrollnewForm.controls["todate"].value,
+      Todate: todatetime,
       Operatorid: this.operatorID,
       LocationID: this.hsplocationId,
       EmployeeName: this.lastUpdatedBy,
