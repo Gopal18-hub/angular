@@ -39,23 +39,22 @@
             masterModule = "2"
             moduleId="7"
             featureId="597"
-            actionId="1555">Approve</button>        
-           
-         
+            actionId="1555">Approve</button>
+            
             <button mat-raised-button color="primary" class="w-1/4 right-15" type="submit" *ngIf="opApprovalHotList && enablehotlistbtn" (click)="hotlistRejectItem()" accessControl
             masterModule = "2"
             moduleId="7"
             featureId="597"
-            actionId="1555">Reject</button>                   
+            actionId="1555">Reject</button>                  
           
             <button mat-raised-button color="primary" class="w-1/4 relative" type="submit" *ngIf="opApprovalHotlistacceptList && enableDeletebtn" (click)="hotlistDeleteItem()" accessControl
             masterModule = "2"
             moduleId="7"
             featureId="597"
             actionId="1556">Delete</button>
-                  
+                     
         </div>
-        </div>
+    </div>
         <div class="w-full h-full" *ngIf="!defaultUI">
  <empty-placeholder [icon]="hotlistingicon" [message]="hotlistingmessage">
 
