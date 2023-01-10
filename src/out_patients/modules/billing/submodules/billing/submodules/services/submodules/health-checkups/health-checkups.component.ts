@@ -124,6 +124,7 @@ export class HealthCheckupsComponent implements OnInit {
         return item;
       });
     if (this.billingService.HealthCheckupItems.length == 0) {
+      this.billingService.changeBillTabStatus(false);
       this.billingService.servicesTabStatus.next({ clear: true });
     }
     this.data = [...this.billingService.HealthCheckupItems];
@@ -178,7 +179,7 @@ export class HealthCheckupsComponent implements OnInit {
           //GAV-1492
           if (Object.keys(this.billingService.doctorList).length > 0) {
             this.billingService.changeBillTabStatus(true);
-          }else{
+          } else {
             this.billingService.changeBillTabStatus(false);
           }
         }
@@ -372,7 +373,7 @@ export class HealthCheckupsComponent implements OnInit {
           this.detialsForHealthCheckup({
             element: this.billingService.HealthCheckupItems[0],
           });
-        }else{
+        } else {
           //GAV-1492
           this.billingService.changeBillTabStatus(false);
         }
