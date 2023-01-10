@@ -856,197 +856,46 @@ export class PaymentDialogComponent implements OnInit {
   }
   amountcheck() {
     this.finalamount = 0;
-    if (Number(this.dueform.controls["cashamount"].value) < 0) {
-      let dialogref = this.messageDialogService.info(
-        "Amount can't be Negative"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["cashamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["cashamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["cashamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (Number(this.dueform.controls["chequeamount"].value) < 0) {
-      let dialogref = this.messageDialogService.info(
-        "Amount can't be Negative"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["chequeamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["chequeamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["chequeamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (Number(this.dueform.controls["creditamount"].value) < 0) {
-      let dialogref = this.messageDialogService.info(
-        "Amount can't be Negative"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["creditamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["creditamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["creditamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (Number(this.dueform.controls["demandamount"].value) < 0) {
-      let dialogref = this.messageDialogService.info(
-        "Amount can't be Negative"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["demandamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["demandamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["demandamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (Number(this.dueform.controls["onlineamount"].value) < 0) {
-      let dialogref = this.messageDialogService.info(
-        "Amount can't be Negative"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["onlineamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["onlineamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["onlineamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    }
-    this.finalamount +=
-      Number(this.dueform.controls["cashamount"].value) +
-      Number(this.dueform.controls["chequeamount"].value) +
-      Number(this.dueform.controls["creditamount"].value) +
-      Number(this.dueform.controls["demandamount"].value) +
-      Number(this.dueform.controls["onlineamount"].value);
+    let formmethod = form;
+    formmethod.amount.forEach((i: any) => {
+      if (Number(this.dueform.controls[i].value) < 0) {
+        this.messageDialogService.warning("Amount Cannot be Negative");
+        this.dueform.controls[i].setValue(0);
+      } else {
+        this.finalamount += Number(this.dueform.controls[i].value);
+      }
+    });
     this.reduceamount = Number(this.totaldue) - Number(this.finalamount);
-    console.log(this.finalamount, this.totaldue, this.reduceamount);
-    if (
-      this.selected == 0 && this.totalamtFlag == false
-        ? Number(this.reduceamount) < 0
-        : Number(this.reduceamount) < -1
-    ) {
-      let dialogref = this.messageDialogService.info(
-        "Entered Amount can't be Greater than Due Amount"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["cashamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["cashamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["cashamount"].setValue(
-            this.reduceamount.toFixed(2)
+    formmethod.tabindex.forEach((i: any) => {
+      if (i == this.selected) {
+        if (this.reduceamount < 0) {
+          this.messageDialogService.info(
+            "Entered Amount can't be Greater than Due Amount"
           );
+          console.log(formmethod.tabproperties[i]);
+          this.dueform.controls[formmethod.tabproperties[i].amount].setValue(0);
+          this.finalamount = 0;
+          this.reduceamount = 0;
+          formmethod.amount.forEach((i: any) => {
+            this.finalamount += Number(this.dueform.controls[i].value);
+          });
+
+          this.reduceamount = Number(this.totaldue) - Number(this.finalamount);
+          console.log(this.reduceamount, this.finalamount);
+          if (!this.totalamtFlag) {
+            this.dueform.controls[formmethod.tabproperties[i].amount].setValue(
+              this.reduceamount
+            );
+          } else {
+            this.dueform.controls[formmethod.tabproperties[i].amount].setValue(
+              this.reduceamount.toFixed(2)
+            );
+          }
         }
-        this.amountcheck();
-      });
-    } else if (
-      this.selected == 1 && this.totalamtFlag == false
-        ? Number(this.reduceamount) < 0
-        : Number(this.reduceamount) < -1
-    ) {
-      console.log(this.finalamount, this.totaldue);
-      let dialogref = this.messageDialogService.info(
-        "Entered Amount can't be Greater than Due Amount"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["chequeamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["chequeamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["chequeamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (
-      this.selected == 2 && this.totalamtFlag == false
-        ? Number(this.reduceamount) < 0
-        : Number(this.reduceamount) < -1
-    ) {
-      let dialogref = this.messageDialogService.info(
-        "Entered Amount can't be Greater than Due Amount"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["creditamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["creditamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["creditamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (
-      this.selected == 3 && this.totalamtFlag == false
-        ? Number(this.reduceamount) < 0
-        : Number(this.reduceamount) < -1
-    ) {
-      let dialogref = this.messageDialogService.info(
-        "Entered Amount can't be Greater than Due Amount"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["demandamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["demandamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["demandamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    } else if (
-      this.selected == 4 && this.totalamtFlag == false
-        ? Number(this.reduceamount) < 0
-        : Number(this.reduceamount) < -1
-    ) {
-      let dialogref = this.messageDialogService.info(
-        "Entered Amount can't be Greater than Due Amount"
-      );
-      dialogref.afterClosed().subscribe(() => {
-        this.dueform.controls["onlineamount"].setValue(0);
-        this.amountcheck();
-        if (!this.totalamtFlag) {
-          this.dueform.controls["onlineamount"].setValue(this.reduceamount);
-        } else {
-          this.dueform.controls["onlineamount"].setValue(
-            this.reduceamount.toFixed(2)
-          );
-        }
-        this.amountcheck();
-      });
-    }
+      }
+    });
+
+    console.log(formmethod);
 
     this.cashamt = Number(this.dueform.controls["cashamount"].value).toFixed(2);
     this.chequeamt = Number(
@@ -1602,4 +1451,67 @@ export const form: any = {
     "demandamount",
     "onlineamount",
   ],
+  questionindex: [2, 3, 9, 17, 23],
+  tabindex: [0, 1, 2, 3, 4],
+  tabproperties: {
+    0: {
+      amount: "cashamount",
+      controls: ["cashamount"],
+    },
+    1: {
+      amount: "chequeamount",
+      controls: [
+        "chequeamount",
+        "chequeno",
+        "chequeissuedate",
+        "chequevalidity",
+        "chequebankname",
+        "chequebranchname",
+      ],
+    },
+    2: {
+      amount: "creditamount",
+      controls: [
+        "creditamount",
+        "creditcardno",
+        "creditcardholdername",
+        "creditbankname",
+        "creditbatchno",
+        "creditapprovalno",
+        "creditterminalid",
+        "creditacquiringbank",
+        "posimei",
+        "transactionid",
+        "creditvalidity",
+        "banktid",
+      ],
+    },
+    3: {
+      amount: "demandamount",
+      controls: [
+        "demandamount",
+        "demandddno",
+        "demandissuedate",
+        "demandvalidity",
+        "demandbankname",
+        "demandbranchname",
+      ],
+    },
+    4: {
+      amount: "onlineamount",
+      controls: [
+        "onlineamount",
+        "onlinetransacid",
+        "onlinebookingid",
+        "onlinecardvalidate",
+        "onlinecontact",
+      ],
+    },
+  },
+  properties: {
+    cashamount: {
+      tab: 0,
+      question: 2,
+    },
+  },
 };
