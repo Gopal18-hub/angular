@@ -504,7 +504,7 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   formvalidation() {
-    console.log(this.dueform);
+    // console.log(this.dueform);
     this.dueform.controls["cashamount"].valueChanges.subscribe((res) => {
       if (res && Number(res) > 0) {
         this.questions[2].required = true;
