@@ -199,13 +199,12 @@ export class OrderSetComponent implements OnInit {
         this.billingService.OrderSetItems[res.data.index].billItem.doctorID =
           res.$event.value;
 
-        ////GAV-1462
+        ////GAV-1462 1556
         this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
           (opbillItem: any, billIndex: any) => {
             if (
               opbillItem.itemId ==
-              this.billingService.InvestigationItems[res.data.index].billItem
-                .itemId
+              this.billingService.OrderSetItems[res.data.index].billItem.itemId
             ) {
               this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
                 billIndex
@@ -219,6 +218,7 @@ export class OrderSetComponent implements OnInit {
         this.billingService.OrderSetItems[
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
+        // this.checkTableValidation();
       } else if (res.data.col == "priority") {
         if (this.data.length == 1) {
           this.defaultPriorityId = res.$event.value;
