@@ -422,6 +422,10 @@ export class CalculateBillService {
       this.calculateDiscount();
     }
 
+    //GAV-1538 - in case of consultation
+    let discAmount = parseFloat(this.totalDiscountAmt.toString());
+    this.totalDiscountAmt = discAmount;
+
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt.toFixed(2));
     componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {

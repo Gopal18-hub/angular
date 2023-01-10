@@ -349,9 +349,11 @@ export class BillingService {
               ? this.billItems[index].qty
               : 1;
             this.billItems[index].price = resItem.returnOutPut;
-            this.billItems[index].gstValue = resItem.totaltaX_Value;
+            let gst = resItem.totaltaX_RATE;
+            let gstAmount = (quanity * resItem.returnOutPut * gst) / 100;
+            this.billItems[index].gstValue = gstAmount;
             this.billItems[index].totalAmount =
-              quanity * resItem.returnOutPut + resItem.totaltaX_Value;
+              quanity * resItem.returnOutPut + gstAmount;
             this.updateServiceItemPrice(this.billItems[index]);
             ////GAV-1464
             this.billItems[index].itemCode = resItem.itemCode || "";
