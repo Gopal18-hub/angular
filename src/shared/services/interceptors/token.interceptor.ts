@@ -47,7 +47,7 @@ export class TokenInterceptor implements HttpInterceptor {
     request = request.clone({
       //setHeaders: ApiHeaders.getHeaders(request.url)
       setHeaders: {
-        Authorization: `bearer ${this.auth.getToken()}`,
+        Authorization: `bearer ${this.auth.getAccesToken()}`,
         "Content-Type": "application/json",
       },
     });
@@ -72,7 +72,7 @@ export class TokenInterceptor implements HttpInterceptor {
       if (!request.headers.has("Authorization")) {
         request = request.clone({
           setHeaders: {
-            Authorization: `bearer ${this.auth.getToken()}`,
+            Authorization: `bearer ${this.auth.getAccesToken()}`,
             "Content-Type": "application/json",
           },
           withCredentials: true,
