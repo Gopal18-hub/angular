@@ -697,6 +697,7 @@ export class CalculateBillService {
     discountper = 0,
     Sno = 0
   ): any {
+    console.log(couponService);
     Sno += 1;
     discountper = couponService[0].discountper;
     let discAmt = (billItem.price * discountper) / 100;
@@ -719,7 +720,10 @@ export class CalculateBillService {
       disc: discountper,
       discAmt: discAmt,
       totalAmt: totalAmt,
-      head: couponService[0].mainhead,
+      head: {
+        title: couponService[0].discountHead,
+        id: couponService[0].mainhead,
+      },
       reason: couponService[0].id,
       value: "0",
       discTypeValue: disType,
@@ -1248,11 +1252,14 @@ export class CalculateBillService {
             );
             await infoRef.afterClosed().toPromise();
             // await this.openCGHSChangeReason();
-            const chgsChangeDialogref = this.matDialog.open(CghsReasonComponent, {
-              width: "28vw",
-              height: "25vh",
-              disableClose: true,
-            });
+            const chgsChangeDialogref = this.matDialog.open(
+              CghsReasonComponent,
+              {
+                width: "28vw",
+                height: "25vh",
+                disableClose: true,
+              }
+            );
             let res = await chgsChangeDialogref
               .afterClosed()
               .pipe(takeUntil(this._destroying$))
