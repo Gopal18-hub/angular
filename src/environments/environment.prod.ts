@@ -4,7 +4,6 @@ export const environment = {
   ApiUrl: "",
   cookieUrl: "",
   passwordResetUrl: "https://selfheal.maxhealthcare.com/resetaccount",
-
   CommonApiUrl: "https://maxhis.maxhealthcare.in/common",
   PatientApiUrl: "https://maxhis.maxhealthcare.in/patient",
   // ReportsApiUrl: "https://maxhis.maxhealthcare.in/reports",
