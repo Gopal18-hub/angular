@@ -31,7 +31,7 @@
     "babel-polyfill": "^6.26.0",
     "dexie": "^3.2.2",
     "moment": "^2.29.4",
-    "oidc-client": "file:packages/oidc-client-js/oidc-client-1.11.6-beta.1.tgz",
+    "oidc-client": "file:oidc-client-1.11.6-beta.1.tgz",
     "rtf.js": "^3.0.9",
     "rxjs": "~7.5.0",
     "text-mask-addons": "^3.8.0",

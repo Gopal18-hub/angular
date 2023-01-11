@@ -102,6 +102,35 @@ export class AuthService {
     // MaxHealthStorage.setSession("accessToken", token);
   }
 
+  public getAccesToken() {
+    let storage = sessionStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    let tokenKey;
+    let accessToken = "";
+    if (storage != null && storage != undefined && storage != "") {
+      tokenKey = storage
+        ?.split(",")[2]
+        .split(":")[0]
+        .replace('"', "")
+        .replace('"', "");
+      if (tokenKey == "access_token") {
+        accessToken = storage
+          ?.split(",")[2]
+          .split(":")[1]
+          .replace('"', "")
+          .replace('"', "");
+      }
+    }
+    if (accessToken != "" && accessToken != null && accessToken != undefined) {
+      if (this.cookieService.get("accessToken") != accessToken) {
+        this.deleteToken();
+        this.setToken(accessToken);
+      }
+    }
+    return this.cookieService.get("accessToken");
+  }
+
   public logout(): any {
     var query = window.location.search;
     if (!query.includes("?logoutid=")) {

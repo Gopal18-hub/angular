@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LoginModule } from "@auth/modules/login";
 import { SignupModule } from "@auth/modules/signup";
 import { OpenIDModule } from "@auth/modules/openid";
-import { DashboardModule } from "@auth/modules/dashboard";
+import { DashboardModule, DashboardAllModule } from "@auth/modules/dashboard";
 
 import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
 import { ADAuthService } from "@auth/core/services/adauth.service";
@@ -32,7 +32,6 @@ const importModules = [
   LoginModule,
   SignupModule,
   OpenIDModule,
-  DashboardModule,
   MatDialogModule,
   MatIconModule,
   MaxHealthMessageDialogModule,
@@ -61,6 +60,7 @@ const providers = [
     BrowserAnimationsModule,
     AppRoutingModule,
     ...importModules,
+    DashboardModule,
   ],
   providers: [...providers, { provide: APP_BASE_HREF, useValue: "/" }],
   bootstrap: [AppComponent],
@@ -68,7 +68,7 @@ const providers = [
 export class AppModule {}
 
 @NgModule({
-  imports: [...importModules, AuthRoutingModule],
-  providers: [...providers],
+  imports: [...importModules, DashboardAllModule, AuthRoutingModule],
+  providers: [...providers, { provide: APP_BASE_HREF, useValue: "/" }],
 })
 export class AuthModule {}
