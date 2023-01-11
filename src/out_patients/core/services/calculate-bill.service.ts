@@ -585,7 +585,7 @@ export class CalculateBillService {
 
   processDiscount(couponServices: any): any {
     let discountper = 0;
-    let Sno = 0;
+    let Sno = 1;
     let discountReasonItems = [];
 
     if (this.billingServiceRef.billItems) {
@@ -610,6 +610,7 @@ export class CalculateBillService {
             //array to populate all couponServices in discount popup
             discountReasonItems.push(couponItem);
           }
+          Sno++;
         }
         console.log(discountReasonItems);
         return discountReasonItems;
@@ -699,10 +700,10 @@ export class CalculateBillService {
     billItem: any,
     couponService: any,
     discountper = 0,
-    Sno = 0
+    Sno: any
   ): any {
     console.log(couponService);
-    Sno += 1;
+    // Sno += 1;
     discountper = couponService[0].discountper;
     let discAmt = (billItem.price * discountper) / 100;
     let totalAmt = billItem.price - discAmt;

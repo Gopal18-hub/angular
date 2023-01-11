@@ -248,8 +248,13 @@ export class DisountReasonComponent implements OnInit {
       this.discounttypes = this.data.discounttypes;
       this.question[0].options = this.discounttypes; ////GAV-1456
     }
-    this.getDiscountReasonHead();
-    this.getBillDiscountReason();
+    if ("disabledRowControls" in this.data && this.data.disabledRowControls) {
+      this.forCouponOnlyBind();
+    } else {
+      this.getDiscountReasonHead();
+      this.getBillDiscountReason();
+    }
+
     this.getAuthorisedBy();
     this.billingService.billItems.forEach((item: any) => {
       if (!this.serviceBasedList[item.serviceName.toString()]) {
@@ -1014,6 +1019,28 @@ export class DisountReasonComponent implements OnInit {
       });
   }
 
+  forCouponOnlyBind() {
+    let reason: any = [];
+    reason.push({
+      title: this.selectedItems[0].reasonTitle,
+      value: this.selectedItems[0].reason,
+    });
+    let head: any = [];
+    this.selectedItems.forEach((item: any, index: any) => {
+      head.push({
+        title: item.head.title,
+        value: item.head,
+      });
+      this.discAmtFormConfig.columnsInfo.head.options = head.map((a: any) => {
+        return { title: a.title, value: a.value };
+      });
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] = reason.map(
+        (a: any) => {
+          return { title: a.title, value: a.value };
+        }
+      );
+    });
+  }
   checkRequiredFieldsSelected() {
     if (this.discAmtForm.value.head && this.discAmtForm.value.reason) {
       return false;
