@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule, DatePipe } from "@angular/common";
-import { DashboardRoutingModule } from "./routes";
+import { DashboardRoutingModule, DashboardAllRoutingModule } from "./routes";
 import { DashboardComponent } from "./dashboard.component";
 import { MaxHealthTableModule } from "@shared/ui/table";
 import { HeaderModule } from "@shared/modules/header";
@@ -29,3 +29,20 @@ import { VisitHistoryModule } from "@shared/modules/visit-history";
   bootstrap: [],
 })
 export class DashboardModule {}
+
+@NgModule({
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DashboardAllRoutingModule,
+    MaxHealthTableModule,
+    HeaderModule,
+    MatIconModule,
+    EmptyPlaceholderModule,
+    MatProgressSpinnerModule,
+    FormDialogueModule,
+    VisitHistoryModule,
+  ],
+  providers: [DatePipe],
+})
+export class DashboardAllModule {}
