@@ -395,8 +395,14 @@ export class DisountReasonComponent implements OnInit {
         } else {
           item.discAmt_col_type = "";
         }
-        if (item.head && item.head.id == existReason.mainhead) {
-          mainHead = item.head;
+        //changed for head value vanishing - Deena
+        if (
+          item.head &&
+          JSON.parse(atob(item.head)).id == existReason.mainhead
+        ) {
+          item.head = item.head;
+        } else {
+          item.head = btoa(JSON.stringify(mainHead));
         }
 
         const price = item.price;
@@ -406,7 +412,6 @@ export class DisountReasonComponent implements OnInit {
         item.totalAmt = price - discAmt;
         item.reasonTitle = existReason.name;
         item.reason = existReason.id;
-        item.head = mainHead;
 
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       } else if (res.data.col == "discAmt") {
