@@ -420,6 +420,7 @@ export class DisountReasonComponent implements OnInit {
 
         item.disc = (parseFloat(item.discAmt) / item.price) * 100;
         item.totalAmt = item.price - item.discAmt;
+        this.calculateBillService.discountSelectedItems[res.data.index] = item;
       }
     });
     this.discAmtForm.controls["reason"].valueChanges.subscribe((val: any) => {

@@ -282,8 +282,9 @@ export class CashScrollNewComponent implements OnInit {
   scrolldetailsList: any = [];
 
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
 
   fromdatedisable: boolean = false;
   todatedisable: boolean = false;
@@ -364,12 +365,25 @@ export class CashScrollNewComponent implements OnInit {
           cashdetails.getDetailsForMainScrollDatetime[0].todatetime;
         todatetime =
           cashdetails.getDetailsForMainScrollDatetime[0].currentDateTime;
-        this.cashscrollnewForm.controls["fromdate"].setValue(
-          this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
-        );
+
+        if(fromdatetime == null || fromdatetime == undefined || fromdatetime == "")
+        {
+          this.cashscrollnewForm.controls["fromdatetime"].setValue(
+            this.datepipe.transform(this.currentTime, "YYYY-MM-ddTHH:mm:ss")
+          );
+        }
+        else
+        {
+          this.cashscrollnewForm.controls["fromdate"].setValue(
+            this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
+          );
+        }
+       
         this.cashscrollnewForm.controls["todate"].setValue(
           this.datepipe.transform(todatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
         );
+      }, (error) =>{
+        console.log(error)
       });
   }
 
