@@ -167,9 +167,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
       });
     this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(async (formdata: any) => {
-        await this.loadGrid(formdata);
+      .pipe(takeUntil(this._routingdestroying$))
+      .subscribe((formdata: any) => {
+        this.loadGrid(formdata);
       });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
