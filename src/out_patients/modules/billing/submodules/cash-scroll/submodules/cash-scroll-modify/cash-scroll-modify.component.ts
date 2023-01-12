@@ -636,6 +636,7 @@ export class CashScrollModifyComponent implements OnInit {
       item.cash = Number(item.cash).toFixed(2);
       item.modifiedCash = Number(item.cash).toFixed(2);
       item.cheque = Number(item.cheque).toFixed(2);
+      item.ddnumber = "";
       item.modifiedCheqAmt =
         Number(item.cheque) != 0
           ? Number(item.cheque).toFixed(2)
@@ -844,7 +845,7 @@ export class CashScrollModifyComponent implements OnInit {
             Number(item.modifiedOnlinePayment) +
             Number(item.modifiedUPIAmt) +
             Number(item.modifiedDonationAmount);
-          if (Number(total) == Number(item.netamount)) {
+          if (Number(total) == Number(item.netamount) || Number(total) == 0) {
           } else {
             cashflag = 1;
             billforcash = item.billno;
@@ -939,6 +940,7 @@ export class CashScrollModifyComponent implements OnInit {
         }
       }
     });
+    console.log(cashflag, otherflag, chequeflag, ccflag, ddflag, onlineflag);
     if (cashflag == 1) {
       this.dialogservice.info(
         "Cannot save scroll Total Actual Amount Does not match Net Amount for Bill No: " +
