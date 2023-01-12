@@ -125,7 +125,7 @@ export class CalculateBillService {
   calculateDiscount() {
     this.totalDiscountAmt = 0;
     this.discountSelectedItems.forEach((item: any) => {
-      this.totalDiscountAmt += item.discAmt;
+      this.totalDiscountAmt += parseFloat(item.discAmt); //Added ParseFloat to avoid canCotenating of the AMounts
     });
   }
 
