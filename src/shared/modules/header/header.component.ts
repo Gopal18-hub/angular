@@ -32,6 +32,13 @@ export class HeaderComponent implements OnInit {
   activeModule: any;
   private readonly _destroying$ = new Subject<void>();
 
+  cookiekeys: any = {
+    Location: "location",
+    Station: "station",
+    Name: "usrname",
+    UserName: "user",
+  };
+
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
     this.router.navigate(["/registration"]);
@@ -65,6 +72,11 @@ export class HeaderComponent implements OnInit {
     this.station = this.cookieService.get("Station");
     this.usrname = this.cookieService.get("Name");
     this.user = this.cookieService.get("UserName");
+    this.cookieService.cookieValueChange.subscribe((res: any) => {
+      if (["Location", "Station", "Name", "UserName"].includes(res.name)) {
+        this[this.cookiekeys[res.name] as keyof this] = res.value;
+      }
+    });
   }
 
   logout() {

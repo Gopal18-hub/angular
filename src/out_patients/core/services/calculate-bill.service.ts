@@ -386,6 +386,7 @@ export class CalculateBillService {
     });
     discountReasonPopup.afterClosed().subscribe((res: any) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
+        formGroup.controls["dipositAmtEdit"].setValue("0");
         this.processDiscountLogics(formGroup, componentRef, from);
       } else if (this.totalDiscountAmt == 0) {
         this.processDiscountLogics(formGroup, componentRef, from);
