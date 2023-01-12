@@ -89,20 +89,46 @@ export class AuthService {
   }
 
   public deleteToken() {
-    return MaxHealthStorage.deleteSession("accessToken");
+    // return MaxHealthStorage.deleteSession("accessToken");
+    this.cookieService.delete("accessToken");
   }
   public getToken() {
-    // return this.cookieService.get("accessToken");
-    return MaxHealthStorage.getSession("accessToken");
+    return this.cookieService.get("accessToken");
+    // return MaxHealthStorage.getSession("accessToken");
   }
 
   public setToken(token: string): void {
-    // this.cookieService.set("accessToken", token, {
-    //   path: "/",
-    //   domain: environment.cookieUrl,
-    //   secure: true,
-    // });
-    MaxHealthStorage.setSession("accessToken", token);
+    this.cookieService.set("accessToken", token);
+    // MaxHealthStorage.setSession("accessToken", token);
+  }
+
+  public getAccesToken() {
+    let storage = sessionStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    let tokenKey;
+    let accessToken = "";
+    if (storage != null && storage != undefined && storage != "") {
+      tokenKey = storage
+        ?.split(",")[2]
+        .split(":")[0]
+        .replace('"', "")
+        .replace('"', "");
+      if (tokenKey == "access_token") {
+        accessToken = storage
+          ?.split(",")[2]
+          .split(":")[1]
+          .replace('"', "")
+          .replace('"', "");
+      }
+    }
+    if (accessToken != "" && accessToken != null && accessToken != undefined) {
+      if (this.cookieService.get("accessToken") != accessToken) {
+        this.deleteToken();
+        this.setToken(accessToken);
+      }
+    }
+    return this.cookieService.get("accessToken");
   }
 
   public logout(): any {

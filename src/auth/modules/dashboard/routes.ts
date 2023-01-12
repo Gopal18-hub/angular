@@ -16,17 +16,21 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuardService],
   },
-  {
-    path: "**",
-    resolve: {
-      url: "externalUrlRedirectResolver",
-    },
-    component: RedirectComponent,
-  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [
+    RouterModule.forChild([
+      ...routes,
+      {
+        path: "**",
+        resolve: {
+          url: "externalUrlRedirectResolver",
+        },
+        component: RedirectComponent,
+      },
+    ]),
+  ],
   exports: [RouterModule],
   providers: [
     {
@@ -38,3 +42,10 @@ const routes: Routes = [
   ],
 })
 export class DashboardRoutingModule {}
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+  providers: [],
+})
+export class DashboardAllRoutingModule {}

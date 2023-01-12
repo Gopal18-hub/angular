@@ -216,9 +216,6 @@ export class DisountReasonComponent implements OnInit {
         });
       }
     }
-    this.selectedItems.forEach((sItem: any) => {
-      if (sItem.head) sItem.head = { ...sItem.head };
-    });
 
     let formResult: any = this.formService.createForm(
       this.discAmtFormData.properties,
@@ -251,8 +248,13 @@ export class DisountReasonComponent implements OnInit {
       this.discounttypes = this.data.discounttypes;
       this.question[0].options = this.discounttypes; ////GAV-1456
     }
-    this.getDiscountReasonHead();
-    this.getBillDiscountReason();
+    if ("disabledRowControls" in this.data && this.data.disabledRowControls) {
+      this.forCouponOnlyBind();
+    } else {
+      this.getDiscountReasonHead();
+      this.getBillDiscountReason();
+    }
+
     this.getAuthorisedBy();
     this.billingService.billItems.forEach((item: any) => {
       if (!this.serviceBasedList[item.serviceName.toString()]) {
@@ -369,8 +371,9 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtForm.controls["percentage"].setValue("");
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "head") {
+        const tempHead = JSON.parse(atob(res.$event.value));
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == res.$event.value.id
+          (rl: any) => rl.mainhead == tempHead.id
         );
         let options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -392,8 +395,14 @@ export class DisountReasonComponent implements OnInit {
         } else {
           item.discAmt_col_type = "";
         }
-        if (item.head && item.head.id == existReason.mainhead) {
-          mainHead = item.head;
+        //changed for head value vanishing - Deena
+        if (
+          item.head &&
+          JSON.parse(atob(item.head)).id == existReason.mainhead
+        ) {
+          item.head = item.head;
+        } else {
+          item.head = btoa(JSON.stringify(mainHead));
         }
 
         const price = item.price;
@@ -403,7 +412,6 @@ export class DisountReasonComponent implements OnInit {
         item.totalAmt = price - discAmt;
         item.reasonTitle = existReason.name;
         item.reason = existReason.id;
-        item.head = mainHead;
 
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       } else if (res.data.col == "discAmt") {
@@ -420,6 +428,7 @@ export class DisountReasonComponent implements OnInit {
 
         item.disc = (parseFloat(item.discAmt) / item.price) * 100;
         item.totalAmt = item.price - item.discAmt;
+        this.calculateBillService.discountSelectedItems[res.data.index] = item;
       }
     });
     this.discAmtForm.controls["reason"].valueChanges.subscribe((val: any) => {
@@ -458,11 +467,12 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {
       this.reasontitle = "";
       if (val) {
+        const tempHead = JSON.parse(atob(val));
         const filterData = this.discReasonList.filter(
-          (rl: any) => rl.mainhead == val.id
+          (rl: any) => rl.mainhead == tempHead.id
         );
         //const existHead = this.mainHeadList.filter((rl: any) => rl.id == val);
-        this.head = val.name;
+        this.head = tempHead.name;
         this.question[2].options = filterData.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
         });
@@ -949,11 +959,11 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data: any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
-          return { title: a.name, value: a };
+          return { title: a.name, value: btoa(JSON.stringify(a)) };
         });
         this.discAmtFormConfig.columnsInfo.head.options = this.mainHeadList.map(
           (a) => {
-            return { title: a.name, value: a };
+            return { title: a.name, value: btoa(JSON.stringify(a)) };
           }
         );
       });
@@ -980,8 +990,9 @@ export class DisountReasonComponent implements OnInit {
               this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
                 this.question[2].options;
             } else {
+              const tempHead = JSON.parse(atob(item.head));
               const filterData = this.discReasonList.filter(
-                (rl: any) => rl.mainhead == item.head.id
+                (rl: any) => rl.mainhead == tempHead.id
               );
               let options = filterData.map((a) => {
                 return {
@@ -1013,6 +1024,28 @@ export class DisountReasonComponent implements OnInit {
       });
   }
 
+  forCouponOnlyBind() {
+    let reason: any = [];
+    reason.push({
+      title: this.selectedItems[0].reasonTitle,
+      value: this.selectedItems[0].reason,
+    });
+    let head: any = [];
+    this.selectedItems.forEach((item: any, index: any) => {
+      head.push({
+        title: item.head.title,
+        value: item.head,
+      });
+      this.discAmtFormConfig.columnsInfo.head.options = head.map((a: any) => {
+        return { title: a.title, value: a.value };
+      });
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] = reason.map(
+        (a: any) => {
+          return { title: a.title, value: a.value };
+        }
+      );
+    });
+  }
   checkRequiredFieldsSelected() {
     if (this.discAmtForm.value.head && this.discAmtForm.value.reason) {
       return false;

@@ -272,6 +272,7 @@ export class DupRegMergingComponent implements OnInit {
   async loadGrid(formdata: any): Promise<any> {
     this.isAPIProcess = false;
     this.defaultUI = false;
+    this.showmergespinner = true;
     if (formdata.data) {
       if (formdata.data["globalSearch"] == 1) {
         this.globalSearchTerm = formdata;

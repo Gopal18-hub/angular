@@ -125,7 +125,7 @@ export class CalculateBillService {
   calculateDiscount() {
     this.totalDiscountAmt = 0;
     this.discountSelectedItems.forEach((item: any) => {
-      this.totalDiscountAmt += item.discAmt;
+      this.totalDiscountAmt += parseFloat(item.discAmt); //Added ParseFloat to avoid canCotenating of the AMounts
     });
   }
 
@@ -386,6 +386,7 @@ export class CalculateBillService {
     });
     discountReasonPopup.afterClosed().subscribe((res: any) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
+        formGroup.controls["dipositAmtEdit"].setValue("0");
         this.processDiscountLogics(formGroup, componentRef, from);
       } else if (this.totalDiscountAmt == 0) {
         this.processDiscountLogics(formGroup, componentRef, from);
@@ -421,6 +422,10 @@ export class CalculateBillService {
     if (from == "coupon") {
       this.calculateDiscount();
     }
+
+    //GAV-1538 - in case of consultation
+    let discAmount = parseFloat(this.totalDiscountAmt.toString());
+    this.totalDiscountAmt = discAmount;
 
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt.toFixed(2));
     componentRef.applyCreditLimit();
@@ -581,7 +586,7 @@ export class CalculateBillService {
 
   processDiscount(couponServices: any): any {
     let discountper = 0;
-    let Sno = 0;
+    let Sno = 1;
     let discountReasonItems = [];
 
     if (this.billingServiceRef.billItems) {
@@ -606,6 +611,7 @@ export class CalculateBillService {
             //array to populate all couponServices in discount popup
             discountReasonItems.push(couponItem);
           }
+          Sno++;
         }
         console.log(discountReasonItems);
         return discountReasonItems;
@@ -695,9 +701,10 @@ export class CalculateBillService {
     billItem: any,
     couponService: any,
     discountper = 0,
-    Sno = 0
+    Sno: any
   ): any {
-    Sno += 1;
+    console.log(couponService);
+    // Sno += 1;
     discountper = couponService[0].discountper;
     let discAmt = (billItem.price * discountper) / 100;
     let totalAmt = billItem.price - discAmt;
@@ -719,7 +726,10 @@ export class CalculateBillService {
       disc: discountper,
       discAmt: discAmt,
       totalAmt: totalAmt,
-      head: couponService[0].mainhead,
+      head: {
+        title: couponService[0].discountHead,
+        id: couponService[0].mainhead,
+      },
       reason: couponService[0].id,
       value: "0",
       discTypeValue: disType,
@@ -1248,11 +1258,14 @@ export class CalculateBillService {
             );
             await infoRef.afterClosed().toPromise();
             // await this.openCGHSChangeReason();
-            const chgsChangeDialogref = this.matDialog.open(CghsReasonComponent, {
-              width: "28vw",
-              height: "25vh",
-              disableClose: true,
-            });
+            const chgsChangeDialogref = this.matDialog.open(
+              CghsReasonComponent,
+              {
+                width: "28vw",
+                height: "25vh",
+                disableClose: true,
+              }
+            );
             let res = await chgsChangeDialogref
               .afterClosed()
               .pipe(takeUntil(this._destroying$))

@@ -10,7 +10,7 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
-import { DatePipe } from "@angular/common";
+import { DatePipe, APP_BASE_HREF } from "@angular/common";
 import { HeaderModule } from "@shared/modules/header";
 
 @NgModule({
@@ -24,7 +24,7 @@ import { HeaderModule } from "@shared/modules/header";
     MaxHealthMessageDialogModule,
     HeaderModule,
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, { provide: APP_BASE_HREF, useValue: "/" }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
