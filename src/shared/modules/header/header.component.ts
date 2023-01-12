@@ -32,6 +32,13 @@ export class HeaderComponent implements OnInit {
   activeModule: any;
   private readonly _destroying$ = new Subject<void>();
 
+  cookiekeys: any = {
+    Location: "location",
+    Station: "station",
+    Name: "usrname",
+    UserName: "user",
+  };
+
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
     this.router.navigate(["/registration"]);
@@ -50,6 +57,21 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.location = this.cookieService.get("Location");
+    this.station = this.cookieService.get("Station");
+    this.usrname = this.cookieService.get("Name");
+    this.user = this.cookieService.get("UserName");
+    console.log(this.usrname);
+    this.cookieService.cookieValueChange.addEventListener(
+      "message",
+      (res: any) => {
+        if (
+          ["Location", "Station", "Name", "UserName"].includes(res.data.name)
+        ) {
+          this[this.cookiekeys[res.data.name] as keyof this] = res.data.value;
+        }
+      }
+    );
     await this.permissionService.getPermissionsRoleWise();
     this.modules = this.permissionService.checkModules();
     this.modules.forEach((element: any) => {
@@ -61,10 +83,6 @@ export class HeaderComponent implements OnInit {
       }
     });
     // this.setRefreshedToken(); //Set refreshed access token in cookie
-    this.location = this.cookieService.get("Location");
-    this.station = this.cookieService.get("Station");
-    this.usrname = this.cookieService.get("Name");
-    this.user = this.cookieService.get("UserName");
   }
 
   logout() {

@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AcknowledgedScrollAmountReportComponent } from "@modules/billing/submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
-import { BillingComponent } from "@modules/billing/submodules/billing/billing.component";
+
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ReportsComponent } from "./reports.component";
 

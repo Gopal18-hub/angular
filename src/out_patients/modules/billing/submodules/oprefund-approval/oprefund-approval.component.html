@@ -50,8 +50,16 @@
         </ng-container>
           </div> 
           <div class="h-1/5 float-right mt-6">
-            <button mat-raised-button color="primary"  class="mr-8" (click)="onApprove()" *ngIf="isPendingList">Approve</button>
-            <button mat-raised-button color="primary" *ngIf="isPendingList "  (click)="onReject(activeLink2)">Reject</button>
+            <button mat-raised-button color="primary"  class="mr-8" (click)="onApprove()" *ngIf="isPendingList" accessControl
+            masterModule = "2"
+            moduleId="7"
+            featureId="559"
+            actionId="1484">Approve</button>
+            <button mat-raised-button color="primary" *ngIf="isPendingList "  (click)="onReject(activeLink2)" accessControl
+            masterModule = "2"
+            moduleId="7"
+            featureId="559"
+            actionId="1484">Reject</button>
           </div>  
         </div> 
         <div class="h-full w-full" *ngIf="!defaultUI">

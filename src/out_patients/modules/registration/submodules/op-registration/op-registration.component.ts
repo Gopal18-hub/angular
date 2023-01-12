@@ -2664,6 +2664,7 @@ export class OpRegistrationComponent implements OnInit {
               //added timeout for address clear issue
               setTimeout(() => {
                 this.maxIDChangeCall = false;
+                this.apiProcessing = false;
               }, 2000);
               this.maxIDSearch = false;
             }
@@ -3267,7 +3268,6 @@ export class OpRegistrationComponent implements OnInit {
 
     //SOURCE OF INFO DROPDOWN
     this.setSourceOfInforValues(patientDetails);
-    this.apiProcessing = false;
   }
 
   //SETTING THE RESPONSE TO ID AND VALUE FOR DROP DOWN

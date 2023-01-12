@@ -78,6 +78,9 @@ export class AppModule {}
 
 @NgModule({
   imports: [...importModules, OutPatientRoutingModule],
-  providers: [...providers],
+  providers: [
+    ...providers,
+    { provide: APP_BASE_HREF, useValue: "/out-patients" },
+  ],
 })
 export class OutPatientModule {}
