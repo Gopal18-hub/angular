@@ -1,5 +1,6 @@
 .billing-page-wrapper {
 //position: relative;
+
   background-color: #fff;
   .text-color {
     color: #000;
@@ -138,6 +139,9 @@
   display: none;
 } 
   
+}
+.clr-orange{
+  color: orange;
 }
 .default-label-none{
   ::ng-deep mat-label{
