@@ -419,15 +419,40 @@ export class DetailsComponent implements OnInit {
     }
   }
   sendforapproval() {
+    const today = new Date();
+    const billDate = new Date(
+      this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime
+    );
+    const diffTime = today.getTime() - billDate.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    console.log(diffDays);
+    console.log(diffDays);
     if (
-      Number(this.BServiceForm.controls["refundAmt"].value) >= 10000 &&
-      this.BServiceForm.controls["paymentMode"].value == "Cash"
+      diffDays >
+      Number(
+        this.patientbilldetaillist.billDetialsForRefund_Table0[0]
+          .opCancelDaysRest
+      )
     ) {
-      this.msgdialog.info(
-        "Refund Amount can't be greater than 10000 for Cash Payment. Please Select Other Payment Method"
+      this.msgdialog.error(
+        "OP bill refund is not allowed after " +
+          Number(
+            this.patientbilldetaillist.billDetialsForRefund_Table0[0]
+              .opCancelDaysRest
+          ) +
+          " days of bill date"
       );
     } else {
-      this.sendforapprovalcall();
+      if (
+        Number(this.BServiceForm.controls["refundAmt"].value) >= 10000 &&
+        this.BServiceForm.controls["paymentMode"].value == "Cash"
+      ) {
+        this.msgdialog.info(
+          "Refund Amount can't be greater than 10000 for Cash Payment. Please Select Other Payment Method"
+        );
+      } else {
+        this.sendforapprovalcall();
+      }
     }
   }
   sendforapprovalcall() {
