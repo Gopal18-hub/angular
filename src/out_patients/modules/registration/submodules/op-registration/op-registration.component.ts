@@ -1429,12 +1429,13 @@ export class OpRegistrationComponent implements OnInit {
     this.maxIDSearch = true;
   }
   ngAfterViewInit(): void {
-    if (this.questions[2]) {
-      this.questions[2].elementRef.focus();
-    }
-    // this.questions[2].elementRef.focus();
-    this.formProcessing();
-    this.formEvents();
+    setTimeout(() => {
+      if (this.questions && this.questions[2]) {
+        this.questions[2].elementRef.focus();
+      }
+      this.formProcessing();
+      this.formEvents();
+    }, 500);
   }
   clearClicked: boolean = false;
 
