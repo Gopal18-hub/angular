@@ -374,7 +374,13 @@
               <mat-card
                 class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color height-max-content"
               >
-                <!-- (click)="hotlistClick($event)" -->
+                <!-- (click)="hotlistClick($event)"
+                
+                      accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="597"
+                    actionId="1555" -->
                 <div class="flex">
                   <div class="w-3/4">
                     <maxhealth-question
@@ -382,11 +388,6 @@
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
-                      accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="597"
-                    actionId="1555"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">

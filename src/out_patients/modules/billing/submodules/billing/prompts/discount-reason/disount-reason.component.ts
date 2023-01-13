@@ -392,6 +392,7 @@ export class DisountReasonComponent implements OnInit {
           this.calculateBillService.discountSelectedItems[res.data.index];
         if (existReason.valuebasedDisc == 1) {
           item.discAmt_col_type = "input_price";
+          item.discAmt = 0;
         } else {
           item.discAmt_col_type = "";
         }

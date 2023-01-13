@@ -68,6 +68,7 @@ import { BillingApiConstants } from "@modules/billing/submodules/billing/Billing
 import { debug } from "console";
 import { PatientImageUploadDialogComponent } from "@modules/registration/submodules/patient-image-upload-dialog/patient-image-upload-dialog.component";
 import { patientImageModel } from "@core/models/patientImageModel";
+import { PermissionService } from "@shared/services/permission.service";
 
 export interface DialogData {
   expieryDate: Date;
@@ -442,10 +443,10 @@ export class OpRegistrationComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "PSU/Govt", value: "psu/govt" },
-          { title: "EWS", value: "ews" },
-          { title: "Corporate/Insurance", value: "ins" },
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "PSU/Govt", value: "psu/govt", disabled: false },
+          { title: "EWS", value: "ews", disabled: false },
+          { title: "Corporate/Insurance", value: "ins", disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -495,12 +496,52 @@ export class OpRegistrationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private messageDialogService: MessageDialogService,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private permissionservice: PermissionService
   ) {}
 
   bool: boolean | undefined;
   disableforeigner: boolean = false;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    ///GAV-1487 GAV-1500
+    if (!this.cookie.check("EWSAccess")) {
+      await this.permissionservice.getPermissionsRoleWise();
+      const accessControls: any = this.permissionservice.getAccessControls();
+
+      let exist: any = accessControls[2][7][600];
+      if (exist == undefined) {
+        exist = false;
+      } else {
+        exist = accessControls[2][7][600][1559];
+        exist = exist == undefined ? false : exist;
+      }
+      if (exist) {
+        this.cookie.delete("EWSAccess", "/");
+        this.cookie.set("EWSAccess", "1", {
+          path: "/",
+        });
+      } else {
+        this.cookie.delete("EWSAccess", "/");
+        this.cookie.set("EWSAccess", "0", {
+          path: "/",
+        });
+      }
+    }
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
     this.bool = true;
     this.isNoImage = true;
     this.patientNoImage =
@@ -509,6 +550,7 @@ export class OpRegistrationComponent implements OnInit {
 
     this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
+
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -1418,6 +1460,22 @@ export class OpRegistrationComponent implements OnInit {
       relativeTo: this.route,
     });
     this.flushAllObjects();
+    ///GAV-1487 GAV-1500 EWS permission
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
     this.formInit();
     this.formProcessingFlag = false;
     this.maxIDSearch = false;
