@@ -634,6 +634,8 @@ export class OpRegApprovalComponent implements OnInit {
           "Max ID: " +
           MaxId
       );
+      this.ApprovalidList = [];
+      return;
     } else {
       this.rejectPostobject = new approveRejectModel(
         this.ApprovalidList,
