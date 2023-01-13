@@ -502,7 +502,46 @@ export class OpRegistrationComponent implements OnInit {
 
   bool: boolean | undefined;
   disableforeigner: boolean = false;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    ///GAV-1487 GAV-1500
+    if (!this.cookie.check("EWSAccess")) {
+      await this.permissionservice.getPermissionsRoleWise();
+      const accessControls: any = this.permissionservice.getAccessControls();
+
+      let exist: any = accessControls[2][7][600];
+      if (exist == undefined) {
+        exist = false;
+      } else {
+        exist = accessControls[2][7][600][1559];
+        exist = exist == undefined ? false : exist;
+      }
+      if (exist) {
+        this.cookie.delete("EWSAccess", "/");
+        this.cookie.set("EWSAccess", "1", {
+          path: "/",
+        });
+      } else {
+        this.cookie.delete("EWSAccess", "/");
+        this.cookie.set("EWSAccess", "0", {
+          path: "/",
+        });
+      }
+    }
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
     this.bool = true;
     this.isNoImage = true;
     this.patientNoImage =
@@ -511,7 +550,7 @@ export class OpRegistrationComponent implements OnInit {
 
     this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
-    // this.disableEWS();
+
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -611,34 +650,6 @@ export class OpRegistrationComponent implements OnInit {
       // }
     }
     return this.nationalityChanged;
-  }
-
-  async disableEWS() {
-    await this.permissionservice.getPermissionsRoleWise();
-    const accessControls: any = this.permissionservice.getAccessControls();
-
-    let exist: any = accessControls[2][7][600];
-    if (exist == undefined) {
-      exist = false;
-    } else {
-      exist = accessControls[2][7][600][1559];
-      exist = exist == undefined ? false : exist;
-    }
-    if (!exist) {
-      this.registrationFormData.properties.paymentMethod.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "PSU/Govt", value: "psu/govt", disabled: false },
-        { title: "EWS", value: "ews", disabled: true },
-        { title: "Corporate/Insurance", value: "ins", disabled: false },
-      ];
-    } else {
-      this.registrationFormData.properties.paymentMethod.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "PSU/Govt", value: "psu/govt", disabled: false },
-        { title: "EWS", value: "ews", disabled: false },
-        { title: "Corporate/Insurance", value: "ins", disabled: false },
-      ];
-    }
   }
 
   formInit() {
@@ -1449,7 +1460,22 @@ export class OpRegistrationComponent implements OnInit {
       relativeTo: this.route,
     });
     this.flushAllObjects();
-    //this.disableEWS();
+    ///GAV-1487 GAV-1500 EWS permission
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
     this.formInit();
     this.formProcessingFlag = false;
     this.maxIDSearch = false;
