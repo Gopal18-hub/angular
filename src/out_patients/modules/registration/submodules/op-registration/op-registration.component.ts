@@ -1429,7 +1429,10 @@ export class OpRegistrationComponent implements OnInit {
     this.maxIDSearch = true;
   }
   ngAfterViewInit(): void {
-    this.questions[2].elementRef.focus();
+    if (this.questions[2]) {
+      this.questions[2].elementRef.focus();
+    }
+    // this.questions[2].elementRef.focus();
     this.formProcessing();
     this.formEvents();
   }
