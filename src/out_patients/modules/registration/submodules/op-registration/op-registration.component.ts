@@ -68,6 +68,7 @@ import { BillingApiConstants } from "@modules/billing/submodules/billing/Billing
 import { debug } from "console";
 import { PatientImageUploadDialogComponent } from "@modules/registration/submodules/patient-image-upload-dialog/patient-image-upload-dialog.component";
 import { patientImageModel } from "@core/models/patientImageModel";
+import { PermissionService } from "@shared/services/permission.service";
 
 export interface DialogData {
   expieryDate: Date;
@@ -442,10 +443,10 @@ export class OpRegistrationComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "PSU/Govt", value: "psu/govt" },
-          { title: "EWS", value: "ews" },
-          { title: "Corporate/Insurance", value: "ins" },
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "PSU/Govt", value: "psu/govt", disabled: false },
+          { title: "EWS", value: "ews", disabled: false },
+          { title: "Corporate/Insurance", value: "ins", disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -495,12 +496,33 @@ export class OpRegistrationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private messageDialogService: MessageDialogService,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private permissionservice: PermissionService
   ) {}
 
   bool: boolean | undefined;
   disableforeigner: boolean = false;
   ngOnInit(): void {
+    ///GAV-1487 GAV-1500
+    if (!this.cookie.check("EWSAccess")) {
+      this.checkEWSAccess();
+    } else {
+      if (this.cookie.get("EWSAccess") == "0") {
+        this.registrationFormData.properties.paymentMethod.options = [
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "PSU/Govt", value: "psu/govt", disabled: false },
+          { title: "EWS", value: "ews", disabled: true },
+          { title: "Corporate/Insurance", value: "ins", disabled: false },
+        ];
+      } else {
+        this.registrationFormData.properties.paymentMethod.options = [
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "PSU/Govt", value: "psu/govt", disabled: false },
+          { title: "EWS", value: "ews", disabled: false },
+          { title: "Corporate/Insurance", value: "ins", disabled: false },
+        ];
+      }
+    }
     this.bool = true;
     this.isNoImage = true;
     this.patientNoImage =
@@ -509,6 +531,7 @@ export class OpRegistrationComponent implements OnInit {
 
     this.registeredBy =
       this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
+
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -524,6 +547,25 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     this.formProcessingFlag = false;
+  }
+
+  async checkEWSAccess() {
+    await this.permissionservice.getPermissionsRoleWise();
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
   }
 
   ngOnDestroy(): void {
@@ -1387,9 +1429,13 @@ export class OpRegistrationComponent implements OnInit {
     this.maxIDSearch = true;
   }
   ngAfterViewInit(): void {
-    this.questions[2].elementRef.focus();
-    this.formProcessing();
-    this.formEvents();
+    setTimeout(() => {
+      if (this.questions && this.questions[2]) {
+        this.questions[2].elementRef.focus();
+      }
+      this.formProcessing();
+      this.formEvents();
+    }, 500);
   }
   clearClicked: boolean = false;
 
@@ -1418,6 +1464,22 @@ export class OpRegistrationComponent implements OnInit {
       relativeTo: this.route,
     });
     this.flushAllObjects();
+    ///GAV-1487 GAV-1500 EWS permission
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
     this.formInit();
     this.formProcessingFlag = false;
     this.maxIDSearch = false;
