@@ -59,7 +59,30 @@ export class PermissionService {
     }
 
     this.manipulatedAccessControls = temp;
+    this.checkEWSAccess(temp);
     this.rolesLoaded.next(true);
+  }
+
+  checkEWSAccess(accessControls: any) {
+    let exist: any = accessControls[2][7][600];
+    if (exist == undefined) {
+      exist = false;
+    } else {
+      exist = accessControls[2][7][600][1559];
+      exist = exist == undefined ? false : exist;
+    }
+
+    if (exist) {
+      this.cookieService.delete("EWSAccess", "/");
+      this.cookieService.set("EWSAccess", "1", {
+        path: "/",
+      });
+    } else {
+      this.cookieService.delete("EWSAccess", "/");
+      this.cookieService.set("EWSAccess", "0", {
+        path: "/",
+      });
+    }
   }
 
   checkModules() {

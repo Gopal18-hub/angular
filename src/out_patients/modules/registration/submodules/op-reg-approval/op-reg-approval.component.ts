@@ -384,7 +384,7 @@ export class OpRegApprovalComponent implements OnInit {
       this.from = this.datepipe.transform(
         new Date().setDate(new Date().getDate() - 1),
         "yyyy-MM-dd"
-      )
+      );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.showmain(this.link1[0]);
@@ -578,6 +578,8 @@ export class OpRegApprovalComponent implements OnInit {
           "Max ID: " +
           MaxId
       );
+      this.ApprovalidList = [];
+      return;
     } else {
       this.approvePostobject = new approveRejectModel(
         this.ApprovalidList,
@@ -632,6 +634,8 @@ export class OpRegApprovalComponent implements OnInit {
           "Max ID: " +
           MaxId
       );
+      this.ApprovalidList = [];
+      return;
     } else {
       this.rejectPostobject = new approveRejectModel(
         this.ApprovalidList,
