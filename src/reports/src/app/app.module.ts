@@ -10,6 +10,7 @@ import { CrystalReportModule } from "../../modules/crystal-report";
 import { PromptReportModule } from "../../modules/prompt-report";
 import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
 import { DatePipe } from "@angular/common";
+import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,10 +22,14 @@ import { DatePipe } from "@angular/common";
     MaxHealthMessageDialogModule,
     CrystalReportModule,
     PromptReportModule,
-    
   ],
   providers: [
     DatePipe,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })
