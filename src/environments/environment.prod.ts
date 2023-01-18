@@ -35,6 +35,6 @@ export const environment = {
   BillingApiUrl: "https://maxhis-opdapigtwy.maxhealthcare.in/opbill/",
   reportTenantUrl:
     "https://maxhis.maxhealthcare.in/reports/crystal-report/popup/",
-  ReportsSampleUrl: "https://maxhis-opdapigtwy.maxhealthcare.in/reports/",
+  ReportsSampleUrl: "https://maxhis-reports-prod.maxhealthcare.in/",
   // crystalReportBaseUrl: "https://maxhis-opdapigtwy.maxhealthcare.in/reports/",
 };
