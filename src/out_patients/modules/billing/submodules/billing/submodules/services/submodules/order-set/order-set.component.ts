@@ -177,7 +177,11 @@ export class OrderSetComponent implements OnInit {
       }
     );
     this.data = [...this.billingService.OrderSetItems];
+    if (this.data.length == 0) {
+      this.billingService.changeBillTabStatus(false);
+    }
     this.billingService.calculateTotalAmount();
+    this.checkTableValidation();
   }
 
   ngAfterViewInit(): void {
