@@ -2727,6 +2727,8 @@ export class OpRegistrationComponent implements OnInit {
               setTimeout(() => {
                 this.maxIDChangeCall = false;
                 this.apiProcessing = false;
+                this.OPRegForm.markAllAsTouched();
+                this.OPRegForm.markAsPristine();
               }, 2000);
               this.maxIDSearch = false;
             }
@@ -3171,10 +3173,13 @@ export class OpRegistrationComponent implements OnInit {
   isOrganDonor: boolean = false;
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
-    this.OPRegForm.controls["country"].setValue({
-      title: this.patientDetails?.countryName,
-      value: this.patientDetails?.pcountry,
-    });
+    if (this.patientDetails?.pcountry) {
+      this.OPRegForm.controls["country"].setValue({
+        title: this.patientDetails?.countryName,
+        value: this.patientDetails?.pcountry,
+      });
+    }
+
     if (patientDetails?.spouseName != "") {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
       this.OPRegForm.controls["fatherSpouse"].setValue(2);
@@ -3215,18 +3220,34 @@ export class OpRegistrationComponent implements OnInit {
       Number(patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode)
     );
     Number(patientDetails?.ppinCode == 0 ? "" : this.getLocalityByPinCode());
-    this.OPRegForm.controls["state"].setValue({
-      title: patientDetails?.stateName,
-      value: patientDetails?.pstate,
-    });
-    this.OPRegForm.controls["district"].setValue({
-      title: patientDetails?.districtName,
-      value: patientDetails?.pdistrict,
-    });
-    this.OPRegForm.controls["city"].setValue({
-      title: patientDetails?.city,
-      value: patientDetails?.pcity,
-    });
+    if (patientDetails?.pstate) {
+      this.OPRegForm.controls["state"].setValue({
+        title: patientDetails?.stateName,
+        value: patientDetails?.pstate,
+      });
+    }
+
+    if (this.patientDetails?.pcountry == 1) {
+      if (patientDetails?.pdistrict) {
+        this.OPRegForm.controls["district"].setValue({
+          title: patientDetails?.districtName,
+          value: patientDetails?.pdistrict,
+        });
+      }
+    } else {
+      this.OPRegForm.controls["district"].setValue({
+        title: patientDetails?.districtName,
+        value: patientDetails?.pdistrict,
+      });
+    }
+
+    if (patientDetails?.pcity) {
+      this.OPRegForm.controls["city"].setValue({
+        title: patientDetails?.city,
+        value: patientDetails?.pcity,
+      });
+    }
+
     if (patientDetails?.locality == 0) {
       if (
         patientDetails?.otherlocality != "" ||
@@ -3366,11 +3387,15 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   //POPULATING THE MODE OF PATMENT FOR PATIENT DETAILS
-  setPaymentMode(ppagerNumber: string | undefined) {
-    this.OPRegForm.value.paymentMethod;
-    this.OPRegForm.controls["paymentMethod"].setValue(
-      ppagerNumber?.toLowerCase()
-    );
+  setPaymentMode(ppagerNumber: string) {
+    // this.OPRegForm.value.paymentMethod;
+    if (["cash", "psu/govt", "ews", "ins"].includes(ppagerNumber)) {
+      this.OPRegForm.controls["paymentMethod"].setValue(
+        ppagerNumber?.toLowerCase()
+      );
+    } else {
+      this.OPRegForm.controls["paymentMethod"].setValue("cash");
+    }
   }
 
   getDobStatus(): boolean {
