@@ -1735,14 +1735,6 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "sslKey": "ssl/server.key",
-            "sslCert": "ssl/server.crt",
-            "ssl": true,
-            "host": "127.0.0.2",
-            "port": 443,
-            "disableHostCheck": true
-          },
           "configurations": {
             "production": {
               "browserTarget": "all:build:production"
