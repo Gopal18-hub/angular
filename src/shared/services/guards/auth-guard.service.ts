@@ -55,7 +55,9 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
           return false;
         }
       } else {
-        return true;
+        window.location.href =
+          environment.IentityServerRedirectUrl + "no-permission";
+        return false;
       }
     }
     return true;
