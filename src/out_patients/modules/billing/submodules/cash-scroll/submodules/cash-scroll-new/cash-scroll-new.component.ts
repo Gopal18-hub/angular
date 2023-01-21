@@ -809,10 +809,9 @@ export class CashScrollNewComponent implements OnInit {
             item.upiamount == undefined
               ? "0.00"
               : parseFloat(item.upiamount).toFixed(2);
-          item.totalamount =
-            item.totalamount == undefined
-              ? "0.00"
-              : parseFloat(item.totalamount).toFixed(2);
+          item.totalamount = (
+                parseFloat(item.billamount) + parseFloat(item.donation)
+              ).toFixed(2);
 
           return item;
         });
