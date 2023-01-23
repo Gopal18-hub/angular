@@ -2976,30 +2976,56 @@ export class OpRegistrationComponent implements OnInit {
       );
     }
     this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    this.OPRegForm.controls["mobileNumber"].setValue(
-      this.patientDetails?.pphone
-    );
-    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title);
-    this.OPRegForm.controls["firstName"].setValue(
-      this.patientDetails?.firstname
-    );
-    this.OPRegForm.controls["lastName"].setValue(this.patientDetails?.lastName);
+    if (this.patientDetails?.pphone) {
+      this.OPRegForm.controls["mobileNumber"].setValue(
+        this.patientDetails?.pphone
+      );
+    }
+
+    if (this.patientDetails?.title) {
+      this.OPRegForm.controls["title"].setValue(this.patientDetails?.title);
+    }
+
+    if (this.patientDetails?.firstname) {
+      this.OPRegForm.controls["firstName"].setValue(
+        this.patientDetails?.firstname
+      );
+    }
+
+    if (this.patientDetails?.lastName) {
+      this.OPRegForm.controls["lastName"].setValue(
+        this.patientDetails?.lastName
+      );
+    }
+
     this.OPRegForm.controls["middleName"].setValue(
       this.patientDetails?.middleName
     );
-    this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
+    if (this.patientDetails?.sex) {
+      this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
+    }
+
     //if (this.patientDetails?.dob) {
     this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
     // } else {
     //   this.OPRegForm.controls["dob"].setValue("");
     // }
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
-    this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
-    this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
-    this.OPRegForm.controls["nationality"].setValue({
-      title: this.patientDetails?.nationalityName,
-      value: this.patientDetails?.nationality,
-    });
+    if (this.patientDetails?.agetype) {
+      this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
+    }
+
+    if (this.patientDetails?.pemail) {
+      this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
+    }
+
+    if (this.patientDetails?.nationality) {
+      this.OPRegForm.controls["nationality"].setValue({
+        title: this.patientDetails?.nationalityName,
+        value: this.patientDetails?.nationality,
+      });
+    }
+
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
