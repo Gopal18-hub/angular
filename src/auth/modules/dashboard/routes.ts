@@ -9,12 +9,17 @@ import {
 import { DashboardComponent } from "./dashboard.component";
 import { RedirectComponent } from "../../../shared/modules/header/redirect/redirect.component";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { NoPermissionComponent } from "./no-permission/no-permission/no-permission.component";
 
 const routes: Routes = [
   {
     path: "dashboard",
     component: DashboardComponent,
     canActivate: [AuthGuardService],
+  },
+  {
+    path: "no-permission",
+    component: NoPermissionComponent,
   },
 ];
 

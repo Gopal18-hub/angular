@@ -32,34 +32,37 @@ export class PermissionService {
     let temp: any = {};
     if (roles) {
       if (roles.length > 0) {
-        let response = await this.http
-          .get(ApiConstants.getPermissions(this.cookieService.get("role")))
-          .toPromise();
+        if (this.cookieService.get("role")) {
+          let response = await this.http
+            .get(ApiConstants.getPermissions(this.cookieService.get("role")))
+            .toPromise();
 
-        if (response) {
-          response.permissions.forEach((ele: any) => {
-            if (!temp[ele.masterModuleId]) {
-              temp[ele.masterModuleId] = {};
-              this.masterModules.push(ele.masterModuleId);
-            }
-            if (!temp[ele.masterModuleId][ele.moduleId]) {
-              this.modules.push(ele.moduleId);
-              temp[ele.masterModuleId][ele.moduleId] = {};
-            }
-            if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
-              temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
-              this.features.push(ele.featureId);
-            }
-            temp[ele.masterModuleId][ele.moduleId][ele.featureId][
-              ele.functionId
-            ] = true;
-          });
+          if (response) {
+            response.permissions.forEach((ele: any) => {
+              if (!temp[ele.masterModuleId]) {
+                temp[ele.masterModuleId] = {};
+                this.masterModules.push(ele.masterModuleId);
+              }
+              if (!temp[ele.masterModuleId][ele.moduleId]) {
+                this.modules.push(ele.moduleId);
+                temp[ele.masterModuleId][ele.moduleId] = {};
+              }
+              if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
+                temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
+                this.features.push(ele.featureId);
+              }
+              temp[ele.masterModuleId][ele.moduleId][ele.featureId][
+                ele.functionId
+              ] = true;
+            });
+            this.checkEWSAccess(temp);
+          }
         }
       }
     }
 
     this.manipulatedAccessControls = temp;
-    this.checkEWSAccess(temp);
+
     this.rolesLoaded.next(true);
   }
 
