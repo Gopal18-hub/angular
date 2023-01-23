@@ -155,7 +155,7 @@ const routes: Routes = [
       {
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
-        data: { masterModule: 2, moduleId: 7, featureId: 62 },
+
         children: [
           { path: "", redirectTo: "services", pathMatch: "full" },
           { path: "", component: PostDischargeServicesComponent },

@@ -181,7 +181,7 @@ export namespace MaxModules {
               defaultPath:
                 "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
-              allUsersAllow: false,
+              allUsersAllow: true,
             },
             // dispatch
             {

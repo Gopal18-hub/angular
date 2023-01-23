@@ -37,27 +37,19 @@ const routes: Routes = [
       {
         path: "dup-reg-merging",
         component: DupRegMergingComponent,
-
-        data: { masterModule: 2, moduleId: 7, featureId: 460 },
       },
       {
         path: "registration-unmerging",
         component: RegistrationUnmergingComponent,
-
-        data: { masterModule: 2, moduleId: 7, featureId: 461 },
       },
       {
         path: "op-reg-approval",
         component: OpRegApprovalComponent,
-
-        data: { masterModule: 2, moduleId: 7, featureId: 595 },
       },
       { path: "appointment-search", component: AppointmentSearchComponent },
       {
         path: "hot-listing-approval",
         component: HotListingApprovalComponent,
-
-        data: { masterModule: 2, moduleId: 7, featureId: 597 },
       },
     ],
   },
