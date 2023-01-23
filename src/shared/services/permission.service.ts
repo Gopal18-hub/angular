@@ -99,7 +99,9 @@ export class PermissionService {
             masterModule.type == "module")
         )
       ) {
-        definedModules[index].disabled = true;
+        if (!masterModule.allUsersAllow) {
+          definedModules[index].disabled = true;
+        }
       }
     });
     definedModules.forEach((masterModule: any, index: number) => {
