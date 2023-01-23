@@ -1,0 +1,92 @@
+.max-table-wrapper {
+  height: 100%;
+  background-color: white;
+  overflow: auto;
+  transform: rotate(0deg);
+  table {
+    width: 100%;
+    border-spacing: 0;
+    .mat-header-row {
+      background-color: #dae9f8;
+      height: 36px;
+      .mat-sort-header {
+        color: var(--primary-color);
+      }
+    }
+    tr.mat-row {
+      height: 38px;
+      background-color: #f9f9f9;
+    }
+    .row-is-clicked {
+      font-weight: bold;
+    }
+    .mat-row {
+      &:hover {
+        background-color: var(--primary-color);
+        .mat-cell {
+          color: #fff;
+        }
+      }
+      .mat-cell {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        flex: 0 0 100px !important;
+        width: 100px !important;
+
+        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        padding-right: 8px;
+        &.mat-column-select {
+          width: 24px !important;
+          flex: 0 0 24px !important;
+        }
+      }
+    }
+    .mat-header-row {
+      .mat-column-select {
+        width: 60px !important;
+      }
+    }
+
+    &.row-click {
+      .mat-row .mat-cell {
+        // border-bottom: 1px solid transparent;
+        // border-top: 1px solid transparent;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.more-actions {
+  background: #ababab;
+  border-radius: 12px;
+  padding: 0 0.5em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  width: fit-content;
+  .mat-icon {
+    line-height: 20px;
+    height: 20px;
+  }
+}
+::ng-deep .table-more-actions {
+  border-radius: initial !important;
+  .mat-menu-item {
+    height: 32px;
+    line-height: 32px;
+    border-top: 1px solid #ccc;
+    margin: 0.5em;
+    width: calc(100% - 1em);
+    text-align: center;
+    &:first-child {
+      border: none;
+    }
+  }
+}

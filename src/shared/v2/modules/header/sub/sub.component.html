@@ -1,0 +1,37 @@
+<!-- <h1 class="example-app-name">Nested Menus</h1> -->
+<div class="flex justify-between submodule-wrapper">
+  <!-- <div class="top-header-menu">
+    <ul #subsefdlkjdsfs class="flex flex-row list-unstyled main-modules items-center top-mat-menu-item">
+      <ng-container>
+        <li *ngFor="let module of submodules" class="mr-2 cursor-pointer menu-item"> {{ module.title }} </li>
+      </ng-container>
+    </ul>
+  </div> -->
+  <div class="top-header-menu">
+    <ul #subsefdlkjdsfs class="flex flex-row list-unstyled main-modules items-center top-mat-menu-item">
+      <ng-container>
+        <li *ngFor="let module of submodules | slice: 0 : 4" class="mr-2 cursor-pointer menu-item"> {{ module.title }}
+        </li>
+        <button *ngIf="submodules.length > 4" mat-icon-button [matMenuTriggerFor]="menu"
+          aria-label="Example icon-button with a menu">
+          <!-- <mat-icon>more_vert</mat-icon> -->
+          <button class="scroll_button">>></button>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button *ngFor="let module of submodules | slice: 4 : submodules.length" mat-menu-item>
+            <span>{{ module.title }}</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+    </ul>
+  </div>
+  <!-- <button  [matMenuTriggerFor]="moreTopMenu" class="scroll_button">>></button>
+  <mat-menu #moreTopMenu="matMenu">
+    <div #Topmore class="top-mat-menu-drop-item">
+      <button *ngFor="let module of submodules" mat-menu-item>
+        <span class="cursor-pointer setting-menu max-health-primary-color"> {{ module.title }}</span>
+      </button>
+    </div>
+  </mat-menu> -->
+
+</div>

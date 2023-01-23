@@ -1,0 +1,134 @@
+::ng-deep .im-select-dropdown {
+  mat-optgroup {
+    label.mat-optgroup-label:empty {
+      display: none;
+    }
+  }
+}
+mat-label {
+  font-weight: 600;
+}
+.full-width {
+  width: 100%;
+}
+.w-48 {
+  width: 48%;
+}
+.im-textarea {
+  textarea {
+    overflow: hidden !important;
+    line-height: 24px;
+  }
+  .mat-form-field-infix {
+    padding-bottom: 1.24375em;
+  }
+}
+::ng-deep mat-label.mat-form-field-required-marker {
+  &:empty {
+    display: none;
+  }
+  &:after {
+    content: "*";
+    color: red;
+    margin-left: 0.2em;
+  }
+}
+
+.mat-select-panel.mat-primary.im-select-dropdown {
+  min-width: calc(100% + 12px) !important;
+}
+::ng-deep .max-select-overlay-panel {
+  transform: translate(-8px, 22px) !important;
+  &[style*="bottom"] {
+    transform: translate(-8px, -24px) !important;
+  }
+}
+.mat-error {
+  font-weight: bolder;
+  &::before {
+    content: "\e002";
+    font-family: "Material Icons";
+    padding-left: 0.2rem;
+    padding-right: 0.1rem;
+    padding-top: 0.6666666667em;
+    font-weight: 400;
+    position: relative;
+    top: 1px;
+  }
+}
+.editable-textarea-button {
+  color: #5a5a5a;
+  padding: 0;
+  height: 24px !important;
+  ::ng-deep .mat-button-focus-overlay {
+    display: none;
+  }
+  ::ng-deep .mat-button-wrapper {
+    display: flex;
+    align-items: center;
+    height: 24px !important;
+
+    .box-input {
+      border-color: #ababab;
+      background-color: #fff;
+      height: 24px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+  }
+}
+.editable-form-textarea {
+  ::ng-deep .text-area-edit {
+    background: #fff;
+    width: 185px;
+    border-radius: 8px;
+    &.mat-form-field-appearance-outline .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+  }
+}
+
+
+
+
+
+mat-form-field{
+
+  mat-label{
+    font-weight: 600;
+    margin: 0px 0 0px 2px;
+    letter-spacing: 0.84px;
+    color: #004084 !important;
+    font-size: 17px;
+    background: #ffff;
+    padding: 0 5px;
+  }
+  button.clear mat-icon{
+    color: #FFFFFF;
+    border: 0.5px solid #FFFFFF;
+    opacity: 1;
+    background: #707070 0% 0% no-repeat padding-box;
+    border: 1px solid #707070;
+    opacity: 1;
+    border-radius: 109px;
+    font-size: 10px;
+    padding: 1px;
+    width: 14px;
+    height: 14px;
+    // margin: -17px -5px  !important;
+    // position: absolute;
+  }
+  button.clear{
+    // position: absolute;
+    right: -3px;
+  }
+  mat-datepicker-toggle{
+    margin-top: 3px;
+  }
+
+  .mat-input-element.text-right{
+    width: 96%;
+  }
+}

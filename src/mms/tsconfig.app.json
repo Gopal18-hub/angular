@@ -11,6 +11,12 @@
         ],
         "@core/*": [
           "./core/*"
+        ],
+        "@environments/*": [
+          "../environments/*"
+        ],
+        "@shared/*": [
+          "../shared/*"
         ]
     }
   },
@@ -19,6 +25,7 @@
     "src/polyfills.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "../shared/**/*.d.ts"
   ]
 }
