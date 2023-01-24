@@ -16,6 +16,7 @@ export namespace MaxModules {
       defaultPath: "/out-patients",
       moreOptions: true,
       type: "module",
+      allUsersAllow: false,
       childrens: [
         {
           id: -1,
@@ -180,7 +181,7 @@ export namespace MaxModules {
               defaultPath:
                 "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
-              allUsersAllow: false,
+              allUsersAllow: true,
             },
             // dispatch
             {
@@ -416,33 +417,39 @@ export namespace MaxModules {
       title: "Emergency",
       id: 32,
       defaultPath: "",
-      childrens: [],
+      allUsersAllow: false,
       type: "module",
+      childrens: [],
     },
     {
       title: "In-Patients",
       id: 1,
       defaultPath: "",
+      allUsersAllow: false,
       childrens: [],
     },
     {
       title: "MMS",
       id: 3,
       defaultPath: "",
+      allUsersAllow: false,
       childrens: [],
     },
     {
       title: "Operation Theater",
       id: 5,
       defaultPath: "",
-      childrens: [],
       type: "module",
+      allUsersAllow: false,
+      childrens: [],
     },
     {
       title: "MIS reports",
       id: 34,
       defaultPath: "/mis-reports",
       moreOptions: true,
+      type: "module",
+      allUsersAllow: true,
       childrens: [
         {
           id: 34,
@@ -450,6 +457,7 @@ export namespace MaxModules {
           defaultPath: "/op-ip",
           moreOptions: true,
           tenentPath: "/mis-reports",
+          allUsersAllow: false,
           childrens: [
             {
               id: 34,
@@ -561,7 +569,7 @@ export namespace MaxModules {
                       title: "Discharge Report",
                       defaultPath: "",
                       globalSearchKey: "global",
-                      allUsersAllow: false,
+                      allUsersAllow: true,
                     },
                     {
                       id: 34,
@@ -1362,50 +1370,56 @@ export namespace MaxModules {
           id: 38,
           title: "Marketing",
           defaultPath: "/marketing",
-          moreOptions: false,
+          moreOptions: true,
           tenentPath: "/mis-reports",
+          allUsersAllow: true,
           childrens: [],
         },
         {
           id: 35,
           title: "MMS",
           defaultPath: "/mms",
-          moreOptions: false,
+          moreOptions: true,
           tenentPath: "/mis-reports",
+          allUsersAllow: false,
           childrens: [],
         },
       ],
-      type: "module",
     },
     {
       title: "Physicians",
       id: 5,
       defaultPath: "",
+      allUsersAllow: false,
       childrens: [],
     },
     {
       title: "Laboratory",
       id: 4,
       defaultPath: "",
+      allUsersAllow: false,
       childrens: [],
     },
     {
       title: "Adverse Events",
       id: 42,
       defaultPath: "",
-      childrens: [],
       type: "module",
+      allUsersAllow: false,
+      childrens: [],
     },
     {
       title: "Donate Blood",
       id: 11,
       defaultPath: "",
+      allUsersAllow: false,
       childrens: [],
     },
     {
       title: "Administration",
       id: 6,
       defaultPath: "",
+      allUsersAllow: false,
       childrens: [],
     },
   ];

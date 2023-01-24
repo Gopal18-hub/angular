@@ -502,45 +502,26 @@ export class OpRegistrationComponent implements OnInit {
 
   bool: boolean | undefined;
   disableforeigner: boolean = false;
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     ///GAV-1487 GAV-1500
     if (!this.cookie.check("EWSAccess")) {
-      await this.permissionservice.getPermissionsRoleWise();
-      const accessControls: any = this.permissionservice.getAccessControls();
-
-      let exist: any = accessControls[2][7][600];
-      if (exist == undefined) {
-        exist = false;
-      } else {
-        exist = accessControls[2][7][600][1559];
-        exist = exist == undefined ? false : exist;
-      }
-      if (exist) {
-        this.cookie.delete("EWSAccess", "/");
-        this.cookie.set("EWSAccess", "1", {
-          path: "/",
-        });
-      } else {
-        this.cookie.delete("EWSAccess", "/");
-        this.cookie.set("EWSAccess", "0", {
-          path: "/",
-        });
-      }
-    }
-    if (this.cookie.get("EWSAccess") == "0") {
-      this.registrationFormData.properties.paymentMethod.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "PSU/Govt", value: "psu/govt", disabled: false },
-        { title: "EWS", value: "ews", disabled: true },
-        { title: "Corporate/Insurance", value: "ins", disabled: false },
-      ];
+      this.checkEWSAccess();
     } else {
-      this.registrationFormData.properties.paymentMethod.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "PSU/Govt", value: "psu/govt", disabled: false },
-        { title: "EWS", value: "ews", disabled: false },
-        { title: "Corporate/Insurance", value: "ins", disabled: false },
-      ];
+      if (this.cookie.get("EWSAccess") == "0") {
+        this.registrationFormData.properties.paymentMethod.options = [
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "PSU/Govt", value: "psu/govt", disabled: false },
+          { title: "EWS", value: "ews", disabled: true },
+          { title: "Corporate/Insurance", value: "ins", disabled: false },
+        ];
+      } else {
+        this.registrationFormData.properties.paymentMethod.options = [
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "PSU/Govt", value: "psu/govt", disabled: false },
+          { title: "EWS", value: "ews", disabled: false },
+          { title: "Corporate/Insurance", value: "ins", disabled: false },
+        ];
+      }
     }
     this.bool = true;
     this.isNoImage = true;
@@ -566,6 +547,25 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     this.formProcessingFlag = false;
+  }
+
+  async checkEWSAccess() {
+    await this.permissionservice.getPermissionsRoleWise();
+    if (this.cookie.get("EWSAccess") == "0") {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: true },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    } else {
+      this.registrationFormData.properties.paymentMethod.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "PSU/Govt", value: "psu/govt", disabled: false },
+        { title: "EWS", value: "ews", disabled: false },
+        { title: "Corporate/Insurance", value: "ins", disabled: false },
+      ];
+    }
   }
 
   ngOnDestroy(): void {
@@ -2727,6 +2727,8 @@ export class OpRegistrationComponent implements OnInit {
               setTimeout(() => {
                 this.maxIDChangeCall = false;
                 this.apiProcessing = false;
+                this.OPRegForm.markAllAsTouched();
+                this.OPRegForm.markAsPristine();
               }, 2000);
               this.maxIDSearch = false;
             }
@@ -2974,30 +2976,56 @@ export class OpRegistrationComponent implements OnInit {
       );
     }
     this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    this.OPRegForm.controls["mobileNumber"].setValue(
-      this.patientDetails?.pphone
-    );
-    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title);
-    this.OPRegForm.controls["firstName"].setValue(
-      this.patientDetails?.firstname
-    );
-    this.OPRegForm.controls["lastName"].setValue(this.patientDetails?.lastName);
+    if (this.patientDetails?.pphone) {
+      this.OPRegForm.controls["mobileNumber"].setValue(
+        this.patientDetails?.pphone
+      );
+    }
+
+    if (this.patientDetails?.title) {
+      this.OPRegForm.controls["title"].setValue(this.patientDetails?.title);
+    }
+
+    if (this.patientDetails?.firstname) {
+      this.OPRegForm.controls["firstName"].setValue(
+        this.patientDetails?.firstname
+      );
+    }
+
+    if (this.patientDetails?.lastName) {
+      this.OPRegForm.controls["lastName"].setValue(
+        this.patientDetails?.lastName
+      );
+    }
+
     this.OPRegForm.controls["middleName"].setValue(
       this.patientDetails?.middleName
     );
-    this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
+    if (this.patientDetails?.sex) {
+      this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
+    }
+
     //if (this.patientDetails?.dob) {
     this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
     // } else {
     //   this.OPRegForm.controls["dob"].setValue("");
     // }
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
-    this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
-    this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
-    this.OPRegForm.controls["nationality"].setValue({
-      title: this.patientDetails?.nationalityName,
-      value: this.patientDetails?.nationality,
-    });
+    if (this.patientDetails?.agetype) {
+      this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
+    }
+
+    if (this.patientDetails?.pemail) {
+      this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
+    }
+
+    if (this.patientDetails?.nationality) {
+      this.OPRegForm.controls["nationality"].setValue({
+        title: this.patientDetails?.nationalityName,
+        value: this.patientDetails?.nationality,
+      });
+    }
+
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
@@ -3171,10 +3199,13 @@ export class OpRegistrationComponent implements OnInit {
   isOrganDonor: boolean = false;
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
-    this.OPRegForm.controls["country"].setValue({
-      title: this.patientDetails?.countryName,
-      value: this.patientDetails?.pcountry,
-    });
+    if (this.patientDetails?.pcountry) {
+      this.OPRegForm.controls["country"].setValue({
+        title: this.patientDetails?.countryName,
+        value: this.patientDetails?.pcountry,
+      });
+    }
+
     if (patientDetails?.spouseName != "") {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
       this.OPRegForm.controls["fatherSpouse"].setValue(2);
@@ -3215,18 +3246,34 @@ export class OpRegistrationComponent implements OnInit {
       Number(patientDetails?.ppinCode == 0 ? "" : patientDetails?.ppinCode)
     );
     Number(patientDetails?.ppinCode == 0 ? "" : this.getLocalityByPinCode());
-    this.OPRegForm.controls["state"].setValue({
-      title: patientDetails?.stateName,
-      value: patientDetails?.pstate,
-    });
-    this.OPRegForm.controls["district"].setValue({
-      title: patientDetails?.districtName,
-      value: patientDetails?.pdistrict,
-    });
-    this.OPRegForm.controls["city"].setValue({
-      title: patientDetails?.city,
-      value: patientDetails?.pcity,
-    });
+    if (patientDetails?.pstate) {
+      this.OPRegForm.controls["state"].setValue({
+        title: patientDetails?.stateName,
+        value: patientDetails?.pstate,
+      });
+    }
+
+    if (this.patientDetails?.pcountry == 1) {
+      if (patientDetails?.pdistrict) {
+        this.OPRegForm.controls["district"].setValue({
+          title: patientDetails?.districtName,
+          value: patientDetails?.pdistrict,
+        });
+      }
+    } else {
+      this.OPRegForm.controls["district"].setValue({
+        title: patientDetails?.districtName,
+        value: patientDetails?.pdistrict,
+      });
+    }
+
+    if (patientDetails?.pcity) {
+      this.OPRegForm.controls["city"].setValue({
+        title: patientDetails?.city,
+        value: patientDetails?.pcity,
+      });
+    }
+
     if (patientDetails?.locality == 0) {
       if (
         patientDetails?.otherlocality != "" ||
@@ -3366,11 +3413,15 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   //POPULATING THE MODE OF PATMENT FOR PATIENT DETAILS
-  setPaymentMode(ppagerNumber: string | undefined) {
-    this.OPRegForm.value.paymentMethod;
-    this.OPRegForm.controls["paymentMethod"].setValue(
-      ppagerNumber?.toLowerCase()
-    );
+  setPaymentMode(ppagerNumber: string) {
+    // this.OPRegForm.value.paymentMethod;
+    if (["cash", "psu/govt", "ews", "ins"].includes(ppagerNumber)) {
+      this.OPRegForm.controls["paymentMethod"].setValue(
+        ppagerNumber?.toLowerCase()
+      );
+    } else {
+      this.OPRegForm.controls["paymentMethod"].setValue("cash");
+    }
   }
 
   getDobStatus(): boolean {

@@ -1,11 +1,21 @@
-<div mat-dialog-content class="font-base color-blue">
-  Please select your primary Max ID  
-  <mat-icon class="mr-2 ml-12 max-dialog-close-icon" (click)="closemergepopup()">close</mat-icon> 
+<div class="relative">
+  <label class="max-health-primary-color font-base font-semi-bold"
+    >Please select your primary Max ID </label>
+    <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+    (click)="closemergepopup()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
-<div class="h-full w-full ml-1 mt-2">
+<div class="h-full w-full ml-1 mt-1">
   
   <mat-radio-group class="example-radio-group" [(ngModel)]="primaryid">
-    <mat-radio-button class="pt-3 font-base color-blue" *ngFor="let id of selectedRows" [value]="id.id"  color="primary" (change)="checboxSelected(id)">
+    <mat-radio-button class="pt-3 font-base max-health-primary-color" *ngFor="let id of selectedRows" [value]="id.id"  color="primary" (change)="checboxSelected(id)">
       {{id.maxid}}
     </mat-radio-button>
   </mat-radio-group>
@@ -14,3 +24,4 @@
 <button mat-raised-button color="primary" class="mt-8" type="button" (click)="patientMerging()" [disabled]="submitbtndisable">
   Submit
 <mat-icon>east</mat-icon></button>
+

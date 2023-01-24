@@ -86,6 +86,7 @@
     tfoot tr td:nth-child(20),
     tfoot tr td:nth-child(21),
     tfoot tr td:nth-child(22),
+    tfoot tr td:nth-child(24),
     tbody tr td:nth-child(5),
     tbody tr td:nth-child(6),
     tbody tr td:nth-child(7),
@@ -103,8 +104,8 @@
     tbody tr td:nth-child(19),
     tbody tr td:nth-child(20),
     tbody tr td:nth-child(21),
-    tbody tr td:nth-child(22)
-
+    tbody tr td:nth-child(22),
+    tbody tr td:nth-child(24)
     {
         text-align: right !important;
     }
@@ -208,7 +209,8 @@
     thead tr th:nth-child(15){
         padding-left: 2rem;
     }
-    thead tr th:nth-child(10)
+    thead tr th:nth-child(10),
+    thead tr th:nth-child(24)
     {
         padding-left: 1rem;
     }

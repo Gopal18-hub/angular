@@ -98,6 +98,7 @@ export class CashScrollNewComponent implements OnInit {
       "upiamount",
       "totalamount",
       "compName",
+      "inetAmt"
     ],
     rowLayout: { dynamic: { rowClass: "row['rowhighlight']" } },
     columnsInfo: {
@@ -263,6 +264,14 @@ export class CashScrollNewComponent implements OnInit {
           width: "10rem",
         },
       },
+      inetAmt:{
+        title: "Internet Payment",
+        type: "string",
+        tooltipColumn: "inetAmt",
+        style: {
+          width: "9rem",
+        },
+      },
     },
   };
   cashscrollnewForm!: FormGroup;
@@ -307,6 +316,7 @@ export class CashScrollNewComponent implements OnInit {
   OnlinePayment: number = 0;
   DonationAmount: number = 0;
   UPIAmt: number = 0;
+  inetAmt:number = 0;
 
   tableFooterData: any = {};
 
@@ -481,6 +491,9 @@ export class CashScrollNewComponent implements OnInit {
               this.UPIAmt = this.scrolldetailsList
                 .map((t: any) => t.upiAmt)
                 .reduce((acc: any, value: any) => acc + value, 0);
+              this.inetAmt = this.scrolldetailsList
+              .map((t: any) => t.inetAmt)
+              .reduce((acc: any, value: any) => acc + value, 0);
 
               this.scrolldetailsList = this.scrolldetailsList.map(
                 (item: any) => {
@@ -526,6 +539,10 @@ export class CashScrollNewComponent implements OnInit {
                   item.totalamount = (
                     parseFloat(item.billamount) + parseFloat(item.donation)
                   ).toFixed(2);
+                  item.inetAmt =  
+                      item.inetAmt == undefined
+                       ? "0.00"
+                       : parseFloat(item.inetAmt).toFixed(2);
                   item.rowhighlight = "";
                   return item;
                 }
@@ -552,6 +569,7 @@ export class CashScrollNewComponent implements OnInit {
                 upiamount: this.UPIAmt.toFixed(2),
                 donation: this.DonationAmount.toFixed(2),
                 totalamount: (this.billamount + this.DonationAmount).toFixed(2),
+                inetAmt : this.inetAmt.toFixed(2), 
                 rowhighlight: "highlight",
               };
               console.log(resultdata);
@@ -775,6 +793,9 @@ export class CashScrollNewComponent implements OnInit {
         this.UPIAmt = this.scrolldetailsList
           .map((t: any) => t.upiAmt)
           .reduce((acc: any, value: any) => acc + value, 0);
+        this.inetAmt = this.scrolldetailsList
+          .map((t: any) => t.inetAmt)
+          .reduce((acc: any, value: any) => acc + value, 0);
 
         this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
           item.billamount = parseFloat(item.billamount).toFixed(2);
@@ -809,12 +830,14 @@ export class CashScrollNewComponent implements OnInit {
             item.upiamount == undefined
               ? "0.00"
               : parseFloat(item.upiamount).toFixed(2);
-          item.totalamount =
-            item.totalamount == undefined
-              ? "0.00"
-              : parseFloat(item.totalamount).toFixed(2);
-
-          return item;
+          item.totalamount = (
+                parseFloat(item.billamount) + parseFloat(item.donation)
+              ).toFixed(2);
+          item.inetAmt = 
+             item.inetAmt == undefined
+             ? "0.00"
+            : parseFloat(item.inetAmt).toFixed(2);
+         return item;
         });
 
         this.tableFooterData = {
@@ -838,6 +861,8 @@ export class CashScrollNewComponent implements OnInit {
           upiamount: this.UPIAmt.toFixed(2),
           donation: this.DonationAmount.toFixed(2),
           totalamount: (this.billamount + this.DonationAmount).toFixed(2),
+          inetAmt : this.inetAmt.toFixed(2),
+          rowhighlight: "highlight",
         };
       });
   }
