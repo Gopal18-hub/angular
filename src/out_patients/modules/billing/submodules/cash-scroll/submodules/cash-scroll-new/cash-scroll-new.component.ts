@@ -4,7 +4,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
-import { Router,ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
@@ -30,16 +30,16 @@ export class CashScrollNewComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private dialogservice: MessageDialogService,
-    private datepipe: DatePipe,    
+    private datepipe: DatePipe,
     private reportService: ReportService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (value) => {
         console.log(Object.keys(value).length);
         if (Object.keys(value).length > 0) {
-         this.getoldscroll(value["scrollno"]);
+          this.getoldscroll(value["scrollno"]);
         }
       });
   }
@@ -61,7 +61,7 @@ export class CashScrollNewComponent implements OnInit {
         readonly: true,
       },
       fromdate: {
-        type: "datetime"
+        type: "datetime",
       },
       todate: {
         type: "datetime",
@@ -73,6 +73,7 @@ export class CashScrollNewComponent implements OnInit {
     clickSelection: "single",
     dateformat: "dd/MM/yyyy - HH:mm:ss",
     selectBox: false,
+    footer: true,
     displayedColumns: [
       "sno",
       "receiptNo",
@@ -97,6 +98,7 @@ export class CashScrollNewComponent implements OnInit {
       "upiamount",
       "totalamount",
       "compName",
+      "inetAmt"
     ],
     rowLayout: { dynamic: { rowClass: "row['rowhighlight']" } },
     columnsInfo: {
@@ -223,7 +225,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Dues",
         type: "number",
         style: {
-          width: "4rem",
+          width: "9rem",
         },
       },
       tdsamount: {
@@ -257,53 +259,66 @@ export class CashScrollNewComponent implements OnInit {
       compName: {
         title: "Company Name",
         type: "string",
+        tooltipColumn: "compName",
         style: {
           width: "10rem",
+        },
+      },
+      inetAmt:{
+        title: "Internet Payment",
+        type: "string",
+        tooltipColumn: "inetAmt",
+        style: {
+          width: "9rem",
         },
       },
     },
   };
   cashscrollnewForm!: FormGroup;
-  scrolldetailsexists:boolean = true;
-  printsexists:boolean = true;
-  excelexists:boolean = true;
+  scrolldetailsexists: boolean = true;
+  printsexists: boolean = true;
+  excelexists: boolean = true;
   lastUpdatedBy: string = "";
   EmployeeName: string = "";
   currentTime: string = new Date().toLocaleString();
-  queryparamssearch:boolean = false;
+  queryparamssearch: boolean = false;
   takenat: any;
-  
-  uniquescrollnumber !: GetDataForOldScroll;
+  apiProcessing: boolean = false;
+  uniquescrollnumber!: GetDataForOldScroll;
 
   private readonly _destroying$ = new Subject<void>();
   fromdatedetails: string | undefined;
-  scrolldetailsList:any= [];
+  scrolldetailsList: any = [];
 
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
 
-  fromdatedisable:boolean = false;
-  todatedisable:boolean = false;
+
+  fromdatedisable: boolean = false;
+  todatedisable: boolean = false;
   scrollno: string | undefined;
-  billamount:number = 0;
-  refund:number = 0;
-  depositamount:number = 0;
-  discountamount:number = 0;
-  planamount :number = 0;
-  plandiscount:number = 0;
-  netamount :number = 0;
-  cash :number = 0;
-  cheque :number = 0;
-  dd :number = 0;
-  creditcard :number = 0;
-  dues :number = 0;
-  tdsamount :number = 0;
-  duereceved :number = 0;
-  mobilePayment :number = 0;
-  OnlinePayment:number = 0;
-  DonationAmount :number = 0;
-  UPIAmt :number = 0;
+  billamount: number = 0;
+  refund: number = 0;
+  depositamount: number = 0;
+  discountamount: number = 0;
+  planamount: number = 0;
+  plandiscount: number = 0;
+  netamount: number = 0;
+  cash: number = 0;
+  cheque: number = 0;
+  dd: number = 0;
+  creditcard: number = 0;
+  dues: number = 0;
+  tdsamount: number = 0;
+  duereceved: number = 0;
+  mobilePayment: number = 0;
+  OnlinePayment: number = 0;
+  DonationAmount: number = 0;
+  UPIAmt: number = 0;
+  inetAmt:number = 0;
+
+  tableFooterData: any = {};
 
   ngOnInit(): void {
     console.log("inside cash scroll new");
@@ -319,152 +334,256 @@ export class CashScrollNewComponent implements OnInit {
     this.cashscrollnewForm.controls["fromdate"].disable();
     this.fromdatedisable = true;
     this.todatedisable = false;
-    if(this.queryparamssearch){ 
-      this.todatedisable = true;      
-    this.cashscrollnewForm.controls["todate"].disable();
+    if (this.queryparamssearch) {
+      this.todatedisable = true;
+      this.cashscrollnewForm.controls["todate"].disable();
       this.cashscrollnewForm.controls["scrollno"].setValue(this.scrollno);
       this.printsexists = false;
       this.excelexists = false;
-     }
-     else{
-       this.formint();
-     }
-   
+    } else {
+      this.formint();
+    }
   }
 
-  formint(){
-    this.getdetailsfornewscroll();      
+  formint() {
+    this.getdetailsfornewscroll();
     this.cashscrollnewForm.controls["todate"].enable();
-      this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
-      this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
-      this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
-      this.takenat = new Date();   
+    this.cashscrollnewForm.controls["takenat"].setValue(
+      this.datepipe.transform(this.currentTime, "dd/MM/yyyy hh:mm:ss a")
+    );
+    this.cashscrollnewForm.controls["todate"].setValue(
+      this.datepipe.transform(this.currentTime, "YYYY-MM-ddTHH:mm:ss")
+    );
+    this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
+    this.takenat = new Date();
   }
   opencashscroll() {
     this.router.navigate(["report/cash-scroll", "cash-scroll"]);
   }
-  
-  getdetailsfornewscroll(){
+
+  getdetailsfornewscroll() {
     this.http
-    .get(ApiConstants.getdetailsforcashscroll(this.operatorID, this.stationId))
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => 
-    {
-      let cashdetails;
-      let fromdatetime,todatetime;
-      cashdetails = resultdata as getdataForScrollMain;
-      fromdatetime = cashdetails.getDetailsForMainScrollDatetime[0].todatetime;
-      todatetime = cashdetails.getDetailsForMainScrollDatetime[0].currentDateTime;
-      this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS"));
-      this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform(todatetime, "YYYY-MM-ddTHH:mm:ss.SSS"));
-   
-    });
+      .get(
+        ApiConstants.getdetailsforcashscroll(this.operatorID, this.stationId)
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata) => {
+        let cashdetails;
+        let fromdatetime, todatetime;
+        cashdetails = resultdata as getdataForScrollMain;
+        fromdatetime =
+          cashdetails.getDetailsForMainScrollDatetime[0].todatetime;
+        todatetime =
+          cashdetails.getDetailsForMainScrollDatetime[0].currentDateTime;
+
+        if(fromdatetime == null || fromdatetime == undefined || fromdatetime == "")
+        {
+          this.cashscrollnewForm.controls["fromdatetime"].setValue(
+            this.datepipe.transform(this.currentTime, "YYYY-MM-ddTHH:mm:ss")
+          );
+        }
+        else
+        {
+          this.cashscrollnewForm.controls["fromdate"].setValue(
+            this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
+          );
+        }
+       
+        this.cashscrollnewForm.controls["todate"].setValue(
+          this.datepipe.transform(todatetime, "YYYY-MM-ddTHH:mm:ss.SSS")
+        );
+      }, (error) =>{
+        console.log(error)
+      });
   }
 
-  viewscrolldetails(){
-    let  todaysdate;  
-    todaysdate = new Date();
- if(this.cashscrollnewForm.controls["todate"].value > todaysdate){
-    this.dialogservice.error("To Date Can Not be greater then Current Date");
- }
-else
- {
-    this.http
-    .get(ApiConstants.getscrolldetailsforoneuser(
-    this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
-    this.datepipe.transform( this.cashscrollnewForm.controls["todate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
-      this.operatorID, this.stationId, this.hsplocationId))
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => 
-    {
+  viewscrolldetails() {
+    let todaysdate;
+    todaysdate = new Date();   
+    if (this.cashscrollnewForm.controls["todate"].value > todaysdate) {
+      this.dialogservice.error("To Date Can Not be greater then Current Date");
+    } else {
+      this.apiProcessing = true;
+      this.http
+        .get(
+          ApiConstants.getscrolldetailsforoneuser(
+            this.datepipe.transform(
+              this.cashscrollnewForm.controls["fromdate"].value,
+              "yyyy-MM-ddTHH:mm:ss"
+            ) || "",
+            this.datepipe.transform(
+              this.cashscrollnewForm.controls["todate"].value,
+              "yyyy-MM-ddTHH:mm:ss"
+            ) || "",
+            this.operatorID,
+            this.stationId,
+            this.hsplocationId
+          )
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            this.scrolldetailsList = resultdata as CashScrollNewDetail[];
+            if (this.scrolldetailsList.length == 0) {
+              this.scrolldetailsList = [];
+              this.apiProcessing = false;
+            } else {
+              this.scrolldetailsexists = false;
+              this.todatedisable = true;
+              this.cashscrollnewForm.controls["todate"].disable();
+              for (var i = 0; i < this.scrolldetailsList.length; i++) {
+                this.scrolldetailsList[i].sno = i + 1;
+              }
+              this.apiProcessing = false;
+              this.billamount = this.scrolldetailsList
+                .map((t: any) => t.billamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.refund = this.scrolldetailsList
+                .map((t: any) => t.refund)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.depositamount = this.scrolldetailsList
+                .map((t: any) => t.depositamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.discountamount = this.scrolldetailsList
+                .map((t: any) => t.discountamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.planamount = this.scrolldetailsList
+                .map((t: any) => t.planamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
 
-      this.scrolldetailsList = resultdata as CashScrollNewDetail[];
-      if(this.scrolldetailsList.length == 0){
-        this.scrolldetailsList = [];
-     }else{
-    this.scrolldetailsexists = false;  
-    this.todatedisable = true;
-    this.cashscrollnewForm.controls["todate"].disable();
-    for (var i = 0; i < this.scrolldetailsList.length; i++) {
-      this.scrolldetailsList[i].sno = i + 1;
+              this.plandiscount = this.scrolldetailsList
+                .map((t: any) => t.plandiscount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.netamount = this.scrolldetailsList
+                .map((t: any) => t.netamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.cash = this.scrolldetailsList
+                .map((t: any) => t.cash)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.cheque = this.scrolldetailsList
+                .map((t: any) => t.cheque)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.duereceved = this.scrolldetailsList
+                .map((t: any) => t.duesrec)
+                .reduce((acc: any, value: any) => acc + value, 0);
+
+              this.dd = this.scrolldetailsList
+                .map((t: any) => t.dd)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.creditcard = this.scrolldetailsList
+                .map((t: any) => t.creditCard)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.mobilePayment = this.scrolldetailsList
+                .map((t: any) => t.mobilePayment)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.OnlinePayment = this.scrolldetailsList
+                .map((t: any) => t.onlinePayment)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.dues = this.scrolldetailsList
+                .map((t: any) => t.dues)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.tdsamount = this.scrolldetailsList
+                .map((t: any) => t.tdsamount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.DonationAmount = this.scrolldetailsList
+                .map((t: any) => t.donationAmount)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.UPIAmt = this.scrolldetailsList
+                .map((t: any) => t.upiAmt)
+                .reduce((acc: any, value: any) => acc + value, 0);
+              this.inetAmt = this.scrolldetailsList
+              .map((t: any) => t.inetAmt)
+              .reduce((acc: any, value: any) => acc + value, 0);
+
+              this.scrolldetailsList = this.scrolldetailsList.map(
+                (item: any) => {
+                  item.billamount = parseFloat(item.billamount).toFixed(2);
+                  item.refund = parseFloat(item.refund).toFixed(2);
+                  item.depositamount = parseFloat(item.depositamount).toFixed(
+                    2
+                  );
+                  item.planamount = parseFloat(item.planamount).toFixed(2);
+                  item.discountamount = parseFloat(item.discountamount).toFixed(
+                    2
+                  );
+                  item.plandiscount = parseFloat(item.plandiscount).toFixed(2);
+                  item.netamount = parseFloat(item.netamount).toFixed(2);
+                  item.cash = parseFloat(item.cash).toFixed(2);
+                  item.cheque = parseFloat(item.cheque).toFixed(2);
+                  item.dd = parseFloat(item.dd).toFixed(2);
+                  item.creditcard =
+                    item.creditcard == undefined
+                      ? "0.00"
+                      : parseFloat(item.creditcard).toFixed(2);
+                  item.mobilePayment =
+                    item.mobilePayment == undefined
+                      ? "0.00"
+                      : parseFloat(item.mobilePayment).toFixed(2);
+                  item.onlinePayment =
+                    item.onlinePayment == undefined
+                      ? "0.00"
+                      : parseFloat(item.onlinePayment).toFixed(2);
+                  item.tdsamount = parseFloat(item.tdsamount).toFixed(2);
+                  item.dues =
+                    item.dues == undefined
+                      ? "0"
+                      : parseFloat(item.dues).toFixed(2);
+                  item.donation =
+                    item.donation == undefined
+                      ? "0.00"
+                      : parseFloat(item.donation).toFixed(2);
+                  item.upiamount =
+                    item.upiamount == undefined
+                      ? "0.00"
+                      : parseFloat(item.upiamount).toFixed(2);
+                  item.totalamount = (
+                    parseFloat(item.billamount) + parseFloat(item.donation)
+                  ).toFixed(2);
+                  item.inetAmt =  
+                      item.inetAmt == undefined
+                       ? "0.00"
+                       : parseFloat(item.inetAmt).toFixed(2);
+                  item.rowhighlight = "";
+                  return item;
+                }
+              );
+
+              this.tableFooterData = {
+                sno: "",
+                receiptNo: "TOTAL",
+                billamount: this.billamount.toFixed(2),
+                refund: this.refund.toFixed(2),
+                discountamount: this.discountamount.toFixed(2),
+                planamount: this.planamount.toFixed(2),
+                plandiscount: this.plandiscount.toFixed(2),
+                depositamount: this.depositamount.toFixed(2),
+                netamount: this.netamount.toFixed(2),
+                cash: this.cash.toFixed(2),
+                cheque: this.cheque.toFixed(2),
+                dd: this.dd.toFixed(2),
+                creditcard: this.creditcard.toFixed(2),
+                mobilePayment: this.mobilePayment.toFixed(2),
+                onlinePayment: this.OnlinePayment.toFixed(2),
+                dues: this.dues.toFixed(2),
+                tdsamount: this.tdsamount.toFixed(2),
+                upiamount: this.UPIAmt.toFixed(2),
+                donation: this.DonationAmount.toFixed(2),
+                totalamount: (this.billamount + this.DonationAmount).toFixed(2),
+                inetAmt : this.inetAmt.toFixed(2), 
+                rowhighlight: "highlight",
+              };
+              console.log(resultdata);
+            }
+          },
+          (error) => {
+            this.scrolldetailsList = [];
+            this.apiProcessing = false;
+            this.dialogservice.error("No search found");
+          }
+        );
     }
-
-    this.billamount = this.scrolldetailsList.map((t:any) => t.billamount).reduce((acc: any, value: any) => acc + value, 0);
-    this.refund = this.scrolldetailsList.map((t:any) => t.refund).reduce((acc:any, value:any) => acc + value, 0);
-    this.depositamount = this.scrolldetailsList.map((t:any) => t.depositamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.discountamount = this.scrolldetailsList.map((t:any) => t.discountamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.planamount = this.scrolldetailsList.map((t:any) => t.planamount).reduce((acc:any, value:any) => acc + value, 0);
-    
-    this.plandiscount = this.scrolldetailsList.map((t:any) => t.plandiscount).reduce((acc:any, value:any) => acc + value, 0);
-    this.netamount = this.scrolldetailsList.map((t:any) => t.netamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.cash = this.scrolldetailsList.map((t:any) => t.cash).reduce((acc:any, value:any) => acc + value, 0);
-    this.cheque = this.scrolldetailsList.map((t:any) => t.cheque).reduce((acc:any, value:any) => acc + value, 0);
-    this.duereceved = this.scrolldetailsList.map((t:any) => t.duesrec).reduce((acc:any, value:any) => acc + value, 0);
-    
-    this.dd = this.scrolldetailsList.map((t:any) => t.dd).reduce((acc:any, value:any) => acc + value, 0);
-    this.creditcard = this.scrolldetailsList.map((t:any) => t.creditCard).reduce((acc:any, value:any) => acc + value, 0);
-    this.mobilePayment = this.scrolldetailsList.map((t:any) => t.mobilePayment).reduce((acc:any, value:any) => acc + value, 0);
-    this.OnlinePayment = this.scrolldetailsList.map((t:any) => t.onlinePayment).reduce((acc:any, value:any) => acc + value, 0);
-    this.dues = this.scrolldetailsList.map((t:any) => t.dues).reduce((acc:any, value:any) => acc + value, 0);
-    this.tdsamount = this.scrolldetailsList.map((t:any) => t.tdsamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.DonationAmount = this.scrolldetailsList.map((t:any) => t.donationAmount).reduce((acc:any, value:any) => acc + value, 0);
-    this.UPIAmt = this.scrolldetailsList.map((t:any) => t.upiAmt).reduce((acc:any, value:any) => acc + value, 0);
-   
-    
-
-    this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
-      item.billamount = Number(item.billamount).toFixed(2);
-      item.refund = Number(item.refund).toFixed(2);
-      item.depositamount = Number(item.depositamount).toFixed(2);
-      item.planamount = Number(item.planamount).toFixed(2);
-      item.discountamount = Number(item.discountamount).toFixed(2);
-      item.plandiscount = Number(item.plandiscount).toFixed(2);
-      item.netamount = Number(item.netamount).toFixed(2);
-      item.cash = Number(item.cash).toFixed(2);
-      item.cheque = Number(item.cheque).toFixed(2);
-      item.dd = Number(item.dd).toFixed(2);
-      item.creditcard = item.creditcard == undefined ? "0.000" : Number(item.creditcard).toFixed(2);
-      item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment).toFixed(2);
-      item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment).toFixed(2);
-      item.tdsamount = Number(item.tdsamount).toFixed(2);
-      item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
-      item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
-      item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
-      item.rowhighlight = '';     
-      return item;
-    });
-   
-    this.scrolldetailsList.push({
-      sno: "",
-      receiptNo: "TOTAL",
-      billamount: this.billamount.toFixed(2),
-      refund: this.refund.toFixed(2),
-      discountamount: this.discountamount.toFixed(2),
-      planamount: this.planamount.toFixed(2),
-      plandiscount: this.plandiscount.toFixed(2),
-      depositamount: this.depositamount.toFixed(2),
-      netamount : this.netamount.toFixed(2),
-      cash: this.cash.toFixed(2),
-      cheque: this.cheque.toFixed(2),
-      dd:this.dd.toFixed(2),
-      creditcard: this.creditcard.toFixed(2),
-      mobilePayment: this.mobilePayment.toFixed(2),
-      onlinePayment: this.OnlinePayment.toFixed(2),
-      dues: this.dues,
-      tdsamount: this.tdsamount.toFixed(2),
-      upiamount : this.UPIAmt.toFixed(2),
-      donation: this.DonationAmount.toFixed(2),
-      totalamount: (Number(this.billamount) + Number(this.DonationAmount)).toFixed(2),
-      rowhighlight: 'highlight'
-    });
-    console.log(resultdata);
   }
-    });
-  }
-  } 
-  resetcashscrollnew(){
+  resetcashscrollnew() {
     this.scrolldetailsexists = true;
     this.queryparamssearch = false;
     this.printsexists = true;
@@ -473,55 +592,59 @@ else
     this.fromdatedisable = true;
     this.cashscrollnewForm.controls["scrollno"].setValue("");
     this.scrolldetailsList = [];
+    this.tableFooterData = [];
     this.formint();
   }
   savecashscrollDetails: savecashscroll | undefined;
-  savecashscroll(){
-    if(!this.operatorID){
+  savecashscroll() {
+    if (!this.operatorID) {
       this.dialogservice.error("You are Not Valid User to Save Details");
-    }
-    else if(this.cashscrollnewForm.value.fromdate > this.cashscrollnewForm.value.todate){
+    } else if (
+      this.cashscrollnewForm.value.fromdate >
+      this.cashscrollnewForm.value.todate
+    ) {
       this.dialogservice.error("From Date cannot be greater then Todate");
-    }
-    else if(this.scrolldetailsList.length == 0){
+    } else if (this.scrolldetailsList.length == 0) {
       this.dialogservice.error("There is no data to Save");
-    }
-    else{
-   
+    } else {
       this.http
-      .post(ApiConstants.savecashscroll, this.getcshscrollSubmitRequestBody())
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          if(resultData > 0){
+        .post(ApiConstants.savecashscroll, this.getcshscrollSubmitRequestBody())
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultData) => {
+          if (resultData > 0) {
             this.dialogservice.success("Scroll has been Saved");
             this.scrolldetailsexists = true;
             this.printsexists = false;
             this.excelexists = false;
             this.cashscrollnewForm.controls["scrollno"].setValue(resultData);
-          }
-          else{
+          } else {
             this.dialogservice.error("Invalid Station. Cannot save scroll.");
             this.scrolldetailsexists = false;
             this.printsexists = true;
             this.excelexists = true;
           }
         });
-        this.excelexists = false;
-     }
+      this.excelexists = false;
+    }
   }
 
- getcshscrollSubmitRequestBody() {  
-     this.savecashscrollDetails = new savecashscroll(
-      this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value, 'YYYY-MM-ddTHH:mm:ss.SSS') || '{}',
-      this.datepipe.transform(this.cashscrollnewForm.controls["todate"].value, 'YYYY-MM-ddTHH:mm:ss.SSS') || '{}',
+  getcshscrollSubmitRequestBody() {
+    this.savecashscrollDetails = new savecashscroll(
+      this.datepipe.transform(
+        this.cashscrollnewForm.controls["fromdate"].value,
+        "YYYY-MM-ddTHH:mm:ss.SSS"
+      ) || "{}",
+      this.datepipe.transform(
+        this.cashscrollnewForm.controls["todate"].value,
+        "YYYY-MM-ddTHH:mm:ss.SSS"
+      ) || "{}",
       this.discountamount,
       this.cash,
       this.creditcard,
       this.cheque,
       this.dues,
       this.refund,
-      this.datepipe.transform(this.takenat, 'YYYY-MM-ddTHH:mm:ss.SSS') || '{}',
+      this.datepipe.transform(this.takenat, "YYYY-MM-ddTHH:mm:ss.SSS") || "{}",
       this.billamount,
       this.netamount,
       this.duereceved,
@@ -537,11 +660,11 @@ else
       this.DonationAmount,
       this.stationId,
       this.operatorID,
-      this.hsplocationId      
+      this.hsplocationId
     );
     return this.savecashscrollDetails;
   }
-    exportTable() {
+  exportTable() {
     if (this.cashScrollNewTable) {
       this.cashScrollNewTable.exportAsExcel();
     }
@@ -550,118 +673,197 @@ else
     this._destroying$.next(undefined);
     this._destroying$.complete();
   }
-  
+
   print() {
-    this.openReportModal('CashScrollReport')
+    this.openReportModal("CashScrollReport");
   }
   openReportModal(btnname: string) {
-      this.reportService.openWindow(btnname, btnname, {
-        Fromdate: this.cashscrollnewForm.controls["fromdate"].value ,
-        Todate: this.cashscrollnewForm.controls["todate"].value ,
-        Operatorid: this.operatorID,
-        LocationID: this.hsplocationId,
-        EmployeeName: this.lastUpdatedBy,
-        TimeTakenAt: this.cashscrollnewForm.value.takenat,
-        ack: 1,
-        IsAckByOperator: false,
-        ScrollNo: Number(this.cashscrollnewForm.value.scrollno),
-      });
+    let todatetime =  this.datepipe.transform(
+      this.cashscrollnewForm.controls["todate"].value,
+      "yyyy-MM-ddTHH:mm:ss"
+    ) || "";
+    this.reportService.openWindow(btnname, btnname, {
+      Fromdate: this.cashscrollnewForm.controls["fromdate"].value,
+      Todate: todatetime,
+      Operatorid: this.operatorID,
+      LocationID: this.hsplocationId,
+      EmployeeName: this.EmployeeName,
+      EmployeeID: this.lastUpdatedBy,
+      TimeTakenAt: this.cashscrollnewForm.value.takenat,
+      ack: 1,
+      IsAckByOperator: false,
+      ScrollNo: Number(this.cashscrollnewForm.value.scrollno),
+    });
   }
-  navigatetomain(){
+  navigatetomain() {
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
 
-  getoldscroll(scrollno:any){
+  getoldscroll(scrollno: any) {
     let ackdetails;
     this.queryparamssearch = true;
     this.scrollno = scrollno;
     this.http
-    .get(ApiConstants.getdetaileddataforoldscroll(scrollno, this.stationId))
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => 
-    {
-     this.uniquescrollnumber = resultdata as GetDataForOldScroll;
-     ackdetails = this.uniquescrollnumber.getACKDetails;
+      .get(ApiConstants.getdetaileddataforoldscroll(scrollno, this.stationId))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata) => {
+        this.uniquescrollnumber = resultdata as GetDataForOldScroll;
+        ackdetails = this.uniquescrollnumber.getACKDetails;
 
-     this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( ackdetails[0].scrolldatetime, "dd/MM/yyyy hh:mm:ss a"));
-     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( ackdetails[0].todatetime, "YYYY-MM-ddTHH:mm:ss"));
-     this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform( ackdetails[0].fromdatetime, "YYYY-MM-ddTHH:mm:ss"));
-     this.cashscrollnewForm.controls["employeename"].setValue(ackdetails[0].name);
-   
-     this.scrolldetailsList = this.uniquescrollnumber.getACKOtherdetails;
-     
-     for (var i = 0; i < this.scrolldetailsList.length; i++) {
-      this.scrolldetailsList[i].sno = i + 1;
-    }
-    this.billamount = this.scrolldetailsList.map((t:any) => t.billamount).reduce((acc: any, value: any) => acc + value, 0);
-    this.refund = this.scrolldetailsList.map((t:any) => t.refund).reduce((acc:any, value:any) => acc + value, 0);
-    this.depositamount = this.scrolldetailsList.map((t:any) => t.depositamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.discountamount = this.scrolldetailsList.map((t:any) => t.discountamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.planamount = this.scrolldetailsList.map((t:any) => t.planamount).reduce((acc:any, value:any) => acc + value, 0);
-    
-    this.plandiscount = this.scrolldetailsList.map((t:any) => t.plandiscount).reduce((acc:any, value:any) => acc + value, 0);
-    this.netamount = this.scrolldetailsList.map((t:any) => t.netamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.cash = this.scrolldetailsList.map((t:any) => t.cash).reduce((acc:any, value:any) => acc + value, 0);
-    this.cheque = this.scrolldetailsList.map((t:any) => t.cheque).reduce((acc:any, value:any) => acc + value, 0);
-    this.duereceved = this.scrolldetailsList.map((t:any) => t.duesrec).reduce((acc:any, value:any) => acc + value, 0);
-    
-    this.dd = this.scrolldetailsList.map((t:any) => t.dd).reduce((acc:any, value:any) => acc + value, 0);
-    this.creditcard = this.scrolldetailsList.map((t:any) => t.creditCard).reduce((acc:any, value:any) => acc + value, 0);
-    this.mobilePayment = this.scrolldetailsList.map((t:any) => t.mobilePayment).reduce((acc:any, value:any) => acc + value, 0);
-    this.OnlinePayment = this.scrolldetailsList.map((t:any) => t.onlinePayment).reduce((acc:any, value:any) => acc + value, 0);
-    this.dues = this.scrolldetailsList.map((t:any) => t.dues).reduce((acc:any, value:any) => acc + value, 0);
-    this.tdsamount = this.scrolldetailsList.map((t:any) => t.tdsamount).reduce((acc:any, value:any) => acc + value, 0);
-    this.DonationAmount = this.scrolldetailsList.map((t:any) => t.donationAmount).reduce((acc:any, value:any) => acc + value, 0);
-    this.UPIAmt = this.scrolldetailsList.map((t:any) => t.upiAmt).reduce((acc:any, value:any) => acc + value, 0);
-   
-    
+        this.cashscrollnewForm.controls["takenat"].setValue(
+          this.datepipe.transform(
+            ackdetails[0].scrolldatetime,
+            "dd/MM/yyyy hh:mm:ss a"
+          )
+        );
+        this.cashscrollnewForm.controls["todate"].setValue(
+          this.datepipe.transform(
+            ackdetails[0].todatetime,
+            "YYYY-MM-ddTHH:mm:ss"
+          )
+        );
+        this.cashscrollnewForm.controls["fromdate"].setValue(
+          this.datepipe.transform(
+            ackdetails[0].fromdatetime,
+            "YYYY-MM-ddTHH:mm:ss"
+          )
+        );
+        this.cashscrollnewForm.controls["employeename"].setValue(
+          ackdetails[0].name
+        );
 
-    this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
-      item.billamount = Number(item.billamount).toFixed(2);
-      item.refund = Number(item.refund).toFixed(2);
-      item.depositamount = Number(item.depositamount).toFixed(2);
-      item.planamount = Number(item.planamount).toFixed(2);
-      item.discountamount = Number(item.discountamount).toFixed(2);
-      item.plandiscount = Number(item.plandiscount).toFixed(2);
-      item.netamount = Number(item.netamount).toFixed(2);
-      item.cash = Number(item.cash).toFixed(2);
-      item.cheque = Number(item.cheque).toFixed(2);
-      item.dd = Number(item.dd).toFixed(2);
-      item.creditcard = item.creditcard == undefined ? "0.000" : Number(item.creditcard).toFixed(2);
-      item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment).toFixed(2);
-      item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment).toFixed(2);
-      item.tdsamount = Number(item.tdsamount).toFixed(2);
-      item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
-      item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
-      item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
-            
-      return item;
-    });
-   
-    this.scrolldetailsList.push({
-      sno: "",
-      receiptNo: "TOTAL",
-      billamount: this.billamount.toFixed(2),
-      refund: this.refund.toFixed(2),
-      discountamount: this.discountamount.toFixed(2),
-      planamount: this.planamount.toFixed(2),
-      plandiscount: this.plandiscount.toFixed(2),
-      depositamount: this.depositamount.toFixed(2),
-      netamount : this.netamount.toFixed(2),
-      cash: this.cash.toFixed(2),
-      cheque: this.cheque.toFixed(2),
-      dd:this.dd.toFixed(2),
-      creditcard: this.creditcard.toFixed(2),
-      mobilePayment: this.mobilePayment.toFixed(2),
-      onlinePayment: this.OnlinePayment.toFixed(2),
-      dues: this.dues,
-      tdsamount: this.tdsamount.toFixed(2),
-      upiamount : this.UPIAmt.toFixed(2),
-      donation: this.DonationAmount.toFixed(2),
-      totalamount: (Number(this.billamount) + Number(this.DonationAmount)).toFixed(2),
-    });
-  });
+        this.scrolldetailsList = this.uniquescrollnumber.getACKOtherdetails;
+
+        for (var i = 0; i < this.scrolldetailsList.length; i++) {
+          this.scrolldetailsList[i].sno = i + 1;
+        }
+        this.billamount = this.scrolldetailsList
+          .map((t: any) => t.billamount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.refund = this.scrolldetailsList
+          .map((t: any) => t.refund)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.depositamount = this.scrolldetailsList
+          .map((t: any) => t.depositamount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.discountamount = this.scrolldetailsList
+          .map((t: any) => t.discountamount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.planamount = this.scrolldetailsList
+          .map((t: any) => t.planamount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+
+        this.plandiscount = this.scrolldetailsList
+          .map((t: any) => t.plandiscount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.netamount = this.scrolldetailsList
+          .map((t: any) => t.netamount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.cash = this.scrolldetailsList
+          .map((t: any) => t.cash)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.cheque = this.scrolldetailsList
+          .map((t: any) => t.cheque)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.duereceved = this.scrolldetailsList
+          .map((t: any) => t.duesrec)
+          .reduce((acc: any, value: any) => acc + value, 0);
+
+        this.dd = this.scrolldetailsList
+          .map((t: any) => t.dd)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.creditcard = this.scrolldetailsList
+          .map((t: any) => t.creditCard)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.mobilePayment = this.scrolldetailsList
+          .map((t: any) => t.mobilePayment)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.OnlinePayment = this.scrolldetailsList
+          .map((t: any) => t.onlinePayment)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.dues = this.scrolldetailsList
+          .map((t: any) => t.dues)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.tdsamount = this.scrolldetailsList
+          .map((t: any) => t.tdsamount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.DonationAmount = this.scrolldetailsList
+          .map((t: any) => t.donationAmount)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.UPIAmt = this.scrolldetailsList
+          .map((t: any) => t.upiAmt)
+          .reduce((acc: any, value: any) => acc + value, 0);
+        this.inetAmt = this.scrolldetailsList
+          .map((t: any) => t.inetAmt)
+          .reduce((acc: any, value: any) => acc + value, 0);
+
+        this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
+          item.billamount = parseFloat(item.billamount).toFixed(2);
+          item.refund = parseFloat(item.refund).toFixed(2);
+          item.depositamount = parseFloat(item.depositamount).toFixed(2);
+          item.planamount = parseFloat(item.planamount).toFixed(2);
+          item.discountamount = parseFloat(item.discountamount).toFixed(2);
+          item.plandiscount = parseFloat(item.plandiscount).toFixed(2);
+          item.netamount = parseFloat(item.netamount).toFixed(2);
+          item.cash = parseFloat(item.cash).toFixed(2);
+          item.cheque = parseFloat(item.cheque).toFixed(2);
+          item.dd = parseFloat(item.dd).toFixed(2);
+          item.dues = parseFloat(item.dues).toFixed(2);
+          item.creditcard =
+            item.creditcard == undefined
+              ? "0.00"
+              : parseFloat(item.creditcard).toFixed(2);
+          item.mobilePayment =
+            item.mobilePayment == undefined
+              ? "0.00"
+              : parseFloat(item.mobilePayment).toFixed(2);
+          item.onlinePayment =
+            item.onlinePayment == undefined
+              ? "0.00"
+              : parseFloat(item.onlinePayment).toFixed(2);
+          item.tdsamount = parseFloat(item.tdsamount).toFixed(2);
+          item.donation =
+            item.donation == undefined
+              ? "0.00"
+              : parseFloat(item.donation).toFixed(2);
+          item.upiamount =
+            item.upiamount == undefined
+              ? "0.00"
+              : parseFloat(item.upiamount).toFixed(2);
+          item.totalamount = (
+                parseFloat(item.billamount) + parseFloat(item.donation)
+              ).toFixed(2);
+          item.inetAmt = 
+             item.inetAmt == undefined
+             ? "0.00"
+            : parseFloat(item.inetAmt).toFixed(2);
+         return item;
+        });
+
+        this.tableFooterData = {
+          sno: "",
+          receiptNo: "TOTAL",
+          billamount: this.billamount.toFixed(2),
+          refund: this.refund.toFixed(2),
+          discountamount: this.discountamount.toFixed(2),
+          planamount: this.planamount.toFixed(2),
+          plandiscount: this.plandiscount.toFixed(2),
+          depositamount: this.depositamount.toFixed(2),
+          netamount: this.netamount.toFixed(2),
+          cash: this.cash.toFixed(2),
+          cheque: this.cheque.toFixed(2),
+          dd: this.dd.toFixed(2),
+          creditcard: this.creditcard.toFixed(2),
+          mobilePayment: this.mobilePayment.toFixed(2),
+          onlinePayment: this.OnlinePayment.toFixed(2),
+          dues: this.dues.toFixed(2),
+          tdsamount: this.tdsamount.toFixed(2),
+          upiamount: this.UPIAmt.toFixed(2),
+          donation: this.DonationAmount.toFixed(2),
+          totalamount: (this.billamount + this.DonationAmount).toFixed(2),
+          inetAmt : this.inetAmt.toFixed(2),
+          rowhighlight: "highlight",
+        };
+      });
+  }
 }
-}
-

@@ -374,7 +374,13 @@
               <mat-card
                 class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color height-max-content"
               >
-                <!-- (click)="hotlistClick($event)" -->
+                <!-- (click)="hotlistClick($event)"
+                
+                      accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="597"
+                    actionId="1555" -->
                 <div class="flex">
                   <div class="w-3/4">
                     <maxhealth-question
@@ -382,11 +388,6 @@
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
-                      accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="597"
-                    actionId="1555"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -501,37 +502,39 @@
 
               <!-- SAVE MODIFY BUTTON -->
               <div class="flex w-full justify-between flex-wrap flex-column">
-                <div class="flex justify-between mb-3 mt-0">
+                <div class="flex justify-between mb-3 mt-0">                
                   <button
-                    mat-raised-button
-                    color="primary"
-                    class="w-1/45"
-                    type="submit"
-                    [disabled]="!OPRegForm.valid || MaxIDExist || expiredPatient"
-                    (click)="registationFormSubmit()"
-                    accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="60"
-                    actionId="140"
-                  >
-                    Save
-                  </button>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    class="w-1/45"
-                    type="button"
-                    [disabled]="!OPRegForm.valid || !MaxIDExist || expiredPatient"
-                    (click)="onModifyDetail()"
-                    accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="60"
-                    actionId="141"
-                  >
-                    Modify
-                  </button>
+                  mat-raised-button
+                  color="primary"
+                  class="w-1/45"
+                  type="submit"
+                  [disabled]="!OPRegForm.valid || MaxIDExist || expiredPatient"
+                  (click)="registationFormSubmit()"    
+                  accessControl
+                  masterModule = "2"
+                  moduleId="7"
+                  featureId="60"
+                  actionId="140"               
+                >
+                  Save
+                </button>
+                
+                 <button
+                 mat-raised-button
+                 color="primary"
+                 class="w-1/45"
+                 type="button"
+                 [disabled]="!OPRegForm.valid || !MaxIDExist || expiredPatient"
+                 (click)="onModifyDetail()"
+                 accessControl
+                 masterModule = "2"
+                 moduleId="7"
+                 featureId="60"
+                 actionId="141"                   
+               >
+                 Modify
+               </button>
+                              
                 </div>
                 <div class="flex justify-between">
                   <button
@@ -622,7 +625,7 @@
               fill="#F2F2F2"
             />
           </svg> -->
-          <svg
+          <!-- <svg
             xmlns="http://www.w3.org/2000/svg"
             width="124"
             height="170"
@@ -671,8 +674,8 @@
                 </tspan>
               </text>
             </g>
-          </svg>
-          <!-- <div class="img-banner-container" fxLayout="column">
+          </svg> -->
+          <div class="img-banner-container" fxLayout="column">
             <div class="img-banner-top" fxLayoutAlign="end center">&nbsp;
               &nbsp;
             </div>
@@ -684,10 +687,11 @@
             </div>
             <div class="img-banner-bottom" *ngIf="isNoImage" >
               &nbsp;&nbsp;&nbsp;
-              <a class="cursor-pointer click-here-link " (click)="openImageUploadDialog()" >Click here</a> 
-              <span *ngIf="isNoImage" class="font-click-here"> to capture photo</span>
+              <!-- <a class="cursor-pointer click-here-link " (click)="openImageUploadDialog()" >Click here</a> 
+              <span *ngIf="isNoImage" class="font-click-here"> to capture photo</span> -->
+              <a class="cursor-pointer click-here-link" (click)="openImageUploadDialog()">Capture Photo</a> 
             </div>
-        </div> -->
+        </div>
         </div>
         <div>
           

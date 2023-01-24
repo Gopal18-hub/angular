@@ -12,6 +12,8 @@ import { Subject } from "rxjs";
 import { BillingService } from "../../billing.service";
 import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { PaytmRedirectionService } from "@core/services/paytm-redirection.service";
+import { DepositService } from "@core/services/deposit.service";
 @Component({
   selector: "out-patients-payment-dialog",
   templateUrl: "./payment-dialog.component.html",
@@ -92,7 +94,9 @@ export class BillPaymentDialogComponent implements OnInit {
     private cookie: CookieService,
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
     private billingService: BillingService,
-    private miscService: MiscService
+    private miscService: MiscService,
+    private paytmRedirectionService: PaytmRedirectionService,
+    private depositservice: DepositService,
   ) {}
 
   ngOnInit(): void {
@@ -131,8 +135,22 @@ export class BillPaymentDialogComponent implements OnInit {
       },
     };
   }
-  ngAfterViewInit(): void {}
-
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.paymentmethod.totalamtFlag == false) {
+        this.paymentmethod.tabs.forEach((i: any) => {
+          this.paymentmethod.questions[i.key][1].elementRef.addEventListener(
+            "keypress",
+            (event: any) => {
+              if (event.keyCode == 46) {
+                event.preventDefault();
+              }
+            }
+          );
+        });
+      }
+    }, 1000);
+  }
   clear() {
     this._destroying$.next(undefined);
     this._destroying$.complete();
@@ -141,9 +159,20 @@ export class BillPaymentDialogComponent implements OnInit {
       this.paymentmethod.tabPrices[index] = 0;
       this.paymentmethod.paymentForm[tab.key].reset();
     });
+    this.depositservice.clearformsixtydetails();
   }
 
   async makeBill() {
+    //paytm redirect home service
+    this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+      if (
+        tab.key == "mobilepayment" &&
+        this.paymentmethod.tabPrices[index] > 0
+      ) {
+        this.paytmRedirectionService.redirectToPayTmHomeScreen();
+      }
+    });
+
     //pan card and form 60
     this.billingService.makeBillPayload.panNo =
       this.billingpatientidentity.patientidentityform.value.panno || "";
@@ -164,12 +193,12 @@ export class BillPaymentDialogComponent implements OnInit {
       return;
     } else if (
       this.billpatientIdentityInfo.mainradio == "form60" &&
-      this.formsixtysubmit == false
+      this.depositservice.isform60exists == false
     ) {
       this.messageDialogService.error("Please fill the form60 ");
       return;
     }
-
+   
     if (this.data.name == "Misc Billing") {
       this.miscService.makeBill(this.paymentmethod);
       this.dialogRef.close("MakeBill");
@@ -187,10 +216,20 @@ export class BillPaymentDialogComponent implements OnInit {
 
   breakupTotal() {
     if (this.paymentmethod) {
-      return this.paymentmethod.tabPrices.reduce(
+      const sum = this.paymentmethod.tabPrices.reduce(
         (partialSum, a) => partialSum + a,
         0
       );
+      let total;
+      total =
+        this.config.totalAmount - Math.floor(this.config.totalAmount) !== 0;
+      let totalSum;
+      if (!total) {
+        totalSum = Math.floor(sum);
+      } else {
+        totalSum = sum;
+      }
+      return totalSum;
     } else {
       return 0;
     }
@@ -200,10 +239,13 @@ export class BillPaymentDialogComponent implements OnInit {
     let tabForms = true;
     if (this.paymentmethod) {
       this.paymentmethod.tabs.forEach((tab: any, index: number) => {
-        console.log(this.paymentmethod.paymentForm[tab.key]);
+        // console.log(this.paymentmethod.paymentForm[tab.key]);
+
+        ////GAV-1353 -  addded tab.key != cash condition
         if (
           this.paymentmethod.tabPrices[index] > 0 &&
-          this.paymentmethod.paymentForm[tab.key].valid == false
+          this.paymentmethod.paymentForm[tab.key].valid == false &&
+          tab.key != "cash"
         ) {
           tabForms = false;
         }
@@ -225,12 +267,33 @@ export class BillPaymentDialogComponent implements OnInit {
       Number(this.data.toPaidAmount) >= collectedAmount
     )
       return true;
-    return false;
+    return true;
   }
 
   formsixtysubmit: boolean = false;
   billingformsixtysuccess(event: any) {
     console.log(event);
     this.formsixtysubmit = event;
+  }
+
+  checkForCash() {
+    let tabForms = 0;
+    if (this.paymentmethod) {
+      this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+        // console.log(this.paymentmethod.paymentForm[tab.key]);
+        if (this.paymentmethod.tabPrices[index] == 0) {
+          tabForms++;
+        }
+      });
+    }
+    if (this.paymentmethod) {
+      if (tabForms == this.paymentmethod.tabs.length) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 }

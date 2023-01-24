@@ -27,7 +27,6 @@ import { BillingService } from "@modules/billing/submodules/billing/billing.serv
 })
 export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
   @Input() data!: any;
-  @Output() neweventform60ssave = new EventEmitter<boolean>();
   @Input() form60payment!: any;
 
   patientidentityformData = {
@@ -188,12 +187,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
             ];
             this.OPIP = 2;
           } else if (this.data.type == "Deposit") {
-            this.PaymentMethod = this.depositservice.data;            
+            this.PaymentMethod = this.depositservice.data;                        
             this.OPIP = 3;
           } else {
           }
 
-          if (this.PaymentMethod[0].transactionamount >= 200000) {
+          if (this.PaymentMethod.length != 0 && (Number(this.PaymentMethod[0].transactionamount) >= 200000 || this.data.patientinfo.screenname == "Billing" )) 
+          {
             const form60dialog = this.matdialog.open(FormSixtyComponent, {
               width: "50vw",
               height: "94vh",
@@ -210,21 +210,42 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
               .subscribe((result) => {
                 if (result == "Success") {
                   this.Form60success = true;
-                  this.neweventform60ssave.emit(this.Form60success);
                 } else {
-                  this.patientidentityform.controls["mainradio"].setValue(
-                    "pancardno"
-                  );
+                  if(!this.depositservice.isform60exists){
+                    this.patientidentityform.controls["mainradio"].setValue(
+                      "pancardno"
+                    );
+                  }                 
                 }
               });
+              this.patientidentityform.controls["panno"].disable();
+              this.patientidentityform.controls["panno"].setValue("");
           }
-
-          this.patientidentityform.controls["panno"].disable();
-          this.patientidentityform.controls["panno"].setValue("");
+          else if (this.data.type == "Deposit") 
+          {
+            const formsixtyinfo =   this.messageDialogService.info("Form60 is not required, when amount is less than 2 lakh");  
+            formsixtyinfo.afterClosed().subscribe((res : any) => {
+              this.patientidentityform.controls["mainradio"].setValue(
+                "pancardno");              
+            });             
+                  
+          }
+          else{
+            this.patientidentityform.controls["mainradio"].setValue(
+              "pancardno");
+          }        
         } else {
           this.patientidentityform.controls["panno"].enable();
         }
       }
     );
+  }
+
+  validatepanncardno(){
+    if(!this.patientidentityform.controls["panno"].valid){
+     return false;
+    }else{
+      return true;
+    }
   }
 }

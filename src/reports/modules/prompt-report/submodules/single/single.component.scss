@@ -1,6 +1,7 @@
 form.prompt-report-form {
   > div {
     line-height: 2rem;
+    gap: 1rem;
   }
   .form-control-element {
     &:not(.w-full) {

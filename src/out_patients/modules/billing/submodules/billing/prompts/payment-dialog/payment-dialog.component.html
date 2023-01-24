@@ -1,16 +1,27 @@
-
-<section class="payment-dialog relative">
-  <!-- Cross Icon --> 
+<section
+  class="payment-dialog relative"
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+>
+  <!-- Cross Icon -->
   <div class="height-2">
     <button
-    mat-icon-button
-    aria-label="close dialog"
-    mat-dialog-close
-    class="absolute max-dialog-close-icon"
-    type="button"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
+      mat-icon-button
+      aria-label="close dialog"
+      mat-dialog-close
+      class="absolute max-dialog-close-icon"
+      type="button"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+    <div class="draggable-handle" cdkDragHandle style="top: -15px">
+      <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+        <path
+          d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"
+        ></path>
+        <path d="M0 0h24v24H0z" fill="none"></path>
+      </svg>
+    </div>
   </div>
   <!-- Blue Banner -->
   <div
@@ -51,31 +62,35 @@
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Bill Amount: </mat-label>
           <span>{{
-            data.totalBillAmount | currency: "INR":undefined:undefined:"en-IN"
+            data.totalBillAmount
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Deposit: </mat-label>
           <span>{{
-            data.totalDeposit | currency: "INR":undefined:undefined:"en-IN"
+            data.totalDeposit
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Refund: </mat-label>
           <span>{{
-            data.totalRefund | currency: "INR":undefined:undefined:"en-IN"
+            data.totalRefund
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Discount: </mat-label>
           <span>{{
-            data.totalDiscount | currency: "INR":undefined:undefined:"en-IN"
+            data.totalDiscount
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Paid By Company: </mat-label>
           <span>{{
-            data.ceditLimit | currency: "INR":undefined:undefined:"en-IN"
+            data.ceditLimit | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <mat-label class="font-base mt-2 flex">On Settlement</mat-label>
@@ -83,54 +98,79 @@
           <mat-label>Amount Refunded: </mat-label>
           <span>{{
             data.settlementAmountRefund
-              | currency: "INR":undefined:undefined:"en-IN"
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Amount Received: </mat-label>
           <span>{{
             data.settlementAmountReceived
-              | currency: "INR":undefined:undefined:"en-IN"
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between font-bold">
-          <mat-label class="">Total: </mat-label>
+          <mat-label class="">Patient Payable Amount: </mat-label>
           <span>{{
-            data.toPaidAmount | currency: "INR":undefined:undefined:"en-IN"
+            data.toPaidAmount
+              | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
       </div>
       <div
         class="payment-breakup secondary col-white p-3 border-radius-md mt-2"
-        *ngIf="breakupTotal() > 0"
       >
+        <!-- *ngIf="breakupTotal() > 0" -->
         <mat-label class="font-base">Payment Breakup</mat-label>
-        <ng-container *ngFor="let tab of paymentmethod?.tabs">
-          <div
-            class="mt-2 w-full flex justify-between"
-            *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
-          >
-            <mat-label>{{ tab.method.label }}: </mat-label>
-            <span>{{ paymentmethod.paymentForm[tab.key].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
-          </div>
+        <ng-container *ngIf="!checkForCash()">
+          <ng-container *ngFor="let tab of paymentmethod?.tabs">
+            <div
+              class="mt-2 w-full flex justify-between"
+              *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
+            >
+              <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
+              <mat-label>{{ tab.method.label }}: </mat-label>
+              <span>{{
+                paymentmethod.paymentForm[tab.key].value.price
+                  | currency : "INR" : undefined : undefined : "en-IN"
+              }}</span>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="checkForCash()">
+          <ng-container *ngIf="paymentmethod?.tabs">
+            <div
+              class="mt-2 w-full flex justify-between"
+              *ngIf="paymentmethod.paymentForm['cash'] != undefined"
+            >
+              <!-- *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0" -->
+              <mat-label>Cash: </mat-label>
+              <span>{{
+                paymentmethod.paymentForm["cash"].value.price
+                  | currency : "INR" : undefined : undefined : "en-IN"
+              }}</span>
+            </div>
+          </ng-container>
         </ng-container>
 
         <div class="mt-2 w-full flex justify-between font-bold">
           <mat-label>Total: </mat-label>
           <span>{{
-            breakupTotal() | currency: "INR":undefined:undefined:"en-IN"
+            breakupTotal() | currency : "INR" : undefined : undefined : "en-IN"
           }}</span>
         </div>
       </div>
     </div>
   </div>
   <!-- Checkbox -->
-  
 
   <!-- Footer Part -->
   <div class="bottom">
-    <patient-identity-info [data]="patientInfo" [form60payment]="paymentmethod" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
-
+    <patient-identity-info
+      [data]="patientInfo"
+      [form60payment]="paymentmethod"
+      #billpatientIdentityInfo
+    >
     </patient-identity-info>
     <div class="flex float-right paymentdialogbutton absolute right-0 bottom-0">
       <div class="mr-3">
@@ -145,7 +185,7 @@
           Submit
         </button>
       </div>
-  
+
       <div class="">
         <button
           mat-raised-button
@@ -161,5 +201,4 @@
   </div>
 
   <!-- button -->
-  
 </section>

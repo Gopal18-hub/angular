@@ -7,7 +7,7 @@
         </ul>
         <div class="maxhealth-spacer"></div>
     </nav>
-    <mat-tab-nav-panel #tabpanel>
+<mat-tab-nav-panel #tabpanel>
 <div class="h-full w-full p-2">
     <!--First row-->
     <div class="flex  w-full text-wrap bg-lightgray border-radius-lg input-padding">
@@ -96,34 +96,38 @@
                 <mat-label class="max-health-primary-color font-semi-bold cursor-pointer mt-1" (click)="navigatetomain()">Back to scroll search</mat-label>
             </div>
             <button mat-raised-button color="primary" class="button align-items-center" [disabled]="ackbtn" (click)="acknowledge()">Acknowledge</button>
-            <button 
-            mat-raised-button 
-            color="primary" 
-            class="ml-2 button align-items-center" 
-            [disabled]="modifybtn" 
-            (click)="modify()"
-            accessControl
-            masterModule = "2"
-            moduleId="7"
-            featureId="66"
-            actionId="1528"
-            >
-            Modify
-            </button>
-            <button 
-            mat-raised-button 
-            color="primary" 
-            class="ml-2 button align-items-center" 
-            (click)="print()" 
-            [disabled]="printbtn"
-            accessControl
-            masterModule = "2"
-            moduleId="7"
-            featureId="561"
-            actionId="1488"
-            >
-            Print
-            </button>
+           <div  accessControl
+           masterModule = "2"
+           moduleId="7"
+           featureId="66"
+           actionId="1528">
+           <button 
+           mat-raised-button 
+           color="primary" 
+           class="ml-2 button align-items-center" 
+           [disabled]="modifybtn" 
+           (click)="modify()"           
+           >
+           Modify
+           </button>
+           </div>
+           
+           <div  accessControl
+           masterModule = "2"
+           moduleId="7"
+           featureId="561"
+           actionId="1488">
+           <button 
+           mat-raised-button 
+           color="primary" 
+           class="ml-2 button align-items-center" 
+           (click)="print()" 
+           [disabled]="printbtn"           
+           >
+           Print
+           </button>
+           </div>
+         
             <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()" [disabled]="clearbtn">Clear</button>
         </div>
      
@@ -318,9 +322,12 @@
 
    </div>
 
-         </div>
+    </div>
 </div>
-    </mat-tab-nav-panel>
+</mat-tab-nav-panel>
+<div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+    <mat-spinner strokeWidth="3"></mat-spinner>
+</div>
 </section>
 <div class="flex ml-4 mr-2 justify-between font-xs">
     <div class="left flex">

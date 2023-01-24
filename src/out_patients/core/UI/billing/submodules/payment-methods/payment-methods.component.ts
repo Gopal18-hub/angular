@@ -20,6 +20,8 @@ import { getBankName } from '../../../../../core/types/billdetails/getBankName.I
 import { getcreditcard } from '../../../../../core/types/billdetails/getcreditcard.Interface';
 import { CookieService } from '@shared/services/cookie.service';
 import { HttpService } from '@shared/services/http.service';
+import { PaymentService } from "@core/services/payment.service";
+import { ApiConstants } from "@shared/constants/ApiConstants";
 
 @Component({
   selector: "payment-methods",
@@ -33,6 +35,8 @@ export class PaymentMethodsComponent implements OnInit {
 
   bankname: getBankName[] = [];
   creditcard: getcreditcard[] = [];
+  POSIMEIList: any = [];
+  POSMachineDetal: any = {};
 
   refundFormData = BillingForm.refundFormData;
   refundform!: FormGroup;
@@ -44,6 +48,7 @@ export class PaymentMethodsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private cookie: CookieService,  
     private http: HttpService,
+    private paymentService: PaymentService,
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -79,10 +84,165 @@ export class PaymentMethodsComponent implements OnInit {
   defaultamount: boolean = true;
   depositamount: number = 0;
   PaymentType: number = 1; //default cash
+  payloadData: any =[];
 
   tabChanged(event: MatTabChangeEvent) {
     this.activeTab = event.tab.textLabel;
     this.clearpaymentmethod();
+    if(this.activeTab == "Credit / Debit Card" || this.activeTab == "UPI"){
+      let locationId = Number(this.cookie.get("HSPLocationId"));
+      let stationId = Number(this.cookie.get("StationId"));
+      this.http
+      .get(ApiConstants.getPOSMachineMaster(locationId, stationId))
+      .subscribe((res: any) => {
+        if (res && res.length > 0) {
+          this.POSIMEIList = res;
+          if (this.activeTab == "Credit / Debit Card") {
+            this.questions[60].options = this.POSIMEIList.map(
+              (l: any) => {
+                return {
+                  title: l.merchantStorePosCode + "-" + l.name,
+                  value: l.name,
+                };
+              }
+            );
+          } else if (this.activeTab == "UPI") {
+            this.questions[67].options = this.POSIMEIList.map(
+              (l: any) => {
+                return {
+                  title: l.merchantStorePosCode + "-" + l.name,
+                  value: l.name,
+                };
+              }
+            );
+          }
+
+          if (this.activeTab == "Credit / Debit Card") {
+            this.refundform.controls["posimei"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value:any) => {
+              if(value){
+                   this.POSMachineDetal = this.POSIMEIList.filter(
+                  (s: any) => s.name === value
+                )[0];
+                this.setPOSMachinevaluesinCookie(this.POSMachineDetal);
+              }
+            });
+          } else if (this.activeTab == "UPI") {
+            this.refundform.controls["upiposimei"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value:any) => {
+              if(value){
+                   this.POSMachineDetal = this.POSIMEIList.filter(
+                  (s: any) => s.name === value
+                )[0];
+                this.setPOSMachinevaluesinCookie(this.POSMachineDetal);
+              }
+            });
+          }
+             
+          if (this.POSIMEIList.length == 1) {
+            if (this.activeTab == "Credit / Debit Card") {
+              this.refundform.controls["posimei"].setValue(this.POSIMEIList[0].name);
+            } else if (this.activeTab == "UPI") {
+              this.refundform.controls["upiposimei"].setValue(this.POSIMEIList[0].name);
+            }        
+          }
+        }
+      });
+    }
+  }
+
+  setPOSMachinevaluesinCookie(POSMachineDetail:any){
+    if(POSMachineDetail){
+      this.cookie.delete("POSIMEI", "/");
+      this.cookie.set(
+       "POSIMEI",
+       POSMachineDetail.hardwareID,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MachineName", "/");
+     this.cookie.set(
+       "MachineName",
+       POSMachineDetail.edcMachineName,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MAXMachineName", "/");
+     this.cookie.set(
+       "MAXMachineName",
+       POSMachineDetail.name,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MAXMachineId", "/");
+     this.cookie.set(
+       "MAXMachineId",
+       POSMachineDetail.id,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MerchantId", "/");
+     this.cookie.set(
+       "MerchantId",
+       POSMachineDetail.merchantID,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("MerchantPOSCode", "/");
+     this.cookie.set(
+       "MerchantPOSCode",
+       POSMachineDetail.merchantStorePosCode,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("SecurityToken", "/");
+     this.cookie.set(
+       "SecurityToken",
+       POSMachineDetail.securityToken,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("PineLabApiUrl", "/");
+     this.cookie.set(
+       "PineLabApiUrl",
+       POSMachineDetail.apiUrlPineLab,
+       {
+         path: "/",
+       }
+     );
+     this.cookie.delete("UPIAllowedPaymentMode", "/");
+     this.cookie.set(
+       "UPIAllowedPaymentMode",
+       POSMachineDetail.upI_AllowedPaymentMode,
+       {
+         path: "/",
+       }
+     );
+}  
+  }
+
+  negativePriceValidation()
+  {
+    let control= ['cashamount', 'chequeamount', 'creditamount', 'demandamount', 'internetamount', 'upiamount','onlineamount','mobilesendermobile','paytmamount'];
+    control.forEach(i => {
+      if(Number(this.refundform.controls[i].value) < 0)
+      {
+        this.refundform.controls[i].setValue("");
+        this.messageDialogService.warning('Amount Cannot be Negative');
+        return;
+      }else if(Number(this.refundform.controls[i].value) > 0) {
+        this.PaymentMethodvalidation();
+      }
+    });
   }
 
   PaymentMethodvalidation() {
@@ -109,47 +269,7 @@ export class PaymentMethodsComponent implements OnInit {
       this.depositamount = Number(this.PaymentMethodcashdeposit.internetamount);
       this.PaymentType = 6;
     }
-    if (Number(this.depositamount < 0)) {
-      const depositamt =  this.messageDialogService.info(
-          "Amount Zero or Negative number is not Allowed"
-        );
-        depositamt
-        .afterClosed()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((result) => {
-          if(this.PaymentType == 1){
-            this.refundform.controls["cashamount"].setValue("0.00");
-            this.questions[0].elementRef.focus();
-          } 
-          else if(this.PaymentType == 2)
-          {
-            this.refundform.controls["chequeamount"].setValue("0.00");
-            this.questions[5].elementRef.focus();
-          }
-          else if(this.PaymentType == 4)
-          {
-            this.refundform.controls["creditamount"].setValue("0.00");
-            this.questions[11].elementRef.focus();
-          }
-          else if(this.PaymentType == 3)
-          {
-            this.refundform.controls["demandamount"].setValue("0.00");
-            this.questions[19].elementRef.focus();
-          }
-          else if(this.PaymentType == 8)
-          {
-            this.refundform.controls["upiamount"].setValue("0.00");
-            this.questions[44].elementRef.focus();
-          }
-          else if(this.PaymentType == 9)
-          {
-            this.refundform.controls["internetamount"].setValue("0.00");
-            this.questions[51].elementRef.focus();
-          }
-        });
-       
-  
-      } else if (this.Refundavalaiblemaount) {
+  if (this.Refundavalaiblemaount) {
       let cashlimit = this.depositservice.refundcashlimit;
       if (
         Number(this.depositamount) >
@@ -157,15 +277,21 @@ export class PaymentMethodsComponent implements OnInit {
         this.Refundavalaiblemaount.type == "Refund"
       ) {
         this.messageDialogService.info(
-          "Refund Amount must be less then available amount"
+          "Refund Amount must be less than available amount"
         );
+        if(this.PaymentType == 1){
+             this.refundform.controls["cashamount"].setValue("");
+        }else if(this.PaymentType == 2){
+          this.refundform.controls["chequeamount"].setValue("");
+        }
       } else if (
         Number(this.depositamount) > Number(cashlimit[0].cashLimit) &&
         this.PaymentType == 1
       ) {
         this.messageDialogService.info(
-          "Refund through Cash Cannot be more then Rs 10000"
+          "Refund through Cash Cannot be more than Rs 10000"
         );
+        this.refundform.controls["cashamount"].setValue(""); 
       } else if (Number(this.depositamount <= 0)) {
         this.messageDialogService.info(
           "Refund Amount must not be Zero or Negative number"
@@ -182,69 +308,90 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.Disablecreditfields();
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
+   //for GAV-1375
+   this.refundform.valueChanges.subscribe(() => {
+     this.negativePriceValidation();
+   }); 
+ 
+   this.refundform.controls["posimei"].valueChanges          
+          .subscribe((value: any) => {
+            if (value) {
+              this.POSMachineDetal = this.POSIMEIList.filter(
+                (s: any) => s.name === value
+              )[0];
+              this.setPOSMachinevaluesinCookie(this.POSMachineDetal);              
+            }
+    });  
 
-    this.questions[5].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
-    this.questions[11].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
-    this.questions[19].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    ); 
-     this.questions[44].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
-    this.questions[51].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
+  this.refundform.controls["upiposimei"].valueChanges         
+          .subscribe((value: any) => {
+            if (value) {
+              this.POSMachineDetal = this.POSIMEIList.filter(
+                (s: any) => s.name === value
+              )[0];
+              this.setPOSMachinevaluesinCookie(this.POSMachineDetal);              
+            }
+   });
+   
+   //gav -1498
+   this.questions[0].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
 
-   this.questions[49].elementRef.addEventListener("keypress", (event: any) => {
-        if (event.key === "Enter") {
-          if(this.refundform.value.internetmobile.length != 10)
-          {          
-              this.messageDialogService.error("Invalid Mobile No.");             
-          }
-        }
-      });
-  }
+  this.questions[5].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[11].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[19].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  ); 
+   this.questions[44].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[51].elementRef.addEventListener(
+    "keypress",
+    (event: any) => {
+      if (event.keyCode == 46) {
+        event.preventDefault();
+      }
+    }
+  );
+  this.questions[49].elementRef.addEventListener("keypress", (event: any) => {
+    if (event.key === "Enter") {
+      if(this.refundform.value.internetmobile.length != 10)
+      {          
+          this.messageDialogService.error("Invalid Mobile No.");             
+      }
+    }
+});
 
-  Enablecreditfields() {
-    this.refundform.controls["creditcardno"].enable();
-    this.refundform.controls["creditholdername"].enable();
-    this.refundform.controls["creditbankname"].enable();
-    this.refundform.controls["creditbatchno"].enable();
-    this.refundform.controls["creditapproval"].enable();
-    this.refundform.controls["creditacquiring"].enable();
-    this.refundform.controls["creditterminal"].enable();
-    this.refundform.controls["posimei"].enable();
-    this.refundform.controls["creditcardtransactionid"].enable();
-    this.refundform.controls["creditvaliditydate"].enable();
-    this.refundform.controls["creditbanktid"].enable();
-  }
-
-  Disablecreditfields() {
-    this.refundform.controls["creditcardno"].disable();
-    this.refundform.controls["creditholdername"].disable();
-    this.refundform.controls["creditbankname"].disable();
-    this.refundform.controls["creditbatchno"].disable();
-    this.refundform.controls["creditapproval"].disable();
-    this.refundform.controls["creditacquiring"].disable();
-    this.refundform.controls["creditterminal"].disable();
-    this.refundform.controls["posimei"].disable();
-    this.refundform.controls["creditcardtransactionid"].disable();
-    this.refundform.controls["creditvaliditydate"].disable();
-    this.refundform.controls["creditbanktid"].disable();
   }
 
   clearpaymentmethod() {
@@ -264,22 +411,153 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["internetemail"].setValue(this.paymentpatientinfo == undefined  ? "" : this.paymentpatientinfo.patientinfo.emailId);
   }
 
-  resetcreditcard() {
-    this.refundform.controls["creditcardno"].setValue("");
-    this.refundform.controls["creditholdername"].setValue("");
-    this.refundform.controls["creditbankname"].setValue("");
-    this.refundform.controls["creditbatchno"].setValue("");
-    this.refundform.controls["creditapproval"].setValue("");
-    this.refundform.controls["creditacquiring"].setValue("");
-    this.refundform.controls["creditterminal"].setValue("");
-    this.refundform.controls["creditamount"].setValue("");
+  async paymentupiapproval(button:string){
+    let price = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditamount"].value : this.refundform.controls["upiamount"].value;
+    let transactionid = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditcardtransactionid"].value : this.refundform.controls["upitransactionid"].value;
+    if ( Number(price) > 0) {
+       let module = "OPD_Deposit";
+       this.payloadData = {
+               price : Number(price),
+               transactionid : transactionid
+           };
+        let res = this.paymentService.uploadBillTransaction(
+          this.payloadData,
+          module,
+          this.paymentpatientinfo.patientinfo.iacode+ "." + this.paymentpatientinfo.patientinfo.registrationno
+        );
+        await this.processPaymentApiResponse(button, res);
+      } else {
+        const errorDialogRef = this.messageDialogService.warning(
+          "Please Give Proper Amount."
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
   }
-  savecheque(){
 
+  async paymentretryokbtnfunc(button:string){
+    let price = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditamount"].value : this.refundform.controls["upiamount"].value;
+    let transactionid = Number(this.refundform.controls["creditamount"].value) > 0 ? this.refundform.controls["creditcardtransactionid"].value : this.refundform.controls["upitransactionid"].value;
+  
+    if (Number(price) > 0) { 
+    let module = "OPD_Deposit";
+    this.payloadData = {
+            price : Number(price),
+            transactionid : transactionid
+        };
+      let res = await this.paymentService.getBillTransactionStatus(
+        this.payloadData,
+        module,
+        this.paymentpatientinfo.patientinfo.iacode+ "." + this.paymentpatientinfo.patientinfo.registrationno
+      );
+      await this.processPaymentApiResponse(button, res);
+    } else {
+      const errorDialogRef = this.messageDialogService.warning(
+        "Please Give Proper Amount."
+      );
+      await errorDialogRef.afterClosed().toPromise();
+      return;
+    }
   }
-
-  resetchequedetails(){
-    
+  
+  async processPaymentApiResponse(button: any, res: any) {
+    if (res && res.success) {
+      if (res.responseMessage && res.responseMessage != "") {
+        if (res.responseMessage == "APPROVED") {
+          if (button == "credit") {
+            if (res.transactionRefId) {
+              this.refundform.controls["creditcardtransactionid"].patchValue(
+                res.transactionRefId
+              );
+            }
+          } else if (button == "upi") {
+            if (res.transactionRefId) {
+              this.refundform.controls["upitransactionid"].patchValue(
+                res.transactionRefId
+              );
+            }
+          }
+          const infoDialogRef = this.messageDialogService.info(
+            "Kindly Pay Using Machine"
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        } else if (res.responseMessage == "TXN APPROVED") {
+          if (res.pineLabReturnResponse) {
+            let bankId = 0;
+            let bank = this.bankname.filter(
+              (r: any) => r.title == res.pineLabReturnResponse.ccResAcquirerName
+            );
+            if (bank && bank.length > 0) {
+              bankId = bank[0].id;
+            }
+            if (button == "credit") {
+              this.refundform.controls["creditcardno"].patchValue(
+                res.pineLabReturnResponse.ccResCardNo
+              );
+              this.refundform.controls["creditholdername"].patchValue(
+                res.cardHolderName
+              );
+              this.refundform.controls["creditbankname"].patchValue(bankId);
+              this.refundform.controls["creditbatchno"].patchValue(
+                res.pineLabReturnResponse.ccResBatchNumber
+              );
+              this.refundform.controls["creditapproval"].patchValue(
+                res.pineLabReturnResponse.ccResApprovalCode
+              );
+              this.refundform.controls["creditterminal"].patchValue(res.terminalId);
+              this.refundform.controls["creditacquiring"].patchValue(
+                res.pineLabReturnResponse.ccResAcquirerName
+              );
+              this.refundform.controls["creditbanktid"].patchValue(
+                res.pineLabReturnResponse.ccResBankTID
+              );
+            } else if (button == "upi") {
+              this.refundform.controls["upicardno"].patchValue(
+                res.pineLabReturnResponse.ccResCardNo
+              );
+              this.refundform.controls["upicardholdername"].patchValue(
+                res.cardHolderName
+              );
+              this.refundform.controls["upibankname"].patchValue(bankId);
+              this.refundform.controls["upibatchno"].patchValue(
+                res.pineLabReturnResponse.ccResBatchNumber
+              );
+              this.refundform.controls["upiapproval"].patchValue(
+                res.pineLabReturnResponse.ccResApprovalCode
+              );
+              this.refundform.controls["upiterminal"].patchValue(res.terminalId);
+              this.refundform.controls["upiacquiring"].patchValue(
+                res.pineLabReturnResponse.ccResAcquirerName
+              );
+              this.refundform.controls["creditbanktid"].patchValue(
+                res.pineLabReturnResponse.ccResBankTID
+              );
+            }
+          }
+        } else {
+          const infoDialogRef = this.messageDialogService.info(
+            res.responseMessage
+          );
+          await infoDialogRef.afterClosed().toPromise();
+          return;
+        }
+      }
+    } else if (res && !res.success) {
+      if (res.errorMessage && res.errorMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.errorMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      } else if (res.responseMessage && res.responseMessage != "") {
+        const errorDialogRef = this.messageDialogService.error(
+          res.responseMessage
+        );
+        await errorDialogRef.afterClosed().toPromise();
+        return;
+      }
+    }
   }
   getbankname()
   {
@@ -362,7 +640,7 @@ export class PaymentMethodsComponent implements OnInit {
      }
   }
     //add only required fields
-    internetmandatoryfields(){
+  internetmandatoryfields(){
       if( Number(this.refundform.value.internetamount) <= 0
       || this.refundform.value.internetemail == "" || this.refundform.value.internetemail == null
       || this.refundform.value.internetmobile == "" || this.refundform.value.internetmobile == null
@@ -370,9 +648,12 @@ export class PaymentMethodsComponent implements OnInit {
     ){
         return false;
        } else{
+         if(!this.refundform.controls["internetmobile"].valid){
+          return false;
+        }
          return true;
        }
-    }
+  }
   //add only required fields
   upimandatoryfields(){
     if( Number(this.refundform.value.upiamount) <= 0
@@ -390,5 +671,11 @@ export class PaymentMethodsComponent implements OnInit {
      } else{
        return true;
      }
+  }
+
+  clearamountvalue(paymentmode: any){    
+    if(this.refundform.controls[paymentmode].value== "0.00"){
+       this.refundform.controls[paymentmode].setValue("");
+    }
   }
 }

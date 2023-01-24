@@ -12,6 +12,7 @@ import { ReportsModule } from "../../modules/reports";
 import { CommonModule, APP_BASE_HREF, DatePipe } from "@angular/common";
 import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,6 +25,7 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
     MaxHealthMessageDialogModule,
     HeaderModule,
     AppRoutingModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     AuthGuardService,

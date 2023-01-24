@@ -52,10 +52,12 @@ import {
     ]),
   ],
 })
-export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
+export class MaxTableComponent implements OnInit, OnChanges {
   @Input() config: any;
 
   @Input() data: any = [];
+
+  @Input() footerData: any = {};
 
   @Input() childTableRefId: any = -1;
 
@@ -91,6 +93,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
   @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
   @ViewChild("input") inputboxTemplate!: TemplateRef<any>;
+  @ViewChild("inputPrice") inputPriceboxTemplate!: TemplateRef<any>;
   @ViewChild("textarea") textareaTemplate!: TemplateRef<any>;
   @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
   @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
@@ -155,7 +158,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       Object.keys(it).forEach((itk) => {
         if (
           this.config.columnsInfo[itk] &&
-          this.config.columnsInfo[itk].type == "dropdown"
+          ((itk + "_col_type" in it &&
+            it[itk + "_col_type"] &&
+            ["dropdown", "input", "input_price"].includes(
+              it[itk + "_col_type"]
+            )) ||
+            ["dropdown", "input", "input_price"].includes(
+              this.config.columnsInfo[itk].type
+            ))
         ) {
           if (itk + "_required" in it && it[itk + "_required"]) {
             group[itk] = new FormControl(it[itk], Validators.required);
@@ -232,7 +242,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       Object.keys(it).forEach((itk) => {
         if (
           this.config.columnsInfo[itk] &&
-          this.config.columnsInfo[itk].type == "dropdown"
+          ((itk + "_col_type" in it &&
+            it[itk + "_col_type"] &&
+            ["dropdown", "input", "input_price"].includes(
+              it[itk + "_col_type"]
+            )) ||
+            ["dropdown", "input", "input_price"].includes(
+              this.config.columnsInfo[itk].type
+            ))
         ) {
           if (itk + "_required" in it && it[itk + "_required"]) {
             group[itk] = new FormControl(it[itk], Validators.required);
@@ -247,7 +264,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.tableForm.setControl("data", new FormArray(formData));
 
     this.dataSource = new MatTableDataSource<any>(this.data);
-    if (this.sort) this.dataSource.sort = this.sort;
 
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
@@ -283,6 +299,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     this.tableForm.markAllAsTouched();
+    setTimeout(() => {
+      this.sortInitialize();
+    }, 50);
   }
 
   ngAfterContentInit() {
@@ -292,7 +311,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     }, -1);
   }
 
-  ngAfterViewInit() {
+  sortInitialize() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = (
@@ -358,24 +377,28 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     }`;
   }
 
-  getTemplate(col: any) {
-    if (col.type == "string") return this.stringTemplate;
-    else if (col.type == "string_link") return this.stringLinkTemplate;
-    else if (col.type == "number") return this.numberTemplate;
-    else if (col.type == "currency") return this.currencyTemplate;
-    else if (col.type == "date") return this.dateTemplate;
-    else if (col.type == "datetime") return this.dateTimeTemplate;
-    else if (col.type == "image") return this.imageTemplate;
-    else if (col.type == "checkbox") return this.checkboxTemplate;
-    else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
-    else if (col.type == "input") return this.inputboxTemplate;
-    else if (col.type == "textarea") return this.textareaTemplate;
-    else if (col.type == "input_date") return this.inputboxDateTemplate;
-    else if (col.type == "input_datetime") return this.inputboxDateTimeTemplate;
-    else if (col.type == "dropdown") return this.dropdownTemplate;
-    else if (col.type == "button") return this.buttonTemplate;
-    else if (col.type == "Changeablebutton")
-      return this.ChangeablebuttonTemplate;
+  getTemplate(col: any, element: any, colName: string) {
+    let type = col.type;
+    if (colName + "_col_type" in element && element[colName + "_col_type"]) {
+      type = element[colName + "_col_type"];
+    }
+    if (type == "string") return this.stringTemplate;
+    else if (type == "string_link") return this.stringLinkTemplate;
+    else if (type == "number") return this.numberTemplate;
+    else if (type == "currency") return this.currencyTemplate;
+    else if (type == "date") return this.dateTemplate;
+    else if (type == "datetime") return this.dateTimeTemplate;
+    else if (type == "image") return this.imageTemplate;
+    else if (type == "checkbox") return this.checkboxTemplate;
+    else if (type == "checkbox_active") return this.checkboxActiveTemplate;
+    else if (type == "input") return this.inputboxTemplate;
+    else if (type == "input_price") return this.inputPriceboxTemplate;
+    else if (type == "textarea") return this.textareaTemplate;
+    else if (type == "input_date") return this.inputboxDateTemplate;
+    else if (type == "input_datetime") return this.inputboxDateTimeTemplate;
+    else if (type == "dropdown") return this.dropdownTemplate;
+    else if (type == "button") return this.buttonTemplate;
+    else if (type == "Changeablebutton") return this.ChangeablebuttonTemplate;
     else return this.stringTemplate;
   }
 
@@ -468,7 +491,11 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.stringLinkOutput.emit(data);
   }
   controlValueChange($event: any, data: any) {
-    data.element[data.col] = $event.value;
+    if ($event.type && $event.type == "change") {
+      data.element[data.col] = $event.target.value;
+    } else {
+      data.element[data.col] = $event.value;
+    }
     this.controlValueChangeTrigger.emit({ $event, data });
   }
   actionItemClick(item: any, data: any) {

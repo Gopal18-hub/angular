@@ -29,11 +29,16 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { A11yModule } from "@angular/cdk/a11y";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
+import { SpecialCharacterDirective } from "../../utilities/directives/specialChracter.directive";
+
+import { MaxDateTimeAdapter } from "./service/date-time-adapter";
+
 import {
   NgxMatDatetimePickerModule,
   NgxMatNativeDateModule,
+  NgxMatDateAdapter,
 } from "@angular-material-components/datetime-picker";
-
+import{AccessControlDirective} from "@shared/utilities/directives/access-control.directive";
 @NgModule({
   imports: [
     CommonModule,
@@ -56,14 +61,19 @@ import {
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
   ],
-  exports: [DynamicFormQuestionComponent, MaskedInputDirective],
-  declarations: [
+  exports: [AccessControlDirective, DynamicFormQuestionComponent, MaskedInputDirective],
+  declarations: [AccessControlDirective,
     DynamicFormQuestionComponent,
     OptionGroupComponent,
     MaskedInputDirective,
+    SpecialCharacterDirective,
   ],
   providers: [
     { provide: DateAdapter, useClass: MaxDateAdapter },
+    {
+      provide: NgxMatDateAdapter,
+      useClass: MaxDateTimeAdapter,
+    },
     QuestionControlService,
     {
       provide: MAT_SELECT_CONFIG,

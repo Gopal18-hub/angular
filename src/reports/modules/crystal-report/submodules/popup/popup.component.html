@@ -1,10 +1,13 @@
-<iframe
-id="popupid"
-name="popupid"
-  [src]="url"
-  frameborder="0"
-  allowtransparency="true"
-  class="h-full w-full border-0"
-  allow-top-navigation
->
-</iframe>
+<div class="relative h-full">
+  <div class="loading font-bold" id="loading">Loading...</div>
+  <iframe
+    id="popupid"
+    name="popupid"
+    [src]="url"
+    frameborder="0"
+    allowtransparency="true"
+    class="h-full w-full border-0"
+    allow-top-navigation
+  >
+  </iframe>
+</div>

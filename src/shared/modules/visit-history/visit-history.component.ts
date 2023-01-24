@@ -32,38 +32,57 @@ export class VisitHistoryComponent implements OnInit {
       visitDate: {
         title: "Visit Date",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No.",
         type: "number",
+        style: {
+          width: "6rem",
+        },
       },
       paymentMode: {
         title: "Payment Mode",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       companyName: {
         title: "Company Billed",
         type: "string",
+        
       },
       doctorName: {
         title: "Doctor Name",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       days: {
         title: "Days",
         type: "number",
+        style: {
+          width: "4rem",
+        },
       },
       consultationType: {
         title: "Service Type",
         type: "string",
         tooltipColumn: "consultationType",
         style: {
-          width: "120px",
+          width: "10rem",
         },
       },
       amount: {
         title: "Amount",
         type: "number",
+        style: {
+          width: "6rem",
+        },
       },
     },
   };

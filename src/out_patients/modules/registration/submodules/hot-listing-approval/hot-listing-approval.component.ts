@@ -51,7 +51,7 @@ export class HotListingApprovalComponent implements OnInit {
   from: any;
   to: any;
   today = new Date();
-  hotlistingmessage: string = "Please search From Date and To Date ";
+  hotlistingmessage: string = "No records found";
   hotlistingicon: string = "placeholder";
 
   hotlistingapprovalpageForm = new FormGroup({
@@ -485,7 +485,7 @@ export class HotListingApprovalComponent implements OnInit {
       });
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 2),
+        new Date().setDate(new Date().getDate() - 1),
         "yyyy-MM-dd"
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -504,7 +504,7 @@ export class HotListingApprovalComponent implements OnInit {
       this.from =
         formdata["from"] != ""
           ? formdata["from"]
-          : this.today.setDate(this.today.getDate() - 30);
+          : this.today.setDate(this.today.getDate() - 1);
       this.from = this.datepipe.transform(this.from, "yyyy-MM-dd");
       this.to = formdata["to"] != "" ? formdata["to"] : new Date();
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
@@ -620,7 +620,7 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalpending = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
-            this.hotlistingicon = "norecordfound";
+            // this.hotlistingicon = "norecordfound";
             console.log(error);
           }
         );
@@ -692,7 +692,7 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalaccepting = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
-            this.hotlistingicon = "norecordfound";
+            // this.hotlistingicon = "norecordfound";
             console.log(error);
           }
         );
@@ -763,7 +763,7 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalreject = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
-            this.hotlistingicon = "norecordfound";
+            // this.hotlistingicon = "norecordfound";
             console.log(error);
           }
         );
@@ -771,80 +771,92 @@ export class HotListingApprovalComponent implements OnInit {
   }
 
   hotlistApproveItem() {
-    this.hotlistingtable.selection.selected.map((s: any) => {
-      this.HotListidList.push({ id: s.id });
-    });
-    let userId = Number(this.cookie.get("UserId"));
-    this.hotlistingpostapi(this.HotListidList, userId, 1)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata) => {
-          console.log(resultdata);
-          if (resultdata["success"]) {
-            this.messageDialogService.success(resultdata["message"]);
-          } else {
-            this.messageDialogService.info(resultdata["message"]);
-          }
+    if (this.hotlistingtable.selection.selected.length > 0) {
+      this.hotlistingtable.selection.selected.map((s: any) => {
+        this.HotListidList.push({ id: s.id });
+      });
+      let userId = Number(this.cookie.get("UserId"));
+      this.hotlistingpostapi(this.HotListidList, userId, 1)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            console.log(resultdata);
+            if (resultdata["success"]) {
+              this.messageDialogService.success(resultdata["message"]);
+            } else {
+              this.messageDialogService.info(resultdata["message"]);
+            }
 
-          this.showgrid("View Pending Request");
-          this.HotListidList = [];
-        },
-        (error) => {
-          console.log(error);
-          this.HotListidList = [];
-          this.defaultUI = false;
-          this.hotlistingmessage = "No records found";
-          this.hotlistingicon = "norecordfound";
-        }
-      );
+            this.showgrid("View Pending Request");
+            this.HotListidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.HotListidList = [];
+            this.defaultUI = false;
+            this.hotlistingmessage = "No records found";
+            // this.hotlistingicon = "norecordfound";
+          }
+        );
+    } else {
+      this.messageDialogService.info("No record selected to approve/reject");
+    }
   }
 
   hotlistRejectItem() {
-    this.hotlistingtable.selection.selected.map((s: any) => {
-      this.HotListidList.push({ id: s.id });
-    });
-    let userId = Number(this.cookie.get("UserId"));
-    this.hotlistingpostapi(this.HotListidList, userId, 2)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata) => {
-          console.log(resultdata);
-          this.messageDialogService.success("Update Request Rejected");
-          this.showgrid("View Pending Request");
-          this.HotListidList = [];
-        },
-        (error) => {
-          console.log(error);
-          this.HotListidList = [];
-          this.defaultUI = false;
-          this.hotlistingmessage = "No records found";
-          this.hotlistingicon = "norecordfound";
-        }
-      );
+    if (this.hotlistingtable.selection.selected.length > 0) {
+      this.hotlistingtable.selection.selected.map((s: any) => {
+        this.HotListidList.push({ id: s.id });
+      });
+      let userId = Number(this.cookie.get("UserId"));
+      this.hotlistingpostapi(this.HotListidList, userId, 2)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            console.log(resultdata);
+            this.messageDialogService.success("Update Request Rejected");
+            this.showgrid("View Pending Request");
+            this.HotListidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.HotListidList = [];
+            this.defaultUI = false;
+            this.hotlistingmessage = "No records found";
+            // this.hotlistingicon = "norecordfound";
+          }
+        );
+    } else {
+      this.messageDialogService.info("No record selected to approve/reject");
+    }
   }
 
   hotlistDeleteItem() {
-    this.approvaTable.selection.selected.map((s: any) => {
-      this.HotListidList.push({ id: s.id });
-    });
-    let userId = Number(this.cookie.get("UserId"));
-    this.hotlistingpostapi(this.HotListidList, userId, 3)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata) => {
-          console.log(resultdata);
-          this.messageDialogService.success("Update Request Deleted");
-          this.showgrid("Approved Requests");
-          this.HotListidList = [];
-        },
-        (error) => {
-          console.log(error);
-          this.HotListidList = [];
-          this.defaultUI = false;
-          this.hotlistingmessage = "No records found";
-          this.hotlistingicon = "norecordfound";
-        }
-      );
+    if (this.approvaTable.selection.selected.length > 0) {
+      this.approvaTable.selection.selected.map((s: any) => {
+        this.HotListidList.push({ id: s.id });
+      });
+      let userId = Number(this.cookie.get("UserId"));
+      this.hotlistingpostapi(this.HotListidList, userId, 3)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            console.log(resultdata);
+            this.messageDialogService.success("Update Request Deleted");
+            this.showgrid("Approved Requests");
+            this.HotListidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.HotListidList = [];
+            this.defaultUI = false;
+            this.hotlistingmessage = "No records found";
+            // this.hotlistingicon = "norecordfound";
+          }
+        );
+    } else {
+      this.messageDialogService.info("No approved record selected for delete");
+    }
   }
 
   hotlistingpostapi(

@@ -54,8 +54,7 @@ export class OrderSetComponent implements OnInit {
       "doctorName",
       "price",
       "precaution",
-      "priority",    
-      
+      "priority",
     ],
     columnsInfo: {
       sno: {
@@ -125,7 +124,6 @@ export class OrderSetComponent implements OnInit {
           width: "130px",
         },
       },
-      
     },
   };
 
@@ -152,7 +150,7 @@ export class OrderSetComponent implements OnInit {
     this.questions = formResult.questions;
     this.billingService.OrderSetItems.forEach((item: any, index: number) => {
       this.config.columnsInfo.doctorName.moreOptions[index] =
-        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+        this.getdoctorlistonSpecializationClinic(item.specialization, index);
     });
     this.data = this.billingService.OrderSetItems;
     if (this.data.length == 0) {
@@ -179,10 +177,17 @@ export class OrderSetComponent implements OnInit {
       }
     );
     this.data = [...this.billingService.OrderSetItems];
+    if (this.data.length == 0) {
+      this.billingService.changeBillTabStatus(false);
+    }
     this.billingService.calculateTotalAmount();
+    this.checkTableValidation();
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[0].elementRef.focus();
+    }
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "specialization") {
         res.data.element["doctorName"] = "";
@@ -197,12 +202,27 @@ export class OrderSetComponent implements OnInit {
       } else if (res.data.col == "doctorName") {
         this.billingService.OrderSetItems[res.data.index].billItem.doctorID =
           res.$event.value;
+
+        ////GAV-1462 1556
+        this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+          (opbillItem: any, billIndex: any) => {
+            if (
+              opbillItem.itemId ==
+              this.billingService.OrderSetItems[res.data.index].billItem.itemId
+            ) {
+              this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].consultid = res.$event.value;
+            }
+          }
+        );
         const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
           res.data.index
         ].find((doc: any) => doc.value == res.$event.value);
         this.billingService.OrderSetItems[
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
+        // this.checkTableValidation();
       } else if (res.data.col == "priority") {
         if (this.data.length == 1) {
           this.defaultPriorityId = res.$event.value;
@@ -256,7 +276,7 @@ export class OrderSetComponent implements OnInit {
   ) {
     console.log(index);
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }
@@ -403,6 +423,7 @@ export class OrderSetComponent implements OnInit {
               gstValue: resItem.totaltaX_Value,
               specialisationID: 0,
               doctorID: 0,
+              itemCode: resItem.itemCode,
             },
             gstDetail: {
               gsT_value: resItem.totaltaX_Value,
@@ -475,6 +496,10 @@ export class OrderSetComponent implements OnInit {
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.OrderSetItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
+          ////GAV-1464
+          this.billingService.OrderSetItems[index].billItem.itemCode =
+            res[0].itemCode;
+
           this.data = [...this.billingService.OrderSetItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {
@@ -489,9 +514,11 @@ export class OrderSetComponent implements OnInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }

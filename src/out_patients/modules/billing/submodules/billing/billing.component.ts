@@ -62,6 +62,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   ssn!: string;
 
   private readonly _destroying$ = new Subject<void>();
+  private readonly _routingdestroying$ = new Subject<void>();
 
   patientDetails!: any;
 
@@ -81,6 +82,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   companyData!: GetCompanyDataInterface[];
 
   orderId: number = 0;
+  itemIds: any = "";
 
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
@@ -90,6 +92,8 @@ export class BillingComponent implements OnInit, OnDestroy {
   disableStopQueueBtn: boolean = true;
   queueId: number = 0;
   qmsSeqNo = "";
+  ////GAV-1442
+  clearQueryParams = 1;
 
   constructor(
     public matDialog: MatDialog,
@@ -138,24 +142,34 @@ export class BillingComponent implements OnInit, OnDestroy {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-
-    this.route.queryParams.subscribe((params: any) => {
-      if (params.maxId) {
-        this.formGroup.controls["maxid"].setValue(params.maxId);
-        this.apiProcessing = true;
-        this.patient = false;
-        this.getAllCompany();
-        this.getAllCorporate();
-        this.getPatientDetailsByMaxId();
-      }
-      if (params.orderid) {
-        this.orderId = Number(params.orderid);
-      }
-    });
+    this.billingService.doctorList = [];
+    this.route.queryParams
+      .pipe(takeUntil(this._routingdestroying$))
+      .subscribe((params: any) => {
+        ////GAV-1442
+        if (!params.maxId && !params.orderid) {
+          if (this.clearQueryParams > 0) this.clear(this.clearQueryParams);
+        }
+        if (params.maxId) {
+          this.formGroup.controls["maxid"].setValue(params.maxId);
+          this.apiProcessing = true;
+          this.patient = false;
+          this.getAllCompany();
+          this.getAllCorporate();
+          this.getPatientDetailsByMaxId();
+        }
+        if (params.orderid) {
+          this.orderId = Number(params.orderid);
+        }
+        ////GAV-1350 - added ItemId as parameter
+        if (params.itemsids) {
+          this.itemIds = params.itemsids;
+        }
+      });
     this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(async (formdata: any) => {
-        await this.loadGrid(formdata);
+      .pipe(takeUntil(this._routingdestroying$))
+      .subscribe((formdata: any) => {
+        this.loadGrid(formdata);
       });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
@@ -176,6 +190,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     this.billingService.companyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
+        if (res.company == null) {
+          this.getAllCompany();
+        }
         this.formGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
         });
@@ -188,7 +205,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         });
         if (res.from == "disable") {
           this.formGroup.controls["corporate"].disable();
-        } else if (this.formGroup.value.company.value) {
+        } else if (
+          this.formGroup.value.company &&
+          this.formGroup.value.company.value
+        ) {
           this.formGroup.controls["corporate"].enable();
         }
       }
@@ -196,13 +216,15 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
+    ////GAV-1350 - added ItemId as parameter
     this.http
       .get(
         BillingApiConstants.getediganosticacdoninvestigationgrid(
           this.cookie.get("HSPLocationId"),
           this.orderId,
           regNumber,
-          iacode
+          iacode,
+          this.itemIds
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -270,11 +292,16 @@ export class BillingComponent implements OnInit, OnDestroy {
     //       this.billingService.makeBillPayload.invoiceType = "B2C";
     //     }
     //   });
+
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
+        console.log(res);
         if (res && res.value) {
           console.log(res);
+          // Clear SRF values
+          this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
+          this.billingService.isNeedToCheckSRF = 0;
           if (this.billingService.billtype == 3 && res.company.id > 0) {
             this.billingService.checkcreditcompany(
               res.value,
@@ -295,35 +322,37 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.formGroup.controls["corporate"].valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((res: any) => {
-        if (res && res.value) {
-          console.log(res);
-          this.billingService.setCorporate(
-            res.value,
-            res,
-            this.formGroup,
-            "header"
-          );
-        } else {
-          this.billingService.setCorporate(res, res, this.formGroup, "header");
-        }
-      });
+    this.formGroup.controls["corporate"].valueChanges.subscribe((res: any) => {
+      if (res && res.value) {
+        console.log(res);
+        this.billingService.setCorporate(
+          res.value,
+          res,
+          this.formGroup,
+          "header"
+        );
+      } else {
+        this.billingService.setCorporate(res, res, this.formGroup, "header");
+      }
+    });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
     }
   }
 
   ngOnDestroy(): void {
-    this.clear();
+    this.clear(0);
   }
 
   formEvents() {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        if (!this.route.snapshot.queryParams["maxId"]) {
+        this.billingService.doctorList = [];
+        if (
+          !this.route.snapshot.queryParams["maxId"] &&
+          this.formGroup.value.maxid != this.questions[0].defaultValue
+        ) {
           this.apiProcessing = true;
           this.patient = false;
           this.router.navigate([], {
@@ -332,8 +361,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             queryParamsHandling: "merge",
           });
         }
-
-        //this.getPatientDetailsByMaxId();
+        //sthis.getPatientDetailsByMaxId();
       }
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -353,7 +381,8 @@ export class BillingComponent implements OnInit, OnDestroy {
       !this.formGroup.value.mobile ||
       this.formGroup.value.mobile.length != 10
     ) {
-      this.snackbar.open("Invalid Mobile No.", "error");
+      // this.snackbar.open("Invalid Mobile No.", "error");
+      this.messageDialogService.error("Invalid Mobile No.");
       this.apiProcessing = false;
       this.patient = false;
       return;
@@ -365,6 +394,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res.length == 0) {
+          this.messageDialogService.error("Invalid Mobile No.");
+          this.apiProcessing = false;
+          this.patient = false;
+          return;
         } else {
           if (res.length == 1) {
             const maxID = res[0].maxid;
@@ -442,9 +475,10 @@ export class BillingComponent implements OnInit, OnDestroy {
       this.patient = false;
       return;
     }
+    let arr = this.formGroup.value.maxid.split(".");
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
-
-    if (regNumber != 0) {
+    console.log(regNumber);
+    if (regNumber != 0 && arr.length == 2) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
@@ -458,6 +492,10 @@ export class BillingComponent implements OnInit, OnDestroy {
           .toPromise();
       }
       this.getSimilarSoundDetails(iacode, regNumber);
+    } else if (regNumber == 0 || arr.length != 2) {
+      this.clear();
+      // this.snackbar.open("Invalid Max ID", "error");
+      this.messageDialogService.error("Invalid Max ID");
     } else {
       this.apiProcessing = false;
       this.patient = false;
@@ -482,7 +520,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.clear();
-          this.snackbar.open("Invalid Max ID", "error");
+          // this.snackbar.open("Invalid Max ID", "error");
+          this.messageDialogService.error("Invalid Max ID");
         }
       );
   }
@@ -500,9 +539,16 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe(
         async (resultData: Registrationdetails) => {
           console.log(resultData);
-          if (resultData) {
+          if (
+            resultData &&
+            resultData.dsPersonalDetails.dtPersonalDetails1.length > 0 &&
+            resultData.dsPersonalDetails.dtPersonalDetails1 != null
+          ) {
             this.patientDetails = resultData;
 
+            this.billingService.setPatientDetails(
+              this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+            );
             this.setValuesToForm(this.patientDetails);
             if (this.billingService.todayPatientBirthday) {
               const birthdayDialog = this.messageDialogService.info(
@@ -520,8 +566,9 @@ export class BillingComponent implements OnInit, OnDestroy {
               0
             ) {
               if (
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-                  .pPagerNumber == "ews"
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0].pPagerNumber
+                  .toString()
+                  .toLowerCase() == "ews"
               ) {
                 this.formGroup.controls["company"].disable();
                 this.formGroup.controls["corporate"].disable();
@@ -529,15 +576,18 @@ export class BillingComponent implements OnInit, OnDestroy {
                 const tpacompanyExist: any = this.companyData.filter(
                   (c: any) => c.isTPA == 18
                 );
+                console.log(tpacompanyExist);
                 if (tpacompanyExist && tpacompanyExist.length > 0) {
                   this.formGroup.controls["company"].setValue({
                     title: tpacompanyExist[0].name,
                     value: tpacompanyExist[0].id,
+                    company: tpacompanyExist[0],
                   });
                 }
               }
-              this.billingService.setPatientDetails(
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+
+              this.billingService.setPatientChannelDetail(
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails5[0]
               );
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatientAny(
@@ -581,7 +631,8 @@ export class BillingComponent implements OnInit, OnDestroy {
             }
           } else {
             this.clear();
-            this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
+            // this.snackbar.open("Invalid Max ID", "error");
           }
 
           //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
@@ -592,7 +643,8 @@ export class BillingComponent implements OnInit, OnDestroy {
             // this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
             //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
             //this.questions[0].customErrorMessage = "Invalid Max ID";
-            this.snackbar.open("Invalid Max ID", "error");
+            // this.snackbar.open("Invalid Max ID", "error");
+            this.messageDialogService.error("Invalid Max ID");
           }
           this.apiProcessing = false;
           this.patient = false;
@@ -623,9 +675,14 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
-    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+    if (
+      !pDetails.dsPersonalDetails.dtPersonalDetails1 ||
+      (pDetails.dsPersonalDetails.dtPersonalDetails1 &&
+        pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0)
+    ) {
       this.clear();
-      this.snackbar.open("Invalid Max ID", "error");
+      this.messageDialogService.error("Invalid Max ID");
+      // this.snackbar.open("Invalid Max ID", "error");
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -696,9 +753,9 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {
@@ -726,7 +783,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         bplCardNo: patientDetails.bplcardNo,
         BPLAddress: patientDetails.addressOnCard,
       },
-      hotlist: {
+      hotList: {
         hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
         reason: patientDetails.hotlistcomments,
       },
@@ -1001,7 +1058,13 @@ export class BillingComponent implements OnInit, OnDestroy {
                             value: selectedServices.selectedDoctor.clinicId,
                           }
                         );
-                      } else if ([41, 42, 43].includes(slItem.serviceid)) {
+                      }
+                      ////GAV-1423
+                      else if (
+                        [41, 42, 43, 38, 10, 52, 64, 74].includes(
+                          slItem.serviceid
+                        )
+                      ) {
                         this.billingService.processInvestigationWithOutApi(
                           1,
                           slItem.serviceid,
@@ -1095,8 +1158,8 @@ export class BillingComponent implements OnInit, OnDestroy {
               let investigationExists = false;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
-
-                if ([41, 42, 43].includes(item.serviceId)) {
+                ////GAV-1423
+                if ([41, 42, 43, 38, 10, 52, 64, 74].includes(item.serviceId)) {
                   investigationExists = true;
                   await this.billingService.processInvestigationAdd(
                     1,
@@ -1105,7 +1168,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       title: item.testName,
                       value: item.testID,
                       originalTitle: item.testName,
-                      docRequired: item.docRequired ? true : false,
+                      docRequired: item.procedureDoctor ? true : false, /////GAV-1423
                       patient_Instructions: item.patient_Instructions,
                       serviceid: item.serviceId,
                       doctorid: item.doctorid,
@@ -1123,7 +1186,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                       serviceid: item.serviceId,
                       value: item.testID,
                       originalTitle: item.testName,
-                      docRequired: item.docRequired,
+                      docRequired: item.procedureDoctor, ////GAV-1423
                       popuptext: item.popuptext,
                       specializationId: item.specializationId,
                       doctorid: item.doctorid,
@@ -1247,6 +1310,11 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (apppatientDetails.maxId.split(".")[1] == "") {
             this.clear();
             this.snackbar.open("Invalid Max ID", "error");
+          } else if (apppatientDetails.maxId == "") {
+            this.router.navigate(["registration", "op-registration"], {
+              queryParams: { id: apppatientDetails.id },
+              queryParamsHandling: "",
+            });
           } else {
             let maxid = apppatientDetails.maxId;
             // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
@@ -1303,13 +1371,17 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
   }
 
-  clear() {
+  clear(clearQueryParams = 1) {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.apiProcessing = false;
+    this.billingService.doctorList = [];
     this.patient = false;
     this.secondaryMaxId = false;
-    this.formGroup.reset();
+    this.formGroup.reset(
+      { maxid: this.cookie.get("LocationIACode") + "." },
+      { emitEvent: false }
+    );
     this.patientName = "";
     this.ssn = "";
     this.dob = "";
@@ -1324,14 +1396,21 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.expiredPatient = false;
     this.categoryIcons = [];
     this.questions[0].questionClasses = "";
-    this.formGroup.controls["maxid"].setValue(
-      this.cookie.get("LocationIACode") + "."
-    );
+    // this.formGroup.controls["maxid"].setValue(
+    //   this.cookie.get("LocationIACode") + "."
+    // );
     this.questions[0].elementRef.focus();
-    this.router.navigate(["services"], {
-      queryParams: {},
-      relativeTo: this.route,
-    });
+    if (clearQueryParams == 1) {
+      this.router.navigate(["services"], {
+        queryParams: {},
+        relativeTo: this.route,
+      });
+      ////GAV-1442
+      this.clearQueryParams = 0;
+    } else {
+      this._routingdestroying$.next(undefined);
+      this._routingdestroying$.complete();
+    }
     this.questions[0].elementRef.focus();
     this.formGroup.controls["company"].enable();
     this.formGroup.controls["corporate"].enable();
@@ -1351,8 +1430,8 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((data: any[]) => {
         this.companyData = data;
         this.formGroup.controls["corporate"].disable();
-        this.billingService.setCompanyData(data);
         data.unshift({ name: "Select", id: -1 });
+        this.billingService.setCompanyData(data);
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id, company: a };
         });

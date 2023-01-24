@@ -32,7 +32,7 @@ export class ModifyDialogComponent implements OnInit {
     },
     private dialogRef: MatDialogRef<ModifyDialogComponent>,
     private formService: QuestionControlService,
-    private datepipe: DatePipe,
+    public datepipe: DatePipe,
     public matDialog: MatDialog // private cookie:CookieService,
   ) {}
 
@@ -45,6 +45,8 @@ export class ModifyDialogComponent implements OnInit {
     this.questions = formResult.questions;
     this.OPUpdateForm.controls["foreigner"].disable();
     this.OPUpdateForm.controls["modifiedForeigner"].disable();
+    console.log(this.data.modifiedDetails);
+    console.log(this.data.patientDetails);
   }
 
   updateregistrationFormData = {

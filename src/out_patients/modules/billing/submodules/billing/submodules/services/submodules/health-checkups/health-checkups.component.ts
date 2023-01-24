@@ -16,10 +16,11 @@ import {
   finalize,
   distinctUntilChanged,
   filter,
+  catchError,
 } from "rxjs/operators";
 import { of } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
-
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 @Component({
   selector: "out-patients-health-checkups",
   templateUrl: "./health-checkups.component.html",
@@ -44,6 +45,7 @@ export class HealthCheckupsComponent implements OnInit {
   };
   formGroup!: FormGroup;
   questions: any;
+  snackbarHealthCheckup: any = true;
 
   @ViewChild("table") tableRows: any;
   data: any = [];
@@ -77,6 +79,7 @@ export class HealthCheckupsComponent implements OnInit {
   };
 
   doctorsList: any = [];
+  departmentHealthCheckup: any = [];
 
   constructor(
     private formService: QuestionControlService,
@@ -86,7 +89,8 @@ export class HealthCheckupsComponent implements OnInit {
     public matDialog: MatDialog,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackbar: MaxHealthSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -120,10 +124,16 @@ export class HealthCheckupsComponent implements OnInit {
         return item;
       });
     if (this.billingService.HealthCheckupItems.length == 0) {
+      this.billingService.changeBillTabStatus(false);
       this.billingService.servicesTabStatus.next({ clear: true });
     }
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
+
+    //newly added to remove from array
+    let itemid = $event.data.itemid;
+    delete this.billingService.healthCheckupselectedItems[itemid];
+    this.billingService.doctorList = [];
   }
 
   detialsForHealthCheckup(res: any) {
@@ -133,35 +143,54 @@ export class HealthCheckupsComponent implements OnInit {
         width: "50%",
         data: {
           orderSet: res.element,
-          items: [],
-          doctorsList: this.doctorsList,
+          items:
+            res.element.itemid.toString() in
+            this.billingService.healthCheckupselectedItems
+              ? this.billingService.healthCheckupselectedItems[
+                  res.element.itemid.toString()
+                ]
+              : [], //[],
+          doctorsList: this.billingService.doctorList, //this.doctorsList,
         },
       }
     );
     dialogPopup.afterClosed().subscribe((res1: any) => {
+      if (res1 && "data" in res1) {
+        this.billingService.healthCheckupselectedItems[res1.itemId.toString()] =
+          res1.data;
+      }
       if (res1 && res1.itemId) {
-        this.doctorsList = [];
-        res1.data.forEach((doctor: any) => {
-          if (doctor.doctorName) {
-            this.doctorsList.push(doctor.doctorName);
-          } else {
-            this.doctorsList.push(0);
-          }
-        });
+        // this.doctorsList = [];
+        this.billingService.doctorList = res1.doctorList;
         ////GAV-882
         this.billingService.changeBillTabStatus(false);
-        this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
+        this.billingService.setHCUDetails(
+          res1.itemId,
+          this.billingService.doctorList
+        );
       } else {
-        this.doctorsList = this.doctorsList.map((d: number) => d * 0);
+        // this.doctorsList = this.doctorsList.map((d: number) => d * 0);
         ////GAV-882
-        if (this.doctorsList && this.doctorsList.length > 0) {
-          this.billingService.changeBillTabStatus(true);
+        if (
+          Object.keys(this.billingService.healthCheckupselectedItems).length > 0
+        ) {
+          this.billingService.changeBillTabStatus(false);
+        } else {
+          //GAV-1492
+          if (Object.keys(this.billingService.doctorList).length > 0) {
+            this.billingService.changeBillTabStatus(true);
+          } else {
+            this.billingService.changeBillTabStatus(false);
+          }
         }
       }
     });
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -175,9 +204,9 @@ export class HealthCheckupsComponent implements OnInit {
 
     this.formGroup.controls["healthCheckup"].valueChanges
       .pipe(
-        filter((res) => {
-          return res !== null && res.length >= 3;
-        }),
+        // filter((res) => {
+        //   return res !== null && res.length >= 3;
+        // }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
@@ -186,32 +215,55 @@ export class HealthCheckupsComponent implements OnInit {
             this.formGroup.value.department &&
             this.formGroup.value.department.value
           ) {
-            return of([]);
+            return this.departmentHealthCheckup;
+            //return of([]);
           } else {
-            return this.http
-              .get(
-                BillingApiConstants.gethealthcheckupsonsearch(
-                  Number(this.cookie.get("HSPLocationId")),
-                  value
+            if (value !== null && value.length >= 3) {
+              return this.http
+                .get(
+                  BillingApiConstants.gethealthcheckupsonsearch(
+                    Number(this.cookie.get("HSPLocationId")),
+                    value
+                  )
                 )
-              )
-              .pipe(finalize(() => {}));
+                .pipe(
+                  catchError((err) => {
+                    this.openSnackbarHealthCheckup(err.error);
+                    return of([]);
+                  }),
+                  finalize(() => {})
+                );
+            } else {
+              return of([]);
+            }
           }
         })
       )
-      .subscribe((data: any) => {
-        if (data.length > 0) {
-          this.questions[1].options = data.map((r: any) => {
-            return {
-              title: r.nameWithDepartment || r.name,
-              value: r.id,
-              originalTitle: r.name,
-              popuptext: r.popuptext,
-            };
-          });
-          this.questions[1] = { ...this.questions[1] };
+      .subscribe(
+        (data: any) => {
+          if (data.length > 0) {
+            this.questions[1].options = data.map((r: any) => {
+              return {
+                title: r.nameWithDepartment || r.name,
+                value: r.id,
+                originalTitle: r.name,
+                popuptext: r.popuptext,
+              };
+            });
+            this.questions[1] = { ...this.questions[1] };
+          } else {
+            if (data && data.id && data.id > 0) {
+            } else {
+              this.questions[1].options = [];
+              this.questions[1] = { ...this.questions[1] };
+            }
+          }
+        },
+        (err: any) => {
+          this.questions[1].options = [];
+          this.questions = { ...this.questions };
         }
-      });
+      );
   }
 
   getDepartments() {
@@ -224,6 +276,8 @@ export class HealthCheckupsComponent implements OnInit {
     this.formGroup.controls["department"].valueChanges.subscribe((val: any) => {
       if (val && val.value) {
         this.gethealthcheckups(val.value);
+      } else {
+        this.departmentHealthCheckup = [];
       }
     });
   }
@@ -238,8 +292,10 @@ export class HealthCheckupsComponent implements OnInit {
       )
       .subscribe(
         (res) => {
+          console.log("department valueChanges res => ", res);
           this.formGroup.controls["healthCheckup"].reset();
           if (Array.isArray(res)) {
+            this.departmentHealthCheckup = res;
             this.questions[1].options = res.map((r: any) => {
               return {
                 title: r.name,
@@ -251,15 +307,32 @@ export class HealthCheckupsComponent implements OnInit {
           } else {
             this.questions[1].options = [];
           }
-
-          this.questions[1] = { ...this.questions[1] };
+          console.log(
+            "department valueChanges this.questions => ",
+            this.questions
+          );
+          this.questions = { ...this.questions };
         },
         (error) => {
+          this.openSnackbarHealthCheckup(
+            "Health Checkup's Not available for " +
+              this.formGroup.value.department.title
+          );
           this.formGroup.controls["healthCheckup"].reset();
           this.questions[1].options = [];
-          this.questions[1] = { ...this.questions[1] };
+          this.questions = { ...this.questions };
         }
       );
+  }
+
+  openSnackbarHealthCheckup(msg: string) {
+    if (this.snackbarHealthCheckup) {
+      this.snackbarHealthCheckup = false;
+      this.snackbarHealthCheckup = this.snackbar.open(msg, "error");
+      setTimeout(() => {
+        this.snackbarHealthCheckup = true;
+      }, 4000);
+    }
   }
 
   checkPatientSex(
@@ -285,18 +358,24 @@ export class HealthCheckupsComponent implements OnInit {
 
   getDoctorsList(hid: string, serviceid: string) {
     this.doctorsList = [];
+    this.billingService.doctorList = [];
     this.http
       .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
       .subscribe((res) => {
         res.forEach((item: any, index: number) => {
-          if (item.isConsult == 1 && item.itemServiceID == 25) {
+          //if (item.isConsult == 1 && item.itemServiceID == 25) {
+          if (item.itemServiceID == 25) {
             this.doctorsList.push(0);
+            this.billingService.doctorList.push(0);
           }
         });
         if (this.doctorsList.length > 0) {
           this.detialsForHealthCheckup({
             element: this.billingService.HealthCheckupItems[0],
           });
+        } else {
+          //GAV-1492
+          this.billingService.changeBillTabStatus(false);
         }
       });
   }
@@ -371,6 +450,7 @@ export class HealthCheckupsComponent implements OnInit {
               gstValue: res[0].totaltaX_Value,
               specialisationID: 0,
               doctorID: 0,
+              itemCode: res[0].itemCode || "",
             },
             gstDetail: {
               gsT_value: res[0].totaltaX_Value,
@@ -423,9 +503,11 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }

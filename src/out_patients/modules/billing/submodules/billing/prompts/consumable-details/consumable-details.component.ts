@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { CookieService } from "@shared/services/cookie.service";
+import { PermissionService } from "@shared/services/permission.service";
 import { ReportService } from "@shared/services/report.service";
 import { BillingService } from "../../billing.service";
 
@@ -61,14 +62,15 @@ export class ConsumableDetailsComponent implements OnInit {
     },
   };
   procedureDataForConsumable: any = [];
-  LocationID: any = Number(this.cookie.get("HSPLocationId"));
+  //LocationID: any = Number(this.cookie.get("HSPLocationId"));
   billno: any;
   constructor(
     private reportService: ReportService,
     public billingservice: BillingService,
     private cookie: CookieService,
     public dialogRef: MatDialogRef<ConsumableDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private permissionservice: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -105,6 +107,11 @@ export class ConsumableDetailsComponent implements OnInit {
       );
       if (exist) {
         this.itemsData[index].procedure = exist.procedure;
+        this.config.columnsInfo.procedure.options.find((dataExist:any)=>{
+          if (exist.procedure.procedureName == dataExist.value.procedureName)
+            item.procedure= dataExist.value;
+        });
+        this.itemsData[index].reason=exist.reason
         this.tableRows.selection.select(item);
       }
     });
@@ -138,15 +145,24 @@ export class ConsumableDetailsComponent implements OnInit {
     this.itemsData = [...this.itemsData];
   }
   ConsumableBill() {
-    if (this.billingservice.activeMaxId && this.billingservice.billNo) {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined){
+      exist = false;
+    } else{
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
+    if (this.billingservice.activeMaxId) {
       this.dialogRef.close({ data: this.tableRows.selection.selected });
       this.reportService.openWindow(
-        this.billno + "- Consumable Report",
+        "- Consumable Report",
         "ConsumabaleEntryDetailsReport",
         {
           MAXID: this.billingservice.activeMaxId.maxId,
-          billno: this.billingservice.billNo,
-          locationId: this.LocationID,
+          billno: this.billingservice.billNo || '',
+          locationID: this.cookie.get("HSPLocationId"),
+          exportflagEnable: exist,
         }
       );
     }

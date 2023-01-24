@@ -53,18 +53,42 @@
     height: 90%;
     width: 25%;
 }
-
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
 .receiptNostyle{
     font-weight: 600 !important;
 }
 .cashsscrolltable{
     ::ng-deep .max-table-wrapper {
         border: 1px solid #707070 !important;
-        tr.highlight{
+        tr.mat-footer-row{
             font-weight: 700 !important;
               font-size: 17px !important;
+              height: 35px !important;
        }
-    tbody tr td:nth-child(5), tbody tr td:nth-child(6),
+      
+    tfoot tr td:nth-child(5),
+    tfoot tr td:nth-child(6),
+    tfoot tr td:nth-child(7),
+    tfoot tr td:nth-child(8),
+    tfoot tr td:nth-child(9),
+    tfoot tr td:nth-child(10),
+    tfoot tr td:nth-child(11),
+    tfoot tr td:nth-child(12),
+    tfoot tr td:nth-child(13),
+    tfoot tr td:nth-child(14),
+    tfoot tr td:nth-child(15),
+    tfoot tr td:nth-child(16),
+    tfoot tr td:nth-child(17),
+    tfoot tr td:nth-child(18),
+    tfoot tr td:nth-child(19),
+    tfoot tr td:nth-child(20),
+    tfoot tr td:nth-child(21),
+    tfoot tr td:nth-child(22),
+    tfoot tr td:nth-child(24),
+    tbody tr td:nth-child(5),
+    tbody tr td:nth-child(6),
     tbody tr td:nth-child(7),
     tbody tr td:nth-child(8),
     tbody tr td:nth-child(9),
@@ -80,79 +104,93 @@
     tbody tr td:nth-child(19),
     tbody tr td:nth-child(20),
     tbody tr td:nth-child(21),
-    tbody tr td:nth-child(22)
-
+    tbody tr td:nth-child(22),
+    tbody tr td:nth-child(24)
     {
         text-align: right !important;
     }
-    tbody tr td:nth-child(5)
+    tbody tr td:nth-child(5),
+    tfoot tr td:nth-child(5)
     {
         padding-right: 1rem !important;
     }
+    tfoot tr td:nth-child(6),
     tbody tr td:nth-child(6){
         padding-right: 1.8rem !important;
     }
+    tfoot tr td:nth-child(7),
     tbody tr td:nth-child(7){
         padding-right: 1.8rem !important;
     }
-    tbody tr td:nth-child(8){
+    tbody tr td:nth-child(8),
+    tfoot tr td:nth-child(8){
          padding-right: 2rem !important;
     }
-    
+    tfoot tr td:nth-child(13),
     tbody tr td:nth-child(13)
    {
         
         padding-right: 3rem !important;
     }
+    tfoot tr td:nth-child(9),
     tbody tr td:nth-child(9){
         padding-right: 2rem !important;
     }
+    tfoot tr td:nth-child(10),
     tbody tr td:nth-child(10){
         padding-right: 2.4rem !important;
     }
-   
+    tfoot tr td:nth-child(14),
     tbody tr td:nth-child(14)
     {
         padding-right: 2.5rem !important;
     }
+    tfoot tr td:nth-child(12),
+    tfoot tr td:nth-child(13),
     tbody tr td:nth-child(12),
     tbody tr td:nth-child(13)
     {
         padding-right: 2rem !important;
     }
-    
+    tfoot tr td:nth-child(19),
+    tfoot tr td:nth-child(16),
+    tfoot tr td:nth-child(15),
+    tfoot tr td:nth-child(22),
     tbody tr td:nth-child(19),
     tbody tr td:nth-child(16),
     tbody tr td:nth-child(15),
-        tbody tr td:nth-child(22)
+    tbody tr td:nth-child(22)
         {
         padding-right: 2.5rem !important;
     }
-   
+    tfoot tr td:nth-child(17),
+    tfoot tr td:nth-child(18),
+    tfoot tr td:nth-child(20),
+    tfoot tr td:nth-child(21),
     tbody tr td:nth-child(17),
     tbody tr td:nth-child(18),
     tbody tr td:nth-child(20),
-    tbody tr td:nth-child(21)
-   
+    tbody tr td:nth-child(21)   
     {
         padding-right: 3rem !important;
     }
+    tfoot tr td:nth-child(11),
+    tbody tr td:nth-child(11){
+        padding-right: 1rem !important;
+    }
 
-    tbody tr td:nth-child(11){
-        padding-right: 1rem !important;
-    }
-    tbody tr td:nth-child(11){
-        padding-right: 1rem !important;
-    }
-    
+    // tfoot tr th:nth-child(12),
+    // tfoot tr th:nth-child(14),
     thead tr th:nth-child(12),
     thead tr th:nth-child(14){
         padding-left: 5rem;
     }
-    
+   // tfoot tr th:nth-child(13),
     thead tr th:nth-child(13){
         padding-left: 4rem;
     }
+    // tfoot tr th:nth-child(5),
+    // tfoot tr th:nth-child(11),
     thead tr th:nth-child(5),
     thead tr th:nth-child(11)
     {
@@ -171,11 +209,14 @@
     thead tr th:nth-child(15){
         padding-left: 2rem;
     }
-    thead tr th:nth-child(10)
+    thead tr th:nth-child(10),
+    thead tr th:nth-child(24)
     {
         padding-left: 1rem;
     }
-    
+    thead tr th:nth-child(18){
+        padding-left: 3.7rem;
+    }
     thead tr th:nth-child(19),
     thead tr th:nth-child(20),
     thead tr th:nth-child(21),

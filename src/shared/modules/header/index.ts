@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
 import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
+import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
     ChangepaswordComponent,
     SelectimeiComponent,
     SubNestedComponent,
+    PaytmMachineComponent,
   ],
   imports: [
     CommonModule,

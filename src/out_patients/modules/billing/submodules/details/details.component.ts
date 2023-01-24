@@ -44,6 +44,7 @@ import { SearchService } from "@shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
 import { MoreThanMonthComponent } from "../dispatch-report/more-than-month/more-than-month.component";
 import { Form60YesOrNoComponent } from "../deposit/form60-dialog/form60-yes-or-no.component";
+import { PermissionService } from "@shared/services/permission.service";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -70,7 +71,8 @@ export class DetailsComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private reportService: ReportService,
     private searchService: SearchService,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private permissionservice: PermissionService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -395,13 +397,16 @@ export class DetailsComponent implements OnInit {
         });
       });
   }
+  approvedfalg: boolean = false;
   sendapprovalcheck() {
     if (
       this.BServiceForm.controls["authBy"].value != "" &&
       this.BServiceForm.controls["reason"].value != "" &&
       this.BServiceForm.controls["reason"].value != "0" &&
       this.BServiceForm.controls["paymentMode"].value != "" &&
-      this.BServiceForm.controls["refundAmt"].value > 0
+      // this.BServiceForm.controls["refundAmt"].value > 0 &&
+      this.billdetailservice.sendforapproval.length > 0 &&
+      this.approvedfalg == false
     ) {
       this.approvalsend = false;
       this.billdetailservice.authorisedby =
@@ -415,6 +420,38 @@ export class DetailsComponent implements OnInit {
     }
   }
   sendforapproval() {
+    if (
+      this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime &&
+      Number(
+        this.patientbilldetaillist.billDetialsForRefund_Table0[0]
+          .opCancelDaysRest
+      ) > 0
+    ) {
+      const today = new Date();
+      const billDate = new Date(
+        this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime
+      );
+      const diffTime = today.getTime() - billDate.getTime();
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      console.log(diffDays);
+      if (
+        diffDays >
+        Number(
+          this.patientbilldetaillist.billDetialsForRefund_Table0[0]
+            .opCancelDaysRest
+        )
+      ) {
+        this.msgdialog.error(
+          "OP bill refund is not allowed after " +
+            Number(
+              this.patientbilldetaillist.billDetialsForRefund_Table0[0]
+                .opCancelDaysRest
+            ) +
+            " days of bill date"
+        );
+        return;
+      }
+    }
     if (
       Number(this.BServiceForm.controls["refundAmt"].value) >= 10000 &&
       this.BServiceForm.controls["paymentMode"].value == "Cash"
@@ -506,11 +543,12 @@ export class DetailsComponent implements OnInit {
           this.snackbar.open("Invalid Max ID");
         } else if (this.BServiceForm.value.maxid == "") {
           this.snackbar.open("Invalid Max ID");
-        } else if(!this.BServiceForm.value.maxid.split('.')[0] || !this.BServiceForm.value.maxid.split('.')[1])
-        {
+        } else if (
+          !this.BServiceForm.value.maxid.split(".")[0] ||
+          !this.BServiceForm.value.maxid.split(".")[1]
+        ) {
           this.snackbar.open("Invalid Max ID");
-        }
-        else {
+        } else {
           this.search();
         }
       }
@@ -561,7 +599,7 @@ export class DetailsComponent implements OnInit {
         this.noteRemarkdb = res.notereason;
         this.vipdb = res.vipreason;
         this.hwcRemarkdb = res.hwcRemarks;
-        this.hotlistReasondb = res.hotlistreason;
+        this.hotlistReasondb = { title: res.hotlistreason, valu: 0 };
         this.hotlistRemarkdb = res.hotlistcomments;
         this.bplcardNo = res.bplcardNo;
         this.bplCardAddress = res.addressOnCard;
@@ -610,182 +648,206 @@ export class DetailsComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultdata) => {
-        if (
-          resultdata == null ||
-          resultdata.billDetialsForRefund_Table0.length == 0
-        ) {
-          this.snackbar.open("Invalid Bill No");
-          this.apiProcessing = false;
-        } else {
-          this.questions[0].readonly = true;
-          this.questions[1].readonly = true;
-          this.questions[2].readonly = true;
-          this.activeLink = this.linkList[0];
-          this.getpatientandbilldetailsforrefund();
-          this.patientbilldetaillist =
-            resultdata as getPatientPersonalandBillDetails;
-          this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(
-            (item) => {
-              item.amount = item.amount.toFixed(2);
-              item.discountamount = item.discountamount.toFixed(2);
-              item.planAmount = item.planAmount.toFixed(2);
-            }
-          );
-          this.billdetailservice.patientbilldetaillist = resultdata;
-          var printrefundflag = 0;
-          this.apiProcessing = false;
-          console.log(
-            this.patientbilldetaillist.billDetialsForRefund_IdName.length
-          );
+      .subscribe(
+        (resultdata) => {
           if (
-            this.patientbilldetaillist.billDetialsForRefund_IdName.length > 0
+            resultdata == null ||
+            resultdata.billDetialsForRefund_Table0.length == 0
           ) {
-            this.resendbill = false;
-          }
-          this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(
-            (k) => {
-              if (k.cancelled == 1) {
-                printrefundflag++;
-              }
-            }
-          );
-          if (printrefundflag > 0) {
-            this.printrefund = false;
+            this.snackbar.open("Invalid Bill No");
+            this.apiProcessing = false;
           } else {
-            this.printrefund = true;
-          }
-          if (
-            this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1
-          ) {
-            this.billdetailservice.billafterrefund =
-              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
-            this.billdetailservice.serviceList =
-              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
-            if (
-              this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-                .cancelled == 1
-            ) {
-              var errtxt =
-                "Bill Number " +
-                this.BServiceForm.value.billNo +
-                " Has Been Cancelled";
-              this.msgdialog.info(errtxt);
-              this.linkList[1].disabled = true;
-              this.linkList[2].disabled = true;
-              this.linkList[3].disabled = true;
-            } else {
-              this.linkList[1].disabled = false;
-              this.linkList[2].disabled = false;
-              this.linkList[3].disabled = false;
-            }
-            this.BServiceForm.controls["billNo"].setValue(this.billno);
-            this.billFormfill();
-            if (
-              this.patientbilldetaillist
-                .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
-                .authorisedby == "" &&
-              this.patientbilldetaillist
-                .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
-                .reason == "" &&
-              this.patientbilldetaillist
-                .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
-                .paymentMode == ""
-            ) {
-              // this.BServiceForm.controls['authBy'].enable();
-              // this.BServiceForm.controls['reason'].enable();
-              // this.BServiceForm.controls['paymentMode'].enable();
-            } else {
-              this.BServiceForm.controls["authBy"].disable();
-              this.BServiceForm.controls["reason"].disable();
-              this.BServiceForm.controls["paymentMode"].disable();
-            }
-            var healthlist = 0;
-            var consultlist = 0;
-            var consumablelist = 0;
+            this.questions[0].readonly = true;
+            this.questions[1].readonly = true;
+            this.questions[2].readonly = true;
+            this.activeLink = this.linkList[0];
+            this.getpatientandbilldetailsforrefund();
+            this.patientbilldetaillist =
+              resultdata as getPatientPersonalandBillDetails;
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(
-              (item: any) => {
-                if (item.servicename == "Health Checkups") {
-                  healthlist++;
-                } else if (
-                  (item.servicename == "Consultations" ||
-                    item.servicename == "Consultation Charges") &&
-                  this.locationexclude.includes(
-                    Number(this.cookie.get("HSPLocationId"))
-                  )
-                ) {
-                  consultlist++;
-                } else if (item.servicename == "Consumable") {
-                  consumablelist++;
+              (item) => {
+                item.amount = item.amount.toFixed(2);
+                item.discountamount = item.discountamount.toFixed(2);
+                item.planAmount = item.planAmount.toFixed(2);
+              }
+            );
+            this.billdetailservice.patientbilldetaillist = resultdata;
+            var printrefundflag = 0;
+            this.apiProcessing = false;
+            console.log(
+              this.patientbilldetaillist.billDetialsForRefund_IdName.length
+            );
+            if (
+              this.patientbilldetaillist.billDetialsForRefund_IdName.length > 0
+            ) {
+              this.resendbill = false;
+            }
+            this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(
+              (k) => {
+                if (k.cancelled == 1) {
+                  printrefundflag++;
                 }
               }
             );
-            console.log(healthlist, consultlist, consumablelist, consultlist);
-            if (healthlist > 0) {
-              this.phptracksheet = false;
+            if (printrefundflag > 0) {
+              this.printrefund = false;
             } else {
-              this.phptracksheet = true;
+              this.printrefund = true;
             }
             if (
-              consultlist > 0 &&
-              this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-                .cancelled == 0
+              this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1
             ) {
-              this.opprescription = false;
-            } else {
-              this.opprescription = true;
-            }
-            if (consumablelist > 0) {
-              this.consumableprint = false;
-            } else {
-              this.consumableprint = true;
-            }
-            if (consultlist > 0) {
-              this.doxperprint = false;
-            } else {
-              this.doxperprint = true;
-            }
-            if (
-              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0]
-                .requestToApproval == 0
-            ) {
-              this.refundbill == false;
-            } else if (
-              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0]
-                .requestToApproval == 1
-            ) {
-              this.refundbill == true;
-            }
-            this.printbill = false;
-            if (this.frombill == 1 || this.duesettlement == 1) {
-              this.router.navigate(
-                ["out-patient-billing/details", "cred-bill-settlement"],
-                {
-                  queryParams: {
-                    maxid: this.BServiceForm.controls["maxid"].value,
-                  },
-                  queryParamsHandling: "merge",
+              this.billdetailservice.billafterrefund =
+                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
+              this.billdetailservice.serviceList =
+                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
+              if (
+                this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
+                  .cancelled == 1
+              ) {
+                var errtxt =
+                  "Bill Number " +
+                  this.BServiceForm.value.billNo +
+                  " Has Been Cancelled";
+                this.msgdialog.info(errtxt);
+                this.linkList[1].disabled = true;
+                this.linkList[2].disabled = true;
+                this.linkList[3].disabled = true;
+              } else {
+                this.linkList[1].disabled = false;
+                this.linkList[2].disabled = false;
+                this.linkList[3].disabled = false;
+              }
+              var approvalpending: any = 0;
+              for (
+                var i = 0;
+                i <
+                this.patientbilldetaillist
+                  .billDetialsForRefund_RequestNoGeivePaymentModeRefund.length;
+                i++
+              ) {
+                if (
+                  this.patientbilldetaillist
+                    .billDetialsForRefund_RequestNoGeivePaymentModeRefund[i]
+                    .notApproved == 0 &&
+                  this.patientbilldetaillist
+                    .billDetialsForRefund_RequestNoGeivePaymentModeRefund[i]
+                    .itemId != 0
+                ) {
+                  approvalpending++;
+                }
+              }
+              if (approvalpending > 0) {
+                this.msgdialog.info("Approval Pending");
+              }
+              this.BServiceForm.controls["billNo"].setValue(this.billno);
+              this.billFormfill();
+              if (
+                this.patientbilldetaillist
+                  .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
+                  .authorisedby == "" &&
+                this.patientbilldetaillist
+                  .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
+                  .reason == "" &&
+                this.patientbilldetaillist
+                  .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
+                  .paymentMode == ""
+              ) {
+                // this.BServiceForm.controls['authBy'].enable();
+                // this.BServiceForm.controls['reason'].enable();
+                // this.BServiceForm.controls['paymentMode'].enable();
+              } else {
+                this.BServiceForm.controls["authBy"].disable();
+                this.BServiceForm.controls["reason"].disable();
+                this.BServiceForm.controls["paymentMode"].disable();
+              }
+              var healthlist = 0;
+              var consultlist = 0;
+              var consumablelist = 0;
+              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(
+                (item: any) => {
+                  if (item.servicename == "Health Checkups") {
+                    healthlist++;
+                  } else if (
+                    (item.servicename == "Consultations" ||
+                      item.servicename == "Consultation Charges") &&
+                    this.locationexclude.includes(
+                      Number(this.cookie.get("HSPLocationId"))
+                    )
+                  ) {
+                    consultlist++;
+                  } else if (item.servicename == "Consumable") {
+                    consumablelist++;
+                  }
                 }
               );
-            } else {
-              this.router.navigate(
-                ["out-patient-billing/details", "services"],
-                {
-                  queryParams: {
-                    maxid: this.BServiceForm.controls["maxid"].value,
-                  },
-                  queryParamsHandling: "merge",
-                }
-              );
+              console.log(healthlist, consultlist, consumablelist, consultlist);
+              if (healthlist > 0) {
+                this.phptracksheet = false;
+              } else {
+                this.phptracksheet = true;
+              }
+              if (
+                consultlist > 0 &&
+                this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
+                  .cancelled == 0
+              ) {
+                this.opprescription = false;
+              } else {
+                this.opprescription = true;
+              }
+              if (consumablelist > 0) {
+                this.consumableprint = false;
+              } else {
+                this.consumableprint = true;
+              }
+              if (consultlist > 0) {
+                this.doxperprint = false;
+              } else {
+                this.doxperprint = true;
+              }
+              if (
+                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0]
+                  .requestToApproval == 0
+              ) {
+                this.refundbill == false;
+              } else if (
+                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0]
+                  .requestToApproval == 1
+              ) {
+                this.refundbill == true;
+              }
+              this.printbill = false;
+              if (this.frombill == 1 || this.duesettlement == 1) {
+                this.router.navigate(
+                  ["out-patient-billing/details", "cred-bill-settlement"],
+                  {
+                    queryParams: {
+                      maxid: this.BServiceForm.controls["maxid"].value,
+                    },
+                    queryParamsHandling: "merge",
+                  }
+                );
+              } else {
+                this.router.navigate(
+                  ["out-patient-billing/details", "services"],
+                  {
+                    queryParams: {
+                      maxid: this.BServiceForm.controls["maxid"].value,
+                    },
+                    queryParamsHandling: "merge",
+                  }
+                );
+              }
             }
           }
+        },
+        (error: any) => {
+          console.log(error);
+          this.apiProcessing = false;
+          this.msgdialog.error(error.error);
         }
-      },
-      (error: any) => {
-        console.log(error);
-        this.apiProcessing = false;
-        this.msgdialog.error(error.error);
-      })
+      );
   }
   getpatientandbilldetailsforrefund() {
     this.http
@@ -878,6 +940,9 @@ export class DetailsComponent implements OnInit {
     }
     this.billdetailservice.setActiveBillnNo(
       this.BServiceForm.controls["billNo"].value
+    );
+    this.billdetailservice.setActiveMaxId(
+      this.BServiceForm.controls["maxid"].value
     );
     this.sendapprovalcheck();
   }
@@ -986,7 +1051,7 @@ export class DetailsComponent implements OnInit {
           mobileno:
             this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
           screename: "Billing",
-          toPaidAmount: this.billdetailservice.totalrefund
+          toPaidAmount: this.billdetailservice.totalrefund,
         },
         refundamount: this.BServiceForm.value.refundAmt,
         authby: this.BServiceForm.controls["authBy"].value,
@@ -1157,6 +1222,14 @@ export class DetailsComponent implements OnInit {
     }
   }
   openReportModal(btnname: string) {
+    const accessControls: any = this.permissionservice.getAccessControls();
+    let exist: any = accessControls[2][7][534];
+    if (exist == undefined) {
+      exist = false;
+    } else {
+      exist = accessControls[2][7][534][1436];
+      exist = exist == undefined ? false : exist;
+    }
     if (btnname == "PHPTracksheet") {
       this.reportService.openWindow(
         "PHP Tracksheet - " + this.BServiceForm.value.billNo,
@@ -1173,9 +1246,12 @@ export class DetailsComponent implements OnInit {
           opbillid:
             this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
           locationID: this.cookie.get("HSPLocationId"),
+          enableexport: exist,
         }
       );
     } else if (btnname == "ConsumabaleEntryDetailsReport") {
+      console.log(exist);
+
       this.reportService.openWindow(
         "Consumable Report - " + this.BServiceForm.value.billNo,
         btnname,
@@ -1183,10 +1259,14 @@ export class DetailsComponent implements OnInit {
           billno: this.BServiceForm.value.billNo,
           locationID: this.cookie.get("HSPLocationId"),
           MAXID: this.BServiceForm.value.maxid,
+          exportflagEnable: exist,
         }
       );
     } else if (btnname == "PrintOPPrescriptionReport") {
-      const dialogref = this.msgdialog.confirm('',"Do you want to print Blank Op Prescription?");
+      const dialogref = this.msgdialog.confirm(
+        "",
+        "Do you want to print Blank Op Prescription?"
+      );
       dialogref.afterClosed().subscribe((res) => {
         console.log(res);
         if (res.type == "yes") {
@@ -1226,7 +1306,8 @@ export class DetailsComponent implements OnInit {
     if (changes) {
       var approvedlist;
       if (
-        this.billdetailservice.totalrefund > 0 &&
+        this.billdetailservice.sendforapproval.length > 0 &&
+        // this.billdetailservice.totalrefund > 0 &&
         this.patientbilldetaillist
           .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
           .authorisedby == "" &&
@@ -1241,6 +1322,7 @@ export class DetailsComponent implements OnInit {
         this.BServiceForm.controls["reason"].enable();
         this.BServiceForm.controls["paymentMode"].enable();
       } else if (
+        this.billdetailservice.sendforapproval.length == 0 &&
         this.billdetailservice.totalrefund == 0 &&
         this.patientbilldetaillist
           .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
@@ -1264,22 +1346,41 @@ export class DetailsComponent implements OnInit {
       var forenablerefundbill: any = [];
       var temp: any;
       if (this.billdetailservice.sendforapproval.length > 0) {
-        this.billdetailservice.sendforapproval.forEach((j: any) => {
-          temp =
-            this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(
-              (k) => {
-                return k.itemId == j.itemid;
-              }
-            );
-            if(temp.length > 0)
-            {
-              forenablerefundbill.push(temp[0]);
-            }
-            
-        });
+        // this.billdetailservice.sendforapproval.forEach((j: any) => {
+        //   temp =
+        //     this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(
+        //       (k) => {
+        //         return k.itemId == j.itemid;
+        //       }
+        //     );
+        //     console.log('temp', temp);
+        //     if(temp.length > 0)
+        //     {
+        //       forenablerefundbill.push(temp[0]);
+        //     }
 
-        console.log('enable refund bill', forenablerefundbill);
-        console.log('approval list', this.billdetailservice.sendforapproval);
+        // });
+        var m = 0;
+        console.log(
+          this.billdetailservice.sendforapproval,
+          this.patientbilldetaillist
+            .billDetialsForRefund_RequestNoGeivePaymentModeRefund
+        );
+        this.billdetailservice.sendforapproval.forEach((j: any) => {
+          this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach(
+            (k) => {
+              console.log(j, k);
+              if (k.itemId == j.itemid) {
+                console.log(m);
+                forenablerefundbill[m] = k;
+                m++;
+                console.log(m, forenablerefundbill[m]);
+              }
+            }
+          );
+        });
+        console.log("enable refund bill", forenablerefundbill);
+        console.log("approval list", this.billdetailservice.sendforapproval);
         // if(forenablerefundbill.length == this.billdetailservice.sendforapproval.length)
         // {
         //   this.refundbill = false;
@@ -1292,38 +1393,74 @@ export class DetailsComponent implements OnInit {
         // }
 
         //newly added
-        if(forenablerefundbill.length == 0 && this.billdetailservice.sendforapproval.length > 0)
-        {
+        console.log(this.approvedfalg);
+        if (
+          forenablerefundbill.length == 0 &&
+          this.billdetailservice.sendforapproval.length > 0
+        ) {
           this.refundbill = true;
           this.approvalsend = false;
-        }
-        else if(forenablerefundbill.length != this.billdetailservice.sendforapproval.length)
-        {
+
+          this.approvedfalg = false;
+          console.log("1", this.refundbill, this.approvalsend);
+        } else if (
+          forenablerefundbill.length !=
+          this.billdetailservice.sendforapproval.length
+        ) {
           this.refundbill = true;
           this.approvalsend = true;
+
+          this.approvedfalg = true;
+          console.log("2", this.refundbill, this.approvalsend);
         }
         //end
-
-      
+        var forboth = 0;
+        var approved = 0;
+        var notapproved = 0;
         forenablerefundbill.forEach((k: any) => {
           if (
             k.notApproved == 1 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0 &&
-              this.billdetailservice.sendforapproval.length == forenablerefundbill.length
+              .cancelled == 0
           ) {
             this.refundbill = false;
             this.approvalsend = true;
+
+            this.approvedfalg = true;
+            console.log("3", this.refundbill, this.approvalsend);
+            forboth++;
+            approved++;
           } else if (
             k.notApproved == 0 &&
             this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-              .cancelled == 0 &&
-              this.billdetailservice.sendforapproval.length == forenablerefundbill.length
+              .cancelled == 0
           ) {
             this.refundbill = true;
-            this.approvalsend = false;
+            this.approvalsend = true;
+
+            this.approvedfalg = true;
+            console.log("4", this.refundbill, this.approvalsend);
+            forboth++;
+            notapproved++;
           }
         });
+        console.log(forboth, approved, notapproved);
+        if (approved > 0 && notapproved > 0) {
+          this.refundbill = true;
+          this.approvalsend = true;
+        }
+        if (
+          approved != this.billdetailservice.sendforapproval.length &&
+          notapproved != this.billdetailservice.sendforapproval.length
+        ) {
+          this.refundbill = true;
+          this.approvalsend = true;
+        }
+        // if (forboth > 1 && forenablerefundbill.length != 0) {
+        //   this.refundbill = true;
+        //   this.approvalsend = true;
+        //   console.log("5", this.refundbill, this.approvalsend);
+        // }
       } else {
         this.refundbill = true;
         this.approvalsend = true;

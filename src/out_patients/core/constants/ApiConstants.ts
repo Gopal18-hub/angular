@@ -181,25 +181,24 @@ export namespace ApiConstants {
   export const postPatientDetails =
     environment.PatientApiUrl + "api/patient/registeropdpatient";
 
-    export const patientImageData = (registrationno: number, iacode: string) => {
-      return (
-         environment.PatientApiUrl +
-        "api/patient/getpatientimagebymaxid/" +
-        registrationno +
-        "/" +
-        iacode
-      );
-    };
+  export const patientImageData = (registrationno: number, iacode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientimagebymaxid/" +
+      registrationno +
+      "/" +
+      iacode
+    );
+  };
 
-    export const postPatientImageData =
-    (operatorId: number) => {
-      return (
-         environment.PatientApiUrl +
-        "api/patient/SaveUpdatePatientImage/" +
-        operatorId
-      );
-    };
-    
+  export const postPatientImageData = (operatorId: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/SaveUpdatePatientImage/" +
+      operatorId
+    );
+  };
+
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
   // export const hotlistedPatient = (
@@ -800,8 +799,8 @@ export namespace ApiConstants {
     environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=2";
 
   export const getCorporatemasterdetail =
-    environment.BillingApiUrl + "api/outpatientbilling/getcorporatemasterdetail/0/2";
-
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getcorporatemasterdetail/0/2";
 
   export const getSimilarPatientonMobilenumber = (mobilenumber: string) => {
     return (
@@ -1539,10 +1538,9 @@ export namespace ApiConstants {
 
   export const getservicestypebycodeid = (codeId: number) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/getservicestype_bycodeid/${codeId}`;
-
   };
 
-  export const checkonlinepaymentstaus =(bookingId:string)=>
+  export const checkonlinepaymentstaus = (bookingId: string) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getforonlinebillpaymentstatus/${bookingId}`;
 
   export const verifydmsdocument = (
@@ -1552,6 +1550,21 @@ export namespace ApiConstants {
     RegistrationNo: number,
     userId: number
   ) => {
-    return `${environment.PatientApiUrl}api/patient/verifydmsdocument/${ID}/${flag}/${IaCode}/${RegistrationNo}/${userId}`
-  }
+    return `${environment.PatientApiUrl}api/patient/verifydmsdocument/${ID}/${flag}/${IaCode}/${RegistrationNo}/${userId}`;
+  };
+
+  export const getsearchbasedreferraldoctor = (ReferralDoctorName?: string) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getrefdoctorname/" +
+      ReferralDoctorName
+    );
+  };
+  export const getappointmentpatientssearchbyid = (id?: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getappointmentpatientssearchbyid/" +
+      id
+    );
+  };
 }

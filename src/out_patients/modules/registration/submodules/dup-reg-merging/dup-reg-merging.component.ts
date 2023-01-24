@@ -195,19 +195,23 @@ export class DupRegMergingComponent implements OnInit {
 
   openDialog() {
     const matdialogref = this.matDialog.open(MergeDialogComponent, {
+      minHeight: "30vh",
+      maxHeight: "70vh",
       data: { tableRows: this.tableRows },
     });
     matdialogref
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (result) => {
-        var resultArr = result.split(",");
-        if (resultArr[0] == "success") {
-          this.messageDialogService.success(
-            "Max ID has been mapped with " + resultArr[1]
-          );
-        } else {
-          this.messageDialogService.info(resultArr[1]);
+        if (result != "close" && result != undefined) {
+          var resultArr = result.split(",");
+          if (resultArr[0] == "success") {
+            this.messageDialogService.success(
+              "Max ID has been mapped with " + resultArr[1]
+            );
+          } else {
+            this.messageDialogService.info(resultArr[1]);
+          }
         }
 
         if (this.globalSearchTerm) {
@@ -218,10 +222,12 @@ export class DupRegMergingComponent implements OnInit {
             .subscribe((resultData) => {
               resultData = resultData.map((item: any) => {
                 item.fullname = item.firstName + " " + item.lastName;
-                item.age= this.onageCalculator(item.dob);
+                item.age = this.onageCalculator(item.dob);
                 return item;
               });
-              this.results = resultData.filter((res:any) => res.parentMergeLinked == "");
+              this.results = resultData.filter(
+                (res: any) => res.parentMergeLinked == ""
+              );
               this.results = this.patientServie.getAllCategoryIcons(
                 this.results
               );
@@ -272,6 +278,7 @@ export class DupRegMergingComponent implements OnInit {
   async loadGrid(formdata: any): Promise<any> {
     this.isAPIProcess = false;
     this.defaultUI = false;
+    this.showmergespinner = true;
     if (formdata.data) {
       if (formdata.data["globalSearch"] == 1) {
         this.globalSearchTerm = formdata;
@@ -324,10 +331,10 @@ export class DupRegMergingComponent implements OnInit {
     const resultData = lookupdata.map((item: any) => {
       item.fullname = item.firstName + " " + item.lastName;
       item.notereason = item.noteReason;
-      item.age= this.onageCalculator(item.dob);
+      item.age = this.onageCalculator(item.dob);
       return item;
     });
-    this.results = resultData.filter((res:any) => res.parentMergeLinked == "");
+    this.results = resultData.filter((res: any) => res.parentMergeLinked == "");
     this.results = this.patientServie.getAllCategoryIcons(this.results);
     this.isAPIProcess = true;
     this.showmergespinner = false;
@@ -390,14 +397,14 @@ export class DupRegMergingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-     
+
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
       } else if (diffMonths > 0) {
-        returnAge = diffYears + " Month(s)";
+        returnAge = diffMonths + " Month(s)";
       } else if (diffDays > 0) {
-        returnAge = diffYears + " Day(s)";
+        returnAge = diffDays + " Day(s)";
       } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
         returnAge = "N/A";
       } else if (diffDays == 0) {

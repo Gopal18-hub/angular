@@ -49,6 +49,8 @@ const routes: Routes = [
     path: "out-patient-billing",
     component: BillingComponent,
     canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService],
+    data: { masterModule: 2, moduleId: 7, featureId: 62 },
     children: [
       {
         path: "",
@@ -61,10 +63,15 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent },
+      {
+        path: "deposit",
+        component: DepositComponent,
+        data: { masterModule: 2, moduleId: 7, featureId: 64 },
+      },
       {
         path: "details",
         component: DetailsComponent,
+        data: { masterModule: 2, moduleId: 7, featureId: 63 },
         children: [
           {
             path: "",
@@ -113,7 +120,11 @@ const routes: Routes = [
       },
       { path: "initiate-deposit", component: InitiateDepositComponent },
       { path: "op-refund-approval", component: OprefundApprovalComponent },
-      { path: "dispatch-report", component: DispatchReportComponent },
+      {
+        path: "dispatch-report",
+        component: DispatchReportComponent,
+        data: { masterModule: 2, moduleId: 7, featureId: 67 },
+      },
       { path: "dmg-mapping", component: DmgMappingComponent },
       {
         path: "acknowledged-scroll-amount-report",
@@ -126,6 +137,7 @@ const routes: Routes = [
       {
         path: "expired-deposits",
         component: ExpiredDepositsComponent,
+        data: { masterModule: 2, moduleId: 7, featureId: 579 },
       },
       {
         path: "monthly-op-consultation-report",
@@ -134,6 +146,7 @@ const routes: Routes = [
       {
         path: "ecare-op-summary-report",
         component: EcareOpSummaryReportComponent,
+        data: { masterModule: 2, moduleId: 7, featureId: 67 },
       },
       {
         path: "online-deposit-report",
@@ -142,6 +155,7 @@ const routes: Routes = [
       {
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
+
         children: [
           { path: "", redirectTo: "services", pathMatch: "full" },
           { path: "", component: PostDischargeServicesComponent },
@@ -156,6 +170,8 @@ const routes: Routes = [
       {
         path: "cash-scroll",
         component: CashScrollComponent,
+
+        data: { masterModule: 2, moduleId: 7, featureId: 66 },
         // children: [
         //   //  { path: "cash-scroll-modify", component: CashScrollModifyComponent },
         //   { path: "cash-scroll-new", component: CashScrollNewComponent },

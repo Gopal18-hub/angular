@@ -212,11 +212,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "string",
+          type: "dropdown",
           label: "POS IMEI",
           required: true,
-          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
-          readonly: true,
+          // defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),//GAV-1483
+          readonly: false,
         },
         transactionid: {
           type: "string",
@@ -537,10 +537,11 @@ export namespace PaymentMethods {
       actionItems: [
         {
           label: "Search",
-          type: "",
+          type: "onlinePaymentSearch",
         },
         {
           label: "Clear",
+          type: "onlinePaymentClear",
         },
       ],
     };
@@ -565,39 +566,46 @@ export namespace PaymentMethods {
           type: "autocomplete",
           label: "Wallet",
           placeholder: "PayTM",
-          required: true,
+          required: false,
+          readonly: true,
         },
         mobileNo: {
           type: "number",
           label: "Sender Mobile No.",
-          required: true,
+          required: false,
+          readonly: true,
         },
         // paytmsenername: {
         //   type: "string",
         // },
-        paytmotp: {
-          type: "number",
-          label: "OTP",
-          required: true,
-        },
+        // paytmotp: {
+        //   type: "number",
+        //   label: "OTP",
+        //   required: true,
+        // },
         paytmtransacref: {
           type: "string",
           label: "Transaction Reference",
-          required: true,
+          required: false,
+          readonly: true,
         },
         paytmorderid: {
           type: "string",
           label: "Order ID",
-          required: true,
+          required: false,
+          readonly: true,
         }, ///40
       },
       actionItems: [
         {
-          label: "Recheck",
-          type: "",
+          label: "OK",
+          type: "paytmPaymentInit",
+          paymentKey: "mobilepayment",
         },
         {
-          label: "OK",
+          label: "Get Status",
+          type: "paytmPaymentTxnValidate",
+          paymentKey: "mobilepayment",
         },
       ],
     };
@@ -619,11 +627,11 @@ export namespace PaymentMethods {
           required: true,
         },
         posimei: {
-          type: "string",
+          type: "dropdown",
           label: "POS IMEI",
           required: true,
-          defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
-          readonly: true,
+          //defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),//GAV-1483
+          readonly: false,
         },
         ccNumber_UPI: {
           type: "number",
@@ -769,6 +777,34 @@ export namespace PaymentMethods {
         type: "dropdown",
         emptySelect: true,
         placeholder: "Select Advance Type",
+      },
+    },
+  };
+
+  export const modeofpaymentHiddenValue = {
+    type: "object",
+    title: "",
+    properties: {
+      cash: {
+        value: "Cash",
+      },
+      cheque: {
+        value: "Cheque",
+      },
+      credit: {
+        value: "Credit Card",
+      },
+      demand: {
+        value: "Demand Draft",
+      },
+      mobilepayment: {
+        value: "Cash Payment by Mobile",
+      },
+      onlinepayment: {
+        value: "Online Payment",
+      },
+      upi: {
+        value: "UPI",
       },
     },
   };

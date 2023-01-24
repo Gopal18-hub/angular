@@ -40,6 +40,7 @@
             "
           >
             <button
+              type="button"
               mat-icon-button
               aria-label="expand row"
               (click)="
@@ -67,6 +68,9 @@
           >
           </mat-checkbox>
         </td>
+        <ng-container *ngIf="config.footer">
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
       </ng-container>
 
       <ng-container *ngFor="let col of displayedColumns">
@@ -95,7 +99,9 @@
             >
               <ng-container *ngIf="displayColumnsInfo[col]?.type">
                 <ng-container
-                  [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
+                  [ngTemplateOutlet]="
+                    getTemplate(displayColumnsInfo[col], element, col)
+                  "
                   [ngTemplateOutletContext]="{
                     $implicit: {
                       output: element[col],
@@ -122,7 +128,9 @@
             >
               <ng-container
                 *ngIf="displayColumnsInfo[col].type"
-                [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
+                [ngTemplateOutlet]="
+                  getTemplate(displayColumnsInfo[col], element, col)
+                "
                 [ngTemplateOutletContext]="{
                   $implicit: {
                     output: element[col],
@@ -135,6 +143,9 @@
                 }"
               ></ng-container>
             </td>
+          </ng-container>
+          <ng-container *ngIf="config.footer">
+            <td mat-footer-cell *matFooterCellDef>{{ footerData[col] }}</td>
           </ng-container>
         </ng-container>
       </ng-container>
@@ -149,7 +160,12 @@
             *matCellDef="let element; let i = dataIndex"
             class="pl-4"
           >
-            <button mat-icon-button color="accent" (click)="removeRow(i)">
+            <button
+              type="button"
+              mat-icon-button
+              color="accent"
+              (click)="removeRow(i)"
+            >
               <div class="remove-row-icon-wrapper">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -201,6 +217,9 @@
             </button>
           </td>
         </ng-container>
+        <ng-container *ngIf="config.footer">
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
       </ng-container>
 
       <ng-container matColumnDef="actionItems">
@@ -231,6 +250,9 @@
             </ng-container>
           </mat-menu>
         </td>
+        <ng-container *ngIf="config.footer">
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
       </ng-container>
 
       <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
@@ -300,6 +322,12 @@
           mat-row
           *matRowDef="let row; columns: ['expandedDetail']"
           class="child-detail-row"
+        ></tr>
+      </ng-container>
+      <ng-container *ngIf="config.footer">
+        <tr
+          mat-footer-row
+          *matFooterRowDef="displayedColumns; sticky: true"
         ></tr>
       </ng-container>
 
@@ -412,17 +440,17 @@
 </ng-template>
 <ng-template #currency let-data>
   <span class="currency-data">{{
-    data?.output | currency: "INR":undefined:undefined:"en-IN"
+    data?.output | currency : "INR" : undefined : undefined : "en-IN"
   }}</span>
 </ng-template>
 <ng-template #date let-data>
   <span *ngIf="data?.output">{{
-    data.output | date: data.config.dateformat
+    data.output | date : data.config.dateformat
   }}</span>
 </ng-template>
 <ng-template #datetime let-data>
   <span *ngIf="data?.output">{{
-    data.output | date: data.config.datetimeformat
+    data.output | date : data.config.datetimeformat
   }}</span>
 </ng-template>
 <ng-template #image let-data>
@@ -453,14 +481,48 @@
 </ng-template>
 
 <ng-template #input let-data>
-  <mat-form-field appearance="outline" floatLabel="never">
-    <input
-      matInput
-      type="text"
-      [(ngModel)]="data.element[data.col]"
-      [value]="data.element[data.col]"
-    />
-  </mat-form-field>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-input-control"
+        >
+          <input
+            matInput
+            type="text"
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            (change)="controlValueChange($event, data)"
+          />
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #inputPrice let-data>
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-input-control"
+        >
+          <input
+            matInput
+            type="text"
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            class="text-right"
+            (change)="controlValueChange($event, data)"
+          />
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
 </ng-template>
 
 <ng-template #textarea let-data>
@@ -539,9 +601,9 @@
       matInput
       placeholder="__/__/____"
       [(ngModel)]="data.element[data.col]"
-      [value]="data.element[data.col]"
       [type]="'text'"
       [ngxMatDatetimePicker]="picker"
+      autocomplete="off"
     />
     <mat-datepicker-toggle
       matSuffix
@@ -614,6 +676,7 @@
     color="primary"
     mat-raised-button
     (click)="btnClick(data)"
+    type="button"
   >
     {{ data.config.columnsInfo[data.col]?.title }}
   </button>
@@ -625,6 +688,7 @@
     color="primary"
     mat-raised-button
     (click)="btnClick(data)"
+    type="button"
   >
     {{ data.element[data.col] }}
   </button>

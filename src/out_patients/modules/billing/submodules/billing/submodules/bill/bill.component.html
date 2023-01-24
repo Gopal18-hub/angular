@@ -9,7 +9,7 @@
   </div>
   <div
     class="h-22vh mt-1 mb-1"
-    [class.isDisabled]="billingservice.totalCostWithOutGst == 0"
+    [class.isDisabled]="billingservice.totalCostWithOutGst == 0 && ! billingservice.ConsumableItems"
   >
     <form [formGroup]="formGroup" class="sub-bill-form h-full">
       <div class="flex w-full h-full">
@@ -123,6 +123,7 @@
                       [disabled]="
                         calculateBillService.otherPlanSelectedItems.length >
                           0 || billingservice.selectedHealthPlan
+                        || (billingservice.totalCostWithOutGst == 0 && billingservice.ConsumableItems)
                       "
                     >
                       <mat-icon class="icon-more p-0 font-xs"
@@ -211,6 +212,8 @@
                   [questions]="question[20]"
                   class="w-5/9 mb-1 couponcnt"
                   [index]="20"
+                  (click)="clearDis()"
+                  (focusout)="unClearDis()"
                 >
             </maxhealth-question>
             
@@ -227,6 +230,8 @@
                   [questions]="question[13]"
                   class="w-1/2 copay"
                   [index]="13"
+                  (click) = "clearCoPay()"
+                  (focusout)="unClearCoPay()"
                 >
                 </maxhealth-question>
               </div>
@@ -241,6 +246,8 @@
                   [questions]="question[14]"
                   class="w-1/2"
                   [index]="14"
+                  (click)="clearCredit()"
+                  (focusout)="unClearCredit()"
                 >
                 </maxhealth-question>
               </div>
@@ -294,7 +301,7 @@
                     [form]="formGroup"
                     [questions]="question[12]"
                     class="w-full ml-2"
-                    [index]="12"
+                    [index]="12"                  
                   >
                   </maxhealth-question>
                   <div class="ml-2 check absolute right-0">
@@ -318,22 +325,24 @@
                   [index]="16"
                 >
                 </maxhealth-question>
+                <div   accessControl
+                masterModule="2"
+                moduleId="7"
+                featureId="62"
+                actionId="146">
                 <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-md min-width-initial"
-                  type="submit"
-                  [disabled]="!data.length || billNo != ''"
-                  (click)="makeBill()"
-                  type="button"
-                  accessControl
-                  masterModule="2"
-                  moduleId="7"
-                  featureId="62"
-                  actionId="146"
-                >
-                  Make Bill
-                </button>
+                mat-raised-button
+                color="primary"
+                class="btn-md min-width-initial"
+                type="submit"
+                [disabled]="!data.length || billNo != ''"
+                (click)="makeBill()"
+                type="button"                
+              >
+                Make Bill
+              </button>
+                </div>
+              
               </div>
             </div>
             <div class="flex">
@@ -348,22 +357,24 @@
                   [index]="17"
                 >
                 </maxhealth-question>
+                <div  accessControl
+                masterModule="2"
+                moduleId="7"
+                featureId="62"
+                actionId="147">
                 <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-md min-width-initial print-button"
-                  type="submit"
-                  [disabled]="!data.length || !billNo"
-                  (click)="makePrint()"
-                  type="button"
-                  accessControl
-                  masterModule="2"
-                  moduleId="7"
-                  featureId="62"
-                  actionId="147"
-                >
-                  Print Bill&nbsp;
-                </button>
+                mat-raised-button
+                color="primary"
+                class="btn-md min-width-initial print-button"
+                type="submit"
+                [disabled]="!data.length || !billNo"
+                (click)="makePrint()"
+                type="button"                 
+              >
+                Print Bill&nbsp;
+              </button>
+                </div>
+               
               </div>
             </div>
             <div

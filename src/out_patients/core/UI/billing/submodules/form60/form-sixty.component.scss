@@ -15,6 +15,17 @@
 ::ng-deep .mat-error{
     margin-top: 5% !important;
 }
+}
+.documentno{ 
+    ::ng-deep .mat-error{
+        margin-top: 2% !important;
+        font-size: 10px !important;
+    }
+    }
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
 } 
 .formsixtybutton{
     .mat-raised-button{    

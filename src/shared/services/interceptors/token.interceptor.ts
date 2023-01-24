@@ -18,6 +18,15 @@ import { Observable, of, throwError, from } from "rxjs";
 const AllowInDB = [
   "MaxPermission/getpermissionmatrixrolewise",
   "lookup/getlocality",
+  "lookup/getcountry",
+  "lookup/getstate",
+  "lookup/getdistrict",
+  "lookup/getnationality",
+  "lookup/sourceofinfolookup/0",
+  "lookup/agetypelookup/0",
+  "lookup/genderlookup/0",
+  "lookup/identitytypelookup/0",
+  "",
 ];
 
 @Injectable()
@@ -38,11 +47,17 @@ export class TokenInterceptor implements HttpInterceptor {
     request = request.clone({
       //setHeaders: ApiHeaders.getHeaders(request.url)
       setHeaders: {
+        Authorization: `bearer ${this.auth.getAccesToken()}`,
         "Content-Type": "application/json",
       },
     });
 
-    if (request.url.endsWith("authenticate")) {
+    if (
+      request.url.endsWith("authenticate") ||
+      request.url.includes("deleteActiveSession") ||
+      request.url.includes("updateActiveSessionToken") ||
+      request.url.includes("clearCookies")
+    ) {
       request = request.clone({
         setHeaders: {
           "Content-Type": "application/json",
@@ -57,7 +72,7 @@ export class TokenInterceptor implements HttpInterceptor {
       if (!request.headers.has("Authorization")) {
         request = request.clone({
           setHeaders: {
-            Authorization: `bearer ${this.auth.getToken()}`,
+            Authorization: `bearer ${this.auth.getAccesToken()}`,
             "Content-Type": "application/json",
           },
           withCredentials: true,

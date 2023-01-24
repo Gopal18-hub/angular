@@ -121,7 +121,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   locationId = Number(this.cookie.get("HSPLocationId"));
 
-  excludeClinicsLocations = [67, 69];
+  excludeClinicsLocations = [67, 69, 20];
   userSelectedDMG = 0;
   //GAV_1193
   autoVisitHistoryPopupLocations = [69, 8];
@@ -245,6 +245,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             this.formGroup.value.specialization.value
           ) {
             return of([]);
+          }
+          /////GAV-1386 - clinics
+          else if (
+            this.formGroup.value.clinics &&
+            this.formGroup.value.clinics.value
+          ) {
+            return of([]);
           } else {
             return this.http
               .get(
@@ -274,7 +281,16 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    if (!this.excludeClinicsLocations.includes(this.locationId)) {
+    ///GAV-1501
+    let excludeClinicsLocations = false;
+    if (this.cookie.check("VistaLive") && this.cookie.get("VistaLive") != "2") {
+      excludeClinicsLocations = false;
+    } else if (this.excludeClinicsLocations.includes(this.locationId)) {
+      excludeClinicsLocations = true;
+    }
+    //GAV-1501
+    //if (this.cookie.get("VistaLive") != "2") {
+    if (!excludeClinicsLocations) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
         .subscribe((res: any) => {
@@ -357,6 +373,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           this.billingService.consultationItems[index].billItem.totalAmount =
             res.amount +
             this.billingService.consultationItems[index].billItem.gstValue;
+
+          ////GAV-1464
+          this.billingService.consultationItems[index].billItem.itemCode =
+            res.itemCode;
 
           let consultType: any = this.consultationTypes.filter(
             (c: any) => c.id === priorityId
@@ -703,6 +723,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,
+              itemCode: res[0].itemCode || "",
             },
             gstDetail: {
               gsT_value: res[0].totaltaX_Value,
@@ -747,9 +768,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }

@@ -167,6 +167,7 @@ export class InvestigationsComponent implements OnInit {
     this.billingService.removeFromBill(
       this.billingService.InvestigationItems[$event.index]
     );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_insertbill.srfID = 0;
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.billingService.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
       $event.index,
@@ -209,6 +210,9 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       if (
         "patient_Instructions" in res.element.billItem &&
@@ -242,6 +246,21 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.doctorID = res.$event.value;
+
+        ///GAV-1462
+        this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+          (opbillItem: any, billIndex: any) => {
+            if (
+              opbillItem.itemId ==
+              this.billingService.InvestigationItems[res.data.index].billItem
+                .itemId
+            ) {
+              this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].consultid = res.$event.value;
+            }
+          }
+        );
         const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
           res.data.index
         ].find((doc: any) => doc.value == res.$event.value);
@@ -315,7 +334,7 @@ export class InvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
-              docRequired: r.docRequired,
+              docRequired: r.procedureDoctor, ////GAV-1423
               patient_Instructions: r.patient_Instructions,
               item_Instructions:
                 BillingStaticConstants.investigationItemBasedInstructions[
@@ -324,16 +343,22 @@ export class InvestigationsComponent implements OnInit {
               precaution: r.precaution,
               popuptext: r.popuptext,
               profileid: r.profileid,
-              ngStyle: {
-                color: r.outsourceColor == 2 ? "red" : "",
-              },
+              ngStyle: this.getOutSourceColor(r),
             };
           });
           this.questions[1] = { ...this.questions[1] };
         }
       });
   }
-
+  getOutSourceColor(r: any): any {
+    let color = "";
+    if (r.outsourceColor == 2) {
+      color = "red";
+    } else if (r.outsourceColor == 1) {
+      color = "orange";
+    }
+    return { color: color };
+  }
   checkTableValidation() {
     this.zeroPriceExist = false;
 
@@ -375,8 +400,9 @@ export class InvestigationsComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    ////GAV-1381 -
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }
@@ -414,7 +440,7 @@ export class InvestigationsComponent implements OnInit {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
-            docRequired: r.docRequired,
+            docRequired: r.procedureDoctor, ////GAV-1423
             patient_Instructions: r.patient_Instructions,
             item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[
@@ -424,9 +450,10 @@ export class InvestigationsComponent implements OnInit {
             popuptext: r.popuptext,
             precaution: r.precaution,
             profileid: r.profileid,
-            ngStyle: {
-              color: r.outsourceColor == 2 ? "red" : "",
-            },
+            //ngStyle: {
+            //  color: r.outsourceColor == 2 ? "red" : "",
+            //},
+            ngStyle: this.getOutSourceColor(r),
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -453,6 +480,9 @@ export class InvestigationsComponent implements OnInit {
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
+          ////GAV-1464
+          this.billingService.InvestigationItems[index].billItem.itemCode =
+            res[0].itemCode;
           this.data = [...this.billingService.InvestigationItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {
@@ -557,9 +587,11 @@ export class InvestigationsComponent implements OnInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }

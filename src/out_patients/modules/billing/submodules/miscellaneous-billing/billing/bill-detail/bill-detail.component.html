@@ -214,6 +214,8 @@
                   [questions]="question[27]"
                   class="w-21 mb-1"
                   [index]="27"
+                  (click)="clearDis()"
+                  (focusout)="unClearDis()"
                 >
                 </maxhealth-question>
               </div>
@@ -275,6 +277,8 @@
                   [questions]="question[21]"
                   class="w-1/45"
                   [index]="21"
+                  (click) = "clearCoPay()"
+                  (focusout)="unClearCoPay()"
                 >
                 </maxhealth-question>
               </div>
@@ -289,6 +293,8 @@
                   [questions]="question[22]"
                   class="w-1/45"
                   [index]="22"
+                  (click)="clearCredit()"
+                  (focusout)="unClearCredit()"
                 >
                 </maxhealth-question>
               </div>
@@ -335,6 +341,11 @@
                   [class.isDisabled]="!isEnableBillBtn"
                 >
                 </maxhealth-question>
+                <div accessControl
+                masterModule = "2"
+                moduleId="7"
+                featureId="604"
+                actionId="1562">
                 <button
                   mat-raised-button
                   color="primary"
@@ -343,14 +354,11 @@
                   type="submit"                  
                   (click)="openMakeBilldialog()"
                   type="button"
-                  accessControl
-                  masterModule = "2"
-                  moduleId="7"
-                  featureId="604"
-                  actionId="1562"
+                  
                 >
                   Make Bill
                 </button>
+              </div>
               </div>
             </div>
             <div class="flex">
@@ -366,22 +374,23 @@
                   [index]="25"
                 >
                 </maxhealth-question>
+                <div  accessControl
+                masterModule = "2"
+                moduleId="7"
+                featureId="62"
+                actionId="147"  > 
                 <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-md min-width-initial"
-                  type="submit"                  
-                  (click)="print()"
-                  type="button"    
-                  [disabled]="!enablePrint"
-                  accessControl
-                  masterModule = "2"
-                  moduleId="7"
-                  featureId="62"
-                  actionId="147"             
-                >
-                  Print Bill&nbsp;
-                </button>
+                mat-raised-button
+                color="primary"
+                class="btn-md min-width-initial"
+                type="submit"                  
+                (click)="print()"
+                type="button"    
+                [disabled]="!enablePrint"                            
+              >
+                Print Bill&nbsp;
+              </button>
+                </div>            
               </div>
             </div>
             <div

@@ -9,6 +9,7 @@ import {
 import { DashboardComponent } from "./dashboard.component";
 import { RedirectComponent } from "../../../shared/modules/header/redirect/redirect.component";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { NoPermissionComponent } from "./no-permission/no-permission/no-permission.component";
 
 const routes: Routes = [
   {
@@ -17,16 +18,24 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
   },
   {
-    path: "**",
-    resolve: {
-      url: "externalUrlRedirectResolver",
-    },
-    component: RedirectComponent,
+    path: "no-permission",
+    component: NoPermissionComponent,
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [
+    RouterModule.forChild([
+      ...routes,
+      {
+        path: "**",
+        resolve: {
+          url: "externalUrlRedirectResolver",
+        },
+        component: RedirectComponent,
+      },
+    ]),
+  ],
   exports: [RouterModule],
   providers: [
     {
@@ -38,3 +47,10 @@ const routes: Routes = [
   ],
 })
 export class DashboardRoutingModule {}
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+  providers: [],
+})
+export class DashboardAllRoutingModule {}

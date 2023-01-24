@@ -7,6 +7,7 @@ import { ConsumableDetailsComponent } from "../../../../prompts/consumable-detai
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-consumables",
@@ -16,6 +17,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
 export class ConsumablesComponent implements OnInit {
   @ViewChild("table") tableRows: any;
   data: any = [];
+  companyNotApplicableData: any = [];
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -96,7 +98,8 @@ export class ConsumablesComponent implements OnInit {
     public matDialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +118,7 @@ export class ConsumablesComponent implements OnInit {
       );
       const dialogConst = this.matDialog.open(ConsumableDetailsComponent, {
         width: "80%",
-        height: "50%",
+        height: "53%",
         data: {
           orderSet: res.element,
           items: filteredItems,
@@ -134,6 +137,26 @@ export class ConsumablesComponent implements OnInit {
           let tempAmount = 0;
           result.data.forEach((selectedItem: any) => {
             tempAmount += selectedItem.amount;
+            //// GAV-1368
+            if (
+              this.billingService.company > 0 &&
+              this.companyNotApplicableData &&
+              this.companyNotApplicableData.length > 0
+            ) {
+              let companyIdNotApplicable = this.companyNotApplicableData.filter(
+                (res: any) => res.id === this.billingService.company
+              );
+              if (companyIdNotApplicable && companyIdNotApplicable.length > 0) {
+                ////GAV-1368
+                this.billingService.changeBillTabStatus(true);
+                this.messageDialogService.info(
+                  "Consumable mapping with procedure is not configured for selected unit or company"
+                );
+              } else {
+                ////GAV-1368
+                this.billingService.changeBillTabStatus(false);
+              }
+            }
           });
           this.calculateBillService.consumablesUnselectedItems[
             result.orderSet.orderId.toString()
@@ -166,6 +189,7 @@ export class ConsumablesComponent implements OnInit {
       .subscribe(
         (res: any) => {
           let data: any = [];
+          this.companyNotApplicableData = res.commonIdData;
           res.consumableServiceHeadData.forEach((head: any, index: number) => {
             let tempTotalAmount = head.amount;
             if (
@@ -196,7 +220,10 @@ export class ConsumablesComponent implements OnInit {
                 itemId: head.itemId,
                 priority: typeof head.priority == "string" ? 0 : head.priority, ////GAV1027 make bill priority issue
                 serviceId: head.serviceId,
-                price: head.amount,
+                price:
+                  head.amount != tempTotalAmount
+                    ? tempTotalAmount
+                    : head.amount,
                 serviceName: "Consumables Charges",
                 itemName: head.itemName,
                 qty: 1,
@@ -256,6 +283,8 @@ export class ConsumablesComponent implements OnInit {
   }
 
   goToBill() {
+    // let isValid = this.billingService.checkValidItems();
+    // if (isValid == true)
     this.router.navigate(["../bill"], {
       queryParamsHandling: "merge",
       relativeTo: this.route,

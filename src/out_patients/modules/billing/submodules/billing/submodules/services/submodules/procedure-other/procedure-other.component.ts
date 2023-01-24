@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SpecializationService } from "../../../../specialization.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ReasonForGxtTaxComponent } from "@modules/billing/submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component";
+import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -80,13 +81,7 @@ export class ProcedureOtherComponent implements OnInit {
       qty: {
         title: "Qty",
         type: "dropdown",
-        options: [
-          { title: 1, value: 1 },
-          { title: 2, value: 2 },
-          { title: 3, value: 3 },
-          { title: 4, value: 4 },
-          { title: 5, value: 5 },
-        ],
+        options: BillingStaticConstants.quantity,
         style: {
           width: "70px",
         },
@@ -178,6 +173,9 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -201,6 +199,21 @@ export class ProcedureOtherComponent implements OnInit {
       } else if (res.data.col == "doctorName") {
         this.billingService.ProcedureItems[res.data.index].billItem.doctorID =
           res.$event.value;
+
+        ///GAV-1462
+        this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+          (opbillItem: any, billIndex: any) => {
+            if (
+              opbillItem.itemId ==
+              this.billingService.ProcedureItems[res.data.index].billItem.itemId
+            ) {
+              this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+                billIndex
+              ].consultid = res.$event.value;
+            }
+          }
+        );
+
         const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
           res.data.index
         ].find((doc: any) => doc.value == res.$event.value);
@@ -262,8 +275,9 @@ export class ProcedureOtherComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    ////GAV-1381 - chnage in API
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
   }
@@ -332,6 +346,13 @@ export class ProcedureOtherComponent implements OnInit {
       const index = this.billingService.ProcedureItems.findIndex(
         (c: any) => c.sno == sno
       );
+      this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+        (i: any) => {
+          if (i.itemId == this.billingService.ProcedureItems[index].itemid) {
+            i.qty = this.billingService.ProcedureItems[index].qty.toString();
+          }
+        }
+      );
       if (index > -1) {
         this.billingService.ProcedureItems[index].price =
           this.billingService.ProcedureItems[index].unitPrice *
@@ -395,36 +416,48 @@ export class ProcedureOtherComponent implements OnInit {
     );
 
     // this.data = [...this.billingService.ProcedureItems];
-    if(Number(this.billingService.ProcedureItems[0].gstDetail.totaltaX_RATE_VALUE) > 0)
-    {
+    if (
+      BillingStaticConstants.excludeCodeIdGSTReason.includes(
+        this.billingService.ProcedureItems[0].gstDetail.codeId
+      )
+    ) {
+      this.data = [...this.billingService.ProcedureItems];
+      this.checkTableValidation();
+    } else if (
+      Number(
+        this.billingService.ProcedureItems[0].gstDetail.totaltaX_RATE_VALUE
+      ) > 0
+    ) {
       const gstxdialog = this.messageDialogService.confirm(
-        '',
-        'GST Tax is applicable on ' + this.billingService.ProcedureItems[0].billItem.itemName +' , Do you want to proceed with GST tax?'
+        "",
+        "GST Tax is applicable on " +
+          this.billingService.ProcedureItems[0].billItem.itemName +
+          " , Do you want to proceed with GST tax?"
       );
       gstxdialog.afterClosed().subscribe((res: any) => {
-        if('type' in res)
-        {
-          if(res.type == 'yes')
-          {
+        if ("type" in res) {
+          if (res.type == "yes") {
             this.data = [...this.billingService.ProcedureItems];
             this.checkTableValidation();
-          }
-          else{
+          } else {
             const reasondialog = this.matdialog.open(ReasonForGxtTaxComponent, {
               width: "30vw",
-              height: '40vh'
-            })
+              height: "40vh",
+            });
             reasondialog.afterClosed().subscribe(async (res: any) => {
               console.log(res);
-              if(res == 'cancel')
-              {
-                this.billingService.removeFromBill(this.billingService.ProcedureItems[0]);
+              if (res == "cancel") {
+                this.billingService.removeFromBill(
+                  this.billingService.ProcedureItems[0]
+                );
                 this.billingService.ProcedureItems = [];
                 this.billingService.calculateTotalAmount();
                 this.data = [...this.billingService.ProcedureItems];
-              }
-              else{
-                this.billingService.resetgstfromservices(this.billingService.ProcedureItems, res)
+              } else {
+                this.billingService.resetgstfromservices(
+                  this.billingService.ProcedureItems,
+                  res
+                );
                 // this.billingService.makeBillPayload.taxReason = res;
                 // this.billingService.ProcedureItems[0].gstDetail = {
                 //   gsT_value: 0,
@@ -475,23 +508,23 @@ export class ProcedureOtherComponent implements OnInit {
                 console.log(this.data);
               }
               console.log(this.billingService.makeBillPayload);
-            }) 
+            });
           }
         }
-      })
-    }
-    else{
+      });
+    } else {
       this.data = [...this.billingService.ProcedureItems];
       this.checkTableValidation();
     }
     this.formGroup.reset();
-    
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
-      queryParamsHandling: "merge",
-      relativeTo: this.route,
-    });
+    let isValid = this.billingService.checkValidItems();
+    if (isValid == true)
+      this.router.navigate(["../bill"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });
   }
 }

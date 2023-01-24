@@ -6,6 +6,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+import { BillingService } from '../../billing.service';
 
 @Component({
   selector: 'out-patients-iom-company-billing',
@@ -34,7 +35,9 @@ export class IomCompanyBillingComponent implements OnInit {
   questions: any;
 
   constructor(private formService: QuestionControlService,
-    private dialogRef: MatDialogRef<IomCompanyBillingComponent>,) { }
+    private dialogRef: MatDialogRef<IomCompanyBillingComponent>,
+    private billingservice: BillingService) {
+     }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -43,6 +46,21 @@ export class IomCompanyBillingComponent implements OnInit {
     );
     this.iomcompanybillingform = formResult.form;
     this.questions = formResult.questions;
+    console.log(this.billingservice);
+    if(this.billingservice.company == this.billingservice.patientDetailsInfo.companyid)
+    {
+      console.log(this.billingservice.company == this.billingservice.patientDetailsInfo.companyid, 
+        this.billingservice.company, this.billingservice.patientDetailsInfo.companyid)
+      if(this.billingservice.patientDetailsInfo.isIndivisualOrCorporate)
+      {
+        this.iomcompanybillingform.controls["mainradio"].setValue('corporate');
+      }
+      else
+      {
+        this.iomcompanybillingform.controls["mainradio"].setValue('individual');
+      }
+    }
+    
   }
 
   iomok(){

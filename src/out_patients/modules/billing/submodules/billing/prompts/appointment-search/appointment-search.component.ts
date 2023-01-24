@@ -669,10 +669,7 @@ export class AppointmentSearchComponent implements OnInit {
     setTimeout(() => {
       this.tableRows.selection.changed.subscribe((res: any) => {
         if (res.added[0].maxId == "") {
-          this.dialogRef.close();
-          this.router.navigate(["registration"], {
-            queryParams: {},
-          });
+          this.dialogRef.close({ data: res });
         } else if (res.added[0].maxId != "") {
           this.dialogRef.close({ data: res });
         }

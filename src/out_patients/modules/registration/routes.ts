@@ -15,16 +15,24 @@ const routes: Routes = [
     path: "registration",
     component: RegistrationComponent,
     canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService],
     children: [
-      { path: "", component: OpRegistrationComponent },
+      {
+        path: "",
+        component: OpRegistrationComponent,
+        data: { masterModule: 2, moduleId: 7, featureId: 60 },
+      },
       {
         path: "op-registration",
         component: OpRegistrationComponent,
         canDeactivate: [PendingChangesGuard],
+        data: { masterModule: 2, moduleId: 7, featureId: 60 },
       },
       {
         path: "find-patient",
         component: FindPatientComponent,
+
+        data: { masterModule: 2, moduleId: 7, featureId: 61 },
       },
       {
         path: "dup-reg-merging",

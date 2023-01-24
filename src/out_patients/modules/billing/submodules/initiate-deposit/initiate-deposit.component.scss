@@ -16,6 +16,9 @@
         margin-top: 7% !important;
     }
 }
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
 .isDisabled {
     pointer-events: none;
     opacity: 0.7;

@@ -14,6 +14,8 @@ import { DisountReasonComponent } from "../../modules/billing/submodules/billing
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { SrfReasonComponent } from "@modules/billing/submodules/billing/prompts/srf-reason/srf-reason.component";
+import { CghsReasonComponent } from "@modules/billing/submodules/billing/submodules/services/submodules/cghs-reason/cghs-reason.component";
 
 @Injectable({
   providedIn: "root",
@@ -43,7 +45,7 @@ export class CalculateBillService {
 
   private readonly _destroying$ = new Subject<void>();
 
-  serviceBasedListItems: any = [];
+  serviceBasedListItems: any = {};
 
   blockActions = new Subject<boolean>();
 
@@ -62,7 +64,7 @@ export class CalculateBillService {
     this.companyNonCreditItems = items;
   }
 
-  initProcess(
+  async initProcess(
     billItems: any,
     billingServiceRef: any,
     formGroup?: any,
@@ -74,6 +76,7 @@ export class CalculateBillService {
         questions: question,
       };
     }
+    this.serviceBasedListItems = [];
     this.billingServiceRef = billingServiceRef;
     this.billingServiceRef.billItems.forEach((item: any) => {
       if (!this.serviceBasedListItems[item.serviceName.toString()]) {
@@ -84,9 +87,6 @@ export class CalculateBillService {
         };
       }
       this.serviceBasedListItems[item.serviceName.toString()].items.push(item);
-    });
-    billItems.forEach(async (item: any) => {
-      await this.serviceBasedCheck(item);
     });
   }
 
@@ -125,37 +125,86 @@ export class CalculateBillService {
   calculateDiscount() {
     this.totalDiscountAmt = 0;
     this.discountSelectedItems.forEach((item: any) => {
-      this.totalDiscountAmt += item.discAmt;
+      this.totalDiscountAmt += parseFloat(item.discAmt); //Added ParseFloat to avoid canCotenating of the AMounts
     });
   }
 
-  async serviceBasedCheck(item: any) {
-    switch (item.serviceId) {
-      case 41:
-        if (this.billingServiceRef.company > 0) {
-          await this.CheckOutSourceTest(item);
-        }
-        break;
-      case 65:
-      case 66:
-        break;
-      case 46:
-      case 109:
-        break;
+  async serviceBasedCheck() {
+    for (let i = 0; i < this.billingServiceRef.billItems.length; i++) {
+      const item = this.billingServiceRef.billItems[i];
+      switch (item.serviceId) {
+        case 41:
+          if (this.billingServiceRef.company > 0) {
+            await this.CheckOutSourceTest(item);
+          }
+          break;
+        case 65:
+        case 66:
+          break;
+        case 46:
+        case 109:
+          break;
 
-      default:
-        console.log("default");
+        default:
+          console.log("default");
+      }
     }
   }
 
   async CheckOutSourceTest(item: any) {
-    const checkResult = await this.http
-      .post(
-        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
-        [{ id: item.itemId }]
-      )
-      .toPromise();
-    console.log(checkResult);
+    ////GAV-1355  -SRF
+    if (
+      !this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID ||
+      this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill
+        .srfID == 0
+    ) {
+      const checkResult = await this.http
+        .post(
+          BillingApiConstants.checkoutsourcetest(
+            this.billingServiceRef.company
+          ),
+          [{ id: item.itemId }]
+        )
+        .toPromise()
+        .catch((error: any) => {
+          if (error.status == 200) {
+            return error.error.text;
+          }
+        });
+
+      console.log(checkResult);
+      if (checkResult && checkResult.length > 0) {
+        this.billingServiceRef.isNeedToCheckSRF = 1;
+        const infoDialog = this.messageDialogService.confirm(
+          "",
+          "To perform below Investigations, need special approval or SRF. DO you want to proceed?"
+        );
+
+        const infoDialogRes = await infoDialog.afterClosed().toPromise();
+        if (
+          infoDialogRes &&
+          "type" in infoDialogRes &&
+          infoDialogRes.type == "yes"
+        ) {
+          const srfDialogref = this.matDialog.open(SrfReasonComponent, {
+            width: "28vw",
+            height: "25vh",
+            disableClose: true,
+          });
+
+          let res = await srfDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .toPromise();
+
+          if (res && res.data && res.data.reason) {
+            this.billingServiceRef.makeBillPayload.ds_insert_bill.tab_insertbill.srfID =
+              res.data.reason;
+          }
+        }
+      }
+    }
   }
 
   async getinteraction() {
@@ -175,18 +224,30 @@ export class CalculateBillService {
     if (this.discountSelectedItems.length > 0) {
       this.discountSelectedItems.forEach((disIt: any) => {
         if ([1, 6].includes(disIt.discTypeId)) {
-          disIt.price = this.billingServiceRef.totalCost;
+          disIt.price = this.billingServiceRef.totalCostWithOutGst;
           disIt.discAmt = (disIt.price * disIt.disc) / 100;
           disIt.totalAmt = disIt.price - disIt.discAmt;
         } else if (disIt.discTypeId == 2) {
-          const serviceItem = this.serviceBasedListItems.find(
-            (sbli: any) => sbli.name == disIt.service
-          );
+          console.log(this.serviceBasedListItems);
+          const serviceItem: any = Object.values(
+            this.serviceBasedListItems
+          ).find((sbli: any) => sbli.name == disIt.service);
+          console.log(serviceItem);
           let price = 0;
           serviceItem.items.forEach((item: any) => {
             let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
             price += item.price * quanity;
           });
+          const discAmt = (price * disIt.disc) / 100;
+          disIt.price = price;
+          disIt.discAmt = discAmt;
+          disIt.totalAmt = price - discAmt;
+        } else if (disIt.discTypeId == 3) {
+          const billItem = this.billingServiceRef.billItems.find(
+            (bItem: any) => bItem.itemId == disIt.itemId
+          );
+          let quanity = !isNaN(Number(billItem.qty)) ? billItem.qty : 1;
+          let price = billItem.price * quanity;
           const discAmt = (price * disIt.disc) / 100;
           disIt.price = price;
           disIt.discAmt = discAmt;
@@ -198,17 +259,17 @@ export class CalculateBillService {
   }
 
   applyDiscount(from: string, formGroup: any) {
+    this.billingServiceRef.billItems.forEach((item: any) => {
+      item.disc = 0;
+      item.discAmount = 0;
+      let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
+      const price = item.price * quanity;
+      item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+      item.totalAmount = item.price * quanity + item.gstValue;
+      item.discountType = 0;
+      item.discountReason = 0;
+    });
     if (this.discountSelectedItems.length == 0) {
-      this.billingServiceRef.billItems.forEach((item: any) => {
-        item.disc = 0;
-        item.discAmount = 0;
-        let quanity = !isNaN(Number(item.qty)) ? item.qty : 1;
-        const price = item.price * quanity;
-        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
-        item.totalAmount = item.price * quanity + item.gstValue;
-        item.discountType = 0;
-        item.discountReason = 0;
-      });
     } else {
       if (
         this.discountSelectedItems.length == 1 &&
@@ -258,9 +319,11 @@ export class CalculateBillService {
               });
             }
           } else if (ditem.discTypeId == 4) {
-            formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+            formGroup.controls["patientDisc"].setValue(
+              ditem.discAmt.toFixed(2)
+            );
           } else if (ditem.discTypeId == 5) {
-            formGroup.controls["compDisc"].setValue(ditem.discAmt);
+            formGroup.controls["compDisc"].setValue(ditem.discAmt.toFixed(2));
             formGroup.controls["amtPayByComp"].setValue(ditem.totalAmt);
           }
         });
@@ -323,6 +386,7 @@ export class CalculateBillService {
     });
     discountReasonPopup.afterClosed().subscribe((res: any) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
+        formGroup.controls["dipositAmtEdit"].setValue("0");
         this.processDiscountLogics(formGroup, componentRef, from);
       } else if (this.totalDiscountAmt == 0) {
         this.processDiscountLogics(formGroup, componentRef, from);
@@ -359,7 +423,11 @@ export class CalculateBillService {
       this.calculateDiscount();
     }
 
-    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
+    //GAV-1538 - in case of consultation
+    let discAmount = parseFloat(this.totalDiscountAmt.toString());
+    this.totalDiscountAmt = discAmount;
+
+    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt.toFixed(2));
     componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {
@@ -449,7 +517,7 @@ export class CalculateBillService {
     console.log(res);
     if (res.length > 0) {
       console.log(res[0].id);
-      if ((res[0].id == 0)) {
+      if (res[0].id == 0) {
         //coupon already used message
         const CouponErrorRef = this.messageDialogService.error(
           "Coupon already used"
@@ -518,7 +586,7 @@ export class CalculateBillService {
 
   processDiscount(couponServices: any): any {
     let discountper = 0;
-    let Sno = 0;
+    let Sno = 1;
     let discountReasonItems = [];
 
     if (this.billingServiceRef.billItems) {
@@ -543,6 +611,7 @@ export class CalculateBillService {
             //array to populate all couponServices in discount popup
             discountReasonItems.push(couponItem);
           }
+          Sno++;
         }
         console.log(discountReasonItems);
         return discountReasonItems;
@@ -632,9 +701,10 @@ export class CalculateBillService {
     billItem: any,
     couponService: any,
     discountper = 0,
-    Sno = 0
+    Sno: any
   ): any {
-    Sno += 1;
+    console.log(couponService);
+    // Sno += 1;
     discountper = couponService[0].discountper;
     let discAmt = (billItem.price * discountper) / 100;
     let totalAmt = billItem.price - discAmt;
@@ -656,7 +726,10 @@ export class CalculateBillService {
       disc: discountper,
       discAmt: discAmt,
       totalAmt: totalAmt,
-      head: couponService[0].mainhead,
+      head: {
+        title: couponService[0].discountHead,
+        id: couponService[0].mainhead,
+      },
       reason: couponService[0].id,
       value: "0",
       discTypeValue: disType,
@@ -1159,20 +1232,20 @@ export class CalculateBillService {
 
   //#region  CGHS Beneficiary
   async checkCGHSBeneficiary() {
-    if (
-      this.billingServiceRef.patientDetailsInfo &&
-      this.billingServiceRef.patientDetailsInfo.adhaarID
-    ) {
+    if (this.billingServiceRef.patientDetailsInfo) {
       let cghsBeneficiary = await this.http
         .get(
           BillingApiConstants.checkCGHSBeneficiary(
             this.billingServiceRef.activeMaxId.iacode,
             this.billingServiceRef.activeMaxId.regNumber,
             this.billingServiceRef.company,
-            this.billingServiceRef.patientDetailsInfo.adhaarID
+            this.billingServiceRef.patientDetailsInfo.adhaarID || ""
           )
         )
-        .toPromise();
+        .toPromise()
+        .catch((error: any) => {
+          return [];
+        });
 
       if (cghsBeneficiary) {
         if (
@@ -1184,7 +1257,28 @@ export class CalculateBillService {
               "Patient belongs to Panel CGHS beneficiary, but you have not selected that company, Please select appropriate reason."
             );
             await infoRef.afterClosed().toPromise();
-            await this.openCGHSChangeReason();
+            // await this.openCGHSChangeReason();
+            const chgsChangeDialogref = this.matDialog.open(
+              CghsReasonComponent,
+              {
+                width: "28vw",
+                height: "25vh",
+                disableClose: true,
+              }
+            );
+            let res = await chgsChangeDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .toPromise();
+            if (res && res.data) {
+              let reason = BillingStaticConstants.cghsReasons.filter(
+                (r: any) => r.value === res.data.reason
+              );
+              if (reason && reason.length > 0) {
+                this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason =
+                  reason[0].title;
+              }
+            }
           }
         }
 

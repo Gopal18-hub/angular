@@ -11,7 +11,7 @@
     "stylelint": "stylelint \"src/**/*.+(css|scss)\" --config .stylelintrc.json",
     "lint": "yarn -s tslint && yarn -s stylelint",
     "reports-dev-run": "ng serve reports --serve-path reports --port 4205",
-    "mis-reports-dev-run":"ng serve mis_reports --serve-path mis-reports --port 4206",
+    "mis-reports-dev-run": "ng serve mis_reports --serve-path mis-reports --port 4206",
     "auth-dev-run": "ng serve auth --port 8100"
   },
   "private": true,
@@ -31,7 +31,7 @@
     "babel-polyfill": "^6.26.0",
     "dexie": "^3.2.2",
     "moment": "^2.29.4",
-    "oidc-client": "^1.11.5",
+    "oidc-client": "file:oidc-client-1.11.6-beta.1.tgz",
     "rtf.js": "^3.0.9",
     "rxjs": "~7.5.0",
     "text-mask-addons": "^3.8.0",

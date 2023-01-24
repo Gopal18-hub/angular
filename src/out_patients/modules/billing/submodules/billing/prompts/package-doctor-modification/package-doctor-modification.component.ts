@@ -62,8 +62,11 @@ export class PackageDoctorModificationComponent implements OnInit {
       .subscribe((res) => {
         let i = 0;
         res.forEach((item: any, index: number) => {
-          this.packageContent.push(item.itemName);
-          if (item.isConsult == 1 && item.itemServiceID == 25) {
+          if (item.itemServiceID != 25) {
+            this.packageContent.push(item.itemName);
+          }
+          // if (item.isConsult == 1 && item.itemServiceID == 25) {
+          if (item.itemServiceID == 25) {
             this.itemsData[i] = {
               sno: i + 1,
               specialisation: item.itemName,
@@ -88,24 +91,9 @@ export class PackageDoctorModificationComponent implements OnInit {
     index: number
   ) {
     this.config.columnsInfo.doctorName.moreOptions[index] =
-      await this.specializationService.getdoctorlistonSpecialization(
+      await this.specializationService.getDoctorsOnSpecialization(
         clinicSpecializationId
       );
-
-    // this.http
-    //   .get(
-    //     BillingApiConstants.getdoctorlistonSpecializationClinic(
-    //       false,
-    //       clinicSpecializationId,
-    //       Number(this.cookie.get("HSPLocationId"))
-    //     )
-    //   )
-    //   .subscribe((res) => {
-    //     let options = res.map((r: any) => {
-    //       return { title: r.doctorName, value: r.doctorId };
-    //     });
-    //     this.config.columnsInfo.doctorName.moreOptions[index] = options;
-    //   });
   }
 
   ngOnInit(): void {
@@ -145,6 +133,19 @@ export class PackageDoctorModificationComponent implements OnInit {
     this.dialogRef.close({
       data: this.itemsData,
       itemId: this.data.orderSet.itemid,
+      doctorList: this.data.doctorsList,
     });
+  }
+
+  packageDoctorclosebtn() {
+    if (this.data && this.data.items.length != 0) {
+      this.billingService.doctorList = this.data.doctorsList;
+      this.billingService.changeBillTabStatus(false);
+    } else {
+      this.billingService.doctorList = this.billingService.doctorList.map(
+        (d: number) => d * 0
+      ); //this.data.doctorsList;
+      this.billingService.changeBillTabStatus(true);
+    }
   }
 }

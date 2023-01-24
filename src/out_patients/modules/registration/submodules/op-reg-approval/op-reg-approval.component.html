@@ -69,37 +69,39 @@
           ></maxhealth-table>
         </ng-container>
       </div>
-      <div class="float-right mb-3 mr-3 mt-1">
+      <div class="float-right mb-3 mr-3 mt-1">      
         <button
-          mat-raised-button
-          color="primary"
-          class="w-1/4 right-15"
-          type="submit"
-          *ngIf="opApprovalList && enableapprovebtn"
-          (click)="approvalApproveItem()"
-          accessControl
-          masterModule = "2"
-          moduleId="7"
-          featureId="595"
-          actionId="1552"
-        >
-          Approve
-        </button>
+        mat-raised-button
+        color="primary"
+        class="w-1/4 right-15"
+        type="submit"
+        *ngIf="opApprovalList && enableapprovebtn"
+        (click)="approvalApproveItem()"  
+        accessControl
+        masterModule = "2"
+        moduleId="7"
+        featureId="595"  
+        actionId="1552"     
+      >
+        Approve
+      </button>     
+     
         <button
-          mat-raised-button
-          color="primary"
-          class="w-1/4"
-          type="submit"
-          *ngIf="opApprovalList && enableapprovebtn"
-          (click)="approvalRejectItem()"
-          accessControl
-          masterModule = "2"
-          moduleId="7"
-          featureId="595"
-          actionId="1552"
-        >
-          Reject
-        </button>
+        mat-raised-button
+        color="primary"
+        class="w-1/4"
+        type="submit"
+        *ngIf="opApprovalList && enableapprovebtn"
+        (click)="approvalRejectItem()"     
+        accessControl
+        masterModule = "2"
+        moduleId="7"
+        featureId="595"
+        actionId="1552"     
+      >
+        Reject
+      </button>
+      
       </div>
     </div>
 

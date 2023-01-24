@@ -47,20 +47,23 @@
         </ng-container>
       </div>
       <div class="float-right mt-1 mb-3 mr-3">
+      <!-- 
+        accessControl
+        masterModule="2"
+        moduleId="7"
+        featureId="461"
+        actionId="1183"      -->
         <button
-          mat-raised-button
-          color="primary"
-          class="w-full"
-          (click)="unMerge()"
-          [disabled]="unmergebuttonDisabled"
-          accessControl
-          masterModule="2"
-          moduleId="7"
-          featureId="461"
-          actionId="1183"
-        >
-          Unmerge
-        </button>
+        mat-raised-button
+        color="primary"
+        class="w-full"
+        (click)="unMerge()"
+        [disabled]="unmergebuttonDisabled"  
+      >
+        Unmerge
+      </button>
+     
+      
       </div>
     </div>
 

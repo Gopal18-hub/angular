@@ -9,7 +9,7 @@
     <mat-icon>close</mat-icon>
   </button>
   <h2 class="max-health-primary-color">Consumable Details</h2>
-  <div class="h-3/4 relative">
+  <div class="h-3/5 relative">
     <div class="copy-reason">
       <button class="copy-reason" (click)="copyReason()">Copy Reason</button>
     </div>
@@ -26,7 +26,6 @@
       class="font-sm min-width-initial mr-6"
       type="button"
       (click)="ConsumableBill()"
-      [disabled]="!billingservice.billNo"
     >
       Consumable Entry Details
     </button>

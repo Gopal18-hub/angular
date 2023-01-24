@@ -29,7 +29,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatButtonModule } from "@angular/material/button";
 import { MatListModule } from "@angular/material/list";
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { VisitHistoryDialogComponent } from "./submodules/details/visit-history-dialog/visit-history-dialog.component";
 import { MatIconModule } from "@angular/material/icon";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
@@ -138,10 +138,12 @@ import { SendMailDialogComponent } from "./submodules/billing/prompts/send-mail-
 import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component";
 import { MiscDiscountReasonComponent } from "./submodules/miscellaneous-billing/prompts/misc-discount reason/misc-discount-reason.component";
 import { TwiceConsultationReasonComponent } from "./submodules/billing/prompts/twice-consultation-reason/twice-consultation-reason.component";
-import { EcareOpSummaryReportComponent } from './submodules/ecare-op-summary-report/ecare-op-summary-report.component';
-import { DmgOthergrpDocPopupComponent } from './submodules/billing/prompts/dmg-othergrp-doc-popup/dmg-othergrp-doc-popup.component';
-import { ReasonForGxtTaxComponent } from './submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component';
-import { OnlinePaymentPaidPatientComponent } from './submodules/billing/prompts/online-payment-paid-patient/online-payment-paid-patient.component';
+import { EcareOpSummaryReportComponent } from "./submodules/ecare-op-summary-report/ecare-op-summary-report.component";
+import { DmgOthergrpDocPopupComponent } from "./submodules/billing/prompts/dmg-othergrp-doc-popup/dmg-othergrp-doc-popup.component";
+import { ReasonForGxtTaxComponent } from "./submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component";
+import { OnlinePaymentPaidPatientComponent } from "./submodules/billing/prompts/online-payment-paid-patient/online-payment-paid-patient.component";
+import { SrfReasonComponent } from "./submodules/billing/prompts/srf-reason/srf-reason.component";
+import { CghsReasonComponent } from "./submodules/billing/submodules/services/submodules/cghs-reason/cghs-reason.component";
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -252,6 +254,8 @@ import { OnlinePaymentPaidPatientComponent } from './submodules/billing/prompts/
     DmgOthergrpDocPopupComponent,
     ReasonForGxtTaxComponent,
     OnlinePaymentPaidPatientComponent,
+    SrfReasonComponent,
+    CghsReasonComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -268,7 +272,6 @@ import { OnlinePaymentPaidPatientComponent } from './submodules/billing/prompts/
     MatRadioModule,
     MatCheckboxModule,
     MatSelectModule,
-    BrowserModule,
     CommonModule,
     MatListModule,
     MatIconModule,
@@ -281,7 +284,7 @@ import { OnlinePaymentPaidPatientComponent } from './submodules/billing/prompts/
     MaxHealthSnackBarModule,
     ReferralModule,
     DragDropModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
   ],
   exports: [],
   providers: [],

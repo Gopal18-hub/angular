@@ -30,7 +30,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { GstTaxComponent } from "@modules/billing/submodules/billing/prompts/gst-tax-popup/gst-tax.component";
 import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
-
+import { DepositService } from "@core/services/deposit.service";
 @Component({
   selector: "out-patients-bill-detail",
   templateUrl: "./bill-detail.component.html",
@@ -129,7 +129,8 @@ export class BillDetailComponent implements OnInit {
     private reportService: ReportService,
     private snackbar: MaxHealthSnackBarService,
     private billingservice: BillingService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private depositservice: DepositService,
   ) {}
 
   miscBillData = {
@@ -1444,6 +1445,38 @@ export class BillDetailComponent implements OnInit {
       return item.name === control.value;
     });
   }
+  clearCoPay() {
+    if (this.miscServBillForm.controls["coPay"].value == 0) {
+      this.miscServBillForm.controls["coPay"].setValue("");
+    }
+  }
+
+  unClearCoPay() {
+    if (this.miscServBillForm.controls["coPay"].value == "") {
+      this.miscServBillForm.controls["coPay"].setValue("0");
+    }
+  }
+  clearCredit() {
+    if (this.miscServBillForm.controls["credLimit"].value == 0) {
+      this.miscServBillForm.controls["credLimit"].setValue("");
+    }
+  }
+  unClearCredit() {
+    if (this.miscServBillForm.controls["credLimit"].value == "") {
+      this.miscServBillForm.controls["credLimit"].setValue("0");
+    }
+  }
+  clearDis() {
+    if (this.miscServBillForm.controls["dipositAmtEdit"].value == 0) {
+      this.miscServBillForm.controls["dipositAmtEdit"].setValue("");
+    }
+  }
+  unClearDis() {
+    if (this.miscServBillForm.controls["dipositAmtEdit"].value == "") {
+      this.miscServBillForm.controls["dipositAmtEdit"].setValue("0");
+    }
+  }
+
   //Clear
   clearDraftedService() {
     this.miscServBillForm.controls["item"].reset();
@@ -1477,6 +1510,7 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["compDisc"].setValue("0.00");
     this.miscServBillForm.controls["planAmt"].setValue("0.00");
     this.miscServBillForm.controls["coPay"].setValue("0.00");
+    this.question[21] = { ...this.question[21] };
     this.miscServBillForm.controls["credLimit"].setValue("0.00");
     this.miscServBillForm.controls["gstTax"].setValue("0.00");
     this.miscServBillForm.controls["paymentMode"].setValue("1");
@@ -1677,9 +1711,7 @@ export class BillDetailComponent implements OnInit {
               this.miscServBillForm.controls["dipositAmt"].setValue(
                 this.depodialogTotal.toFixed(2)
               );
-              this.miscServBillForm.controls["dipositAmtEdit"].setValue(
-                0 + ".00"
-              );
+              this.miscServBillForm.controls["dipositAmtEdit"].setValue("");
               this.miscServBillForm.controls["dipositAmtEdit"].enable();
               this.question[27].readonly = false;
               this.question[27].disable = false;
@@ -1759,6 +1791,7 @@ export class BillDetailComponent implements OnInit {
     if (credLimitWarning) {
       if (credLimitWarning.type == "yes") {
         this.question[22].elementRef.focus();
+        this.miscServBillForm.controls["credLimit"].setValue("");
         return false;
       } else {
         this.miscServBillForm.controls["paymentMode"].setValue("1");
@@ -1859,6 +1892,7 @@ export class BillDetailComponent implements OnInit {
           .subscribe(
             (resultData) => {
               if (resultData[0].successFlag === true) {
+                this.depositservice.clearformsixtydetails();
                 this.generatedBillNo = resultData[0].billId;
                 //this.billingservice.billNoGenerated.next(true);
                 this.miscPatient.cacheBillTabdata.generatedBillNo =
@@ -1920,8 +1954,8 @@ export class BillDetailComponent implements OnInit {
   }
   paymentDialog() {
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
+      width: "80vw",
+      height: "96vh",
       data: {
         totalBillAmount: this.TotalAmount,
         totalDiscount: this.miscServBillForm.value.discAmt,
@@ -1959,6 +1993,7 @@ export class BillDetailComponent implements OnInit {
                     .subscribe(
                       (resultData) => {
                         if (resultData[0].successFlag === true) {
+                          this.depositservice.clearformsixtydetails();
                           //this.enableForm = 0;
                           this.generatedBillNo = resultData[0].billId;
                           //this.billingservice.billNoGenerated.next(true);
@@ -2020,6 +2055,7 @@ export class BillDetailComponent implements OnInit {
               .subscribe(
                 (resultData) => {
                   if (resultData[0].successFlag === true) {
+                    this.depositservice.clearformsixtydetails();
                     //this.enableForm = 0;
                     this.generatedBillNo = resultData[0].billId;
                     //this.billingservice.billNoGenerated.next(true);
@@ -2146,7 +2182,7 @@ export class BillDetailComponent implements OnInit {
         docid: e.docid,
         remarksId: e.remarksId,
         itemId: e.itemId,
-        mPrice: Number(e.PriceNo),
+        mPrice: Number(e.mPrice),
         empowerApproverCode: "",
         couponCode: "",
       });

@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, HostListener } from "@angular/core";
 import { MaxModules } from "../../constants/Modules";
 import { APP_BASE_HREF } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
-import { CookieService } from "../../services/cookie.service";
+import { CookieService } from "@shared/services/cookie.service";
 import { environment } from "@environments/environment";
 import { PermissionService } from "../../services/permission.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -12,6 +12,9 @@ import { ChangelocationComponent } from "./changelocation/changelocation.compone
 import { Subject, takeUntil } from "rxjs";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
 import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
+import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
+import { ADAuthService } from "../../../auth/core/services/adauth.service";
+import { MaxHealthStorage } from "@shared/services/storage";
 
 @Component({
   selector: "maxhealth-header",
@@ -24,8 +27,17 @@ export class HeaderComponent implements OnInit {
   station: string = "";
   usrname: string = "";
   user: string = "";
+  locationId: string = "";
+  stationId: string = "";
   activeModule: any;
   private readonly _destroying$ = new Subject<void>();
+
+  cookiekeys: any = {
+    Location: "location",
+    Station: "station",
+    Name: "usrname",
+    UserName: "user",
+  };
 
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
@@ -40,10 +52,26 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dbService: DbService,
+    private adauth: ADAuthService,
     private matDialog: MatDialog
   ) {}
 
   async ngOnInit() {
+    this.location = this.cookieService.get("Location");
+    this.station = this.cookieService.get("Station");
+    this.usrname = this.cookieService.get("Name");
+    this.user = this.cookieService.get("UserName");
+    console.log(this.usrname);
+    this.cookieService.cookieValueChange.addEventListener(
+      "message",
+      (res: any) => {
+        if (
+          ["Location", "Station", "Name", "UserName"].includes(res.data.name)
+        ) {
+          this[this.cookiekeys[res.data.name] as keyof this] = res.data.value;
+        }
+      }
+    );
     await this.permissionService.getPermissionsRoleWise();
     this.modules = this.permissionService.checkModules();
     this.modules.forEach((element: any) => {
@@ -55,21 +83,24 @@ export class HeaderComponent implements OnInit {
       }
     });
     // this.setRefreshedToken(); //Set refreshed access token in cookie
-    this.location = this.cookieService.get("Location");
-    this.station = this.cookieService.get("Station");
-    this.usrname = this.cookieService.get("Name");
-    this.user = this.cookieService.get("UserName");
   }
 
   logout() {
     this.setRefreshedToken(); //Set refreshed access token in cookie
+    this.adauth
+      .ClearExistingLogin(Number(this.cookieService.get("UserId")))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (resdata: any) => {
+        console.log(resdata);
+      });
     this.authService.logout().subscribe((response: any) => {
       if (response.postLogoutRedirectUri) {
         window.location = response.postLogoutRedirectUri;
       }
-      localStorage.clear();
+      sessionStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.authService.deleteToken();
       this.dbService.cachedResponses.clear();
       window.location.href = window.location.origin + "/login";
     });
@@ -82,7 +113,7 @@ export class HeaderComponent implements OnInit {
 
   setRefreshedToken() {
     //oidc.user:https://localhost/:hispwa
-    let storage = localStorage.getItem(
+    let storage = sessionStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
     );
     let tokenKey;
@@ -103,8 +134,10 @@ export class HeaderComponent implements OnInit {
     }
 
     if (accessToken != "" && accessToken != null && accessToken != undefined) {
-      this.cookieService.delete("accessToken", "/");
-      this.cookieService.set("accessToken", accessToken, { path: "/" });
+      // this.cookieService.delete("accessToken", "/");
+      // this.cookieService.set("accessToken", accessToken, { path: "/" });
+      this.authService.deleteToken();
+      this.authService.setToken(accessToken);
     }
   }
 
@@ -213,7 +246,7 @@ export class HeaderComponent implements OnInit {
           type: "object",
           properties: {
             imei: {
-              type: "autocomplete",
+              type: "dropdown",
               title: "POS IMEI",
               required: true,
             },
@@ -225,6 +258,38 @@ export class HeaderComponent implements OnInit {
     });
 
     changePasswordDialoref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          window.location.reload();
+        }
+      });
+  }
+
+  openPayTmDialog() {
+    const paytmDialoref = this.matDialog.open(PaytmMachineComponent, {
+      width: "25vw",
+      height: "33vh",
+      data: {
+        title: "Select PayTm Machine",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            posId: {
+              type: "dropdown",
+              title: "PayTm Machine",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+
+    paytmDialoref
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {

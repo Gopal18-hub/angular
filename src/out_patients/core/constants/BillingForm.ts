@@ -1,3 +1,4 @@
+import { MaxHealthStorage } from "@shared/services/storage";
 export namespace BillingForm {
 
     // Payment Methods Form Data
@@ -269,6 +270,7 @@ export namespace BillingForm {
               type: "tel",
               required: true,
               title: "Mobile No.",
+              pattern: "^[1-9]{1}[0-9]{9}",
           },
           internetemail: {
               type: "string",
@@ -282,7 +284,7 @@ export namespace BillingForm {
               title: "Amount"
           },
 	        dueamount: {
-              type: "string",
+              type: "number",
               defaultValue: "0.00",
               title: "Amount"
           },
@@ -314,12 +316,14 @@ export namespace BillingForm {
           mobileorderid:{
             type: "string",
             title: "Order Id"
-          }, //60
+          }, 
           posimei:{
-            type: "string",
-            required: true,
+            type: "dropdown",
             title: "POS IMEI",
-          },
+            required: true,
+            //defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+            readonly: false, 
+          },//60
           creditcardtransactionid:{
             type: "string",
             required: true,
@@ -353,6 +357,18 @@ export namespace BillingForm {
           type: "string",
           required: true,
           title: "Bank TID",
+        },//66
+        upiposimei:{
+          type: "dropdown",
+          title: "POS IMEI",
+          required: true,
+          //defaultValue: MaxHealthStorage.getCookie("MAXMachineName"),
+          readonly: false,          
+        },
+        upibanktid:{
+          type: "string",
+          title: "Bank TID",
+          required: true,
         }
         },
     };
@@ -363,8 +379,10 @@ export namespace BillingForm {
         type: "object",
         properties: {
           aadharno: {
-            type: "number",
-           // pattern: "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$"
+            title: "Aadhar No.",
+            type: "string",
+            pattern: /(^[0-9]{4}[0-9]{4}[0-9]{4}$)/,
+           // pattern: /(^[0-9]{4}[0-9]{4}[0-9]{4}$)|(^[0-9]{4}\s[0-9]{4}\s[0-9]{4}$)|(^[0-9]{4}-[0-9]{4}-[0-9]{4}$)/,
           },
           appliedforpan: {
             type: "checkbox",
@@ -380,10 +398,10 @@ export namespace BillingForm {
             type: "number"
           },
           agriculturalincome: {
-            type: "string"
+            type: "number"
           },
           otherthanagriculturalincome: {
-            type: "string"
+            type: "number"
           },
           iddocumenttype: {
             type: "dropdown",

@@ -291,7 +291,7 @@ export class RefundAfterBillComponent implements OnInit {
       this.headercheck = false;
     }
     var acklist = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
-      return i.ackby <= 1;
+      return i.ackby == 0 || i.ackby == 1 || i.ackby == 9;
     })
     console.log(acklist);
     if(acklist.length > 0)
@@ -339,6 +339,7 @@ export class RefundAfterBillComponent implements OnInit {
           setTimeout(() => {
             this.tableRows.selection.deselect(i);
           }, 100);
+          return;
         })
       }
 
@@ -414,7 +415,7 @@ export class RefundAfterBillComponent implements OnInit {
                 }, 100);
                 return;
               }
-              if(list[z].ackby <= 1)
+              if(list[z].ackby == 0 || list[z].ackby == 1 || list[z].ackby == 9)
               {
                 this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
                 console.log(this.tableRows.selection);

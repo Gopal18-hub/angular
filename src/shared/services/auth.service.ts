@@ -88,16 +88,47 @@ export class AuthService {
     }
   }
 
+  public deleteToken() {
+    // return MaxHealthStorage.deleteSession("accessToken");
+    this.cookieService.delete("accessToken");
+  }
   public getToken() {
     return this.cookieService.get("accessToken");
+    // return MaxHealthStorage.getSession("accessToken");
   }
 
   public setToken(token: string): void {
-    this.cookieService.set("accessToken", token, {
-      path: "/",
-      domain: environment.cookieUrl,
-      secure: true,
-    });
+    this.cookieService.set("accessToken", token);
+    // MaxHealthStorage.setSession("accessToken", token);
+  }
+
+  public getAccesToken() {
+    let storage = sessionStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    let tokenKey;
+    let accessToken = "";
+    if (storage != null && storage != undefined && storage != "") {
+      tokenKey = storage
+        ?.split(",")[2]
+        .split(":")[0]
+        .replace('"', "")
+        .replace('"', "");
+      if (tokenKey == "access_token") {
+        accessToken = storage
+          ?.split(",")[2]
+          .split(":")[1]
+          .replace('"', "")
+          .replace('"', "");
+      }
+    }
+    if (accessToken != "" && accessToken != null && accessToken != undefined) {
+      if (this.cookieService.get("accessToken") != accessToken) {
+        this.deleteToken();
+        this.setToken(accessToken);
+      }
+    }
+    return this.cookieService.get("accessToken");
   }
 
   public logout(): any {
@@ -136,6 +167,38 @@ export class AuthService {
       this.router.navigate(["dashboard"]);
     }
   }
+
+  public setRefreshedToken() {
+    //oidc.user:https://localhost/:hispwa
+    let storage = sessionStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    let tokenKey;
+    let accessToken = "";
+    if (storage != null && storage != undefined && storage != "") {
+      tokenKey = storage
+        ?.split(",")[2]
+        .split(":")[0]
+        .replace('"', "")
+        .replace('"', "");
+      if (tokenKey == "access_token") {
+        accessToken = storage
+          ?.split(",")[2]
+          .split(":")[1]
+          .replace('"', "")
+          .replace('"', "");
+      }
+    }
+
+    if (accessToken != "" && accessToken != null && accessToken != undefined) {
+      // if (accessToken != this.cookieService.get("accessToken")) {
+      //   this.cookieService.delete("accessToken", "/");
+      //   this.cookieService.set("accessToken", accessToken, { path: "/" });
+      // }
+      this.deleteToken();
+      this.setToken(accessToken);
+    }
+  }
 }
 
 export function getClientSettings(): UserManagerSettings {
@@ -162,7 +225,9 @@ export function getClientSettings(): UserManagerSettings {
     silent_redirect_uri:
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,
-    userStore: new WebStorageStateStore({ store: window.localStorage }),
+    userStore: new WebStorageStateStore({
+      store: sessionStorage,
+    }),
     extraQueryParams: { new: 1 },
     monitorSession: true,
   };

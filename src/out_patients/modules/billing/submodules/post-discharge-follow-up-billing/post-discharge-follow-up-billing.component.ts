@@ -401,13 +401,24 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     console.log(patientDetails.pCellNo);
     console.log(pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
-    if(pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid > 0)
-    {
-      this.formGroup.controls['company'].setValue({
-        title: this.complanyList.filter(i => { return i.id == pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid})[0].name,
-        value: pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid});
+    if (pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid > 0) {
+      this.formGroup.controls["company"].setValue({
+        title: this.complanyList.filter((i) => {
+          return (
+            i.id == pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid
+          );
+        })[0].name,
+        value: pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid,
+      });
     }
-    this.formGroup.controls['corporate'].setValue(pDetails.dsPersonalDetails.dtPersonalDetails1[0].corporateid);
+    this.formGroup.controls["corporate"].setValue({
+      title: this.coorporateList.filter((i) => {
+        return (
+          i.id == pDetails.dsPersonalDetails.dtPersonalDetails1[0].corporateid
+        );
+      })[0].name,
+      value: pDetails.dsPersonalDetails.dtPersonalDetails1[0].corporateid,
+    });
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
     this.age = patientDetails.age + " " + patientDetails.ageTypeName;
@@ -442,7 +453,37 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         }
       });
   }
-  doCategoryIconAction(icon: any) {}
+  doCategoryIconAction(categoryIcon: any) {
+    const patientDetails: any =
+      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    const data: any = {
+      note: {
+        notes: patientDetails.noteReason,
+      },
+      vip: {
+        notes: patientDetails.vipreason,
+      },
+      hwc: {
+        notes: patientDetails.hwcRemarks,
+      },
+      ppagerNumber: {
+        bplCardNo: patientDetails.bplcardNo,
+        BPLAddress: patientDetails.addressOnCard,
+      },
+      hotList: {
+        hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
+        reason: patientDetails.hotlistcomments,
+      },
+    };
+    console.log(categoryIcon.tooltip, categoryIcon.type, data);
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
+  }
   appointment_popup() {
     console.log("appointment");
     const appointmentSearch = this.matdialog.open(

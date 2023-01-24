@@ -57,7 +57,7 @@ export class BillingStaffDeptDialogComponent implements OnInit {
         title: "Employee Code",
         type: "string",
         style: {
-          width: "25%",
+          width: "15%",
         },
       },
       empName: {

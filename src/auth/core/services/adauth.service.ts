@@ -20,6 +20,28 @@ export class ADAuthService {
       ApiConstants.validateADCredentials(username, password)
     );
   }
+  public ClearExistingLogin(userid: number): any {
+    return this.http.postExternal(ApiConstants.deleteactivesession(userid), {});
+  }
+
+  public updateActiveSessionToken(
+    userId: number,
+    token: string,
+    locationid: number,
+    stationid: number,
+    moduleid: number
+  ) {
+    return this.http.postExternal(
+      ApiConstants.updateActiveSessionToken(),
+      JSON.stringify({
+        userId,
+        token,
+        locationid,
+        stationid,
+        moduleid,
+      })
+    );
+  }
 
   public authenticate(username: string, password: string) {
     let returnUrl;
@@ -39,5 +61,29 @@ export class ADAuthService {
         returnUrl,
       })
     );
+  }
+  public sessionCreation(
+    userId: number,
+    token: string,
+    locationid: number,
+    stationid: number,
+    moduleid: number
+  ) {
+    return this.http.postExternal(
+      ApiConstants.sessionCreation(),
+      JSON.stringify({
+        userId,
+        token,
+        locationid,
+        stationid,
+        moduleid,
+      })
+    );
+  }
+
+  //clearCookies
+
+  public clearCookies() {
+    return this.http.post(ApiConstants.clearCookies, {});
   }
 }

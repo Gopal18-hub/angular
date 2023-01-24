@@ -4,6 +4,7 @@ import { CookieService } from "./cookie.service";
 import { HttpService } from "./http.service";
 import { ApiConstants } from "../constants/ApiConstants";
 import { MaxModules } from "../constants/Modules";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -17,6 +18,8 @@ export class PermissionService {
   modules: any = [];
   features: any = [];
 
+  rolesLoaded = new Subject<boolean>();
+
   constructor(public cookieService: CookieService, public http: HttpService) {}
 
   async getPermissionsRoleWise() {
@@ -29,33 +32,60 @@ export class PermissionService {
     let temp: any = {};
     if (roles) {
       if (roles.length > 0) {
-        let response = await this.http
-          .get(ApiConstants.getPermissions(this.cookieService.get("role")))
-          .toPromise();
+        if (this.cookieService.get("role")) {
+          let response = await this.http
+            .get(ApiConstants.getPermissions(this.cookieService.get("role")))
+            .toPromise();
 
-        if (response) {
-          response.permissions.forEach((ele: any) => {
-            if (!temp[ele.masterModuleId]) {
-              temp[ele.masterModuleId] = {};
-              this.masterModules.push(ele.masterModuleId);
-            }
-            if (!temp[ele.masterModuleId][ele.moduleId]) {
-              this.modules.push(ele.moduleId);
-              temp[ele.masterModuleId][ele.moduleId] = {};
-            }
-            if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
-              temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
-              this.features.push(ele.featureId);
-            }
-            temp[ele.masterModuleId][ele.moduleId][ele.featureId][
-              ele.functionId
-            ] = true;
-          });
+          if (response) {
+            response.permissions.forEach((ele: any) => {
+              if (!temp[ele.masterModuleId]) {
+                temp[ele.masterModuleId] = {};
+                this.masterModules.push(ele.masterModuleId);
+              }
+              if (!temp[ele.masterModuleId][ele.moduleId]) {
+                this.modules.push(ele.moduleId);
+                temp[ele.masterModuleId][ele.moduleId] = {};
+              }
+              if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
+                temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
+                this.features.push(ele.featureId);
+              }
+              temp[ele.masterModuleId][ele.moduleId][ele.featureId][
+                ele.functionId
+              ] = true;
+            });
+            this.checkEWSAccess(temp);
+          }
         }
       }
     }
 
     this.manipulatedAccessControls = temp;
+
+    this.rolesLoaded.next(true);
+  }
+
+  checkEWSAccess(accessControls: any) {
+    let exist: any = accessControls[2][7][600];
+    if (exist == undefined) {
+      exist = false;
+    } else {
+      exist = accessControls[2][7][600][1559];
+      exist = exist == undefined ? false : exist;
+    }
+
+    if (exist) {
+      this.cookieService.delete("EWSAccess", "/");
+      this.cookieService.set("EWSAccess", "1", {
+        path: "/",
+      });
+    } else {
+      this.cookieService.delete("EWSAccess", "/");
+      this.cookieService.set("EWSAccess", "0", {
+        path: "/",
+      });
+    }
   }
 
   checkModules() {
@@ -69,7 +99,9 @@ export class PermissionService {
             masterModule.type == "module")
         )
       ) {
-        definedModules[index].disabled = true;
+        if (!masterModule.allUsersAllow) {
+          definedModules[index].disabled = true;
+        }
       }
     });
     definedModules.forEach((masterModule: any, index: number) => {

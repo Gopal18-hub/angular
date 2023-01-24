@@ -131,7 +131,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
         title: "Email Id", 
       },     
       mobilenoinput:{
-        type:"string",  
+        type:"number",  
         pattern: "^[1-9]{1}[0-9]{9}",
         required: true,
         title: "Mobile No.",
@@ -145,7 +145,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
         title: "Deposit Type",
       },
       depositamount:{
-        type:"string",    
+        type:"number",    
         required: true, 
         title: "Deposit Amount",
       },
@@ -177,7 +177,10 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     });
 
   }
-
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
   ngAfterViewInit(): void {    
     this.expiredpatientexists = false;
     this.questions[0].elementRef.addEventListener("keypress", async (event: any) => {
@@ -242,10 +245,21 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
         this.getInitatedepositDetailsByMaxId();
       }
     });
+
+    this.questions[6].elementRef.addEventListener(
+      "keypress",
+      (event: any) => {
+        if (event.keyCode == 46) {
+          event.preventDefault();
+        }
+      }
+    );
     this.getDepositType();
   }
   
   resetinitiatedeposit(){
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.name="";
     this.maxid="";
     this.initiatedepositForm.reset();

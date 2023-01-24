@@ -384,7 +384,11 @@ export class MedicineOrdersComponent implements OnInit {
       (value: any) => {
         if (value === 10) {
           this.matdialog
-            .open(ScheduleDateDialogComponent)
+            .open(ScheduleDateDialogComponent, {
+              width: "33vw",
+              height: "28vh",
+              maxWidth: "33vw",
+            })
             .afterClosed()
             .subscribe((res) => {
               // received data from dialog-component
@@ -468,7 +472,9 @@ export class MedicineOrdersComponent implements OnInit {
           )
         )
         // this.http
-        //   .get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+        //   .get(
+        //    ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7)
+        //   )
         .pipe(takeUntil(this._destroying$))
         .subscribe((res: any) => {
           this.medOrderListMain = res.objOrderDetails;
@@ -691,41 +697,38 @@ export class MedicineOrdersComponent implements OnInit {
               "Please enter denial reason remark for order!"
             );
           } else {
-            let dialogRes;
-            const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-              width: "33vw",
-              height: "40vh",
-              data: {
-                message: "Do you want to save?",
-              },
-            });
+            const dialogref = this.messageDialogService.confirm(
+              "",
+              "Do you want to save?"
+            );
 
-            dialogref.afterClosed().subscribe((res) => {
-              // received data from dialog-component
-              dialogRes = res.data;
-              if (dialogRes === "Y") {
-                this.objPhyOrder = [];
-                this.objdtdenialorder = "";
+            dialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result.type == "yes") {
+                  this.objPhyOrder = [];
+                  this.objdtdenialorder = "";
 
-                nondeniedRow.forEach((e: any) => {
-                  this.objPhyOrder.push({
-                    acDisHideDrug: true,
-                    visitid: e.visitId,
-                    drugid: e.drugid,
-                    acdRemarks: e.acdRemarks,
+                  nondeniedRow.forEach((e: any) => {
+                    this.objPhyOrder.push({
+                      acDisHideDrug: true,
+                      visitid: e.visitId,
+                      drugid: e.drugid,
+                      acdRemarks: e.acdRemarks,
+                    });
                   });
-                });
 
-                this.objdtdenialorder = {
-                  denialid: this.investigationForm.value.denyorder,
-                  denialremark: this.investigationForm.value.remarks,
-                  visitid: nondeniedRow[0].visitId,
-                  nextScheduleDate: this.scheduleDate,
-                  nextflag: true,
-                };
-                this.Save();
-              }
-            });
+                  this.objdtdenialorder = {
+                    denialid: this.investigationForm.value.denyorder,
+                    denialremark: this.investigationForm.value.remarks,
+                    visitid: nondeniedRow[0].visitId,
+                    nextScheduleDate: this.scheduleDate,
+                    nextflag: true,
+                  };
+                  this.Save();
+                }
+              });
           }
         }
       } else {
@@ -749,9 +752,10 @@ export class MedicineOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (res === 1) {
-          this.messageDialogService.info("Saved Successfully!");
-          this.listRowClick(this.selectedInv);
           this.tableSelectedRows = [];
+          this.messageDialogService.info("Saved Successfully!");
+          this.search();
+          //this.listRowClick(this.selectedInv);
         }
         this.objPhyOrder = [];
         this.objdtdenialorder = [];
@@ -780,52 +784,49 @@ export class MedicineOrdersComponent implements OnInit {
       this.messageDialogService.error("Order is already Billed");
     } else {
       if (deniedRow.length > 0 && this.tableSelectedRows.length > 0) {
-        let dialogRes;
-        const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-          width: "33vw",
-          height: "40vh",
-          data: {
-            message: "Do you want to modify?",
-          },
-        });
-
-        dialogref.afterClosed().subscribe((res) => {
-          // received data from dialog-component
-          dialogRes = res.data;
-          if (dialogRes === "Y") {
-            this.physicianOrderList = [];
-            deniedRow.forEach((e: any) => {
-              if (e.drugid !== 0)
-                this.physicianOrderList.push({
-                  acDisHideDrug: e.acDisHideDrug,
-                  visitid: e.visitId,
-                  drugid: e.drugid,
-                  acdRemarks: e.acdRemarks,
-                });
-            });
-            // this.http.post(
-            //   ApiConstants.modifyphysicianorderdetail(this.tokenNo, 9233),
-            //   this.getModifyModel()
-            // );
-            this.http
-              .post(
-                ApiConstants.modifyphysicianorderdetail(
-                  this.tokenNo,
-                  Number(this.cookie.get("UserId"))
-                ),
-                this.getModifyModel()
-              )
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                if (res.success === true) {
-                  this.messageDialogService.info("Modified Successfully");
-                  this.listRowClick(this.selectedInv);
-                  this.tableSelectedRows = [];
-                  this.disableBtns();
-                }
+        const dialogref = this.messageDialogService.confirm(
+          "",
+          "Do you want to modify?"
+        );
+        dialogref
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result.type == "yes") {
+              this.physicianOrderList = [];
+              deniedRow.forEach((e: any) => {
+                if (e.drugid !== 0)
+                  this.physicianOrderList.push({
+                    acDisHideDrug: e.acDisHideDrug,
+                    visitid: e.visitId,
+                    drugid: e.drugid,
+                    acdRemarks: e.acdRemarks,
+                  });
               });
-          }
-        });
+              // this.http.post(
+              //   ApiConstants.modifyphysicianorderdetail(this.tokenNo, 9233),
+              //   this.getModifyModel()
+              // );
+              this.http
+                .post(
+                  ApiConstants.modifyphysicianorderdetail(
+                    this.tokenNo,
+                    Number(this.cookie.get("UserId"))
+                  ),
+                  this.getModifyModel()
+                )
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  if (res.success === true) {
+                    this.tableSelectedRows = [];
+                    this.messageDialogService.info("Modified Successfully");
+                    this.search();
+                    //this.listRowClick(this.selectedInv);
+                    this.disableBtns();
+                  }
+                });
+            }
+          });
       } else {
         this.messageDialogService.error("Please select a row to proceed");
         this.tableSelectedRows = [];
@@ -833,11 +834,31 @@ export class MedicineOrdersComponent implements OnInit {
     }
   }
   createBill() {
+    let itemid: any = [];
+    // let nonBilledRows = this.tableSelectedRows.filter(
+    //   (e: any) => e.isBilled != 0
+    // );
+    // if (nonBilledRows.length > 0) {
+    //   this.messageDialogService.error(
+    //     "Kindly select only Unbilled items to create the bill"
+    //   );
+    //   return;
+    // }
+    if (this.tableSelectedRows.length <= 0) {
+      this.orderid = "";
+    }
+    this.tableSelectedRows.forEach((e: any) => {
+      itemid.push(e.testID);
+    });
+    if (this.tableSelectedRows.length === this.medOrderDetails.length) {
+      itemid = [];
+    }
     this.router.navigate(["out-patient-billing"], {
       queryParams: {
         maxId: this.maxid,
         orderid: this.orderid,
         name: "Medicine",
+        itemsids: itemid.join(","),
       },
     });
   }
