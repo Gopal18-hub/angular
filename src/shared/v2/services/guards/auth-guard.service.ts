@@ -36,7 +36,9 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       return false;
     }
     if (route.data["featureId"]) {
+      await this.permission.getPermissionsRoleWise();
       const accessControls: any = this.permission.getAccessControls();
+
       if (
         accessControls &&
         accessControls[route.data["masterModule"]] &&
@@ -55,6 +57,9 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
           return false;
         }
       } else {
+        // window.location.href =
+        //   environment.IentityServerRedirectUrl + "no-permission";
+        // return false;
         return true;
       }
     }

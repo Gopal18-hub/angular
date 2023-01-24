@@ -8,6 +8,7 @@ import {
 import { Observable, of, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { environment } from "@environments/environment";
+import { MaxHealthStorage } from "./storage";
 
 import { MessageDialogService } from "../ui/message-dialog/message-dialog.service";
 import { Router } from "@angular/router";
@@ -113,13 +114,13 @@ export class HttpService {
   ) {
     if (error.status === 401) {
       //window.location.reload();
-      // console.log(error);
-      // sessionStorage.clear();
-      // localStorage.clear();
-      // this.cookieService.deleteAll();
-      // this.cookieService.deleteAll("/", environment.cookieUrl, true);
-      // this.dbService.cachedResponses.clear();
-      // window.location.href = window.location.origin + "/login";
+      console.log(error);
+      sessionStorage.clear();
+      localStorage.clear();
+      this.cookieService.deleteAll();
+      this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.dbService.cachedResponses.clear();
+      window.location.href = window.location.origin + "/login";
     } else {
       if (options && !options.showErrorMessage) {
       } else {

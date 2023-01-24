@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormGroup } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { ChangelocationComponent } from "./changelocation.component";
 import { MatButtonModule } from "@angular/material/button";
-import { DynamicFormsModule } from "@shared/v2/ui/dynamic-forms";
+import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
 
 @NgModule({
   imports: [

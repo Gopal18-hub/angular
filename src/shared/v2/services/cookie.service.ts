@@ -5,11 +5,15 @@
 import { Injectable, Inject, PLATFORM_ID, InjectionToken } from "@angular/core";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
 
+import { Subject } from "rxjs";
+
 @Injectable({
   providedIn: "root",
 })
 export class CookieService {
   private readonly documentIsAccessible: boolean;
+
+  cookieValueChange = new BroadcastChannel("cookie-change");
 
   constructor(
     // The type `Document` may not be used here. Although a fix is on its way,
@@ -199,6 +203,7 @@ export class CookieService {
     cookieString += "sameSite=" + options.sameSite + ";";
 
     this.document.cookie = cookieString;
+    this.cookieValueChange.postMessage({ name: name, value: value });
   }
 
   /**
