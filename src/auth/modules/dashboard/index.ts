@@ -6,12 +6,15 @@ import { DashboardComponent } from "./dashboard.component";
 import { MaxHealthTableModule } from "@shared/ui/table";
 import { HeaderModule } from "@shared/modules/header";
 import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
 import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { FormDialogueModule } from "@shared/ui/form-dialogue";
 import { VisitHistoryModule } from "@shared/modules/visit-history";
+import { NoPermissionComponent } from "./no-permission/no-permission/no-permission.component";
+
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [DashboardComponent, NoPermissionComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -19,6 +22,7 @@ import { VisitHistoryModule } from "@shared/modules/visit-history";
     MaxHealthTableModule,
     HeaderModule,
     MatIconModule,
+    MatButtonModule,
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
     FormDialogueModule,
@@ -38,6 +42,7 @@ export class DashboardModule {}
     MaxHealthTableModule,
     HeaderModule,
     MatIconModule,
+    MatButtonModule,
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
     FormDialogueModule,

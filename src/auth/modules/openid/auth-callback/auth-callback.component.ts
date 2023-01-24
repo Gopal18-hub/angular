@@ -24,6 +24,7 @@ export class AuthCallbackComponent implements OnInit {
       .then(async (user) => {
         this.auth.setToken(user.access_token);
         //  this.cookie.set("accessToken", user.access_token);
+        console.log("roles", user.profile["role"]);
         this.cookie.set("role", user.profile["role"]);
         await this.adauth.clearCookies().toPromise();
         this.router.navigate(["dashboard"]);

@@ -804,7 +804,7 @@ export class HotListingApprovalComponent implements OnInit {
   }
 
   hotlistRejectItem() {
-    if (this.hotlistingtable.selection.selected > 0) {
+    if (this.hotlistingtable.selection.selected.length > 0) {
       this.hotlistingtable.selection.selected.map((s: any) => {
         this.HotListidList.push({ id: s.id });
       });

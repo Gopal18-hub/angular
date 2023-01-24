@@ -1019,6 +1019,18 @@ export class BillComponent implements OnInit, OnDestroy {
                     ? this.billingservice.PaidAppointments.bookingid
                     : this.billingservice.billingFormGroup.form.value
                         .bookingId) || "";
+                
+                if (
+                          this.calculateBillService.discountSelectedItems.length > 0 &&
+                          parseFloat(
+                            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+                          ) > 0
+                        ) {
+                          this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.disAuthorised =
+                            this.calculateBillService.discountForm.value.authorise.title;
+                          this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.authorisedid =
+                            this.calculateBillService.discountForm.value.authorise.value;
+                        }
 
                 const res = await this.billingservice.makeBill();
                 if (res.length > 0) {
