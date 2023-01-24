@@ -1,0 +1,29 @@
+<section
+  class="ml-4 shadow-1 mr-4 max-body-wrapper h-auto"
+>
+  <div class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary">
+    <div class="flex w-full-alt">
+      <div class="w-2/10 border-right">
+        <div class="menu">
+            <mat-nav-list >
+              <ng-container *ngFor="let link of menuContent; let i = index">
+              <mat-list-item (click)="clickIcon(i,link)"
+              [ngClass]="{blue: clickedItem === link.label}">
+                <button  class="menu-list-icons selected-icon-bg"
+                  mat-icon-button>
+                </button>
+                <p class="p-l8 p-t6 menu-list-label selected-menucontent"
+                >{{ link.label }}</p>
+              </mat-list-item>
+            </ng-container>
+          
+            </mat-nav-list>
+          </div>
+      </div>
+      <div class="w-full ml-4 mr-4">
+          <component-description></component-description>
+      </div>
+    </div>
+  </div>
+</section>
+

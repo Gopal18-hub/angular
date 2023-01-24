@@ -1,0 +1,76 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner" >
+      <ul class="list-unstyled flex items-end w-full">
+        <li class="ml-3" *ngFor="let link of links">
+          <a
+            mat-tab-link
+            class="cursor-pointer"
+            (click)="showTab(link)"
+            [active]="activeLink == link"
+          >
+            {{ link }}</a
+          >
+        </li>
+      </ul>
+    </nav> 
+    <mat-tab-nav-panel #tabPanel>
+      <div class="w-full h-full" *ngIf="componentService.componentName?.caption != undefined ">
+        <div class="flex px-3 pt-3 pb-1 w-full h-84 display-block">
+          <ng-container *ngIf="showoverview">
+            <div class=" mt-4 flex w-full ">
+                <div class="flex flex-column">
+                  <div>
+                    <p class="componentclass">{{componentService.componentName.caption}}</p>
+                  </div>
+                  <div class="flex mt-4" *ngIf="componentInput">
+                    <maxhealth-question class="w-full" [question]="itemform[11]" [form]="itemformGroup" [questions]="itemform[11]"
+                      [index]="1"></maxhealth-question>
+                    <maxhealth-question class="w-full ml-9" [question]="itemform[12]" [form]="itemformGroup" [questions]="itemform[12]"
+                      [index]="1"></maxhealth-question>
+                
+                    <maxhealth-question class="w-full ml-9" [question]="itemform[13]" [form]="itemformGroup" [questions]="itemform[13]"
+                      [index]="1"></maxhealth-question>
+                  </div>
+                  <div class="mt-4">
+                    <p >{{compdesc}}</p>
+                  </div>
+                </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="showhtml">
+            <div class=" mt-4 flex w-full ">
+              <div class="flex flex-column">
+                <div>
+                  <p class="componentclass">html tag</p>
+                </div>
+                <div class="flex mt-4">
+                </div>
+                <div class="mt-4">
+                  <p>{{htmlTag}}</p>
+                </div>
+              </div>
+          </div>
+          </ng-container>
+          <ng-container *ngIf="showts">
+            <div class=" mt-4 flex w-full ">
+              <div class="flex flex-column">
+                <div>
+                  <p class="componentclass">typescript code</p>
+                </div>
+                <div class="flex mt-4">
+                  
+                </div>
+                <div class="mt-4">
+                  <p >{{tsdesc}}</p>
+                  <p>{{importstr}}</p>
+                  <p>{{config}}</p>
+                </div>
+              </div>
+          </div>
+          </ng-container>
+        </div>
+        <div class="float-right mb-3 mr-3 mt-1">      
+        </div>
+      </div>
+    </mat-tab-nav-panel> 
+  </section>

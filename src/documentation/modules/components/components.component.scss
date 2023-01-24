@@ -1,0 +1,42 @@
+
+
+.menu {
+    margin-bottom: 16px;
+  
+    .button.hover {
+      background: transparent;
+    }
+  
+    .menu-list-icons {
+      margin-left: 7px !important;
+      padding: 5px;
+    }
+  
+  }
+  .class-notactive{
+    .selected-icon-bg {
+      background-color: transparent;
+    }
+  
+    .selected-menucontent {
+      background-color: #1976d2;
+    }
+  
+  }
+  
+    .menu-list-label {
+      margin-left: 9px !important;
+      margin-top: 7%;
+      padding: 13px 6px;
+      width: 100%;
+  }
+
+  mat-nav-list {
+    max-height: 400px;
+    overflow: auto;
+  }
+  .blue {
+    background-color:#437696;
+    color:white;
+  }
+  
