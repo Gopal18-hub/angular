@@ -404,7 +404,8 @@ export class DetailsComponent implements OnInit {
       this.BServiceForm.controls["reason"].value != "" &&
       this.BServiceForm.controls["reason"].value != "0" &&
       this.BServiceForm.controls["paymentMode"].value != "" &&
-      this.BServiceForm.controls["refundAmt"].value > 0 &&
+      // this.BServiceForm.controls["refundAmt"].value > 0 &&
+      this.billdetailservice.sendforapproval.length > 0 &&
       this.approvedfalg == false
     ) {
       this.approvalsend = false;
@@ -1305,7 +1306,8 @@ export class DetailsComponent implements OnInit {
     if (changes) {
       var approvedlist;
       if (
-        this.billdetailservice.totalrefund > 0 &&
+        this.billdetailservice.sendforapproval.length > 0 &&
+        // this.billdetailservice.totalrefund > 0 &&
         this.patientbilldetaillist
           .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
           .authorisedby == "" &&
@@ -1320,6 +1322,7 @@ export class DetailsComponent implements OnInit {
         this.BServiceForm.controls["reason"].enable();
         this.BServiceForm.controls["paymentMode"].enable();
       } else if (
+        this.billdetailservice.sendforapproval.length == 0 &&
         this.billdetailservice.totalrefund == 0 &&
         this.patientbilldetaillist
           .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0]
