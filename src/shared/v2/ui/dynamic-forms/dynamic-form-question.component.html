@@ -10,60 +10,47 @@
         />
       </ng-container>
       <ng-container *ngSwitchCase="'pattern_string'">
-        <mat-label
-          [attr.for]="question.key"
-          [innerHtml]="question.label"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-        ></mat-label>
-        <mat-form-field
-          class="full-width clearfix clear"
-          appearance="outline"
-          floatLabel="never"
-        >
-          <input
-            matInput
-            placeholder=""
-            [formControlName]="question.key"
-            [type]="question.type"
-            [id]="question.key"
+        <mat-form-field class="full-width clearfix clear" appearance="outline" floatLabel="never">
+          <mat-label [attr.for]="question.key" [innerHtml]="question.label"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"></mat-label> 
+            <input matInput placeholder=""
+            [formControlName]="question.key" 
+            [type]="question.type" 
+            [id]="question.key" 
             [required]="question.required"
-            [readonly]="question.readonly"
-            [value]="question.value"
+            [readonly]="question.readonly" 
+            [value]="question.value" 
             [placeholder]="question.placeholder"
-            [minlength]="question.minimum"
-            [maxlength]="question.maximum"
-            #element
-            specialIsAlphaNumeric
-            [regexStr]="question.pattern"
-            [capitalizeText]="question.capitalizeText"
-            autocomplete="off"
+            [minlength]="question.minimum" 
+            [maxlength]="question.maximum" #element specialIsAlphaNumeric
+            [regexStr]="question.pattern" 
+            [capitalizeText]="question.capitalizeText" autocomplete="off"
             class="{{ question.customClasses }}"
-            [disabled]="question.disabled"
-          />
-
-          <mat-error *ngIf="!isValid && !isCorrect">
-            {{ question.label }} is <strong>required</strong>
+            [disabled]="question.disabled" />
+          <mat-error *ngIf="!isValid && !isCorrect"> {{ question.label }} is
+            <strong>required</strong>
           </mat-error>
-          <mat-error *ngIf="patternError">
-            {{ question.label }} is <strong>Invalid</strong>
-          </mat-error>
-          <mat-error *ngIf="isCorrect && question.customErrorMessage">
-            {{ question.customErrorMessage }}</mat-error
-          >
-          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <mat-error *ngIf="patternError"> {{
+            question.label }} is <strong>Invalid</strong> </mat-error>
+          <mat-error *ngIf="isCorrect && question.customErrorMessage"> {{ question.customErrorMessage }}</mat-error>
+          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint> <button class="clear" *ngIf="getValue()"
+            matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'string'">
-        <mat-label
-          [attr.for]="question.key"
-          [innerHtml]="question.label"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-        ></mat-label>
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
         >
+        <mat-label
+        [attr.for]="question.key"
+        [innerHtml]="question.label" class="mdc-floating-label mat-mdc-floating-label"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+      ></mat-label>
           <ng-container *ngIf="question.capitalizeText">
             <ng-container *ngIf="question.onlyKeyPressAlpha">
               <input
@@ -165,18 +152,21 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'password'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -205,18 +195,21 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'number'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -253,18 +246,21 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'currency'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+        
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        ><mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -302,18 +298,21 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'tel'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+        
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        ><mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -350,18 +349,21 @@
             <strong>{{ question.maximum }}</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'textarea'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+        
         <mat-form-field
           class="full-width clearfix clear im-textarea"
           appearance="outline"
           floatLabel="never"
+        ><mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <textarea
             matInput
@@ -385,6 +387,9 @@
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'buttonTextarea'">
@@ -405,6 +410,7 @@
             <div class="border border-radius-md box-input">
               {{ getValue() }}
             </div>
+            
           </button>
           <ng-template
             cdkConnectedOverlay
@@ -437,23 +443,26 @@
                   #element
                   [disabled]="question.disabled"
                 ></textarea>
+                <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+                  <mat-icon>close</mat-icon>
+                </button>
               </mat-form-field>
             </div>
           </ng-template>
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'email'">
-        <mat-label
+        
+        <mat-form-field
+          class="full-width clearfix clear"
+          appearance="outline"
+          floatLabel="never"
+        ><mat-label
           [attr.for]="question.key"
           class="cursor-pointer"
           [ngClass]="{ 'mat-form-field-required-marker': question.required }"
           (click)="generateRandomEmail()"
           >{{ question.label }}</mat-label
-        >
-        <mat-form-field
-          class="full-width clearfix clear"
-          appearance="outline"
-          floatLabel="never"
         >
           <input
             matInput
@@ -490,18 +499,21 @@
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'colorpicker'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -516,6 +528,9 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'radio'">
@@ -543,15 +558,15 @@
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'range'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear nopaading-infix"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -578,18 +593,22 @@
               ></span
             >
           </ng-container>
+          {{getValue()}}
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'dropdown'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+        
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        ><mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <mat-select
             [id]="question.key"
@@ -604,6 +623,7 @@
             class="{{ question.customClasses }}"
             [disabled]="question.disabled"
             [multiple]="question.multiple"
+           
           >
             <ng-container *ngIf="question.emptySelect">
               <mat-option>Select</mat-option>
@@ -622,18 +642,21 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'autocomplete'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -674,18 +697,21 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'date'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -702,6 +728,7 @@
             [disabled]="question.disabled"
             autocomplete="off"
             (keyup)="keyUpSetDateFormat($event)"
+            (click)="datepicker.open()" 
           />
           <mat-datepicker-toggle
             matSuffix
@@ -725,18 +752,21 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'datetime'">
-        <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
+        > <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
         >
           <input
             matInput
@@ -752,6 +782,7 @@
             [min]="question.minimum"
             [disabled]="question.disabled"
             autocomplete="off"
+            (click)="picker.open()" 
           />
           <mat-datepicker-toggle
             matSuffix
@@ -766,6 +797,9 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'checkbox'">

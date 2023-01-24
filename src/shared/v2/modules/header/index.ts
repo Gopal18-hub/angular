@@ -13,13 +13,16 @@ import { RouterModule } from "@angular/router";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
-import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+import { DynamicFormsModule } from "@shared/v2/ui/dynamic-forms";
 import { RedirectComponent } from "./redirect/redirect.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { ChangepaswordComponent } from "./changepasword/changepasword.component";
 import { SelectimeiComponent } from "./selectIMEI/selectimei.component";
 import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
+import { MatListModule } from "@angular/material/list";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatToolbarModule } from "@angular/material/toolbar";
 
 @NgModule({
   declarations: [
@@ -48,6 +51,9 @@ import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
     DynamicFormsModule,
     MatProgressSpinnerModule,
     OverlayModule,
+    MatListModule,
+    MatSidenavModule,
+    MatToolbarModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

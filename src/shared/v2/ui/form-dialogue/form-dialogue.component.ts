@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, AfterViewInit } from "@angular/core";
-import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { FormGroup } from "@angular/forms";
 

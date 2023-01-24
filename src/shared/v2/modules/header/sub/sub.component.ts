@@ -6,18 +6,30 @@ import {
   ViewChild,
   OnChanges,
   SimpleChanges,
+  HostListener,
 } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
+import { environment } from "@environments/environment";
 import {
   Router,
   NavigationEnd,
   Event as NavigationEvent,
+  ActivatedRoute,
 } from "@angular/router";
 import { SearchService } from "../../../services/search.service";
 import { APP_BASE_HREF } from "@angular/common";
 import { map, filter } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
+import { AuthService } from "@shared/v2/services/auth.service";
+import { PermissionService } from "@shared/v2/services/permission.service";
+import { MatDialog } from "@angular/material/dialog";
+import { DbService } from "@shared/v2/services/db.service";
+
+import { ChangelocationComponent } from "../changelocation/changelocation.component";
+import { Subject, takeUntil } from "rxjs";
+import { ChangepaswordComponent } from "../changepasword/changepasword.component";
+import { SelectimeiComponent } from "../selectIMEI/selectimei.component";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -27,7 +39,9 @@ import { CookieService } from "@shared/services/cookie.service";
 export class SubComponent implements OnInit, OnChanges {
   @ViewChild("searchVal") globalSearchInputBox: any;
 
-  @Input() submodules: any = [];
+  @ViewChild("subsefdlkjdsfs") subsefdlkjdsfs: any;
+  @ViewChild("Topmore") Topmore: any;
+  @Input() submodules: any[] = [];
 
   @Input() module: any;
 
@@ -38,16 +52,29 @@ export class SubComponent implements OnInit, OnChanges {
   searchFormData: any;
 
   searchForm!: FormGroup;
-
+  location: string = "";
+  station: string = "";
+  usrname: string = "";
+  user: string = "";
   questions: any;
   searchFormProperties: any;
+  private readonly _destroying$ = new Subject<void>();
+  @HostListener("window:keydown.Alt.r", ["$event"])
+  navigateToRegister($event: any) {
+    this.router.navigate(["/registration"]);
+  }
 
   constructor(
     @Inject(APP_BASE_HREF) public baseHref: string,
+    private authService: AuthService,
+    private permissionService: PermissionService,
     private formService: QuestionControlService,
     private router: Router,
+    private route: ActivatedRoute,
     private searchService: SearchService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private dbService: DbService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +86,10 @@ export class SubComponent implements OnInit, OnChanges {
       .subscribe((event: NavigationEvent) => {
         this.processSubModule();
       });
+    this.location = this.cookie.get("Location");
+    this.station = this.cookie.get("Station");
+    this.usrname = this.cookie.get("Name");
+    this.user = this.cookie.get("UserName");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -69,7 +100,6 @@ export class SubComponent implements OnInit, OnChanges {
     if (!this.submodules) {
       this.submodules = [];
     }
-    console.log(this.submodules);
     this.submodules.forEach((element: any) => {
       if (
         element.defaultPath &&
@@ -144,6 +174,128 @@ export class SubComponent implements OnInit, OnChanges {
     setTimeout(() => {
       this.globalSearchInputBox.nativeElement.value = "";
     }, 800);
+  }
+
+  openChangeLocationDialog() {
+    const changeLocationDialogref = this.matDialog.open(
+      ChangelocationComponent,
+      {
+        width: "25vw",
+        height: "44vh",
+        data: {
+          title: "Change Location and Station",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              location: {
+                type: "autocomplete",
+                title: "Location",
+                required: true,
+              },
+              station: {
+                type: "autocomplete",
+                title: "Station",
+                required: true,
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "Submit",
+        },
+      }
+    );
+    changeLocationDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          this.router.navigate([], {
+            queryParams: {},
+            relativeTo: this.route,
+          });
+          window.location.href =
+            environment.IentityServerRedirectUrl + "/dashboard";
+        }
+      });
+  }
+
+  redirectToResetPassword() {
+    window.open(environment.passwordResetUrl);
+  }
+
+  openIMEIDialog() {
+    const changePasswordDialoref = this.matDialog.open(SelectimeiComponent, {
+      width: "25vw",
+      height: "33vh",
+      data: {
+        title: "Select POS IMEI",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            imei: {
+              type: "autocomplete",
+              title: "POS IMEI",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+
+    changePasswordDialoref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          window.location.reload();
+        }
+      });
+  }
+  logout() {
+    this.setRefreshedToken(); //Set refreshed access token in cookie
+    this.authService.logout().subscribe((response: any) => {
+      if (response.postLogoutRedirectUri) {
+        window.location = response.postLogoutRedirectUri;
+      }
+      localStorage.clear();
+      this.cookie.deleteAll();
+      this.cookie.deleteAll("/", environment.cookieUrl, true);
+      this.dbService.cachedResponses.clear();
+      window.location.href = window.location.origin + "/login";
+    });
+  }
+
+  openPayTmDialog() {}
+  setRefreshedToken() {
+    //oidc.user:https://localhost/:hispwa
+    let storage = localStorage.getItem(
+      "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
+    );
+    let tokenKey;
+    let accessToken = "";
+    if (storage != null && storage != undefined && storage != "") {
+      tokenKey = storage
+        ?.split(",")[2]
+        .split(":")[0]
+        .replace('"', "")
+        .replace('"', "");
+      if (tokenKey == "access_token") {
+        accessToken = storage
+          ?.split(",")[2]
+          .split(":")[1]
+          .replace('"', "")
+          .replace('"', "");
+      }
+    }
+
+    if (accessToken != "" && accessToken != null && accessToken != undefined) {
+      this.cookie.delete("accessToken", "/");
+      this.cookie.set("accessToken", accessToken, { path: "/" });
+    }
   }
 }
 

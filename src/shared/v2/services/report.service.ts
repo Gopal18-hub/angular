@@ -3,7 +3,7 @@ import { environment } from "@environments/environment";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import "winbox";
 import { DomSanitizer } from "@angular/platform-browser";
-import { CrystalReport } from "../../reports/core/constants/CrystalReport";
+import { CrystalReport } from "../../../reports/core/constants/CrystalReport";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject } from "rxjs";
 
@@ -117,22 +117,21 @@ export class ReportService {
   }
   url: any = "";
 
-  directPrint(reportEntity: string,reportParams: any)
-    {            
+  directPrint(reportEntity: string, reportParams: any) {
     const params = "?" + new URLSearchParams(reportParams).toString();
     let func: Function = <Function>(
       CrystalReport[reportEntity as keyof typeof CrystalReport]
     );
     let url: string = func(this.route.snapshot.queryParams).toString();
-   
-    this.url = url.split('?')[0];
+
+    this.url = url.split("?")[0];
     const reportUrl = `${this.url}${params}`;
     const existIframe = document.getElementById("report-print");
     if (existIframe) {
       existIframe.remove();
     }
     const that = this;
-    that.reportPrintloader.next(true);  
+    that.reportPrintloader.next(true);
     const iframeReportUrl = reportUrl;
     // Create a new iframe for the print job
     const printFrame = document.createElement("iframe");

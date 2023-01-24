@@ -1,15 +1,15 @@
 import { Component, OnInit, Inject, AfterViewInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { ADAuthService } from "../../../../auth/core/services/adauth.service";
-import { StationModel } from "../../../../auth/core/models/stationmodel";
-import { LocationModel } from "../../../../auth/core/models/locationmodel";
-import { UserLocationStationdataModel } from "../../../../auth/core/models/userlocationstationdatamodel";
-import { CookieService } from "@shared/services/cookie.service";
+import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
+import { ADAuthService } from "../../../../../auth/core/services/adauth.service";
+import { StationModel } from "../../../../../auth/core/models/stationmodel";
+import { LocationModel } from "../../../../../auth/core/models/locationmodel";
+import { UserLocationStationdataModel } from "../../../../../auth/core/models/userlocationstationdatamodel";
+import { CookieService } from "@shared/v2/services/cookie.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ApplicationLogicService } from "@shared/services/applogic.service";
+import { ApplicationLogicService } from "@shared/v2/services/applogic.service";
 
 @Component({
   selector: "out-patients-changelocation",

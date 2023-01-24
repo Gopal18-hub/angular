@@ -24,7 +24,7 @@ import { AuthService } from "../../../services/auth.service";
 import { TelQuestion } from "../types/question-tel";
 import { DateTimeQuestion } from "../types/question-datetime";
 import { CurrencyQuestion } from "../types/question-currency";
-import { CookieService } from "@shared/services/cookie.service";
+import { CookieService } from "@shared/v2/services/cookie.service";
 import { PatternStringQuestion } from "../types/question-pattern-string";
 
 @Injectable()

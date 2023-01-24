@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, AfterViewInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
 import { Subject } from "rxjs";
 
 @Component({

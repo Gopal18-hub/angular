@@ -1,5 +1,5 @@
 import { QuestionBase } from "../interface/question-base";
-import { HttpService } from "@shared/services/http.service";
+import { HttpService } from "@shared/v2/services/http.service";
 
 export class DropdownQuestion extends QuestionBase<string> {
   override type = "dropdown";

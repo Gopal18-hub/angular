@@ -289,6 +289,15 @@ export class DynamicFormQuestionComponent
     form.controls[key].setValue($event.value);
   }
 
+  setEmptyValue() {
+    if (this.question.type == "range") {
+      this.form.controls[this.question.key].setValue(0);
+      this.question.value = 0;
+    } else {
+      this.form.controls[this.question.key].setValue("");
+    }
+  }
+
   getValue() {
     return this.form.controls[this.question.key].value;
   }
