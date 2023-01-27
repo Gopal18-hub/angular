@@ -4,7 +4,7 @@
       <mat-toolbar class="example-toolbar">
         <a class="logo">
           <img src="assets/brandLogo.svg" (click)="isExpanded = !isExpanded;showSubmenu = false;" class="menu_button" /></a>
-        <div class="ml-7" *ngIf="isMenuVisible" >
+        <div class="ml-3" *ngIf="isMenuVisible" >
           <maxhealth-sub-header
           [submodules]="activeModule?.childrens"
           [module]="activeModule"></maxhealth-sub-header>
@@ -97,7 +97,16 @@
     <div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngFor="let childmodule of activeModule.childrens">
       <mat-list-item>
         <li (click)="subChildShow($event,childmodule)" class="menu-item" disabled="!hasChildren">
-          {{ childmodule.title }}
+          <div class="flex ">
+            <div class="flex flex-column justify-start w-9/10">
+              <span>{{ childmodule.title }}</span>
+            </div>
+            <div class="flex flex-column justify-end" *ngIf="childmodule.childrens?.length>0">
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </div>
+          </div>
+          
+            
         </li>
       </mat-list-item>
     </div>
