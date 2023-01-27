@@ -39,6 +39,7 @@ import {
   NgxMatDateAdapter,
 } from "@angular-material-components/datetime-picker";
 import { AccessControlDirective } from "@shared/v2/utilities/directives/access-control.directive";
+import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
 @NgModule({
   imports: [
     CommonModule,
@@ -60,6 +61,7 @@ import { AccessControlDirective } from "@shared/v2/utilities/directives/access-c
     A11yModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
+    MatBottomSheetModule,
   ],
   exports: [
     AccessControlDirective,

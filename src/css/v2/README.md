@@ -40,7 +40,7 @@ An Utility CSS only library.
 ## DOCS
 
 ### Breakpoints
-
+- `xs`: 359px and up
 - `sm`: 576px and up
 - `md`: 768px and up
 - `lg`: 992px and up

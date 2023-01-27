@@ -10,47 +10,71 @@
         />
       </ng-container>
       <ng-container *ngSwitchCase="'pattern_string'">
-        <mat-form-field class="full-width clearfix clear" appearance="outline" floatLabel="never">
-          <mat-label [attr.for]="question.key" [innerHtml]="question.label"
-            [ngClass]="{ 'mat-form-field-required-marker': question.required }"></mat-label> 
-            <input matInput placeholder=""
-            [formControlName]="question.key" 
-            [type]="question.type" 
-            [id]="question.key" 
-            [required]="question.required"
-            [readonly]="question.readonly" 
-            [value]="question.value" 
-            [placeholder]="question.placeholder"
-            [minlength]="question.minimum" 
-            [maxlength]="question.maximum" #element specialIsAlphaNumeric
-            [regexStr]="question.pattern" 
-            [capitalizeText]="question.capitalizeText" autocomplete="off"
-            class="{{ question.customClasses }}"
-            [disabled]="question.disabled" />
-          <mat-error *ngIf="!isValid && !isCorrect"> {{ question.label }} is
-            <strong>required</strong>
-          </mat-error>
-          <mat-error *ngIf="patternError"> {{
-            question.label }} is <strong>Invalid</strong> </mat-error>
-          <mat-error *ngIf="isCorrect && question.customErrorMessage"> {{ question.customErrorMessage }}</mat-error>
-          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint> <button class="clear" *ngIf="getValue()"
-            matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </ng-container>
-      <ng-container *ngSwitchCase="'string'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
         >
-        <mat-label
-        [attr.for]="question.key"
-        [innerHtml]="question.label" class="mdc-floating-label mat-mdc-floating-label"
-        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-      ></mat-label>
+          <mat-label
+            [attr.for]="question.key"
+            [innerHtml]="question.label"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          ></mat-label>
+          <input
+            matInput
+            placeholder=""
+            [formControlName]="question.key"
+            [type]="question.type"
+            [id]="question.key"
+            [required]="question.required"
+            [readonly]="question.readonly"
+            [value]="question.value"
+            [placeholder]="question.placeholder"
+            [minlength]="question.minimum"
+            [maxlength]="question.maximum"
+            #element
+            specialIsAlphaNumeric
+            [regexStr]="question.pattern"
+            [capitalizeText]="question.capitalizeText"
+            autocomplete="off"
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
+          />
+
+          <mat-error *ngIf="!isValid && !isCorrect">
+            {{ question.label }} is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="patternError">
+            {{ question.label }} is <strong>Invalid</strong>
+          </mat-error>
+          <mat-error *ngIf="isCorrect && question.customErrorMessage">
+            {{ question.customErrorMessage }}</mat-error
+          >
+          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngSwitchCase="'string'">
+        <mat-form-field
+          class="full-width clearfix clear"
+          appearance="outline"
+          floatLabel="never"
+        >
+          <mat-label
+            [attr.for]="question.key"
+            [innerHtml]="question.label"
+            class="mdc-floating-label mat-mdc-floating-label"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          ></mat-label>
           <ng-container *ngIf="question.capitalizeText">
             <ng-container *ngIf="question.onlyKeyPressAlpha">
               <input
@@ -152,22 +176,29 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'password'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -195,22 +226,29 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'number'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -246,22 +284,28 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'currency'">
-        
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        ><mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+          ><mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -298,22 +342,28 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'tel'">
-        
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        ><mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+          ><mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -349,22 +399,28 @@
             <strong>{{ question.maximum }}</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'textarea'">
-        
         <mat-form-field
           class="full-width clearfix clear im-textarea"
           appearance="outline"
           floatLabel="never"
-        ><mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+          ><mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <textarea
             matInput
             cdkTextareaAutosize
@@ -387,7 +443,14 @@
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -410,7 +473,6 @@
             <div class="border border-radius-md box-input">
               {{ getValue() }}
             </div>
-            
           </button>
           <ng-template
             cdkConnectedOverlay
@@ -443,7 +505,14 @@
                   #element
                   [disabled]="question.disabled"
                 ></textarea>
-                <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+                <button
+                  class="clear"
+                  *ngIf="getValue()"
+                  matSuffix
+                  mat-icon-button
+                  aria-label="Clear"
+                  (click)="setEmptyValue()"
+                >
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
@@ -452,18 +521,17 @@
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'email'">
-        
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        ><mat-label
-          [attr.for]="question.key"
-          class="cursor-pointer"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          (click)="generateRandomEmail()"
-          >{{ question.label }}</mat-label
-        >
+          ><mat-label
+            [attr.for]="question.key"
+            class="cursor-pointer"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            (click)="generateRandomEmail()"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -499,22 +567,29 @@
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'colorpicker'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -528,7 +603,14 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -558,16 +640,16 @@
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'range'">
-       
         <mat-form-field
           class="full-width clearfix clear nopaading-infix"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             type="number"
@@ -593,23 +675,31 @@
               ></span
             >
           </ng-container>
-          {{getValue()}}
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          {{ getValue() }}
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'dropdown'">
-        
-        <mat-form-field
+        <!-- <div class=" lt-xs:display-block xs:display-none">
+
+          <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        ><mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
-        >
+          ><mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <mat-select
             [id]="question.key"
             [formControlName]="question.key"
@@ -623,12 +713,167 @@
             class="{{ question.customClasses }}"
             [disabled]="question.disabled"
             [multiple]="question.multiple"
-           
+            (click)="openTemplateSheetMenu()"
           >
+            <ng-container *ngIf="question.emptySelect"
+              > <mat-option>Select</mat-option></ng-container
+            >
+            <ng-template
+              let-bottomSheetRef="bottomSheetRef"
+              #templateBottomSheet
+              >
+              <div class="drop_close_button text-center ">
+                <hr class="drop_center"/>
+                <button class="drop_close float-right" (click)="closeTemplateSheetMenu()">
+                   <mat-icon>close</mat-icon>
+                  </button
+                >
+              </div>
+              
+              <ng-container *ngFor="let opt of question.options"
+                >
+                <mat-option
+                  [value]="opt.value"
+                  [disabled]="opt?.disabled"
+                  [attr.maxValue]="opt.value"
+                  >{{ opt.title }}</mat-option
+                ></ng-container
+              > </ng-template
+            > </mat-select
+          >
+          <mat-error *ngIf="!isValid"
+            >{{ question.label }} is <strong>required</strong></mat-error
+          >
+          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+          <mat-hint>{{getValue()}}</mat-hint>
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+
+        </div>lt-xs:display-none xs:display-block -->
+        <!-- <div class=" "> -->
+          <!-- <mat-form-field
+          class="full-width clearfix clear"
+          appearance="outline"
+          floatLabel="never"
+          ><mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
+          <mat-select
+            [id]="question.key"
+            [formControlName]="question.key"
+            [value]="question.value"
+            [panelClass]="'im-select-dropdown'"
+            [compareWith]="compareFn"
+            [required]="question.required"
+            [placeholder]="question.placeholder"
+            #element
+            disableOptionCentering
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
+            [multiple]="question.multiple"
+          > -->
+          <!-- <mat-form-field>
+            <mat-select  placeholder="Banks" [multiple]="true">
+          <mat-select-search [formControl]="bankMultiFilterCtrl"></mat-select-search>
+          <mat-option *ngFor="let bank of filteredBanksMulti | async" [value]="bank">
+            {{bank.name}}
+          </mat-option>
+          </mat-select>
+          
+        </mat-form-field> -->
+
+        <!-- <mat-form-field>
+          <mat-select placeholder="Basic">
+            <input matInput class="yourClass" placeholder="search " (keyup)="$event.stopPropagation();onKey($event)"> 
+            <!-- <mat-select-filter [array]="variables" (filteredReturn)="filteredList1 =$event"></mat-select-filter> -->
+            <!-- <mat-option *ngFor="let item of filteredList1" [value]="item">
+              {{item}}*ngFor="let opt of filteredList"
+            </mat-option> -->
+            <!-- <mat-option  
+             *ngFor="let opt of filteredList | async"
+            [value]="opt.value"
+            [disabled]="opt?.disabled"
+            [attr.maxValue]="opt?.value"
+          >
+            {{ opt?.title }}
+          </mat-option>
+          </mat-select>
+        </mat-form-field>
+        </div>  -->
+        <div class=" " >
+
+          <mat-form-field
+          class="full-width clearfix clear"
+          appearance="outline"
+          floatLabel="never"
+          ><mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
+          <mat-select
+            [id]="question.key"
+            [formControlName]="question.key"
+            [value]="question.value"
+            [panelClass]="'im-select-dropdown'"
+            [compareWith]="compareFn"
+            [required]="question.required"
+            [placeholder]="question.placeholder"
+            #element
+            disableOptionCentering
+            (openedChange)="openedMatSelect($event)"
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
+            [multiple]="question.multiple"
+          >
+          <div class="bottomSheetdropdown  drop_close_button text-center ">
+            <hr class="drop_center"/>
+            <button class="drop_close float-right" (click)="element.close()">
+               <mat-icon>close</mat-icon>
+              </button
+            >
+          </div>
+          
+          
+            
+        <div class="flex " *ngIf="question.options && question.options.length>5" (click)="$event.stopPropagation()">
+          <div class="w-full text-center bottomSheetdropdownSearch"  (click)="$event.stopPropagation()">
+            
+          <mat-form-field class="w-full">
+            <input matInput type="search" placeholder="search" [formControlName]="question.key"
+            (click)="$event.stopPropagation()"
+            [id]="question.key"
+            (keyup)="$event.stopPropagation();onKey($event)"
+            [required]="question.required"
+            [readonly]="question.readonly"
+            [value]="getValue()"
+            #elementsearch
+            class="insside {{ question.customClasses }}"
+            [disabled]="question.disabled"
+            autocomplete="off"
+            >
+            <mat-icon class="search-icon" matSuffix>search</mat-icon>
+          </mat-form-field>
+          </div>
+        </div>
+        <div class="selectopyionsdiv">
             <ng-container *ngIf="question.emptySelect">
               <mat-option>Select</mat-option>
             </ng-container>
-            <ng-container *ngFor="let opt of question.options">
+            
+            <ng-container  *ngFor="let opt of drapdownoptionmatselect()">
               <mat-option
                 [value]="opt.value"
                 [disabled]="opt?.disabled"
@@ -637,27 +882,40 @@
                 {{ opt.title }}
               </mat-option>
             </ng-container>
+            
+          </div>
           </mat-select>
           <mat-error *ngIf="!isValid">
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          
+          <!-- <mat-hint>{{getValue()}}</mat-hint> -->
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
+        </div>
+        
       </ng-container>
       <ng-container *ngSwitchCase="'autocomplete'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder=""
@@ -668,6 +926,7 @@
             [readonly]="question.readonly"
             [matAutocomplete]="auto"
             [placeholder]="question.placeholder"
+            [value]="getValue()"
             #element
             class="{{ question.customClasses }}"
             [disabled]="question.disabled"
@@ -682,6 +941,32 @@
             (optionSelected)="handler($event)"
             panelWidth="auto"
           >
+          <div class="bottomSheetdropdown  drop_close_button text-center " >
+            <hr class="drop_center"/>
+            <button class="drop_close float-right" (click)="trigger.closePanel()">
+               <mat-icon>close</mat-icon>
+              </button
+            >
+            
+          </div><div class="flex "  (click)="$event.stopPropagation()">
+              <div class="w-full text-center bottomSheetdropdownSearch"  (click)="$event.stopPropagation()">
+              <mat-form-field class="w-full">
+                <input matInput type="search" placeholder="search" [formControlName]="question.key"
+                (click)="$event.stopPropagation()"
+                [id]="question.key"
+                [required]="question.required"
+                [readonly]="question.readonly"
+                [value]="getValue()"
+                #elementsearch
+                class="insside {{ question.customClasses }}"
+                [disabled]="question.disabled"
+                autocomplete="off"
+                >
+                <mat-icon class="search-icon" matSuffix>search</mat-icon>
+              </mat-form-field>
+              </div>
+            </div>
+            <div class="selectopyionsdiv">
             <mat-option
               *ngFor="let opt of filteredOptions | async"
               [value]="opt"
@@ -689,6 +974,7 @@
             >
               {{ opt.title }}
             </mat-option>
+          </div>
           </mat-autocomplete>
           <mat-error *ngIf="!isValid && !isCorrect">
             {{ question.label }} is <strong>required</strong>
@@ -697,22 +983,29 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'date'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder="__/__/____"
@@ -728,7 +1021,7 @@
             [disabled]="question.disabled"
             autocomplete="off"
             (keyup)="keyUpSetDateFormat($event)"
-            (click)="datepicker.open()" 
+            (click)="datepicker.open()"
           />
           <mat-datepicker-toggle
             matSuffix
@@ -752,22 +1045,29 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'datetime'">
-       
         <mat-form-field
           class="full-width clearfix clear"
           appearance="outline"
           floatLabel="never"
-        > <mat-label
-          [attr.for]="question.key"
-          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-          >{{ question.label }}</mat-label
         >
+          <mat-label
+            [attr.for]="question.key"
+            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+            >{{ question.label }}</mat-label
+          >
           <input
             matInput
             placeholder="__/__/____"
@@ -782,7 +1082,7 @@
             [min]="question.minimum"
             [disabled]="question.disabled"
             autocomplete="off"
-            (click)="picker.open()" 
+            (click)="picker.open()"
           />
           <mat-datepicker-toggle
             matSuffix
@@ -797,7 +1097,14 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button class="clear" *ngIf="getValue()" matSuffix mat-icon-button aria-label="Clear" (click)="setEmptyValue()">
+          <button
+            class="clear"
+            *ngIf="getValue()"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="setEmptyValue()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>

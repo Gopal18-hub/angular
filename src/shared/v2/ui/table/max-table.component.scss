@@ -44,7 +44,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         flex: 0 0 100px !important;
-        width: 100px !important;
+        width: 100px;
 
         /* Adds a hyphen where the word breaks, if supported (No Blink) */
         -ms-hyphens: auto;
@@ -181,4 +181,11 @@ tr.child-detail-row {
       width: 60px !important;
     }
   }
+}
+tr td button.expandbtn{
+  width: 25px;
+  height: 25px !important;
+}
+tr td.column-expandedDetail{
+  padding-left: 0px;
 }

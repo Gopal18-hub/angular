@@ -40,7 +40,7 @@
             "
           >
             <button
-              type="button"
+              type="button" class="expandbtn"
               mat-icon-button
               aria-label="expand row"
               (click)="
@@ -49,10 +49,10 @@
               "
             >
               <mat-icon *ngIf="expandedElement !== row"
-                >keyboard_arrow_down</mat-icon
+                >arrow_drop_down</mat-icon
               >
               <mat-icon *ngIf="expandedElement === row"
-                >keyboard_arrow_up</mat-icon
+                >arrow_drop_up</mat-icon
               >
             </button>
           </ng-container>
@@ -163,56 +163,11 @@
             <button
               type="button"
               mat-icon-button
-              color="accent"
+              color="warn"
               (click)="removeRow(i)"
             >
               <div class="remove-row-icon-wrapper">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 25 25"
-                >
-                  <g
-                    id="Group_2547"
-                    data-name="Group 2547"
-                    transform="translate(-471 -581)"
-                  >
-                    <circle
-                      id="Ellipse_58"
-                      data-name="Ellipse 58"
-                      cx="12.5"
-                      cy="12.5"
-                      r="12.5"
-                      transform="translate(471 581)"
-                      fill="#d8d8d8"
-                    />
-                    <g
-                      id="Group_924"
-                      data-name="Group 924"
-                      transform="translate(561.636 -167.7) rotate(45)"
-                    >
-                      <rect
-                        id="Rectangle_362"
-                        data-name="Rectangle 362"
-                        width="2"
-                        height="19"
-                        rx="1"
-                        transform="translate(482 584)"
-                        fill="#df0b0b"
-                      />
-                      <rect
-                        id="Rectangle_363"
-                        data-name="Rectangle 363"
-                        width="2"
-                        height="19"
-                        rx="1"
-                        transform="translate(492.5 592.5) rotate(90)"
-                        fill="#df0b0b"
-                      />
-                    </g>
-                  </g>
-                </svg>
+                <mat-icon>delete_forever</mat-icon>
               </div>
             </button>
           </td>
@@ -260,6 +215,7 @@
         <ng-container matColumnDef="expandedDetail">
           <td
             mat-cell
+            class="column-expandedDetail"
             *matCellDef="let element"
             [attr.colspan]="displayedColumns.length"
           >
