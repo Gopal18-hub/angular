@@ -611,9 +611,9 @@ h4 {
 .mat-form-field-should-float .mat-form-field-label {
   margin-top: -5px !important;
 }
-.mat-form-field-should-float .mat-form-field-label mat-label {
-  font-size: 17px !important;
-}
+// .mat-form-field-should-float .mat-form-field-label mat-label {
+//   font-size: 17px !important;
+// }
 .mat-form-field-subscript-wrapper {
   position: relative !important;
 }
@@ -755,4 +755,5 @@ ngx-mat-timepicker
   }
 }
 
+.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, .mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label { transform: none !important; margin-left: 0px; width: 100% !important; mat-label{ padding: 0 5px; }}.mat-form-field-label-wrapper{ margin-left: -5px;}.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label-wrapper,.mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper{ margin-left: 0px; margin-top: -22px !important;}
 //End of the design changes
