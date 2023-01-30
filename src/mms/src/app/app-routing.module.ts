@@ -1,21 +1,17 @@
 import { NgModule } from "@angular/core";
 import {
-  ActivatedRouteSnapshot,
   RouterModule,
-  RouterStateSnapshot,
   Routes,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
 } from "@angular/router";
 import { RedirectComponent } from "@shared/v2/modules/header/redirect/redirect.component";
-import { DashboardComponent } from "../shared/dashboard/dashboard.component";
+
 const routes: Routes = [
-  //   {
-  //   path: "",
-  //   redirectTo: "oppharmacy",
-  //   pathMatch: "full",
-  // },
   {
     path: "",
-    component: DashboardComponent,
+    redirectTo: "pharmacy",
+    pathMatch: "full",
   },
 ];
 
