@@ -7,7 +7,7 @@ import { PermissionService } from "@shared/services/permission.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = "MMS";
   isAuthenticated: boolean = false;
   reportapiloader: boolean = false;
@@ -24,11 +24,11 @@ export class AppComponent {
   }
 
   ngAfterViewInit(): void {
-    // this.report.reportPrintloader.subscribe((res: boolean) => {
-    //   this.reportapiloader = res;
-    // });
-    // this.permissionService.rolesLoaded.subscribe((res: boolean) => {
-    //   this.roleLoaded = res;
-    // });
+    this.report.reportPrintloader.subscribe((res: boolean) => {
+      this.reportapiloader = res;
+    });
+    this.permissionService.rolesLoaded.subscribe((res: boolean) => {
+      this.roleLoaded = res;
+    });
   }
 }
