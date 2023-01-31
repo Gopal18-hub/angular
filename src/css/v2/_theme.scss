@@ -156,7 +156,7 @@ $custom-typography: mat.define-typography-config(
 @include mat.core($custom-typography);
 
 :root {
-  --primary-color: #004484;
+  --primary-color: #004084;
 }
 .max-health-primary-color {
   color: var(--primary-color);
@@ -168,7 +168,7 @@ $custom-typography: mat.define-typography-config(
   text-underline-position: under;
 }
 body {
-  min-width: 1366px;
+  min-width: auto;
   overflow-x: auto;
 }
 
@@ -212,7 +212,7 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 8.75rem);
+  height: calc(100vh - 4rem);
   border-radius: 10px 10px;
   overflow: hidden;
   .banner {
