@@ -1,14 +1,14 @@
 import { NgModule } from "@angular/core";
-import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
+import { DynamicFormsModule } from "@shared/v2/ui/dynamic-forms";
 import { PharmacyRoutingModule } from "./routes";
-import { MaxHealthTableModule } from "@shared/ui/table";
-import { FormDialogueModule } from "@shared/ui/form-dialogue";
-import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
-import { AuthService } from "@shared/services/auth.service";
-import { HttpService } from "@shared/services/http.service";
-import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { SearchService } from "@shared/services/search.service";
-import { CookieService } from "@shared/services/cookie.service";
+import { MaxHealthTableModule } from "@shared/v2/ui/table";
+import { FormDialogueModule } from "@shared/v2/ui/form-dialogue";
+import { EmptyPlaceholderModule } from "@shared/v2/ui/empty-placeholder";
+import { AuthService } from "@shared/v2/services/auth.service";
+import { HttpService } from "@shared/v2/services/http.service";
+import { MessageDialogService } from "@shared/v2/ui/message-dialog/message-dialog.service";
+import { SearchService } from "@shared/v2/services/search.service";
+import { CookieService } from "@shared/v2/services/cookie.service";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 
 import { MatButtonModule } from "@angular/material/button";
@@ -32,9 +32,13 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { PharmacyComponent } from "./pharmacy.component";
 import { IssueEntryComponent } from "./submodules/issue-entry/issue-entry.component";
-
+import { OpPharmacyBillingLeftComponent } from "./submodules/issue-entry/left/leftcomponent";
 @NgModule({
-  declarations: [PharmacyComponent, IssueEntryComponent],
+  declarations: [
+    PharmacyComponent,
+    IssueEntryComponent,
+    OpPharmacyBillingLeftComponent,
+  ],
   imports: [
     PharmacyRoutingModule,
     MatCardModule,

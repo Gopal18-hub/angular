@@ -5,7 +5,7 @@ import { AppRoutingModule, MMSRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HeaderModule } from "@shared/v2/modules/header";
-import { PharmacyModule } from "../../Modules/Pharmacy/index";
+import { PharmacyModule } from "../../modules/pharmacy/index";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
 import { TokenInterceptor } from "@shared/services/interceptors/token.interceptor";
