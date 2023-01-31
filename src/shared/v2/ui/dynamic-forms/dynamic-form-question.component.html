@@ -16,7 +16,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [innerHtml]="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
           ></mat-label>
@@ -72,6 +72,7 @@
           <mat-label
             [attr.for]="question.key"
             [innerHtml]="question.label"
+            *ngIf="question.label"
             class="mdc-floating-label mat-mdc-floating-label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
           ></mat-label>
@@ -195,7 +196,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -302,7 +303,7 @@
           appearance="outline"
           floatLabel="never"
           ><mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -360,7 +361,7 @@
           appearance="outline"
           floatLabel="never"
           ><mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -417,7 +418,7 @@
           appearance="outline"
           floatLabel="never"
           ><mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -526,7 +527,7 @@
           appearance="outline"
           floatLabel="never"
           ><mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             class="cursor-pointer"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             (click)="generateRandomEmail()"
@@ -586,7 +587,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -646,7 +647,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -689,129 +690,6 @@
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'dropdown'">
-        <!-- <div class=" lt-xs:display-block xs:display-none">
-
-          <mat-form-field
-          class="full-width clearfix clear"
-          appearance="outline"
-          floatLabel="never"
-          ><mat-label
-            [attr.for]="question.key"
-            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-            >{{ question.label }}</mat-label
-          >
-          <mat-select
-            [id]="question.key"
-            [formControlName]="question.key"
-            [value]="question.value"
-            [panelClass]="'im-select-dropdown'"
-            [compareWith]="compareFn"
-            [required]="question.required"
-            [placeholder]="question.placeholder"
-            #element
-            disableOptionCentering
-            class="{{ question.customClasses }}"
-            [disabled]="question.disabled"
-            [multiple]="question.multiple"
-            (click)="openTemplateSheetMenu()"
-          >
-            <ng-container *ngIf="question.emptySelect"
-              > <mat-option>Select</mat-option></ng-container
-            >
-            <ng-template
-              let-bottomSheetRef="bottomSheetRef"
-              #templateBottomSheet
-              >
-              <div class="drop_close_button text-center ">
-                <hr class="drop_center"/>
-                <button class="drop_close float-right" (click)="closeTemplateSheetMenu()">
-                   <mat-icon>close</mat-icon>
-                  </button
-                >
-              </div>
-              
-              <ng-container *ngFor="let opt of question.options"
-                >
-                <mat-option
-                  [value]="opt.value"
-                  [disabled]="opt?.disabled"
-                  [attr.maxValue]="opt.value"
-                  >{{ opt.title }}</mat-option
-                ></ng-container
-              > </ng-template
-            > </mat-select
-          >
-          <mat-error *ngIf="!isValid"
-            >{{ question.label }} is <strong>required</strong></mat-error
-          >
-          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <mat-hint>{{getValue()}}</mat-hint>
-          <button
-            class="clear"
-            *ngIf="getValue()"
-            matSuffix
-            mat-icon-button
-            aria-label="Clear"
-            (click)="setEmptyValue()"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-
-
-        </div>lt-xs:display-none xs:display-block -->
-        <!-- <div class=" "> -->
-          <!-- <mat-form-field
-          class="full-width clearfix clear"
-          appearance="outline"
-          floatLabel="never"
-          ><mat-label
-            [attr.for]="question.key"
-            [ngClass]="{ 'mat-form-field-required-marker': question.required }"
-            >{{ question.label }}</mat-label
-          >
-          <mat-select
-            [id]="question.key"
-            [formControlName]="question.key"
-            [value]="question.value"
-            [panelClass]="'im-select-dropdown'"
-            [compareWith]="compareFn"
-            [required]="question.required"
-            [placeholder]="question.placeholder"
-            #element
-            disableOptionCentering
-            class="{{ question.customClasses }}"
-            [disabled]="question.disabled"
-            [multiple]="question.multiple"
-          > -->
-          <!-- <mat-form-field>
-            <mat-select  placeholder="Banks" [multiple]="true">
-          <mat-select-search [formControl]="bankMultiFilterCtrl"></mat-select-search>
-          <mat-option *ngFor="let bank of filteredBanksMulti | async" [value]="bank">
-            {{bank.name}}
-          </mat-option>
-          </mat-select>
-          
-        </mat-form-field> -->
-
-        <!-- <mat-form-field>
-          <mat-select placeholder="Basic">
-            <input matInput class="yourClass" placeholder="search " (keyup)="$event.stopPropagation();onKey($event)"> 
-            <!-- <mat-select-filter [array]="variables" (filteredReturn)="filteredList1 =$event"></mat-select-filter> -->
-            <!-- <mat-option *ngFor="let item of filteredList1" [value]="item">
-              {{item}}*ngFor="let opt of filteredList"
-            </mat-option> -->
-            <!-- <mat-option  
-             *ngFor="let opt of filteredList | async"
-            [value]="opt.value"
-            [disabled]="opt?.disabled"
-            [attr.maxValue]="opt?.value"
-          >
-            {{ opt?.title }}
-          </mat-option>
-          </mat-select>
-        </mat-form-field>
-        </div>  -->
         <div class=" " >
 
           <mat-form-field
@@ -819,6 +697,7 @@
           appearance="outline"
           floatLabel="never"
           ><mat-label
+          *ngIf="question.label"
             [attr.for]="question.key"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
@@ -912,7 +791,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -1002,7 +881,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -1064,7 +943,7 @@
           floatLabel="never"
         >
           <mat-label
-            [attr.for]="question.key"
+            [attr.for]="question.key" *ngIf="question.label"
             [ngClass]="{ 'mat-form-field-required-marker': question.required }"
             >{{ question.label }}</mat-label
           >
@@ -1111,7 +990,7 @@
       </ng-container>
       <ng-container *ngSwitchCase="'checkbox'">
         <mat-label
-          [attr.for]="question.key"
+          [attr.for]="question.key" *ngIf="question.label"
           [ngClass]="{ 'mat-form-field-required-marker': question.required }"
           >{{ question.label }}</mat-label
         >
