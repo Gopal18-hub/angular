@@ -305,7 +305,7 @@ mat-form-field {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #35b6b4;
+  background-color: #B8B8B8;
 }
 
 .mat-option {
@@ -622,7 +622,6 @@ h4 {
   color: #000000;
   opacity: 1;
   margin: 0 !important;
-  font: normal normal bold 15px/18px Proxima Nova !important;
 }
 .mat-form-field-wrapper {
   padding-bottom: 0px !important;
@@ -639,9 +638,6 @@ h4 {
 .mat-form-field-should-float .mat-form-field-label {
   margin-top: -5px !important;
 }
-// .mat-form-field-should-float .mat-form-field-label mat-label {
-//   font-size: 17px !important;
-// }
 .mat-form-field-subscript-wrapper {
   position: relative !important;
 }
@@ -651,12 +647,8 @@ h4 {
 mat-form-field.mat-form-field-appearance-outline .mat-form-field-infix {
   padding: 0.2rem 0 0.45rem 0 !important;
 }
-.mat-form-field-appearance-outline .mat-form-field-flex {
-  // margin-top: 0 !important;
-  // padding: 0px !important;
-}
 body {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 mat-form-field {
   .mat-form-field-flex .mat-form-field-suffix {
@@ -959,15 +951,13 @@ opacity: 1;
 
 // Start of the matdialog slideInRight
 .cdk-global-overlay-wrapper {
-  justify-content: end !important;
-  align-items: end !important;
-  .cdk-overlay-pane {
+  .cdk-overlay-pane.animate__animated.animate__slideInRight {
     height: 90vh !important;
     position: absolute !important;
-    // width: 0px;
     .mat-dialog-container {
       border-radius: 0 !important;
       transform: inherit !important;
+      padding: 15px;
     }
     .mat-raised-button {
       width: auto;
