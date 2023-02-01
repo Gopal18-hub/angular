@@ -19,11 +19,12 @@ import { CookieService } from "@shared/services/cookie.service";
 // import { ReportsModule } from "@modules/reports";
 // import { ConfigureModule } from "@modules/configure";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MaxHealthSnackBarModule } from "@shared/v2/ui/snack-bar";
 
 const importModules = [
   HeaderModule,
   HttpClientModule,
-  //MaxHealthSnackBarModule,
+  MaxHealthSnackBarModule,
   MaxHealthMessageDialogModule,
 ];
 

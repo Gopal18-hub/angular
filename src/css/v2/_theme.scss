@@ -510,6 +510,20 @@ input[type="number"]::-webkit-inner-spin-button {
   align-items: center;
   height: 100%;
   opacity: 1;
+  box-sizing: border-box;
+  display: block;
+  margin: 24px;
+  max-width: 33vw;
+  min-width: 344px;
+  padding: 14px 16px;
+  min-height: 48px;
+  transform-origin: center;
+background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #707070;
+  border-radius: 5px;
+  opacity: 1;
+  color: #000;
   &-content {
     .notification {
       display: flex;
@@ -531,9 +545,23 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .mat-snack-bar-container {
-  color: #ffffff;
-  background: #004084;
-  border-radius: 10px !important;
+  // color: #ffffff;
+  // background: #004084;
+  // border-radius: 10px !important;
+  box-sizing: unset!important;
+  display: block;
+  margin:  unset!important;
+  max-width:  unset!important;
+  min-width:  unset!important;
+  padding:  unset!important;
+  min-height:  unset!important;;
+  transform-origin: center;
+background: unset!important;
+  box-shadow: unset!important;
+  border: unset!important;
+  border-radius: unset!important;
+
+  color:  unset!important;
   .mat-snack-bar-error {
     .mat-maxhealth-snackbar {
       .mat-maxhealth-snackbar-content {
@@ -756,6 +784,177 @@ ngx-mat-timepicker
 }
 
 .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, .mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label { transform: none !important; margin-left: 0px; width: 100% !important; mat-label{ padding: 0 5px; }}.mat-form-field-label-wrapper{ margin-left: -5px;}.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label-wrapper,.mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper{ margin-left: 0px; margin-top: -22px !important;}
+.subtext{
+  text-align: left;
+  font: normal normal normal 12px Proxima Nova;
+  letter-spacing: 0px;
+  color: #7A8288;
+  opacity: 1;
+}
+.snack_container{
+  width:100%;
+}
+.mat-maxhealth-snackbar-content{
+   width:65%;
+  display: inline-block;
+}
+.mat-maxhealth-snackbar-action{
+  display: inline-block;
+  width: 35%;
+  text-align: right;
+  padding-right: 10px;
+
+}
+.snack_button{
+  border:unset;
+  color: #004084;
+  font: normal normal bold 16px Proxima Nova;
+  margin-left: 20px;
+}
+.snack_exit{
+  font-size: 16px;
+    top: 3px;
+    position: relative;
+    left: 10px;
+}
+.long_action{
+  text-align: right;
+  margin-top: 10px;
+}
+.message{
+  font-size:16px;
+}
+.mat-snack-bar-info {
+  border: 1px solid yellow;
+}
+.mat-snack-bar-success{
+  border: 1px solid green;
+}
+.mat-snack-bar-error{
+  border: 1px solid red;
+}
+.mat-snack-bar-defalut{
+  border: 1px solid #707070;
+}
+
+.badge .mat-badge-content {
+  background: #b3261e!important;
+}
+.badge_small .mat-badge-content.mat-badge-active{
+  height: 11px !important;
+  width:11px!important;
+}
+.badge_medium .mat-badge-content.mat-badge-active{
+  height: 23px !important;
+  width:23px!important;
+}
+.badge_large .mat-badge-content.mat-badge-active{
+  height: 23px !important;
+  width:30px!important;
+}
+.mat-button-wrapper {
+  font: normal normal bold 14px/17px Proxima Nova;
+}
+.mat-button-base{
+  width: 97px;
+    height: 34px;
+}
+.mat-flat-button {
+  background: #E0E1E2;
+  color:#00000099;
+  border-radius: 4px;
+}
+.button_secondary{
+  background:#45C0BE;
+  color:#FFFFFF;
+  border-radius: 4px;
+}
+.button_secondary:hover{
+  background:#2FA7A5;
+}
+.button_secondary:focus{
+  background: #45C0BE 0% 0% no-repeat padding-box;
+  box-shadow: unset;
+}
+.button_secondary:active{
+  background: #45C0BE 0% 0% no-repeat padding-box;
+}
+.mat-flat-button.mat-button-disabled.mat-button-disabled{
+  background:#E0E1E2;
+  color:#B8B8B8;
+}
+.mat-flat-button.mat-primary:hover{
+  background:#013770;
+}
+.mat-flat-button.mat-primary:focus{
+  background: #013770E3 0% 0% no-repeat padding-box;
+  box-shadow: unset;
+}
+.mat-flat-button.mat-primary:active{
+ background:#004084;
+}
+.mat-stroked-button {
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 0.5px solid #004084!important;
+  border-radius: 4px;
+  opacity: 1;
+  box-shadow: unset!important;
+  color: #004084;
+}
+.mat-stroked-button:hover{
+  background: #F3F9FF 0% 0% no-repeat padding-box!important;
+box-shadow: 0px 3px 6px #00000029!important;
+}
+.mat-stroked-button:focus{
+  background: #F3F9FF 0% 0% no-repeat padding-box;
+  box-shadow: unset;
+}
+.mat-stroked-button:active{
+  background: #F3F9FF 0% 0% no-repeat padding-box;
+}
+.mat-stroked-button.mat-button-disabled.mat-button-disabled{
+  border: 0.5px solid #B8B8B8!important;
+}
+.mat-stroked-button.mat-button-disabled.mat-button-disabled:hover{
+  background: #FFFFFF 0% 0% no-repeat padding-box!important;
+  box-shadow: unset!important;
+}
+
+.sec_outline{
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+border: 0.5px solid #45C0BE!important;
+border-radius: 4px;
+opacity: 1;
+box-shadow: unset;
+color: #45C0BE!important;
+}
+.sec_outline:hover{
+  background: #ECFFFF 0% 0% no-repeat padding-box!important;
+}
+.sec_outline:focus{
+  background: #ECFFFF 0% 0% no-repeat padding-box;
+}
+.sec_outline:active{
+  background: #ECFFFF 0% 0% no-repeat padding-box;
+border: 0.5px solid #45C0BE;
+}
+.text_button{
+  color: #004084;
+}
+.text_button:hover{
+  background: #F3F9FF 0% 0% no-repeat padding-box!important;
+box-shadow: 0px 3px 6px #00000029!important;
+border-radius: 4px;
+opacity: 1;
+}
+.text_button:focus{
+  background: #F3F9FF 0% 0% no-repeat padding-box;
+  box-shadow: unset!important;
+}
+.text_button:active{
+  background: #F3F9FF 0% 0% no-repeat padding-box;
+
+}
 //End of the design changes
 
 // Start of the matdialog slideInRight
