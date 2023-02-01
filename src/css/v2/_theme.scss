@@ -784,96 +784,6 @@ ngx-mat-timepicker
 }
 
 .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, .mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label { transform: none !important; margin-left: 0px; width: 100% !important; mat-label{ padding: 0 5px; }}.mat-form-field-label-wrapper{ margin-left: -5px;}.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label-wrapper,.mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper{ margin-left: 0px; margin-top: -22px !important;}
-
-h4 {
-  font-weight: bold !important;
-  color: #000000;
-  opacity: 1;
-  margin: 0 !important;
-  font: normal normal bold 15px/18px Proxima Nova !important;
-}
-
-
-
-.form-field-class{
-.mat-form-field-label mat-label {
-  font-size: 13px !important;
-}
-.mat-form-field-label {
-  margin-top: -27px !important;
-}
-.mat-form-field-wrapper {
-  padding-bottom: 0px !important;
-}
-.mat-form-field-flex {
-  padding-top: 10px !important;
-}
-
-.mat-form-field-should-float .mat-form-field-label {
-  margin-top: -5px !important;
-}
-.mat-form-field-should-float .mat-form-field-label mat-label {
-  font-size: 17px !important;
-}
-.mat-form-field-subscript-wrapper {
-  position: relative !important;
-}
-.mat-placeholder-required.mat-form-field-required-marker {
-  display: none;
-}
-mat-form-field.mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.2rem 0 0.45rem 0 !important;
-}
-.mat-form-field-appearance-outline .mat-form-field-flex {
-  // margin-top: 0 !important;
-  // padding: 0px !important;
-}
-mat-form-field {
-  .mat-form-field-flex .mat-form-field-suffix {
-    position: absolute;
-    float: right;
-    right: 10px;
-    margin-top: 5px;
-    display: flex;
-  }
-  .mat-form-field-flex .mat-form-field-suffix mat-icon {
-    display: inline-flex !important;
-    margin-right: -5px;
-    margin-top: -2px;
-  }
-  .mat-icon-button{
-    line-height: 20px !important;
-  }
-
-mat-select.mat-select-empty .mat-select-arrow-wrapper {
-    margin-right: 0px;
-}
-mat-select .mat-select-arrow-wrapper {
-  margin-right: 15px;
-}
-
-}
-ngx-mat-timepicker mat-form-field.mat-form-field-appearance-legacy .mat-form-field-underline{
-  bottom: 0.75em;
-}
-.mat-drawer-inner-container{
-  //overflow: hidden!important;
-  padding: 15px 20px;
-}
-}
-
-body {
-  overflow-y: scroll;
-}
-
-
-p{
-  text-align: left;
-font: normal normal normal 16px Proxima Nova;
-letter-spacing: 0px;
-color: #000000;
-opacity: 1;
-}
 .subtext{
   text-align: left;
   font: normal normal normal 12px Proxima Nova;
@@ -883,30 +793,17 @@ opacity: 1;
 }
 .snack_container{
   width:100%;
-  // display: flex;
-  // align-items: center;
 }
 .mat-maxhealth-snackbar-content{
    width:65%;
   display: inline-block;
-  // display: flex;
- 
-    //flex-grow: 1;
 }
 .mat-maxhealth-snackbar-action{
   display: inline-block;
   width: 35%;
   text-align: right;
   padding-right: 10px;
-  // display: flex;
-  //  // width: 35%;
-  //   display: flex;
-  //   /* width: 200px; */
-  //   text-align: right;
-  //   flex-grow: 1;
-  //   padding-right: 10px;
-  //   align-items: center;
-  //   justify-content: flex-end;
+
 }
 .snack_button{
   border:unset;

@@ -96,23 +96,18 @@ export class MaxHealthSnackBar {
     return !!this.data.action;
   }
   ngAfterViewInit() {
-    console.log('snakc',this.data)
-   // const element: HTMLElement = this._elementRef.nativeElement;
     const element: HTMLElement = this._elementRef.nativeElement;
     switch (this.data.type) {
       case "error":
         (<any>element).classList.add("mat-snack-bar-error");
         break;
       case "success":
-        // (<any>element.parentElement).classList.add("mat-snack-bar-success");
+       
         (<any>element).classList.add("mat-snack-bar-success");
         break;
         case "info":
           (<any>element).classList.add("mat-snack-bar-info");
           break;
-        // case "defalut":
-        //   (<any>element).classList.add("mat-snack-bar-defalut");
-        //   break;
       default:
         (<any>element).classList.add("mat-snack-bar-defalut");
         break;
@@ -123,8 +118,6 @@ export class MaxHealthSnackBar {
 @Injectable()
 export class MaxHealthSnackBarService {
   constructor(private snackBar: MatSnackBar) {}
-
-  // open(message: string, type: string = "info", duration?: number, action?:string,exit?:string) {
     open(message: string,type: string="defalut",exit?:string,action?:string,otheraction?:string) {
     this.snackBar.openFromComponent(MaxHealthSnackBar, {
      // duration: duration || 4000,
