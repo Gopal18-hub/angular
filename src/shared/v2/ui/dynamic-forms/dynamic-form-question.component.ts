@@ -467,7 +467,9 @@ export class DynamicFormQuestionComponent
   }
   openedMatSelect(e: any) {
     setTimeout(() => {
-      this.searchElement.nativeElement.focus();
+      if (this.searchElement && this.searchElement.nativeElement) {
+        this.searchElement.nativeElement.focus();
+      }
     });
   }
   drapdownoptionmatselect() {

@@ -1059,3 +1059,50 @@ opacity: 1;
 
 }
 //End of the design changes
+
+// Start of the matdialog slideInRight
+.cdk-global-overlay-wrapper {
+  justify-content: end !important;
+  align-items: end !important;
+  .cdk-overlay-pane {
+    height: 90vh !important;
+    position: absolute !important;
+    // width: 0px;
+    .mat-dialog-container {
+      border-radius: 0 !important;
+      transform: inherit !important;
+    }
+    .mat-raised-button {
+      width: auto;
+    }
+  }
+}
+@-webkit-keyframes slideInRight {
+  0% {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+  to {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+@keyframes slideInRight {
+  0% {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+  to {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+.animate__slideInRight {
+  -webkit-animation-duration: 0.75s;
+  animation-duration: 0.75s;
+  -webkit-animation-name: slideInRight;
+  animation-name: slideInRight;
+}
+// End of the matdialog slideInRight
