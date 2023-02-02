@@ -32,12 +32,14 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { PharmacyComponent } from "./pharmacy.component";
 import { IssueEntryComponent } from "./submodules/issue-entry/issue-entry.component";
-import { OpPharmacyBillingLeftComponent } from "./submodules/issue-entry/left/leftcomponent";
+import { RightPanelComponent } from "./submodules/issue-entry/right-panel/right-panel.component";
+import { LeftPanelComponent } from "./submodules/issue-entry/left-panel/left-panel.component";
 @NgModule({
   declarations: [
     PharmacyComponent,
     IssueEntryComponent,
-    OpPharmacyBillingLeftComponent,
+    LeftPanelComponent,
+    RightPanelComponent,
   ],
   imports: [
     PharmacyRoutingModule,
