@@ -1,0 +1,12 @@
+<div class="snackbar-container" [ngClass]="{ 'sb-sl-container' : data?.isSingleLine }">
+  <div class="snackbar-body" [innerHTML]="data.message"></div>
+  <div [ngClass]="data?.isSingleLine ? 'sb-single-button' : 'sb-multi-buttons'">
+    <ng-container *ngFor="let btnCtrl of buttonList">
+      <button class="mt-2 primary-btn" *ngIf="btnCtrl?.name" (click)="onClose(btnCtrl.name)"
+        mat-button>{{btnCtrl?.name}}</button>
+    </ng-container>
+    <button *ngIf="data?.showCloseIcon" (click)="snackBarComp.dismissWithAction()" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>

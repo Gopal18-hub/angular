@@ -6,13 +6,14 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "@shared/v2/services/cookie.service";
 import { HttpService } from "@shared/v2/services/http.service";
 import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
-import { MaxHealthSnackBarService } from "@shared/v2/ui/snack-bar";
 import { Subject, takeUntil } from "rxjs";
+import { PatientDetails } from "../../../../../core/models/patientDetailsModel.Model";
 import { PharmacyApiConstants } from "../../../../../core/constants/pharmacyApiConstant";
 import { AgetypeModel } from "../../../../../core/models/ageTypeModel.Model";
 import { GenderModel } from "../../../../../core/models/genderModel.Model";
 import { IssueEntryService } from "../../../../../core/services/issue-entry.service";
-
+import { EwspatientPopupComponent } from "../prompts/ewspatient-popup/ewspatient-popup.component";
+import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
 @Component({
   selector: "issue-entry-left-panel",
   templateUrl: "./left-panel.component.html",
@@ -103,6 +104,7 @@ export class LeftPanelComponent implements OnInit {
   patientformGroup!: FormGroup;
   isRegPatient: boolean = false;
   isEWSPatient: boolean = false;
+  isCGHSPatient: boolean = false;
   showInfoSection: boolean = false;
   isShowCompany: boolean = false;
   categoryIcons: [] = [];
@@ -114,6 +116,11 @@ export class LeftPanelComponent implements OnInit {
   cghsInfo: string = "";
   ewsInfo: string = "";
   psuInfo: string = "";
+  maxIDSearch: boolean = false;
+  apiProcessing: boolean = false;
+  expiredPatient: boolean = false;
+  public patientDetails!: PatientDetails;
+  MaxIDExist: boolean = false;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -121,14 +128,15 @@ export class LeftPanelComponent implements OnInit {
     private route: ActivatedRoute,
     public matDialog: MatDialog,
     private _bottomSheet: MatBottomSheet,
-    private snackbar: MaxHealthSnackBarService,
     private cookie: CookieService,
-    public issueEntryService: IssueEntryService
+    public issueEntryService: IssueEntryService,
+    public snackbarService: SnackBarService
   ) {}
 
   ngOnInit(): void {
     this.showInfoSection = false;
     this.isEWSPatient = false;
+    this.isCGHSPatient = false;
     this.issueEntryService.billType = 1;
     this.isRegPatient = false;
     this.cashInfo = "C";
@@ -140,6 +148,10 @@ export class LeftPanelComponent implements OnInit {
     this.ewsInfo = "EWS";
     this.psuInfo = "PSU";
     this.formInit();
+  }
+
+  ngAfterViewInit(): void {
+    this.formEvents();
   }
 
   ngOnDestroy(): void {
@@ -208,6 +220,7 @@ export class LeftPanelComponent implements OnInit {
     this.categoryIcons = [];
     this.showInfoSection = false;
     this.isEWSPatient = false;
+    this.isCGHSPatient = false;
   }
   reset() {
     // this.formProcessingFlag = true;
@@ -224,6 +237,7 @@ export class LeftPanelComponent implements OnInit {
     this.ewsInfo = "EWS";
     this.psuInfo = "PSU";
     this.isEWSPatient = false;
+    this.isCGHSPatient = false;
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.router.navigate([], {
@@ -239,5 +253,244 @@ export class LeftPanelComponent implements OnInit {
     // }, 10);
 
     // this.clearClicked = false;
+  }
+
+  formEvents() {
+    //ON MAXID CHANGE
+    this.patientform[0].elementRef.addEventListener(
+      "keypress",
+      (event: any) => {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          this.maxIDSearch = true;
+          this.getPatientDetailsByMaxId();
+        }
+      }
+    );
+
+    //ON MAXID CHANGE
+    this.patientform[0].elementRef.addEventListener(
+      "change",
+      this.MarkasMaxIDChange.bind(this)
+    );
+
+    this.patientform[0].elementRef.addEventListener(
+      "blur",
+      this.onMaxIDChange.bind(this)
+    );
+
+    this.patientform[4].elementRef.addEventListener(
+      "blur",
+      this.onAgeTypeChange.bind(this)
+    );
+  }
+
+  MarkasMaxIDChange() {
+    this.maxIDSearch = true;
+  }
+
+  onMaxIDChange() {
+    this.maxIDSearch = true;
+    this.getPatientDetailsByMaxId();
+  }
+
+  onAgeTypeChange() {
+    let ageType = this.patientformGroup.value.ageType;
+    if (ageType == "") {
+      this.patientformGroup.controls["ageType"].setErrors({
+        incorrect: true,
+      });
+      this.patientform[4].customErrorMessage = "AgeType is required";
+    }
+  }
+
+  //Get Patient Details by Max ID
+  async getPatientDetailsByMaxId() {
+    this.apiProcessing = true;
+
+    let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
+    //HANDLING IF MAX ID IS NOT PRESENT
+    if (regNumber != 0) {
+      let iacode = this.patientformGroup.value.maxid.split(".")[0];
+      const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+      if (expiredStatus) {
+        this.expiredPatient = true;
+        this.apiProcessing = false;
+        this.snackbarService.showSnackBar(
+          "Patient is an Expired Patient!",
+          "error",
+          ""
+        );
+      } else {
+        this.expiredPatient = false;
+      }
+      this.http
+        .get(PharmacyApiConstants.patientDetails(regNumber, iacode))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: PatientDetails) => {
+            if (!resultData) {
+              this.apiProcessing = false;
+              // this.messageDialogService.info(error.error);
+              this.router.navigate([], {
+                queryParams: {},
+                relativeTo: this.route,
+              });
+              this.flushAllObjects();
+              this.patientformGroup.controls["maxid"].setValue(
+                iacode + "." + regNumber
+              );
+              this.patientformGroup.controls["maxid"].setErrors({
+                incorrect: true,
+              });
+              this.patientform[0].customErrorMessage = "Invalid Max ID";
+              this.patientform[1].elementRef.focus();
+              this.patientform.markAsDirty();
+              //this.clear();
+              // this.maxIDChangeCall = false;
+            } else {
+              //added for modify issue - even though Mobile no not changed
+              this.patientform[1].elementRef.blur();
+              this.flushAllObjects();
+              // this.maxIDChangeCall = true;
+              this.patientDetails = resultData;
+              this.isRegPatient = true;
+              this.categoryIcons =
+                this.issueEntryService.getCategoryIconsForPatient(
+                  this.patientDetails
+                );
+              if (this.categoryIcons.length != 0) {
+                this.showInfoSection = true;
+                this.categoryIcons.forEach((icon: any) => {
+                  if (icon.tooltip === "EWS") {
+                    this.isEWSPatient = true;
+                  } else if (icon.tooltip === "CGHS") {
+                    this.isCGHSPatient = true;
+                  }
+                });
+              } else {
+                this.showInfoSection = false;
+              }
+              this.MaxIDExist = true;
+              //RESOPONSE DATA BINDING WITH CONTROLS
+              this.setValuesToOPRegForm(this.patientDetails);
+
+              //added timeout for address clear issue
+              // setTimeout(() => {
+              //   this.maxIDChangeCall = false;
+              // }, 2000);
+              this.maxIDSearch = false;
+              if (this.isEWSPatient) {
+                this._bottomSheet.open(EwspatientPopupComponent);
+              }
+            }
+          },
+          (error) => {
+            this.apiProcessing = false;
+            if (error.error == "Patient Not found") {
+              // this.messageDialogService.info(error.error);
+              this.router.navigate([], {
+                queryParams: {},
+                relativeTo: this.route,
+              });
+              this.flushAllObjects();
+              this.patientformGroup.controls["maxid"].setValue(
+                iacode + "." + regNumber
+              );
+              this.patientformGroup.controls["maxid"].setErrors({
+                incorrect: true,
+              });
+              this.patientform[0].customErrorMessage = "Invalid Max ID";
+            }
+            //this.clear();
+            // this.maxIDChangeCall = false;
+          }
+        );
+    } else {
+      this.apiProcessing = false;
+      this.patientformGroup.controls["maxid"].setErrors({
+        incorrect: true,
+      });
+      this.patientform[0].customErrorMessage = "Invalid Max ID";
+      this.flushAllObjects();
+    }
+  }
+
+  async checkPatientExpired(iacode: string, regNumber: number) {
+    const res = await this.http
+      .get(
+        PharmacyApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise()
+      .catch(() => {
+        return;
+      });
+    if (res == null || res == undefined) {
+      return false;
+    }
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
+  setValuesToOPRegForm(patientDetails: PatientDetails) {
+    this.patientDetails = patientDetails;
+    if (this.patientDetails?.registrationno == 0) {
+      this.patientDetails?.iacode + ".";
+    } else {
+      this.patientformGroup.controls["maxid"].setValue(
+        this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
+      );
+    }
+    this.patientformGroup.controls["mobile"].setValue(
+      this.patientDetails?.pphone
+    );
+    this.patientformGroup.controls["patienName"].setValue(
+      this.patientDetails?.firstname
+    );
+    this.patientformGroup.controls["gender"].setValue(
+      this.patientDetails?.sexName
+    );
+    this.patientformGroup.controls["patienAge"].setValue(
+      this.patientDetails?.age + " " + this.patientDetails?.ageTypeName
+    );
+    this.patientformGroup.controls["ageType"].setValue(
+      this.patientDetails?.ageTypeName
+    );
+
+    this.patientformGroup.controls["patienAddress"].setValue(
+      patientDetails?.address1
+    );
+
+    //TODO
+    // //FOR VIP NOTES
+    // this.vip = patientDetails.vipreason;
+    // this.vipdb = patientDetails.vipreason;
+
+    // //FOR CHECKBOX
+    // this.patientformGroup.controls["note"].setValue(patientDetails?.note);
+    // //FOR NOTES NOTES
+    // this.noteRemark = patientDetails.notereason;
+    // this.noteRemarkdb = patientDetails.notereason;
+
+    // //FOR CHECKBOX
+    // this.patientformGroup.controls["hwc"].setValue(patientDetails?.hwc);
+    // //FOR HWC NOTES
+    // this.hwcRemark = patientDetails.hwcRemarks;
+    // this.hwcRemarkdb = patientDetails.hwcRemarks;
+    //TODO
+    // this.categoryIcons =
+    //   this.patientService.getCategoryIconsForPatient(patientDetails);
+
+    this.apiProcessing = false;
   }
 }

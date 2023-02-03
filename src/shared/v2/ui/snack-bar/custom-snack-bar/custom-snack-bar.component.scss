@@ -1,0 +1,35 @@
+.sb-sl-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.snackbar-body {
+  flex: 1 1 auto;
+}
+
+.sb-single-button {
+  display: flex;
+}
+
+.sb-multi-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin: 16px -8px 0 0;
+  gap: 10px;
+}
+button.second-btn,
+  button.primary-btn {
+    width: 42px;
+    height: 33px;
+    background: #eff3f6 0% 0% no-repeat padding-box;
+    border-radius: 4px;
+    color: #000000;
+    border: none;
+  }
+  button.primary-btn {
+    background: #004084 0% 0% no-repeat padding-box;
+    color: #ffffff;
+  }

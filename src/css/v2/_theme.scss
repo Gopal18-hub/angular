@@ -544,74 +544,29 @@ background: #FFFFFF 0% 0% no-repeat padding-box;
   }
 }
 
-.mat-snack-bar-container {
-  // color: #ffffff;
-  // background: #004084;
-  // border-radius: 10px !important;
-  box-sizing: unset!important;
-  display: block;
-  margin:  unset!important;
-  max-width:  unset!important;
-  min-width:  unset!important;
-  padding:  unset!important;
-  min-height:  unset!important;;
-  transform-origin: center;
-background: unset!important;
-  box-shadow: unset!important;
-  border: unset!important;
-  border-radius: unset!important;
 
-  color:  unset!important;
-  .mat-snack-bar-error {
-    .mat-maxhealth-snackbar {
-      .mat-maxhealth-snackbar-content {
-        .notification {
-          .icon {
-            mat-icon {
-              color: #ffcc00;
-              width: 34px;
-              height: 34px;
-              font-size: 34px;
-            }
-          }
-        }
-      }
-    }
-  }
+.success {
+  background-color: #51a351;
+  color: #fff;
+}
+.error {
+  background-color: #bd362f;
+  color: #fff;
+}
 
-  .mat-snack-bar-info {
-    .mat-maxhealth-snackbar {
-      .mat-maxhealth-snackbar-content {
-        .notification {
-          .icon {
-            mat-icon {
-              color: #3cc5e6;
-              width: 34px;
-              height: 34px;
-              font-size: 34px;
-            }
-          }
-        }
-      }
-    }
-  }
+.warn {
+  background-color: #f89406;
+  color: #fff;
+}
 
-  .mat-snack-bar-success {
-    .mat-maxhealth-snackbar {
-      .mat-maxhealth-snackbar-content {
-        .notification {
-          .icon {
-            mat-icon {
-              color: #48a9a6;
-              width: 34px;
-              height: 34px;
-              font-size: 34px;
-            }
-          }
-        }
-      }
-    }
-  }
+.info {
+  background-color: #2f96b4;
+  color: #fff;
+}
+
+.btn-primary {
+  // background-color: #0d6efd;
+  color: darkblue;
 }
 
 
@@ -628,6 +583,7 @@ h4 {
 }
 .mat-form-field-flex {
   padding-top: 10px !important;
+  margin-bottom:20px;
 }
 .mat-form-field-label {
   margin-top: -27px !important;
@@ -639,7 +595,14 @@ h4 {
   margin-top: -5px !important;
 }
 .mat-form-field-subscript-wrapper {
-  position: relative !important;
+  // position: relative !important;
+  margin-top: -2px !important;
+  // z-index:1000;
+  .mat-form-field {
+    font-weight: 400 !important;
+    font-family: Proxima Nova,sans-serif;
+    letter-spacing: normal;
+}
 }
 .mat-placeholder-required.mat-form-field-required-marker {
   display: none;

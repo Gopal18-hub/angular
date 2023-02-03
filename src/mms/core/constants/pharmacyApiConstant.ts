@@ -8,4 +8,28 @@ export namespace PharmacyApiConstants {
   //PATIENT GENDER RESPONSE TYPE genderModel[]
   export const genderLookUp =
     environment.CommonApiUrl + "api/lookup/genderlookup/0";
+
+  /* ----------------------------------------------------------------------------------------------------------
+    ------------------------------PatientApiUrl ENDPOINTS-------------------------------------------------- 
+    ----------------------------------------------------------------------------------------------------------*/
+
+  //PATIENT DETAILS BY REGISTATION NUMBER(MANDATORY) AND IADCODE(MANDATORY) RESPONSE TYPE patientDetailsModel
+  export const patientDetails = (registrationno: number, iacode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientbymaxid/" +
+      registrationno +
+      "/" +
+      iacode
+    );
+  };
+
+  export const getforegexpiredpatientdetails = (
+    IACode: string,
+    RegistrationNo: number,
+    fromTime?: string,
+    toTime?: string,
+    locationID?: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getforegexpiredpatientdetails/${RegistrationNo}/${IACode}`;
 }

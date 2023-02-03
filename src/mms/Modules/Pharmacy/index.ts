@@ -34,12 +34,16 @@ import { PharmacyComponent } from "./pharmacy.component";
 import { IssueEntryComponent } from "./submodules/issue-entry/issue-entry.component";
 import { RightPanelComponent } from "./submodules/issue-entry/right-panel/right-panel.component";
 import { LeftPanelComponent } from "./submodules/issue-entry/left-panel/left-panel.component";
+import { EwspatientPopupComponent } from "./submodules/issue-entry/prompts/ewspatient-popup/ewspatient-popup.component";
+import { CustomSnackBarComponent } from "@shared/v2/ui/snack-bar/custom-snack-bar/custom-snack-bar.component";
 @NgModule({
   declarations: [
     PharmacyComponent,
     IssueEntryComponent,
     LeftPanelComponent,
     RightPanelComponent,
+    EwspatientPopupComponent,
+    CustomSnackBarComponent,
   ],
   imports: [
     PharmacyRoutingModule,

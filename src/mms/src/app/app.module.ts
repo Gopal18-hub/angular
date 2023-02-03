@@ -20,6 +20,7 @@ import { CookieService } from "@shared/services/cookie.service";
 // import { ConfigureModule } from "@modules/configure";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MaxHealthSnackBarModule } from "@shared/v2/ui/snack-bar";
+import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
 
 const importModules = [
   HeaderModule,
@@ -40,6 +41,7 @@ const providers = [
   MessageDialogService,
   SearchService,
   CookieService,
+  SnackBarService,
 ];
 @NgModule({
   declarations: [AppComponent],
