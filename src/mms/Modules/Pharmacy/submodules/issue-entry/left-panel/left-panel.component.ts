@@ -1,7 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { MatDialog } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "@shared/v2/services/cookie.service";
 import { HttpService } from "@shared/v2/services/http.service";
@@ -14,6 +18,7 @@ import { GenderModel } from "../../../../../core/models/genderModel.Model";
 import { IssueEntryService } from "../../../../../core/services/issue-entry.service";
 import { EwspatientPopupComponent } from "../prompts/ewspatient-popup/ewspatient-popup.component";
 import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
+import { SimilarSoundPatientResponse } from "../../../../../core/models/getsimilarsound.Model";
 @Component({
   selector: "issue-entry-left-panel",
   templateUrl: "./left-panel.component.html",
@@ -121,6 +126,10 @@ export class LeftPanelComponent implements OnInit {
   expiredPatient: boolean = false;
   public patientDetails!: PatientDetails;
   MaxIDExist: boolean = false;
+
+  similarContactPatientList: SimilarSoundPatientResponse[] = [];
+  phoneNumberFlag: boolean = false;
+  isPatientdetailModified: boolean = false;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -279,6 +288,24 @@ export class LeftPanelComponent implements OnInit {
     this.patientform[0].elementRef.addEventListener(
       "blur",
       this.onMaxIDChange.bind(this)
+    );
+
+    this.patientform[1].elementRef.addEventListener(
+      "blur",
+      this.onPhoneModify.bind(this)
+    );
+
+    //ENTER EVENT ON PHONE NUMBER
+    this.patientform[1].elementRef.addEventListener(
+      "keypress",
+      (event: any) => {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          this.onEnterPhoneModify();
+        }
+      }
     );
 
     this.patientform[4].elementRef.addEventListener(
@@ -492,5 +519,223 @@ export class LeftPanelComponent implements OnInit {
     //   this.patientService.getCategoryIconsForPatient(patientDetails);
 
     this.apiProcessing = false;
+  }
+
+  //Patient data retrieval block based on Phone
+
+  //CLEARING OLDER PHONE SEARCH
+  onEnterPhoneModify() {
+    this.similarContactPatientList = [] as any;
+    this.onPhoneModify();
+    this.phoneNumberFlag = true;
+  }
+
+  onPhoneModify() {
+    if (
+      this.patientformGroup.controls["mobile"].valid
+      // && !this.maxIDChangeCall &&
+      // !this.phoneNumberFlag
+    ) {
+      //IF EVENT HAS BEEN NOT HITTED API
+      if (!this.similarSoundListPresent()) {
+        if (this.checkForModifiedPatientDetail()) {
+          // this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
+        } else {
+          this.getSimilarPatientDetails();
+        }
+      }
+    }
+  }
+  //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
+  similarSoundListPresent(): boolean {
+    return this.similarContactPatientList.length > 0 ? true : false;
+  }
+
+  checkForModifiedPatientDetail() {
+    this.isPatientdetailModified = false;
+    if (this.MaxIDExist) {
+      this.isPatientdetailModified = true;
+    }
+    return this.isPatientdetailModified;
+  }
+
+  getSimilarPatientDetails() {
+    // subscribe to component event to know when to deleteconst selfDeleteSub = component.instance.deleteSelf
+    this.matDialog.closeAll();
+    if (!this.MaxIDExist) {
+      this.http
+        .post(PharmacyApiConstants.similarSoundPatientDetail, {
+          phone: this.patientformGroup.value.mobile,
+        })
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: SimilarSoundPatientResponse[]) => {
+            this.similarContactPatientList = resultData;
+            if (
+              this.similarContactPatientList.length != 0 &&
+              this.similarContactPatientList.length > 1
+            ) {
+              const similarSoundDialogref = this.matDialog.open(
+                SimilarPatientDialog,
+                {
+                  width: "60vw",
+                  height: "80vh",
+                  data: {
+                    searchResults: this.similarContactPatientList,
+                  },
+                  panelClass: ["animate__animated", "animate__slideInRight"],
+                  position: { right: "0px", bottom: "0px" },
+                }
+              );
+              similarSoundDialogref
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result) => {
+                  if (result) {
+                    this.isRegPatient = true;
+
+                    let ageData = result.data["added"][0].age;
+                    let ageArray = ageData.split(" ");
+                    let age = ageArray.slice(0, 1).toString();
+                    let ageType = ageArray.slice(1, 2).toString();
+
+                    this.patientformGroup.controls["maxid"].setValue(
+                      result.data["added"][0].maxid
+                    );
+                    this.patientformGroup.controls["ageType"].setValue(ageType);
+                    this.patientformGroup.controls["gender"].setValue(
+                      result.data["added"][0].gender
+                    );
+                    this.patientformGroup.controls["mobile"].setValue(
+                      result.data["added"][0].phone
+                    );
+                    this.patientformGroup.controls["patienAddress"].setValue(
+                      result.data["added"][0].address
+                    );
+                    this.patientformGroup.controls["patienAge"].setValue(age);
+                    this.patientformGroup.controls["patienName"].setValue(
+                      result.data["added"][0].firstName
+                    );
+                  }
+                  this.similarContactPatientList = [];
+                });
+            } else if (this.similarContactPatientList.length == 1) {
+              this.isRegPatient = true;
+              let ageData = this.similarContactPatientList[0].age;
+              let ageArray = ageData.split(" ");
+              let age = ageArray.slice(0, 1).toString();
+              let ageType = ageArray.slice(1, 2).toString();
+
+              this.patientformGroup.controls["maxid"].setValue(
+                this.similarContactPatientList[0].maxid
+              );
+              this.patientformGroup.controls["ageType"].setValue(ageType);
+              // this.patientformGroup.controls["companyName"].setValue(this.similarContactPatientList[0].maxid)
+              // this.patientformGroup.controls["doctorName"].setValue(this.similarContactPatientList[0].maxid)
+              this.patientformGroup.controls["gender"].setValue(
+                this.similarContactPatientList[0].gender
+              );
+              this.patientformGroup.controls["mobile"].setValue(
+                this.similarContactPatientList[0].phone
+              );
+              this.patientformGroup.controls["patienAddress"].setValue(
+                this.similarContactPatientList[0].address
+              );
+              this.patientformGroup.controls["patienAge"].setValue(age);
+              this.patientformGroup.controls["patienName"].setValue(
+                this.similarContactPatientList[0].firstName
+              );
+            } else {
+              console.log("no data found");
+            }
+            // }
+          },
+          (error) => {
+            console.log(error);
+            // this.messageDialogService.info(error.error);
+          }
+        );
+    }
+  }
+}
+
+@Component({
+  selector: "out-patients-op-registration",
+  templateUrl: "../prompts/similar-patient-dialog/similarPatient-dialog.html",
+})
+export class SimilarPatientDialog {
+  @ViewChild("patientDetail") tableRows: any;
+  constructor(
+    private dialogRef: MatDialogRef<SimilarPatientDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+  ngOnInit(): void {}
+
+  ngAfterViewInit() {
+    this.getMaxID();
+  }
+
+  config: any = {
+    selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
+    displayedColumns: [
+      "maxid",
+      "firstName",
+      "lastName",
+      "phone",
+      "address",
+      "age",
+      "gender",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      firstName: {
+        title: "First Name",
+        type: "string",
+      },
+      lastName: {
+        title: "Last Name",
+        type: "string",
+      },
+      phone: {
+        title: "Phone No. ",
+        type: "string",
+      },
+      address: {
+        title: "Address ",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+        tooltipColumn: "address",
+      },
+      age: {
+        title: "Age ",
+        type: "string",
+        style: {
+          width: "90px",
+        },
+      },
+      gender: {
+        title: "Gender",
+        type: "string",
+        style: {
+          width: "70px",
+        },
+      },
+    },
+  };
+
+  getMaxID() {
+    this.tableRows.selection.changed.subscribe((res: any) => {
+      this.dialogRef.close({ data: res });
+    });
   }
 }

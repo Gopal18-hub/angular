@@ -32,4 +32,7 @@ export namespace PharmacyApiConstants {
     locationID?: string
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getforegexpiredpatientdetails/${RegistrationNo}/${IACode}`;
+
+  export const similarSoundPatientDetail =
+    environment.PatientApiUrl + "api/patient/getsimilarsoundpatient";
 }

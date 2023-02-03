@@ -36,6 +36,7 @@ import { RightPanelComponent } from "./submodules/issue-entry/right-panel/right-
 import { LeftPanelComponent } from "./submodules/issue-entry/left-panel/left-panel.component";
 import { EwspatientPopupComponent } from "./submodules/issue-entry/prompts/ewspatient-popup/ewspatient-popup.component";
 import { CustomSnackBarComponent } from "@shared/v2/ui/snack-bar/custom-snack-bar/custom-snack-bar.component";
+import { SimilarPatientDialog } from "./submodules/issue-entry/left-panel/left-panel.component";
 @NgModule({
   declarations: [
     PharmacyComponent,
@@ -44,6 +45,7 @@ import { CustomSnackBarComponent } from "@shared/v2/ui/snack-bar/custom-snack-ba
     RightPanelComponent,
     EwspatientPopupComponent,
     CustomSnackBarComponent,
+    SimilarPatientDialog,
   ],
   imports: [
     PharmacyRoutingModule,

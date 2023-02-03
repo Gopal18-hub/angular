@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { MatBottomSheet } from "@angular/material/bottom-sheet";
 
 @Component({
   selector: "mms-ewspatient-popup",
@@ -6,7 +7,11 @@ import { Component, Inject, OnInit } from "@angular/core";
   styleUrls: ["./ewspatient-popup.component.scss"],
 })
 export class EwspatientPopupComponent implements OnInit {
-  constructor() {}
+  constructor(private _bottomSheet: MatBottomSheet) {}
 
   ngOnInit(): void {}
+  closeEwsPopup() {
+    this._bottomSheet.dismiss();
+  }
+  submit() {}
 }
