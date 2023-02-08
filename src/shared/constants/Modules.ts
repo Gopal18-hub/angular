@@ -431,9 +431,44 @@ export namespace MaxModules {
     {
       title: "MMS",
       id: 3,
-      defaultPath: "",
-      allUsersAllow: false,
-      childrens: [],
+      defaultPath: "/mms",
+      moreOptions: true,
+      type: "module",
+      allUsersAllow: true,
+      childrens: [
+        {
+          id: 62,
+          title: "OP Pharmacy",
+          defaultPath: "oppharmacy",
+          globalSearchKey: "global",
+          allUsersAllow: false,
+          moreOptions: true,
+          tenentPath: "/mms",
+          childrens: [
+            {
+              id: 60,
+              title: "Cash/Credit issue",
+              defaultPath: "/pharmacy/issue-entry",
+              globalSearchKey: "global",
+              allUsersAllow: true,
+            },
+            {
+              id: 61,
+              title: "EP Orders",
+              defaultPath: "/oppharmacy/ep-order",
+              globalSearchKey: "global",
+              allUsersAllow: true,
+            },
+            {
+              id: 460,
+              title: "Online Orders",
+              defaultPath: "/oppharmacy/online-order",
+              globalSearchKey: "global",
+              allUsersAllow: true,
+            },
+          ],
+        },
+      ],
     },
     {
       title: "Operation Theater",

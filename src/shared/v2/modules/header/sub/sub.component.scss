@@ -111,8 +111,8 @@
    
   background-color: white;
   height: 50px;
-  margin-bottom: 10px;
-  padding: 30px 20px;
+  // margin-bottom: 10px;
+  // padding: 30px 20px;
 }
 .example-container {
   // height: 100px;
@@ -316,7 +316,7 @@ opacity: 1;
 // margin-top: 7px;
 }
 .menu-item{
-  padding: 10px 3px;
+  padding: 8px 3px;
   font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-17) var(--unnamed-font-family-proxima-nova);
 letter-spacing: var(--unnamed-character-spacing-0);
 color: var(--unnamed-color-004084);
@@ -327,6 +327,21 @@ color: #004084;
 opacity: 1;
 margin-top: 7px;
 }
+
+.mat-form-field-flex {
+  padding-top: 13px !important;
+  // margin-bottom: -12px !important;
+}
+
+.mat-form-field {
+  &.mat-form-field-appearance-outline {
+    .mat-form-field-suffix,
+    .mat-form-field-prefix {
+      top: 0.15em !important;
+    }
+  }
+}
+
 }
 .search-note {
   font-size: 10px;

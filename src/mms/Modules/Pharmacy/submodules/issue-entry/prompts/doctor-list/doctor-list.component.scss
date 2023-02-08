@@ -1,0 +1,42 @@
+button.second-btn,
+button.primary-btn {
+    width: 134px;
+    height: 56px;
+  background: #eff3f6 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  color: #000000;
+  border: none;
+}
+button.primary-btn {
+  background: #45c0be 0% 0% no-repeat padding-box;
+  color: #ffffff;
+}
+.doctor_table{
+    height: 60vh;
+    padding: 20px 0px;
+    padding-top: 10px;
+}
+.select_doctor{
+    width: 100%;
+    display: block;
+}
+.doc_title{
+   
+text-align: left;
+font: normal normal bold 16px Proxima Nova;
+letter-spacing: 0.48px;
+color: #004084;
+}
+.doc_list_close{
+    position: absolute;
+    right: 5px;
+}
+.doctor_search{
+    height: 30px;
+    margin-top: 12px;
+}
+.doctor_search{
+    button.mat-focus-indicator.search.mat-icon-button.mat-button-base.ng-tns-c98-30{
+        margin-top:10px!important;
+    }
+} 

@@ -64,12 +64,10 @@ export class SubComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.processSubModule();
   }
-
   processSubModule() {
     if (!this.submodules) {
       this.submodules = [];
     }
-    console.log(this.submodules);
     this.submodules.forEach((element: any) => {
       if (
         element.defaultPath &&

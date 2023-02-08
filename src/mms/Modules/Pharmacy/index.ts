@@ -37,6 +37,10 @@ import { LeftPanelComponent } from "./submodules/issue-entry/left-panel/left-pan
 import { EwspatientPopupComponent } from "./submodules/issue-entry/prompts/ewspatient-popup/ewspatient-popup.component";
 import { CustomSnackBarComponent } from "@shared/v2/ui/snack-bar/custom-snack-bar/custom-snack-bar.component";
 import { SimilarPatientDialog } from "./submodules/issue-entry/left-panel/left-panel.component";
+// import { SsdtComponent } from "./submodules/ssrs-preview/ssdt/ssdt.component";
+import { DoctorListComponent } from "./submodules/issue-entry/prompts/doctor-list/doctor-list.component";
+import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
+
 @NgModule({
   declarations: [
     PharmacyComponent,
@@ -46,6 +50,8 @@ import { SimilarPatientDialog } from "./submodules/issue-entry/left-panel/left-p
     EwspatientPopupComponent,
     CustomSnackBarComponent,
     SimilarPatientDialog,
+    // SsdtComponent,
+    DoctorListComponent,
   ],
   imports: [
     PharmacyRoutingModule,
@@ -70,6 +76,7 @@ import { SimilarPatientDialog } from "./submodules/issue-entry/left-panel/left-p
     MatProgressSpinnerModule,
     MatRadioModule,
     MatTooltipModule,
+    MatBottomSheetModule,
     FormDialogueModule,
   ],
   exports: [],

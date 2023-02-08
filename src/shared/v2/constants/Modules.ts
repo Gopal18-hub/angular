@@ -434,6 +434,7 @@ export namespace MaxModules {
       defaultPath: "/mms",
       moreOptions: true,
       type: "module",
+      allUsersAllow: true,
       childrens: [
         {
           id: -1,
@@ -460,32 +461,32 @@ export namespace MaxModules {
               childrens: [
                 {
                   id: 60,
-                  title: "Issue / Credit",
-                  defaultPath: "/oppharmacy/issue",
+                  title: "Cash/Credit issue",
+                  defaultPath: "/mms/pharmacy/issue-entry",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 61,
-                  title: "Returns",
-                  defaultPath: "/oppharmacy/returns",
+                  title: "EP Orders",
+                  defaultPath: "/oppharmacy/ep-order",
                   globalSearchKey: "global",
                   allUsersAllow: false,
                 },
                 {
                   id: 460,
-                  title: "Due bill settlement",
-                  defaultPath: "/oppharmacy/due-bill-settlement",
+                  title: "Online Orders",
+                  defaultPath: "/oppharmacy/online-order",
                   globalSearchKey: "global",
                   allUsersAllow: true,
                 },
-                {
-                  id: 461,
-                  title: "Home delivery due report",
-                  defaultPath: "/oppharmacy/home-delivery-due",
-                  globalSearchKey: "unmerge",
-                  allUsersAllow: true,
-                },
+                // {
+                //   id: 461,
+                //   title: "Home delivery due report",
+                //   defaultPath: "/oppharmacy/home-delivery-due",
+                //   globalSearchKey: "unmerge",
+                //   allUsersAllow: true,
+                // },
               ],
             },
             {

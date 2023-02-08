@@ -112,7 +112,6 @@ export class HeaderComponent implements OnInit {
     await this.permissionService.getPermissionsRoleWise();
     this.isMenuVisible = false;
     this.modules = this.permissionService.checkModules();
-    console.log("this.modules", this.modules);
     this.modules.forEach((element: any) => {
       if (
         element.defaultPath == this.baseHref ||
@@ -122,8 +121,9 @@ export class HeaderComponent implements OnInit {
       }
     });
     // For dev only
-    this.activeModule = this.modules[1];
-    //console.log('activeModule',this.activeModule);
+    this.isMenuVisible = true;
+    let mod = this.modules[4].childrens[1];
+    this.activeModule = mod.childrens[0];
     // this.setRefreshedToken(); //Set refreshed access token in cookie
     this.location = this.cookieService.get("Location");
     this.station = this.cookieService.get("Station");
@@ -135,7 +135,6 @@ export class HeaderComponent implements OnInit {
     if (!this.submodules) {
       this.submodules = [];
     }
-    console.log("this.submodules", this.submodules);
     this.submodules.forEach((element: any) => {
       if (
         element.defaultPath &&
@@ -158,11 +157,9 @@ export class HeaderComponent implements OnInit {
   }
 
   showSubMenu(event: any) {
-    console.log("showsub", event);
     this.submenuName = event.target.innerText;
     this.submenuTitle = this.submenuName;
     this.showSubmenu = true;
-    console.log("this.activeModule", this.activeModule);
     this.parentMenu = event.target.innerText;
     this.childMenu = "";
     // this.processSubModule();
@@ -171,12 +168,6 @@ export class HeaderComponent implements OnInit {
   }
 
   hideSubMenu(event: any) {
-    // console.log("this.submenuName", this.submenuName);
-    console.log("this.activeModule", this.activeModule);
-    // console.log("hide", event);
-
-    console.log("this.parentMenu", this.parentMenu);
-    console.log("this.childMenu", this.childMenu);
     // this.submenuName={...this.submenuName}
     // if (this.showSubChild == true) {
     //   this.showSubmenu = true;
@@ -201,7 +192,6 @@ export class HeaderComponent implements OnInit {
           masterModule.childrens?.forEach(
             (childrenModule: any, childIndex: number) => {
               if (this.childMenu === childrenModule.title) {
-                console.log("childrenModule", childrenModule);
                 this.activeModule = masterModule;
                 this.submenuName = masterModule.title;
                 this.childMenu = ""; //masterModule.title;
@@ -212,7 +202,6 @@ export class HeaderComponent implements OnInit {
                 ) {
                   childrenModule.childrens?.forEach(
                     (subchildrenModule: any, subchildIndex: number) => {
-                      console.log("subchildrenModule", subchildrenModule);
                       if (this.childMenu === subchildrenModule.title) {
                         this.activeModule = childrenModule;
                         this.submenuName = childrenModule.title;
@@ -225,7 +214,6 @@ export class HeaderComponent implements OnInit {
             }
           );
         } else {
-          console.log("masterModule", masterModule);
           this.activeModule = masterModule;
           this.submenuName = masterModule.title;
           this.childMenu = masterModule.title; //;
@@ -237,7 +225,6 @@ export class HeaderComponent implements OnInit {
   }
 
   subChildShow(event: any, childModule: any) {
-    console.log("this.activeModule", this.activeModule);
     if (
       childModule.childrens != undefined &&
       childModule.childrens.length > 0
@@ -249,7 +236,6 @@ export class HeaderComponent implements OnInit {
       this.submenuName = event.target.innerText;
 
       this.submodules = this.activeModule.childrens;
-      console.log("this.submodules", this.submodules);
       this.isMenuVisible = false;
       this.isExpanded = true;
     } else {
@@ -263,7 +249,6 @@ export class HeaderComponent implements OnInit {
     let definedModules: any = MaxModules.getModules();
     definedModules.forEach((masterModule: any, index: number) => {
       if (this.childMenu === this.parentMenu) {
-        console.log("masterModule", masterModule);
         this.activeModule = masterModule;
       }
     });
@@ -307,7 +292,6 @@ export class HeaderComponent implements OnInit {
     //   .ClearExistingLogin(Number(this.cookieService.get("UserId")))
     //   .pipe(takeUntil(this._destroying$))
     //   .subscribe(async (resdata: any) => {
-    //     console.log(resdata);
     //   });
     this.authService.logout().subscribe((response: any) => {
       if (response.postLogoutRedirectUri) {

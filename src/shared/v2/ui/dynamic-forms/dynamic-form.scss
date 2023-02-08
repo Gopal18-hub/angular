@@ -1,204 +1,125 @@
-  ::ng-deep .im-select-dropdown {
-    mat-optgroup {
-      label.mat-optgroup-label:empty {
-        display: none;
-      }
-    }
-  }
-  mat-label {
-    font-weight: 600;
-  }
-  .full-width {
-    width: 100%;
-  }
-  .w-48 {
-    width: 48%;
-  }
-  .im-textarea {
-    textarea {
-      overflow: hidden !important;
-      line-height: 24px;
-    }
-    .mat-form-field-infix {
-      padding-bottom: 1.24375em;
-    }
-  }
-  ::ng-deep mat-label.mat-form-field-required-marker {
-    &:empty {
+::ng-deep .im-select-dropdown {
+  mat-optgroup {
+    label.mat-optgroup-label:empty {
       display: none;
     }
-    &:after {
-      content: "*";
-      color: red;
-      margin-left: 0.2em;
-    }
   }
-  
-  .mat-select-panel.mat-primary.im-select-dropdown {
-    min-width: calc(100% + 12px) !important;
+}
+mat-label {
+  font-weight: 600;
+}
+.full-width {
+  width: 100%;
+}
+.w-48 {
+  width: 48%;
+}
+.im-textarea {
+  textarea {
+    overflow: hidden !important;
+    line-height: 24px;
   }
-  ::ng-deep .max-select-overlay-panel {
-    transform: translate(-8px, 22px) !important;
-    &[style*="bottom"] {
-      transform: translate(-8px, -24px) !important;
-    }
+  .mat-form-field-infix {
+    padding-bottom: 1.24375em;
   }
-  .mat-error {
-    font-weight: bolder;
-    &::before {
-      content: "\e002";
-      font-family: "Material Icons";
-      padding-left: 0.2rem;
-      padding-right: 0.1rem;
-      padding-top: 0.6666666667em;
-      font-weight: 400;
-      position: relative;
-      top: 1px;
-    }
+}
+::ng-deep mat-label.mat-form-field-required-marker {
+  &:empty {
+    display: none;
   }
-  .editable-textarea-button {
-    color: #5a5a5a;
-    padding: 0;
+  &:after {
+    content: "*";
+    color: red;
+    margin-left: 0.2em;
+  }
+}
+
+.mat-select-panel.mat-primary.im-select-dropdown {
+  min-width: calc(100% + 12px) !important;
+}
+::ng-deep .max-select-overlay-panel {
+  transform: translate(-8px, 22px) !important;
+  &[style*="bottom"] {
+    transform: translate(-8px, -24px) !important;
+  }
+}
+.mat-error {
+  font-weight: bolder;
+  &::before {
+    content: "\e002";
+    font-family: "Material Icons";
+    padding-left: 0.2rem;
+    padding-right: 0.1rem;
+    padding-top: 0.6666666667em;
+    font-weight: 400;
+    position: relative;
+    top: 1px;
+  }
+}
+.editable-textarea-button {
+  color: #5a5a5a;
+  padding: 0;
+  height: 24px !important;
+  ::ng-deep .mat-button-focus-overlay {
+    display: none;
+  }
+  ::ng-deep .mat-button-wrapper {
+    display: flex;
+    align-items: center;
     height: 24px !important;
-    ::ng-deep .mat-button-focus-overlay {
-      display: none;
-    }
-    ::ng-deep .mat-button-wrapper {
+
+    .box-input {
+      border-color: #ababab;
+      background-color: #fff;
+      height: 24px;
+      overflow: hidden;
       display: flex;
       align-items: center;
-      height: 24px !important;
-  
-      .box-input {
-        border-color: #ababab;
-        background-color: #fff;
-        height: 24px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
+      width: 100%;
     }
   }
-  .editable-form-textarea {
-    ::ng-deep .text-area-edit {
-      background: #fff;
-      width: 185px;
-      border-radius: 8px;
-      &.mat-form-field-appearance-outline .mat-form-field-wrapper {
-        padding-bottom: 0 !important;
-      }
+}
+.editable-form-textarea {
+  ::ng-deep .text-area-edit {
+    background: #fff;
+    width: 185px;
+    border-radius: 8px;
+    &.mat-form-field-appearance-outline .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
     }
   }
-  
-  
+}
+
   //new design based on the style guide implemented
-mat-form-field {
   mat-form-field {
-    // border: none;
-    // background: none;
-  }
-  mat-label {
-    font-weight: 600;
-    margin: 0px 0 0px 2px;
-    letter-spacing: 0.84px;
-    color: #004084 !important;
-    font-size: 17px;
-    background: #ffff;
-    padding: 0 10px;
-  }
-  button.clear mat-icon {
-    color: #ffffff;
-    border: 0.5px solid #ffffff;
-    opacity: 1;
-    background: #707070 0% 0% no-repeat padding-box;
-    border: 1px solid #707070;
-    opacity: 1;
-    border-radius: 109px;
-    font-size: 10px;
-    padding: 1px;
-    width: 14px;
-    height: 14px;
-  }
-  button.clear {
-    right: -3px;
-    display: none !important;
-  }
-  mat-datepicker-toggle {
-    margin-top: 3px;
-  }
-  mat-select .mat-select-arrow-wrapper {
-    margin-right: 0px;
-  }
-  .mat-input-element.text-right {
-    width: 96%;
-  }
-  &:hover,
-  &.mat-focused {
+    mat-form-field {
+      // border: none;
+      // background: none;
+    }
+    mat-label {
+      font-weight: 600;
+      margin: 0px 0 0px 2px;
+      letter-spacing: 0.84px;
+      color: #004084 !important;
+      font-size: 17px;
+      background: #ffff;
+      // padding: 0 10px;
+    }
+    button.clear mat-icon {
+      color: #ffffff;
+      border: 0.5px solid #ffffff;
+      opacity: 1;
+      background: #707070 0% 0% no-repeat padding-box;
+      border: 1px solid #707070;
+      opacity: 1;
+      border-radius: 109px;
+      font-size: 10px;
+      padding: 1px;
+      width: 14px;
+      height: 14px;
+    }
     button.clear {
-      display: inline-flex !important;
-    }
-    mat-select .mat-select-arrow-wrapper {
-      margin-right: 15px;
+      right: -3px;
+      // display: none !important;
     }
   }
-}
-
-.drop_close_button .drop_close {
-  border: none;
-  margin-top: -5px;
-  position: absolute;
-  right: 0px;
-}
-.drop_close_button hr.drop_center {
-  width: 10%;
-  display: inline-block;
-  margin: 14px 0;
-  border: 0.15em solid #b8b8b8;
-  margin-top: -1px;
-}
-mat-option.mat-option {
-  border-bottom: 1px solid #b8b8b8;
-}
-.bottomSheetdropdown.drop_close_button {
-  display: none;
-}
-@media screen and (max-width: 399px) {
-  .mat-select-panel.mat-primary.im-select-dropdown {
-    min-width: calc(100% + 12px) !important;
-  }
-  ::ng-deep .max-select-overlay-panel {
-    transform: none !important;
-    &[style*="bottom"] {
-      transform: none !important;
-    }
-  }
-  .bottomSheetdropdown.drop_close_button {
-    display: block;
-    margin-top: 7px;
-  }
-  .bottomSheetdropdownSearch {
-    margin-top: -5px;
-    mat-icon.search-icon {
-      margin: -5px 0 0 0;
-    }
-    input.insside {
-      width: 95%;
-      margin-left: 1%;
-    }
-  }
-}
-
-.bottomSheetdropdownSearch {
-  input.insside {
-    border: 1px solid #5d676ed1;
-    width: 96.5%;
-    border-radius: 5px;
-    text-align: revert;
-    padding: 6px 5px;
-    margin-left: 1%;
-  }
-  mat-icon.search-icon {
-    margin: -5px 0 0 0;
-  }
-}
-  ///End of design

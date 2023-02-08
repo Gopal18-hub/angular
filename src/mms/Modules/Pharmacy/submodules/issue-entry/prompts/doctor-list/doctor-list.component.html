@@ -1,0 +1,48 @@
+
+<div class="flex justify-center items-center  doctor_list">
+   
+    <div class="">
+        <div>
+            <div class="select_doctor">
+                
+                <span mat-dialog-title class="doc_title">Select Doctor Name</span>
+                <span class="doc_list_close"><mat-icon (click)="closeDoctorList()">close</mat-icon></span>
+             </div>
+        <button class="mt-2 mr-2  second-btn"  [ngClass]="{ 'primary-btn': this.doctortype == 1 }"
+        (click)="showInternalDoctor()">
+            Internal doctor
+        </button>
+        <button class=" mt-2 second-btn" [ngClass]="{ 'primary-btn': doctortype == 2 }"
+        (click)="showExternalDoctor()">
+            External Doctor
+        </button>
+        
+        </div>
+        <div class="doctor_search">
+            <form
+            [formGroup]="doctorformGroup"
+            autocomplete="off"
+            class="w-full align-items-center"
+            >
+                <div class="flex mt-2">
+                    <maxhealth-question
+                    class="w-full"
+                    [question]="doctorform[0]"
+                    [form]="doctorformGroup"
+                    [questions]="doctorform[0]"
+                    [index]="0"
+
+                    ></maxhealth-question> 
+                </div>
+            </form>
+        </div>
+        <div class="doctor_table">
+            <maxhealth-table #doctortable  [config]="config" [data]="doctorList" 
+            ></maxhealth-table>
+        </div>
+        <div class="add_doctor" *ngIf="doctortype==2">
+            <button mat-flat-button color="primary" class="ml-9">Primary</button>
+        </div>
+    </div>
+    
+</div>

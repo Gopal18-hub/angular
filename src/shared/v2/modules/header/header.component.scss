@@ -5,22 +5,25 @@
 }
 .header-wrapper {
   height: 3.188rem;
-  background-color: white;
-  border-radius: 0 0 0 1rem;
-  
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+
   .right-section {
-    height: 3.188rem;
+    height: 2.188rem;
     align-items: flex-end;
-    justify-content: center;//space-between;
+    justify-content: space-between;//center;//
     .logout-button {
       min-width: initial;
-      padding: 0;
-      margin-right: 1.1em;
+      // padding: 0;
+      width:1rem;
+      // margin-right: 1.1em;
     }
     .user-info {
       height: 2.1rem;
-      svg {
-        width: 80%;
+      .mat-button{
+        height:3.188rem;
+        min-width: 55px !important;
       }
     }
   }

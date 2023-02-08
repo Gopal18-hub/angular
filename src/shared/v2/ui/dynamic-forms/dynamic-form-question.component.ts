@@ -10,25 +10,16 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { FormGroup, FormArray, FormControl, Validators } from "@angular/forms";
-import { Observable, Subscription, Subject, ReplaySubject } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import { QuestionBase } from "./interface/question-base";
 import { QuestionControlService } from "./service/question-control.service";
-import { map, startWith, takeUntil } from "rxjs/operators";
+import { map, startWith } from "rxjs/operators";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import "../../utilities/String-Extentions";
 import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
 import * as moment from "moment";
-import {
-  MatBottomSheet,
-  MAT_BOTTOM_SHEET_DATA,
-} from "@angular/material/bottom-sheet";
-interface Bank {
-  id: string;
-  name: string;
-}
-
 @Component({
   selector: "maxhealth-question",
   templateUrl: "./dynamic-form-question.component.html",
@@ -62,7 +53,7 @@ export class DynamicFormQuestionComponent
   @ViewChild("auto") autocomplete!: MatAutocomplete;
 
   @ViewChild(MatAutocompleteTrigger) trigger!: MatAutocompleteTrigger;
-  @ViewChild("templateBottomSheet") TemplateBottomSheet: any;
+
   filteredOptions!: Observable<any>;
 
   emailDomains: string[] = [
@@ -98,12 +89,8 @@ export class DynamicFormQuestionComponent
   };
 
   toogleButtonTextarea: boolean = false;
-  public bankMultiFilterCtrl: FormControl = new FormControl();
 
-  constructor(
-    private qcs: QuestionControlService,
-    private bottomSheet: MatBottomSheet
-  ) {}
+  constructor(private qcs: QuestionControlService) {}
 
   compareFn: (f1: any, f2: any) => boolean = this.compareByValue;
 
@@ -324,26 +311,7 @@ export class DynamicFormQuestionComponent
 
   @ViewChild("elementsearch") searchElement!: ElementRef;
   getValue() {
-    if (
-      this.question &&
-      this.question.type &&
-      this.question.type == "autocomplete"
-    ) {
-      let va = this.form.controls[this.question.key].value;
-      return va && va.title ? va.title : va;
-    } else if (
-      this.question &&
-      this.question.type &&
-      this.question.type == "dropdown"
-    ) {
-      let va = this.form.controls[this.question.key].value;
-      let result = this.question.options.find((c: any) => c.value === va);
-      let re = result && result.title ? result.title : va;
-      this.selectSearch(re);
-      return re;
-    } else {
-      return this.form.controls[this.question.key].value;
-    }
+    return this.form.controls[this.question.key].value;
   }
 
   ngAfterViewInit(): void {
@@ -457,13 +425,6 @@ export class DynamicFormQuestionComponent
 
   handler(event: any): void {
     this.form.controls[this.question.key].setValue(event.option.value);
-  }
-  openTemplateSheetMenu() {
-    this.bottomSheet.open(this.TemplateBottomSheet);
-  }
-
-  closeTemplateSheetMenu() {
-    this.trigger.closePanel();
   }
   openedMatSelect(e: any) {
     setTimeout(() => {

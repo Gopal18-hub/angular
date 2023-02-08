@@ -1,7 +1,8 @@
 <div class="flex justify-between submodule-wrapper items-center">
   <div class="module-name">{{ module.title }}</div>
+  <div class="mx-1"></div>
   <form class="w-full items-center" autocomplete="off">
-    <mat-form-field appearance="outline" class="menu-item">
+    <mat-form-field appearance="outline" class="menu-item mat-form-field-flex">
       <input
         matInput
         placeholder="Search Patient"
@@ -86,6 +87,7 @@
       </span>
     </mat-form-field>
   </form>
+  <div class="mx-1"></div>
   <mat-menu
     #gloablSearch="matMenu"
     class="search-header-menu"
@@ -137,19 +139,18 @@
   <div class="top-header-menu">
   <ul #subsefdlkjdsfs class="flex flex-row list-unstyled main-modules items-center top-mat-menu-item">
     <ng-container>
-      <button *ngIf="submodules.length > 4" mat-icon-button [matMenuTriggerFor]="menu"
+      <button *ngIf="submodules.length > 3" mat-icon-button [matMenuTriggerFor]="menu"
         aria-label="Example icon-button with a menu">
-        <!-- <mat-icon>more_vert</mat-icon> -->
+        <button class="scroll_button"><mat-icon>keyboard_arrow_left</mat-icon></button>
       </button>
-      <li *ngFor="let module of submodules | slice: 0 : 4" class="mr-2 cursor-pointer menu-item"> {{ module.title }}
+      <li *ngFor="let module of submodules | slice: 0 : 3" class="mr-2 cursor-pointer menu-item"> {{ module.title }}
       </li>
-      <button *ngIf="submodules.length > 4" mat-icon-button [matMenuTriggerFor]="menu"
+      <button *ngIf="submodules.length > 3" mat-icon-button [matMenuTriggerFor]="menu"
         aria-label="Example icon-button with a menu">
-        <!-- <mat-icon>more_vert</mat-icon> -->
         <button class="scroll_button"><mat-icon>keyboard_arrow_right</mat-icon></button>
       </button>
       <mat-menu #menu="matMenu">
-        <button *ngFor="let module of submodules | slice: 4 : submodules.length" mat-menu-item>
+        <button *ngFor="let module of submodules | slice: 3 : submodules.length" mat-menu-item>
         </button>
       </mat-menu>
     </ng-container>

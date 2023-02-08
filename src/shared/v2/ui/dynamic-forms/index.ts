@@ -38,8 +38,7 @@ import {
   NgxMatNativeDateModule,
   NgxMatDateAdapter,
 } from "@angular-material-components/datetime-picker";
-import { AccessControlDirective } from "@shared/v2/utilities/directives/access-control.directive";
-import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
+import{AccessControlDirective} from "@shared/utilities/directives/access-control.directive";
 @NgModule({
   imports: [
     CommonModule,
@@ -61,15 +60,9 @@ import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
     A11yModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
-    MatBottomSheetModule,
   ],
-  exports: [
-    AccessControlDirective,
-    DynamicFormQuestionComponent,
-    MaskedInputDirective,
-  ],
-  declarations: [
-    AccessControlDirective,
+  exports: [AccessControlDirective, DynamicFormQuestionComponent, MaskedInputDirective],
+  declarations: [AccessControlDirective,
     DynamicFormQuestionComponent,
     OptionGroupComponent,
     MaskedInputDirective,

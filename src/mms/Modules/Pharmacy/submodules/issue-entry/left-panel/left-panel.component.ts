@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { MatBottomSheet } from "@angular/material/bottom-sheet";
+// import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import {
   MatDialog,
   MatDialogRef,
@@ -19,6 +19,9 @@ import { IssueEntryService } from "../../../../../core/services/issue-entry.serv
 import { EwspatientPopupComponent } from "../prompts/ewspatient-popup/ewspatient-popup.component";
 import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
 import { SimilarSoundPatientResponse } from "../../../../../core/models/getsimilarsound.Model";
+import { ReportService } from "@shared/services/report.service";
+import { MatBottomSheet } from "@angular/material/bottom-sheet";
+import { DoctorListComponent } from "../prompts/doctor-list/doctor-list.component";
 @Component({
   selector: "issue-entry-left-panel",
   templateUrl: "./left-panel.component.html",
@@ -46,12 +49,13 @@ export class LeftPanelComponent implements OnInit {
         required: true,
         pattern: "^[1-9]{1}[0-9]{9}",
       },
-      patienName: {
+      patientName: {
         //2
-        type: "pattern_string",
+        type: "string",
         title: "Name",
         required: true,
-        pattern: "^[a-zA-Z0-9 ]*$",
+        pattern: "^[a-zA-Z '']*.?[a-zA-Z '']*$",
+        onlyKeyPressAlpha: true,
         capitalizeText: true,
       },
       patienAge: {
@@ -63,7 +67,7 @@ export class LeftPanelComponent implements OnInit {
       },
       ageType: {
         //4
-        title: "", //Age Type
+        title: "Type", //Age Type
         type: "dropdown",
         required: true,
         options: this.ageTypeList,
@@ -86,8 +90,7 @@ export class LeftPanelComponent implements OnInit {
       doctorName: {
         //7
         title: "Doctor Name ",
-        type: "autocomplete",
-        placeholder: "--Select--",
+        type: "string",
         required: true,
       },
       companyName: {
@@ -139,6 +142,7 @@ export class LeftPanelComponent implements OnInit {
     private _bottomSheet: MatBottomSheet,
     private cookie: CookieService,
     public issueEntryService: IssueEntryService,
+    private reportService: ReportService,
     public snackbarService: SnackBarService
   ) {}
 
@@ -160,6 +164,12 @@ export class LeftPanelComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.issueEntryService.billType == 1) {
+      this.patientform[0].required = false;
+    } else {
+      this.patientform[0].required = true;
+    }
+
     this.formEvents();
   }
 
@@ -177,6 +187,11 @@ export class LeftPanelComponent implements OnInit {
     this.patientform = patientformResult.questions;
     this.getAgeTypeList();
     this.getGenderList();
+    if (this.issueEntryService.billType == 1) {
+      this.patientform[0].required = false;
+    } else {
+      this.patientform[0].required = true;
+    }
   }
 
   //AGE TYPE LIST
@@ -215,16 +230,122 @@ export class LeftPanelComponent implements OnInit {
     this._destroying$.complete();
     this.flushAllObjects();
     this.formInit();
+    this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
+    this.patientform[0].required = false;
   }
   showRegSubPanel() {
     this.issueEntryService.billType = 2;
     this.isRegPatient = true;
     this.isShowCompany = true;
+    this.patientform[0].required = true;
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.flushAllObjects();
     this.formInit();
   }
+  submit() {
+    console.log("submit");
+    let isFormValid = this.validateForm();
+  }
+
+  // async validateForm(): Promise<boolean> {
+  validateForm(): boolean {
+    let validationerror = false;
+    if (!validationerror) {
+      // if (this.maxIDSearch) {
+      if (this.patientformGroup.value.maxid) {
+        let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
+        //HANDLING IF MAX ID IS NOT PRESENT
+        if (regNumber != 0) {
+          let iacode = this.patientformGroup.value.maxid.split(".")[0];
+        } else {
+          if (this.issueEntryService.billType == 1) {
+            this.patientformGroup.controls["maxid"].setErrors(null);
+          } else {
+            this.patientformGroup.controls["maxid"].setErrors({
+              required: true,
+            });
+            this.patientform[0].customErrorMessage = "Invalid Max ID";
+            this.patientformGroup.controls["maxid"].markAsTouched();
+          }
+        }
+      }
+      // }
+    }
+
+    if (!this.patientformGroup.value.mobile) {
+      this.patientformGroup.controls["mobile"].setValue("");
+      this.patientformGroup.controls["mobile"].markAsTouched();
+    }
+    //patient name field validation
+    if (!this.patientformGroup.controls["patientName"].value) {
+      validationerror = true;
+      this.patientformGroup.controls["patientName"].setValue("");
+      this.patientformGroup.controls["patientName"].markAsTouched();
+    } else {
+      validationerror = false;
+    }
+    //patient Age Validation
+    // if (!validationerror) {
+    if (!this.patientformGroup.controls["patienAge"].value) {
+      validationerror = true;
+      this.patientformGroup.controls["patienAge"].setValue("");
+      this.patientformGroup.controls["patienAge"].markAsTouched();
+    } else {
+      validationerror = false;
+    }
+    // }
+
+    //AgeType Validation
+    // if (!validationerror) {
+    if (!this.patientformGroup.controls["ageType"].value) {
+      validationerror = true;
+      this.patientformGroup.controls["ageType"].setValue("");
+      this.patientformGroup.controls["ageType"].markAsTouched();
+    } else {
+      validationerror = false;
+    }
+    // }
+
+    //Gender Validation
+    // if (!validationerror) {
+    if (!this.patientformGroup.controls["gender"].value) {
+      validationerror = true;
+      this.patientformGroup.controls["gender"].setValue("");
+      this.patientformGroup.controls["gender"].markAsTouched();
+    } else {
+      validationerror = false;
+    }
+    // }
+
+    //Address Validation
+    // if (!validationerror) {
+    if (!this.patientformGroup.controls["patienAddress"].value) {
+      validationerror = true;
+      this.patientformGroup.controls["patienAddress"].setValue("");
+      this.patientformGroup.controls["patienAddress"].markAsTouched();
+    } else {
+      validationerror = false;
+    }
+    // }
+
+    //Doctor Validation
+    // if (!validationerror) {
+    if (!this.patientformGroup.controls["doctorName"].value) {
+      validationerror = true;
+      this.patientformGroup.controls["doctorName"].setValue("");
+      this.patientformGroup.controls["doctorName"].markAsTouched();
+    } else {
+      validationerror = false;
+    }
+    // }
+
+    return validationerror;
+  }
+
   flushAllObjects() {
     this.categoryIcons = [];
     this.showInfoSection = false;
@@ -237,6 +358,7 @@ export class LeftPanelComponent implements OnInit {
     this.showInfoSection = false;
     this.issueEntryService.billType = 1;
     this.isRegPatient = false;
+    this.isShowCompany = false;
     this.cashInfo = "C";
     this.hotlistInfo = "H";
     this.noteInfo = "N";
@@ -383,6 +505,7 @@ export class LeftPanelComponent implements OnInit {
               this.flushAllObjects();
               // this.maxIDChangeCall = true;
               this.patientDetails = resultData;
+              this.apiProcessing = false;
               this.isRegPatient = true;
               this.categoryIcons =
                 this.issueEntryService.getCategoryIconsForPatient(
@@ -437,10 +560,10 @@ export class LeftPanelComponent implements OnInit {
         );
     } else {
       this.apiProcessing = false;
-      this.patientformGroup.controls["maxid"].setErrors({
-        incorrect: true,
-      });
-      this.patientform[0].customErrorMessage = "Invalid Max ID";
+      // this.patientformGroup.controls["maxid"].setErrors({
+      //   incorrect: true,
+      // });
+      // this.patientform[0].customErrorMessage = "Invalid Max ID";
       this.flushAllObjects();
     }
   }
@@ -481,8 +604,8 @@ export class LeftPanelComponent implements OnInit {
     this.patientformGroup.controls["mobile"].setValue(
       this.patientDetails?.pphone
     );
-    this.patientformGroup.controls["patienName"].setValue(
-      this.patientDetails?.firstname
+    this.patientformGroup.controls["patientName"].setValue(
+      this.patientDetails?.firstname + " " + this.patientDetails?.lastName
     );
     this.patientformGroup.controls["gender"].setValue(
       this.patientDetails?.sexName
@@ -613,7 +736,7 @@ export class LeftPanelComponent implements OnInit {
                       result.data["added"][0].address
                     );
                     this.patientformGroup.controls["patienAge"].setValue(age);
-                    this.patientformGroup.controls["patienName"].setValue(
+                    this.patientformGroup.controls["patientName"].setValue(
                       result.data["added"][0].firstName
                     );
                   }
@@ -642,7 +765,7 @@ export class LeftPanelComponent implements OnInit {
                 this.similarContactPatientList[0].address
               );
               this.patientformGroup.controls["patienAge"].setValue(age);
-              this.patientformGroup.controls["patienName"].setValue(
+              this.patientformGroup.controls["patientName"].setValue(
                 this.similarContactPatientList[0].firstName
               );
             } else {
@@ -656,6 +779,17 @@ export class LeftPanelComponent implements OnInit {
           }
         );
     }
+  }
+
+  showDoctorDetails() {
+    this._bottomSheet
+      .open(DoctorListComponent, {
+        panelClass: "custom-width",
+      })
+      .afterDismissed()
+      .subscribe((response) => {
+        this.patientformGroup.controls["doctorName"].setValue(response);
+      });
   }
 }
 

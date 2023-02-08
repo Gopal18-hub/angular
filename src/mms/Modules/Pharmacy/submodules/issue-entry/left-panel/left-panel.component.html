@@ -3,52 +3,47 @@
     class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
     <mat-spinner strokeWidth="3"></mat-spinner>
   </div>
-  <div class="flex justify-center items-center ml-4 w-9/10">
-    <div class="flex w-7/10">
-      <button class="mt-2 mr-2 second-btn" [ngClass]="{ 'primary-btn': issueEntryService.billType == '1' }"
+  <div class="flex  items-center ml-4 w-9/10">
+    <div class="flex w-2/3">
+      <button class="second-btn" [ngClass]="{ 'primary-btn': issueEntryService.billType == '1' }"
         (click)="showWalkinSubPanel()">
         Cash
       </button>
-      <button class=" mt-2 second-btn" [ngClass]="{ 'primary-btn': issueEntryService.billType == '2' }"
+      <div class="mx-1"></div>
+      <button class="second-btn" [ngClass]="{ 'primary-btn': issueEntryService.billType == '2' }"
         (click)="showRegSubPanel()">
         Credit
       </button>
     </div>
-    <div class="flex w-3/10 right-section ">
-      <div class="icon-setion justify-center mr-2" matTooltip="Reset form">
-        <mat-icon (click)="reset()">refresh</mat-icon>
-        <!-- <img src="src/assets/reset.svg" class="w-2/5" /> -->
+    <div class="flex w-1/3 right-section justify-center">
+      <div class="cursor-pointer" matTooltip="Reset form">
+        <img src="assets/reset.svg" (click)="reset()" />
       </div>
-      <div class="icon-setion justify-center mr-2 " matTooltip="Drafted orders">
-        <mat-icon aria-disabled="true">create_new_folder</mat-icon>
+      <div class="mx-1"></div>
+      <div class="mt-05 cursor-pointer" matTooltip="Drafted orders">
+        <img class="" src="assets/drafted-order.svg" (click)="submit()" />
       </div>
-      <!-- disableDiv -->
-      <div class="icon-setion justify-center " matTooltip="Search bills">
-        <mat-icon>search</mat-icon>
+      <div class="mx-1"></div>
+      <div class="cursor-pointer" matTooltip="Search bills">
+        <img src="assets/search-bill.svg"  />
       </div>
+    
     </div>
   </div>
-
-  <div class="flex ml-4 mt-2 w-9/10">
+  <div class="my-2"></div>
+  <div class="flex ml-4 w-9/10">
     <form [formGroup]="patientformGroup" autocomplete="off" class="w-full align-items-center">
-      <div class="flex w-full">
-        <maxhealth-question class="w-1/45" [question]="patientform[0]" [form]="patientformGroup"
-          [questions]="patientform[0]" [index]="0"></maxhealth-question>
-        <maxhealth-question class="w-1/2 ml-4" [question]="patientform[1]" [form]="patientformGroup"
-          [questions]="patientform[1]" [index]="1">
-        </maxhealth-question>
-      </div>
-      <div *ngIf="isRegPatient">
+      <div class="flex flex-column">
+        <div class="flex w-full">
+          <maxhealth-question class="w-1/45" [question]="patientform[0]" [form]="patientformGroup"
+            [questions]="patientform[0]" [index]="0"></maxhealth-question>
+          <maxhealth-question class="w-1/2 ml-5" [question]="patientform[1]" [form]="patientformGroup"
+            [questions]="patientform[1]" [index]="1">
+          </maxhealth-question>
+        </div>
+        <div *ngIf="!isRegPatient || showInfoSection" class="my-1"></div>
         <div class="flex w-full info-section" *ngIf="showInfoSection">
-          <div class="ml-2 justify-center" *ngFor="let icon of categoryIcons">
-            <!-- <img
-                [src]="icon['src']"
-                [alt]="icon['tooltip']"
-                width="45px"
-                class="cursor-pointer"
-                [matTooltip]="icon['tooltip']"
-                (click)="doCategoryIconAction(icon)"
-              /> -->
+          <div class="flex ml-2 justify-center" *ngFor="let icon of categoryIcons">
             <div *ngIf="icon['tooltip'] === 'CASH'" class="info-icon-setion justify-center" matTooltip="Cash">
               <mat-label class="info-label">{{cashInfo}}</mat-label>
             </div>
@@ -76,84 +71,83 @@
             </div>
           </div>
         </div>
-
-        <div class="mt-2 ">
-          <mat-label>Patient Name</mat-label>
-          <mat-label class="float-right color-block">{{
-            patientformGroup?.value?.patienName
-            }}</mat-label>
+        <div *ngIf="showInfoSection" class="my-1"></div>
+        <div class="flex flex-column w-full" *ngIf="isRegPatient">
+          <div >
+            <mat-label >Patient Name</mat-label>
+            <mat-label class=" float-right color-block">{{
+              patientformGroup?.value?.patientName
+              }}</mat-label>
+          </div>
+          <div class="my-1"></div>
+          <div >
+            <mat-label>Age/Gender</mat-label>
+            <mat-label class="float-right color-block">{{
+              patientformGroup?.value?.patienAge
+              }} / {{
+              patientformGroup?.value?.gender
+              }}</mat-label>
+          </div>
+          <div class="my-1"></div>
+          <div >
+            <mat-label>Address</mat-label>
+            <mat-label class="float-right color-block">{{
+              patientformGroup?.value?.patienAddress
+              }}</mat-label>
+          </div>
+          <div class="my-1"></div>
         </div>
-        <div class="mt-2 ">
-          <mat-label>Age/Gender</mat-label>
-          <mat-label class="float-right color-block">{{
-            patientformGroup?.value?.patienAge
-            }} / {{
-            patientformGroup?.value?.gender
-            }}</mat-label>
+        <div class="flex-column w-full" *ngIf="!isRegPatient">
+          <div class="flex ">
+            <maxhealth-question class="w-full " [question]="patientform[2]" [form]="patientformGroup"
+              [questions]="patientform[2]" [index]="2"></maxhealth-question>
+          </div>
+          <div class="my-2"></div>
+          <div class="flex ">
+            <maxhealth-question class="w-27" [question]="patientform[3]" [form]="patientformGroup"
+              [questions]="patientform[3]" [index]="3"></maxhealth-question>
+            <maxhealth-question class="ml-2 w-3/10" [question]="patientform[4]" [form]="patientformGroup"
+              [questions]="patientform[4]" [index]="4"></maxhealth-question>
+            <maxhealth-question class="w-39 ml-2" [question]="patientform[5]" [form]="patientformGroup"
+              [questions]="patientform[5]" [index]="5">
+            </maxhealth-question>
+          </div>
+          <div class="my-2"></div>
+          <div class="flex  text-scrollbar">
+            <maxhealth-question class="w-full" [question]="patientform[6]" [form]="patientformGroup"
+              [questions]="patientform[6]" [index]="6">
+            </maxhealth-question>
+          </div>
         </div>
-        <div class="mt-2 ">
-          <mat-label>Address</mat-label>
-          <mat-label class="float-right color-block">{{
-            patientformGroup?.value?.patienAddress
-            }}</mat-label>
-        </div>
-        <div class="mt-2 ">&nbsp;</div>
-
-      </div>
-      <div *ngIf="!isRegPatient">
-        <div class="flex">
-          <maxhealth-question class="w-full " [question]="patientform[2]" [form]="patientformGroup"
-            [questions]="patientform[2]" [index]="2"></maxhealth-question>
-        </div>
-
+        <div class="my-1"></div>
         <div class="flex ">
-          <maxhealth-question class="w-3/10" [question]="patientform[3]" [form]="patientformGroup"
-            [questions]="patientform[3]" [index]="3"></maxhealth-question>
-          <maxhealth-question class="ml-2 w-3/10" [question]="patientform[4]" [form]="patientformGroup"
-            [questions]="patientform[4]" [index]="4"></maxhealth-question>
-          <maxhealth-question class="w-7/20 ml-2" [question]="patientform[5]" [form]="patientformGroup"
-            [questions]="patientform[5]" [index]="5">
-          </maxhealth-question>
+          <maxhealth-question class="w-full" [question]="patientform[7]" [form]="patientformGroup"
+            [questions]="patientform[7]" (click)="showDoctorDetails()" [index]="7"></maxhealth-question>
         </div>
-
-        <div class="flex  text-scrollbar">
-          <maxhealth-question class="w-full" [question]="patientform[6]" [form]="patientformGroup"
-            [questions]="patientform[6]" [index]="6">
-          </maxhealth-question>
+        <div class="flex w-full ">
+          <mat-label>Doctor Mobile no.</mat-label>
+          <mat-label class="float-right color-block">{{
+            issueEntryService?.doctorDetailsInfo?.doctorName
+            }}</mat-label>
         </div>
-      </div>
-
-      <div class="flex ">
-        <maxhealth-question class="w-full" [question]="patientform[7]" [form]="patientformGroup"
-          [questions]="patientform[7]" [index]="7"></maxhealth-question>
-      </div>
-      <div >
-        <mat-label>Doctor Name</mat-label>
-        <mat-label class="float-right color-block">{{
-          issueEntryService?.doctorDetailsInfo?.doctorName
-          }}</mat-label>
-      </div>
-      <div class="mt-2 ">
-        <mat-label>Doctor Mobile no.</mat-label>
-        <mat-label class="float-right color-block">{{
-          issueEntryService?.doctorDetailsInfo?.doctorName
-          }}</mat-label>
-      </div>
-      <div class="mt-2 ">
-        <mat-label>Doctor Address</mat-label>
-        <mat-label class="float-right color-block">{{
-          issueEntryService?.doctorDetailsInfo?.doctorName
-          }}</mat-label>
-      </div>
-      <div class="flex mt-1 ">&nbsp;</div>
-      <div class="flex text-scrollbar" *ngIf="isShowCompany">
-        <maxhealth-question class="w-full" [question]="patientform[8]" [form]="patientformGroup"
-          [questions]="patientform[8]" [index]="8"></maxhealth-question>
-      </div>
-
-      <div class="flex  text-scrollbar">
-        <maxhealth-question class="w-full" [question]="patientform[9]" [form]="patientformGroup"
-          [questions]="patientform[9]" [index]="9"></maxhealth-question>
+        <div class="my-1"></div>
+        <div class="flex w-full ">
+          <mat-label>Doctor Address</mat-label>
+          <mat-label class="float-right color-block">{{
+            issueEntryService?.doctorDetailsInfo?.doctorName
+            }}</mat-label>
+        </div>
+        <div class="my-1"></div>
+        <div class="my-1" *ngIf="isShowCompany"></div>
+        <div class="flex text-scrollbar" *ngIf="isShowCompany">
+          <maxhealth-question class="w-full" [question]="patientform[8]" [form]="patientformGroup"
+            [questions]="patientform[8]" [index]="8"></maxhealth-question>
+        </div>
+        <div class="my-1"></div>
+        <div class="flex text-scrollbar">
+          <maxhealth-question class="w-full" [question]="patientform[9]" [form]="patientformGroup"
+            [questions]="patientform[9]" [index]="9"></maxhealth-question>
+        </div>
       </div>
     </form>
   </div>
