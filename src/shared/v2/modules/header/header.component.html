@@ -1,6 +1,6 @@
 <div class="header-wrapper">
   <div class="flex justify-between items-center pl-4 py-0">
-    <div class="flex flex-column">
+    <div class="flex w-2/3 flex-column ">
       <mat-toolbar class="example-toolbar">
         <a class="logo">
           <img src="assets/brandLogo.svg" (click)="isExpanded = !isExpanded;showSubmenu = false;" class="menu_button" /></a>
@@ -11,39 +11,20 @@
         </div>
       </mat-toolbar>
     </div>
-    <div class="flex flex-column right-section" >
+    <div class="flex w-1/3 flex-column right-section justify-between" >
       <div class="flex items-center user-info">
-        <span class="mr-6 font-sm max-health-primary-color">{{
-          location
-          }}</span>
+        <span class="mr-6 font-sm max-health-primary-color">{{ location }}</span>
         <span class="mr-6 font-sm max-health-primary-color">{{ station }}</span>
         <span>
           <button mat-button [matMenuTriggerFor]="settings" class="p-0 logout-button">
-            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M13.522 0.862977C13.6886 0.863018 13.8508 0.915901 13.9854 1.01402C14.12 1.11213 14.22 1.25042 14.271 1.40898L15.137 4.09998C15.4987 4.27522 15.8475 4.47572 16.181 4.69998L18.946 4.09998C19.109 4.06516 19.2789 4.08301 19.4311 4.15094C19.5834 4.21888 19.7101 4.33339 19.793 4.47798L21.975 8.26298C22.0584 8.40756 22.0936 8.57488 22.0756 8.74079C22.0576 8.9067 21.9874 9.0626 21.875 9.18598L19.975 11.28C20.0027 11.6815 20.0027 12.0845 19.975 12.486L21.875 14.586C21.9874 14.7093 22.0576 14.8652 22.0756 15.0312C22.0936 15.1971 22.0584 15.3644 21.975 15.509L19.793 19.288C19.7098 19.4322 19.5829 19.5463 19.4307 19.6139C19.2785 19.6814 19.1088 19.699 18.946 19.664L16.181 19.064C15.8479 19.2876 15.4997 19.4881 15.139 19.664L14.271 22.363C14.22 22.5215 14.12 22.6598 13.9854 22.7579C13.8508 22.8561 13.6886 22.9089 13.522 22.909H9.15803C8.99147 22.9089 8.82921 22.8561 8.69462 22.7579C8.56003 22.6598 8.46003 22.5215 8.40903 22.363L7.54503 19.674C7.18286 19.495 6.83367 19.2908 6.50003 19.063L3.73703 19.663C3.57401 19.6978 3.40415 19.68 3.25192 19.612C3.0997 19.5441 2.97299 19.4296 2.89003 19.285L0.700029 15.506C0.616685 15.3614 0.581453 15.1941 0.599428 15.0282C0.617403 14.8623 0.687653 14.7064 0.800028 14.583L2.70003 12.483C2.67268 12.0834 2.67268 11.6825 2.70003 11.283L0.800028 9.18298C0.687653 9.0596 0.617403 8.9037 0.599428 8.73779C0.581453 8.57189 0.616685 8.40456 0.700029 8.25998L2.88203 4.48097C2.96527 4.33675 3.09212 4.22266 3.24432 4.15509C3.39652 4.08753 3.56623 4.06998 3.72903 4.10497L6.49203 4.70498C6.82662 4.47905 7.17645 4.27656 7.53903 4.09898L8.40503 1.40997C8.45597 1.2509 8.55618 1.11217 8.69119 1.01383C8.8262 0.915497 8.98901 0.862662 9.15603 0.862977H13.52H13.522ZM12.946 2.43698H9.73403L8.84003 5.21898L8.24003 5.51298C7.94343 5.6579 7.65709 5.82295 7.38303 6.00697L6.82603 6.38498L3.96703 5.76798L2.35703 8.55298L4.31703 10.723L4.27003 11.391C4.2474 11.7203 4.2474 12.0507 4.27003 12.38L4.31703 13.048L2.35403 15.218L3.96203 18.002L6.82103 17.386L7.37803 17.762C7.6521 17.946 7.93844 18.111 8.23503 18.256L8.83503 18.55L9.73503 21.332H12.95L13.85 18.548L14.45 18.255C14.7444 18.1108 15.0284 17.9464 15.3 17.763L15.856 17.387L18.717 18.003L20.323 15.219L18.361 13.049L18.408 12.381C18.4307 12.0514 18.4307 11.7206 18.408 11.391L18.361 10.723L20.324 8.55498L18.716 5.77097L15.855 6.38498L15.299 6.00998C15.0259 5.8256 14.7402 5.66053 14.444 5.51598L13.844 5.22298L12.944 2.43897L12.946 2.43698ZM11.34 7.16298C12.2741 7.16298 13.1873 7.43998 13.964 7.95895C14.7407 8.47792 15.346 9.21555 15.7035 10.0786C16.061 10.9416 16.1545 11.8912 15.9723 12.8074C15.79 13.7236 15.3402 14.5651 14.6797 15.2256C14.0192 15.8862 13.1776 16.336 12.2614 16.5182C11.3453 16.7005 10.3956 16.6069 9.53262 16.2495C8.6696 15.892 7.93197 15.2866 7.413 14.5099C6.89403 13.7332 6.61703 12.8201 6.61703 11.886C6.61703 10.6334 7.11463 9.43205 8.00036 8.54631C8.88609 7.66058 10.0874 7.16298 11.34 7.16298ZM11.34 8.73698C10.7172 8.73698 10.1084 8.92166 9.59054 9.26768C9.07269 9.6137 8.66907 10.1055 8.43073 10.6809C8.19239 11.2563 8.13003 11.8895 8.25153 12.5003C8.37304 13.1112 8.67296 13.6723 9.11335 14.1127C9.55375 14.5531 10.1148 14.853 10.7257 14.9745C11.3365 15.096 11.9697 15.0336 12.5451 14.7953C13.1205 14.5569 13.6123 14.1533 13.9583 13.6355C14.3043 13.1176 14.489 12.5088 14.489 11.886C14.4893 11.4723 14.408 11.0626 14.2499 10.6803C14.0918 10.298 13.8599 9.95063 13.5674 9.65801C13.275 9.36538 12.9277 9.13325 12.5456 8.97487C12.1634 8.81649 11.7537 8.73498 11.34 8.73498V8.73698Z"
                 fill="#707070" />
             </svg>
           </button>
-          <mat-menu #settings="matMenu">
-            <button mat-menu-item (click)="redirectToResetPassword()">
-              <span class="cursor-pointer setting-menu max-health-primary-color">Change Password</span>
-            </button>
-            <button mat-menu-item (click)="openChangeLocationDialog()">
-              <span class="cursor-pointer setting-menu max-health-primary-color">Change Station/Location</span>
-            </button>
-            <button mat-menu-item (click)="openIMEIDialog()">
-              <span class="cursor-pointer setting-menu max-health-primary-color">Select POS IMEI</span>
-            </button>
-            <button mat-menu-item (click)="openPayTmDialog()">
-              <span class="cursor-pointer setting-menu max-health-primary-color">Select PayTm Machine</span>
-            </button>
-          </mat-menu>
-        </span>
-
-        <span>
           <button mat-button (click)="logout()" class=" p-0 logout-button">
-            <svg width="25" height="25" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M19.3161 37.366C29.6344 37.366 37.9991 29.0013 37.9991 18.683C37.9991 8.36467 29.6344 0 19.3161 0C8.99772 0 0.633057 8.36467 0.633057 18.683C0.633057 29.0013 8.99772 37.366 19.3161 37.366Z"
                 fill="#B8BAC0" />
@@ -64,6 +45,20 @@
                 fill="#5C546A" />
             </svg>
           </button>
+          <mat-menu #settings="matMenu">
+            <button mat-menu-item (click)="redirectToResetPassword()">
+              <span class="cursor-pointer setting-menu max-health-primary-color">Change Password</span>
+            </button>
+            <button mat-menu-item (click)="openChangeLocationDialog()">
+              <span class="cursor-pointer setting-menu max-health-primary-color">Change Station/Location</span>
+            </button>
+            <button mat-menu-item (click)="openIMEIDialog()">
+              <span class="cursor-pointer setting-menu max-health-primary-color">Select POS IMEI</span>
+            </button>
+            <button mat-menu-item (click)="openPayTmDialog()">
+              <span class="cursor-pointer setting-menu max-health-primary-color">Select PayTm Machine</span>
+            </button>
+          </mat-menu>
         </span>
 
       </div>
@@ -110,7 +105,7 @@
         </li>
       </mat-list-item>
     </div>
-    <div class="user">
+    <!-- <div class="user">
       <div>
         <span class="">
           <mat-icon>perm_identity</mat-icon>
@@ -145,7 +140,7 @@
 
         <span class="user_item">Logout</span>
       </div>
-    </div>
+    </div> -->
   </mat-sidenav>
 
 </mat-sidenav-container>

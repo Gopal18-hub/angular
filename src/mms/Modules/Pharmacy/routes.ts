@@ -14,6 +14,10 @@ const routes: Routes = [
         path: "",
         component: IssueEntryComponent,
       },
+      {
+        path: "issue-entry",
+        component: IssueEntryComponent,
+      },
     ],
   },
 ];

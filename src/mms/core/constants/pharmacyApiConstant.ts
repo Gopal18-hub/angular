@@ -35,4 +35,17 @@ export namespace PharmacyApiConstants {
 
   export const similarSoundPatientDetail =
     environment.PatientApiUrl + "api/patient/getsimilarsoundpatient";
+
+  export const getreferraldoctor = (
+    Type: number,
+    ReferralDoctorName?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getreferraldoctor/" +
+      Type +
+      "?ReferralDoctorName=" +
+      ReferralDoctorName
+    );
+  };
 }

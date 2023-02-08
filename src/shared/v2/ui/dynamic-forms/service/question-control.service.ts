@@ -84,6 +84,8 @@ export class QuestionControlService {
       else if (question.type == "date") data.push(new DateQuestion(question));
       else if (question.type == "datetime")
         data.push(new DateTimeQuestion(question));
+      else if (question.type == "search")
+        data.push(new TextboxQuestion(question));
     }
 
     return data;
