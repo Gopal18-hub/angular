@@ -48,4 +48,16 @@ export namespace PharmacyApiConstants {
       ReferralDoctorName
     );
   };
+
+  //spcialisation for doctors
+  export const getspecialization = `${environment.PatientApiUrl}api/patient/getspecialization`;
+
+  // doctor save
+  export const referraldoctorsave = (
+    DoctorName: string,
+    MobileNumber: string,
+    SpecialisationId: string,
+    UserId: string
+  ) =>
+    `${environment.CommonApiUrl}api/lookup/referraldoctorsave/${DoctorName}/${MobileNumber}/${SpecialisationId}/${UserId}`;
 }

@@ -1,21 +1,23 @@
 
-<div class="flex justify-center items-center  doctor_list">
-   
+<div class=" justify-center items-center  doctor_list">
     <div class="">
+        <div class="select_doctor">
+                    
+            <span mat-dialog-title class="doc_title">Select Doctor Name</span>
+            <span class="doc_list_close"><mat-icon (click)="closeDoctorList()">close</mat-icon></span>
+        </div>
+    </div>
+    <div class="" *ngIf="addDoctor==false">
         <div>
-            <div class="select_doctor">
-                
-                <span mat-dialog-title class="doc_title">Select Doctor Name</span>
-                <span class="doc_list_close"><mat-icon (click)="closeDoctorList()">close</mat-icon></span>
-             </div>
-        <button class="mt-2 mr-2  second-btn"  [ngClass]="{ 'primary-btn': this.doctortype == 1 }"
-        (click)="showInternalDoctor()">
-            Internal doctor
-        </button>
-        <button class=" mt-2 second-btn" [ngClass]="{ 'primary-btn': doctortype == 2 }"
-        (click)="showExternalDoctor()">
-            External Doctor
-        </button>
+            
+            <button class="mt-2 mr-2  second-btn"  [ngClass]="{ 'primary-btn': this.doctortype == 1 }"
+            (click)="showInternalDoctor()">
+                Internal doctor
+            </button>
+            <button class=" mt-2 second-btn" [ngClass]="{ 'primary-btn': doctortype == 2 }"
+            (click)="showExternalDoctor()">
+                External Doctor
+            </button>
         
         </div>
         <div class="doctor_search">
@@ -36,12 +38,89 @@
                 </div>
             </form>
         </div>
-        <div class="doctor_table">
-            <maxhealth-table #doctortable  [config]="config" [data]="doctorList" 
-            ></maxhealth-table>
+        <div class="doctor_table" [ngClass]="{ 'ext_table': doctortype == 2 }">
+            <div
+            *ngIf="apiProcessing"
+            class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
+          >
+            <mat-spinner strokeWidth="3"></mat-spinner>
+          </div>
+          <div
+          *ngIf="!apiProcessing">
+                <maxhealth-table #doctortable [config]="config" [data]="doctorList"></maxhealth-table>
+            </div>
+            <div class="add_doctor" *ngIf="doctortype==2">
+                <button mat-flat-button color="primary" class="add_doctor_button" (click)="addNewDoctor()">Add New External Doctor</button>
+            </div>
         </div>
-        <div class="add_doctor" *ngIf="doctortype==2">
-            <button mat-flat-button color="primary" class="ml-9">Primary</button>
+        
+    </div>
+    <div class="addnew_doctor"  *ngIf="addDoctor==true">
+        <div class="new_doc_title">
+            <mat-icon (click)="docList()">keyboard_backspace</mat-icon>
+            <h2 class="add_doc_title">Enter New Doctor's Details</h2>
+        </div>
+        <div class="doc_form">
+            <form
+            [formGroup]="addDoctorfomGroup"
+            autocomplete="off"
+            class="w-full align-items-center"
+            >
+                <div class="flex mt-2">
+                    <maxhealth-question
+                    class="w-full "
+                    [question]="addDoctorform[0]"
+                    [form]="addDoctorfomGroup"
+                    [questions]="addDoctorform[0]"
+                    [index]="0"
+
+                    ></maxhealth-question> 
+                </div>
+                <div class="flex mt-2">
+                    <maxhealth-question
+                    class="w-full "
+                    [question]="addDoctorform[1]"
+                    [form]="addDoctorfomGroup"
+                    [questions]="addDoctorform[1]"
+                    [index]="1"
+
+                    ></maxhealth-question> 
+                </div>
+                <div class="flex mt-2">
+                    <maxhealth-question
+                    class="w-full"
+                    [question]="addDoctorform[2]"
+                    [form]="addDoctorfomGroup"
+                    [questions]="addDoctorform[2]"
+                    [index]="2"
+
+                    ></maxhealth-question> 
+                </div>
+                <div class="flex mt-2">
+                    <maxhealth-question
+                    class="w-full"
+                    [question]="addDoctorform[3]"
+                    [form]="addDoctorfomGroup"
+                    [questions]="addDoctorform[3]"
+                    [index]="3"
+
+                    ></maxhealth-question> 
+                </div>
+                <div class="flex mt-2">
+                    <maxhealth-question
+                    class="w-full"
+                    [question]="addDoctorform[4]"
+                    [form]="addDoctorfomGroup"
+                    [questions]="addDoctorform[4]"
+                    [index]="4"
+
+                    ></maxhealth-question> 
+                </div>
+            </form>
+            <div class="doc_buttons">
+                <button mat-flat-button color="primary" class="add_save" (click)="saveDoctor()">Save</button>
+                <button mat-stroked-button color="primary" class="add_cancel ml-2" (click)="cancelCreateDoctor($event)">Cancel</button>
+            </div>
         </div>
     </div>
     
