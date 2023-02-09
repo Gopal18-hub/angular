@@ -58,6 +58,7 @@ export class SubComponent implements OnInit, OnChanges {
   user: string = "";
   questions: any;
   searchFormProperties: any;
+  selectedIndex: number = 1;
   private readonly _destroying$ = new Subject<void>();
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
@@ -90,6 +91,7 @@ export class SubComponent implements OnInit, OnChanges {
     this.station = this.cookie.get("Station");
     this.usrname = this.cookie.get("Name");
     this.user = this.cookie.get("UserName");
+    this.setIndex(0);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -119,6 +121,10 @@ export class SubComponent implements OnInit, OnChanges {
         }
       }
     });
+  }
+
+  setIndex(index: number) {
+    this.selectedIndex = index;
   }
 
   reInitiateSearch(type: string) {
