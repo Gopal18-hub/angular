@@ -1,68 +1,108 @@
 :host {
   width: 100%;
-  // margin-bottom: 6px;
   display: block;
 }
-.header-wrapper {
-  height: 4.188rem;
-  background-color: white;
-  border-radius: 0 0 0 1rem;
-  .right-section {
-    height: 4.088rem;
-    align-items: flex-end;
-    justify-content: space-between;
-    .logout-button {
-      min-width: initial;
-      padding: 0;
-      margin-right: 1.5em;
+
+::ng-deep mat-datepicker-toggle {
+  button {
+    top: 0.25em;
+  }
+}
+::ng-deep {
+  .sub-header-menu {
+    overflow: hidden;
+    max-width: initial;
+    .max-width {
+      max-width: 50vw !important;
+      &.min-width {
+        width: min-content;
+      }
     }
-    .user-info {
-      height: 2.1rem;
-      svg {
-        width: 80%;
+
+    .mat-menu-content {
+      height: 100%;
+      button {
+        text-align: left;
+        &:hover {
+          font-weight: 600;
+        }
       }
     }
   }
+
+  .search-header-menu {
+    width: 40vw;
+
+    max-width: initial !important;
+    margin-top: 3%;
+    margin-left:-31%;
+    // maxhealth-question {
+    //   > div {
+    //     display: flex;
+    //     align-items: center;
+    //     mat-label {
+    //       width: 35%;
+    //       font-size: 12px;
+    //     }
+    //     mat-form-field {
+    //       width: 75% !important;
+    //       font-size: 12px;
+    //       .mat-form-field-wrapper {
+    //         padding-bottom: 0;
+    //       }
+    //     }
+    //   }
+    // }
+  }
+}
+.submodule-wrapper {
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        input {
+          font-size: 15px;
+          width: 96%;
+        }
+        .mat-form-field-prefix {
+          top: 0.2em !important;
+
+        }
+        .mat-form-field-suffix {
+          top: 0.2em !important;
+        }
+        .mat-form-field-infix {
+          width: 130px !important;
+        }
+      }
+    }
+  }
+
+
+
   .main-modules {
-    min-width: calc(100% - 180px);
-    clip-path: polygon(
-      0 0,
-      30px 50%,
-      0 100%,
-      calc(100% - 0px) 100%,
-      100% 50%,
-      calc(100% - 0px) 0
-    );
-    height: 2.125rem;
-    background: #45c0be;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    color: #fff;
+    
     li {
       display: flex;
       align-items: center;
       height: 1.925rem;
       align-self: flex-end;
-      border-radius: 5px 5px 0 0;
-      padding: 0 0.4rem;
       white-space: nowrap;
-      font-size: 1rem;
-      font-weight: 400;
+      font-size: 15px !important;
+      letter-spacing: 0.32px;
+      color: #000000 !important;
+      opacity: 1;
+
       &:first-child {
         margin-left: 2em;
       }
       &.active {
-        background-color: #fff;
-        color: #45c0be;
-        font-weight: 500;
+        border-bottom: 3px solid #004084 !important;
       }
     }
   }
-}
 
 ::ng-deep {
   .header-menu {
     width: 38%;
-    //height: 34vh;
     max-width: initial !important;
     .mat-menu-content {
       height: 100%;
@@ -298,7 +338,6 @@ ul.top-mat-menu-item li {
   }
 }
 
-
 .submodule-wrapper {
   height: 3.188rem;
   align-items: center;
@@ -350,4 +389,24 @@ margin-top: 7px;
   //color: red;
   float: left;
 }
+
+
+button.second-btn,
+  button.primary-btn {
+    width: 80px;
+    height: 36px;
+    background: #eff3f6 0% 0% no-repeat padding-box;
+    border-radius: 4px;
+    color: #000000;
+    border: none;
+    border: 1px solid #004084;
+  }
+  button.primary-btn {
+    background: #004084 0% 0% no-repeat padding-box;
+border-radius: 4px;
+    color: #ffffff;
+    width: 92px;
+    height: 36px;
+  }
+
 

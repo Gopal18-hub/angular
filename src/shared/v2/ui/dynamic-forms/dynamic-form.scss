@@ -120,6 +120,12 @@ mat-label {
     }
     button.clear {
       right: -3px;
-      // display: none !important;
+      display: none !important;
+    }
+    &:hover, &.mat-focused {
+      button.clear {
+        display: inline-flex !important;
+        // top: -5px;
+      }
     }
   }
