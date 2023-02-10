@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { PharmacyComponent } from "./pharmacy.component";
+import { EPOrderComponent } from "./submodules/ep-order/ep-order.component";
 import { IssueEntryComponent } from "./submodules/issue-entry/issue-entry.component";
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
       {
         path: "issue-entry",
         component: IssueEntryComponent,
+      },
+      {
+        path: "ep-order",
+        component: EPOrderComponent,
       },
     ],
   },

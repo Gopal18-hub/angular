@@ -1,0 +1,106 @@
+<div class="max-op-pharmacy-EPOrder-list">
+  <div class="flex ml-4 mr-4 w-full">
+    <div class="w-full">
+      <h4 class="max-health-primary-color">Order List</h4>
+    </div>
+  </div>
+  <div class="flex ml-4 mr-4 w-full">
+    <div class="w-full mx-table">
+      <div class="h-table ep-order-table">
+        <ng-container class="w-full">
+          <maxhealth-table
+            class=""
+            (rowRwmove)="rowRwmoveLineItems($event)"
+            [config]="linedataEPOrderconfig"
+            (tableScrolling)="ontableScrolling($event)"
+            (tableSorting)="ontableSorting($event)"
+            (columnClick)="listRowClick($event)"
+            [data]="dataEPOrder"
+            #listdataEPOrderTable
+          ></maxhealth-table>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="my-2"></div>
+  <div class="flex ml-4 mr-4 w-full">
+    <div class="flex w-full legends">
+      <div class="flex w-full">
+        <div class="w-1/7 mt-3">
+          <mark class="lbelow-1000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">Below 1000</mat-label>
+        </div>
+        <div class="w-1/7 mt-3">
+          <mark class="l1000-2000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">1000-2000 </mat-label>
+        </div>
+        <div class="w-1/7 mt-3">
+          <mark class="l2000-4000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">2000-4000 </mat-label>
+        </div>
+        <div class="w-1/7 mt-3">
+          <mark class="labove-4000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">Above 4000</mat-label>
+        </div>
+        <div class="w-1/2 text-right">
+          <button mat-raised-button color="primary" (click)="exportAsExcel()" type="button">
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+  <!-- <div class="flex ml-4 w-full mr-4">
+    <div class="flex w-full">
+      <h4 class="max-health-primary-color">Order List</h4>
+    </div>
+
+    <div class="w-full mx-table">
+      <div class="h-table ep-order-table">
+        <ng-container class="w-full">
+          <maxhealth-table
+            class=""
+            (rowRwmove)="rowRwmoveLineItems($event)"
+            [config]="linedataEPOrderconfig"
+            (tableScrolling)="ontableScrolling($event)"
+            (tableSorting)="ontableSorting($event)"
+            (columnClick)="listRowClick($event)"
+            [data]="dataEPOrder"
+            #listdataEPOrderTable
+          ></maxhealth-table>
+        </ng-container>
+      </div>
+    </div>
+    <div class="p-3 pl-0 pr-0 w-full display-block legends">
+      <div class="flex w-full">
+        <div class="w-1/7 mt-3">
+          <mark class="lbelow-1000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">Below 1000</mat-label>
+        </div>
+        <div class="w-1/7 mt-3">
+          <mark class="l1000-2000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">1000-2000 </mat-label>
+        </div>
+        <div class="w-1/7 mt-3">
+          <mark class="l2000-4000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">2000-4000 </mat-label>
+        </div>
+        <div class="w-1/7 mt-3">
+          <mark class="labove-4000">&nbsp;</mark>
+          <mat-label class="ml-1 color-block txt">Above 4000</mat-label>
+        </div>
+        <div class="w-1/2 text-right">
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-1/45"
+            type="button"
+          >
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>

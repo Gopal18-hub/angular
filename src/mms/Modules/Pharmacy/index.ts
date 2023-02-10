@@ -40,6 +40,10 @@ import { SimilarPatientDialog } from "./submodules/issue-entry/left-panel/left-p
 // import { SsdtComponent } from "./submodules/ssrs-preview/ssdt/ssdt.component";
 import { DoctorListComponent } from "./submodules/issue-entry/prompts/doctor-list/doctor-list.component";
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
+import { EPOrderComponent } from "./submodules/ep-order/ep-order.component";
+import { OpPharmacyEPOrderListComponent } from "./submodules/ep-order/list/list.component";
+import { OpPharmacyEPOrderSearchFormComponent } from "./submodules/ep-order/search-form/search-form.component";
+import { OpPharmacyEPOrderDrugLineItemComponent } from "./submodules/ep-order/list/drug-line-item/drug-line-item.component";
 
 @NgModule({
   declarations: [
@@ -52,6 +56,11 @@ import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
     SimilarPatientDialog,
     // SsdtComponent,
     DoctorListComponent,
+
+    EPOrderComponent,
+    OpPharmacyEPOrderListComponent,
+    OpPharmacyEPOrderSearchFormComponent,
+    OpPharmacyEPOrderDrugLineItemComponent,
   ],
   imports: [
     PharmacyRoutingModule,
