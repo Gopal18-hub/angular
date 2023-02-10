@@ -1,0 +1,84 @@
+.max-op-pharmacy-EPOrder-list {
+  margin-right: 15px;
+  .h-table.ep-order-table {
+    height: -webkit-fill-available;
+    overflow-x: auto;
+    ::ng-deep {
+    ::-webkit-scrollbar-track-piece:start {
+      margin-top: 30px;
+    }
+  }
+  }
+
+  .mx-table {
+    height: calc(100vh - 9.7rem);
+  }
+  maxhealth-table {
+    ::ng-deep {
+      th.mat-header-cell:first-of-type,
+      td.mat-cell:first-of-type,
+      td.mat-footer-cell:first-of-type {
+        padding-left: 5px;
+      }
+      th.mat-header-cell:last-of-type,
+      td.mat-cell:last-of-type,
+      td.mat-footer-cell:last-of-type {
+        padding-right: 0 !important;
+        width: 55px !important;
+      }
+      td.cdk-column-amount,
+      th.cdk-column-amount {
+        text-align: right;
+      }
+      .mat-header-cell {
+        font-size: 13px !important;
+        font-weight: 500;
+      }
+      tr.lbelow-1000 {
+        background-color: var(--lbelow-1000-color) !important;
+      }
+      tr.l1000-2000 {
+        background-color: var(--l1000-2000-color) !important;
+      }
+      tr.l2000-4000 {
+        background-color: var(--l2000-4000-color) !important;
+      }
+      tr.labove-4000 {
+        background-color: var(--labove-4000-color) !important;
+      }
+    }
+  }
+
+  .legends {
+    .mat-raised-button {
+      min-width: auto !important;
+    }
+    mark {
+      border-radius: 5px;
+      width: 38px;
+      height: 17px;
+      display: inline-block;
+    }
+    mat-label.txt {
+      margin-top: -2px;
+      position: absolute;
+    }
+
+    mark.lbelow-1000 {
+      background: var(--lbelow-1000-color) 0% 0% no-repeat padding-box;
+      border: 1px solid #707070;
+    }
+    mark.l1000-2000 {
+      background: var(--l1000-2000-color) 0% 0% no-repeat padding-box;
+      border: 1px solid #707070;
+    }
+    mark.l2000-4000 {
+      background: var(--l2000-4000-color) 0% 0% no-repeat padding-box;
+      border: 0.5px solid #707070;
+    }
+    mark.labove-4000 {
+      background: var(--labove-4000-color) 0% 0% no-repeat padding-box;
+      border: 1px solid #707070;
+    }
+  }
+}

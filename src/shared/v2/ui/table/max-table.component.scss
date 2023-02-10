@@ -1,7 +1,7 @@
 .max-table-wrapper {
   height: 100%;
   background-color: white;
-  overflow: auto;
+  overflow: overlay;
   transform: rotate(0deg);
   border-color: #b8b8b8;
   border-radius: 4px;
@@ -19,6 +19,12 @@
       td.mat-footer-cell {
         padding: 0 0px 0 5px;
       }
+    }
+    .mat-divider.mat-divider-vertical {
+      height: 40px;
+      width: 1px;
+      position: absolute;
+      border-right-color: rgba(255, 255, 255, 50%);
     }
     th.mat-header-cell,
     td.mat-cell,
@@ -99,10 +105,12 @@
       }
     }
   }
-  ::ng-deep .mat-raised-button {
-    min-width: 100px !important;
-    height: 1.875rem;
-    line-height: 1.875rem;
+  ::ng-deep {
+    .mat-raised-button {
+      min-width: 100px !important;
+      height: 1.875rem;
+      line-height: 1.875rem;
+    }
   }
 }
 

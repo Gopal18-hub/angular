@@ -23,6 +23,7 @@ import { PaytmMachineComponent } from "./paytm-machine/paytm-machine.component";
 import { MatListModule } from "@angular/material/list";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatBadgeModule } from "@angular/material/badge";
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     MatListModule,
     MatSidenavModule,
     MatToolbarModule,
+    MatBadgeModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

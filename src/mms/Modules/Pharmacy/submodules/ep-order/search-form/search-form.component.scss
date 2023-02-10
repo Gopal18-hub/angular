@@ -1,0 +1,42 @@
+.max-op-pharmacy-EPOrder-search-form {
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 4px;
+    opacity: 1;
+    height:calc(100vh - 4.75rem);//512px;
+  maxhealth-question.input-group-selesct,
+  maxhealth-question.input-group-textbox {
+    width: auto !important;
+    display: inline-block;
+    ::ng-deep .mat-form-field-infix {
+      width: auto !important;
+    }
+    ::ng-deep mat-form-field {
+      margin-top: 1px;
+    }
+  }
+  maxhealth-question.input-group-selesct {
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+      background: #f1f1f1 0% 0% no-repeat padding-box;
+    }
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-end {
+      border-radius: 0;
+    }
+  }
+  maxhealth-question.input-group-textbox {
+    flex: 1;
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start {
+      border-radius: 0;
+      border-left: none;
+    }
+  }
+  
+  .bottombtns {
+    height: calc(100vh - 20rem);
+  }
+}
+maxhealth-question ::ng-deep mat-datepicker-toggle {
+  button {
+    top: 0.25em;
+  }
+}

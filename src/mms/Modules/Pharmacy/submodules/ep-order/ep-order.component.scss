@@ -1,0 +1,29 @@
+.op-pharmacy-ep-order {
+  --lbelow-1000-color: #ffffff;
+  --l1000-2000-color: #f9fca6;
+  --l2000-4000-color: #ffd194;
+  --labove-4000-color: #ff9494;
+  div.flex.w-full.bg-secondary {
+    overflow: auto;
+  }
+  .max-body-wrapper {
+    height: calc(100vh - 4.3rem);
+  }
+  ::ng-deep {
+    h4 {
+      margin: 0px 0 8px;
+    }
+  }
+}
+
+::ng-deep {
+  .EPOrderDrugLineItem.animate__animated.animate__slideInRight {
+    height: 89% !important;
+    h4 {
+      margin: 0px 0 8px !important;
+    }
+    .color-block {
+      color: #000000;
+    }
+  }
+}
