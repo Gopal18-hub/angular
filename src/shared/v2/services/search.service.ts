@@ -30,7 +30,7 @@ export class SearchService {
         },
         phone: {
           type: "string",
-          title: "Phone",
+          title: "Mobile No",
         },
         name: {
           type: "string",
