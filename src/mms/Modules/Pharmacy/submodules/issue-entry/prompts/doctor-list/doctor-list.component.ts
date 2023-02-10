@@ -21,7 +21,9 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
-import { PharmacyApiConstants } from "../../../../../../core/constants/pharmacyApiConstant";
+import { PatientApiConstants } from "../../../../../../core/constants/patientApiConstant";
+import { CommonApiConstants } from "../../../../../../core/constants/commonApiConstant";
+import { BillingApiConstants } from "../../../../../../core/constants/billingApiConstant";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 @Component({
   selector: "doctor-list",
@@ -87,31 +89,30 @@ export class DoctorListComponent implements OnInit {
         placeholder: "--Select--",
         title: "Speciality",
         required: true,
-       // options:this.special
+        // options:this.special
       },
-     
+
       doctorAddress: {
         title: "Address",
         type: "textarea",
         required: true,
         pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,49}",
       },
-     
     },
   };
   doctorform: any;
-  doctorsFormData = this.doctorFormData; 
+  doctorsFormData = this.doctorFormData;
   doctorformGroup!: FormGroup;
-  addDoctorform:any;
-  addDoctorsFormData=this.addDoctorFormData;
-  addDoctorfomGroup!:FormGroup;
+  addDoctorform: any;
+  addDoctorsFormData = this.addDoctorFormData;
+  addDoctorfomGroup!: FormGroup;
   @ViewChild("doctortable") doctableRows: any;
   doctortable: any;
   public doctorList: any = [];
   doctorSelected: any;
-  addDoctor:boolean=false;
+  addDoctor: boolean = false;
   apiProcessing: boolean = true;
-  special=[]
+  special = [];
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -131,32 +132,33 @@ export class DoctorListComponent implements OnInit {
     //   this.doctorSelected = res["added"][0].name;
     //   this._bottomSheet.dismiss(this.doctorSelected);
     // });
-    setTimeout(() => { 
+    setTimeout(() => {
       this.doctableRows.selection.changed.subscribe((res: any) => {
-      this.doctorSelected=res["added"][0].name
-      this._bottomSheet.dismiss(this.doctorSelected);
-    }) },500);
+        this.doctorSelected = res["added"][0].name;
+        this._bottomSheet.dismiss(this.doctorSelected);
+      });
+    }, 500);
     this.doctorformGroup.controls["searchDoctor"].valueChanges
-    .pipe(
-      filter((res: any) => {
-        return (res !== null && res.length >= 3) || res == "";
-      }),
-      debounceTime(1000),
-      distinctUntilChanged(),
-      switchMap((val) => {
-        return this.http
-          .get(PharmacyApiConstants.getreferraldoctor(this.doctortype, val))
-          .pipe(finalize(() => {}));
-      })
-    )
-    .subscribe(
-      (data:any) => {
-        this.doctorList = data;
-      },
-      (error:any) => {
-        console.error("There was an error!", error);
-      }
-    );
+      .pipe(
+        filter((res: any) => {
+          return (res !== null && res.length >= 3) || res == "";
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+        switchMap((val) => {
+          return this.http
+            .get(BillingApiConstants.getreferraldoctor(this.doctortype, val))
+            .pipe(finalize(() => {}));
+        })
+      )
+      .subscribe(
+        (data: any) => {
+          this.doctorList = data;
+        },
+        (error: any) => {
+          console.error("There was an error!", error);
+        }
+      );
   }
   formInit() {
     let doctorformResult: any = this.formService.createForm(
@@ -171,13 +173,12 @@ export class DoctorListComponent implements OnInit {
     );
     this.addDoctorfomGroup = adddoctorformResult.form;
     this.addDoctorform = adddoctorformResult.questions;
-    this.getSpecialization()
+    this.getSpecialization();
   }
   getSpecialization() {
-    this.http.get(PharmacyApiConstants.getspecialization).subscribe((res) => {
-      this.special=res
+    this.http.get(PatientApiConstants.getspecialization).subscribe((res) => {
+      this.special = res;
       this.addDoctorform[3].options = res.map((r: any) => {
-        
         return { title: r.name, value: r.id };
       });
     });
@@ -185,51 +186,55 @@ export class DoctorListComponent implements OnInit {
   showInternalDoctor() {
     this.doctortype = 1;
     this.apiProcessing = true;
-   
+
     this.http
-      .get(PharmacyApiConstants.getreferraldoctor(1, ""))
+      .get(BillingApiConstants.getreferraldoctor(1, ""))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        setTimeout(() => { 
+        setTimeout(() => {
           this.doctableRows.selection.changed.subscribe((res: any) => {
-          this.doctorSelected=res["added"][0].name
-          this._bottomSheet.dismiss(this.doctorSelected);
-        }) },500);
+            this.doctorSelected = res["added"][0].name;
+            this._bottomSheet.dismiss(this.doctorSelected);
+          });
+        }, 500);
       });
   }
   showExternalDoctor() {
     this.doctortype = 2;
     this.apiProcessing = true;
-   
+
     this.http
-      .get(PharmacyApiConstants.getreferraldoctor(2, ""))
+      .get(BillingApiConstants.getreferraldoctor(2, ""))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        setTimeout(() => { 
+        setTimeout(() => {
           this.doctableRows.selection.changed.subscribe((res: any) => {
-          this.doctorSelected=res["added"][0].name
-          this._bottomSheet.dismiss(this.doctorSelected);
-        }) },500);
+            this.doctorSelected = res["added"][0].name;
+            this._bottomSheet.dismiss(this.doctorSelected);
+          });
+        }, 500);
       });
   }
   closeDoctorList() {
     this._bottomSheet.dismiss();
   }
-  addNewDoctor(){
-    this.addDoctor=true
+  addNewDoctor() {
+    this.addDoctor = true;
   }
-  docList(){
-    this.addDoctor=false
+  docList() {
+    this.addDoctor = false;
   }
   saveDoctor() {
     this.http
       .post(
-        PharmacyApiConstants.referraldoctorsave(
-          this.addDoctorfomGroup.value.firstName + " " + this.addDoctorfomGroup.value.lastName,
+        CommonApiConstants.referraldoctorsave(
+          this.addDoctorfomGroup.value.firstName +
+            " " +
+            this.addDoctorfomGroup.value.lastName,
           this.addDoctorfomGroup.value.mobile,
           this.addDoctorfomGroup.value.speciality,
           this.cookie.get("UserId")
@@ -237,7 +242,7 @@ export class DoctorListComponent implements OnInit {
         {}
       )
       .subscribe((res: any) => {
-        this.doctorList=res
+        this.doctorList = res;
         // this.selectedDoctorEvent.emit({
         //   docotr: {
         //     id: res,
@@ -248,10 +253,10 @@ export class DoctorListComponent implements OnInit {
         //     specialisation: this.addDoctorfomGroup.value.speciality,
         //   },
         // });
-       // this.alreadyDoctorsExist = [];
+        // this.alreadyDoctorsExist = [];
         this.addDoctor = false;
         //this._bottomSheet.dismiss(this.doctorList);
-       // this.showExternalDoctor();
+        // this.showExternalDoctor();
       });
   }
 

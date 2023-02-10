@@ -34,7 +34,9 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/out_patients/src/styles.scss"
             ],
-            "scripts": ["src/out_patients/src/assets/js/rtf.js"]
+            "scripts": [
+              "src/out_patients/src/assets/js/rtf.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -100,7 +102,6 @@
               ],
               "outputHashing": "all"
             },
-
             "dev": {
               "budgets": [
                 {
@@ -204,7 +205,10 @@
             "polyfills": "src/emergency/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/emergency/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/emergency/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/emergency/src/styles.scss"
@@ -270,7 +274,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/emergency/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/emergency/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/emergency/src/styles.scss"
@@ -303,7 +310,10 @@
             "polyfills": "src/in_patients/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/in_patients/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/in_patients/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/in_patients/src/styles.scss"
@@ -369,7 +379,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/in_patients/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/in_patients/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/in_patients/src/styles.scss"
@@ -402,7 +415,10 @@
             "polyfills": "src/mms/src/polyfills.ts",
             "tsConfig": "src/mms/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/mms/src/favicon.ico", "src/mms/src/assets"],
+            "assets": [
+              "src/mms/src/favicon.ico",
+              "src/mms/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/mms/src/styles.scss"
@@ -415,18 +431,81 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "12kb",
+                  "maximumError": "12kb"
                 }
               ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "uat": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "6mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "12kb",
+                  "maximumError": "12kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.uat.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "sit": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "6mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "12kb",
+                  "maximumError": "12kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.sit.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "dev": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "6mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "12kb",
+                  "maximumError": "12kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
                 }
               ],
               "outputHashing": "all"
@@ -468,12 +547,24 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/mms/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/mms/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/mms/src/styles.scss"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/mms/**/*.ts",
+              "src/mms/**/*.html"
+            ]
           }
         }
       }
@@ -501,7 +592,10 @@
             "polyfills": "src/documentation/src/polyfills.ts",
             "tsConfig": "src/documentation/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/documentation/src/favicon.ico", "src/documentation/src/assets"],
+            "assets": [
+              "src/documentation/src/favicon.ico",
+              "src/documentation/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/documentation/src/styles.scss"
@@ -567,7 +661,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/documentation/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/documentation/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/documentation/src/styles.scss"
@@ -600,7 +697,10 @@
             "polyfills": "src/operation_theater/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/operation_theater/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/operation_theater/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/operation_theater/src/styles.scss"
@@ -666,7 +766,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/operation_theater/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/operation_theater/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/operation_theater/src/styles.scss"
@@ -773,7 +876,6 @@
               ],
               "outputHashing": "all"
             },
-
             "dev": {
               "budgets": [
                 {
@@ -877,7 +979,10 @@
             "polyfills": "src/physicians/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/physicians/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/physicians/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/physicians/src/styles.scss"
@@ -943,7 +1048,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/physicians/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/physicians/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/physicians/src/styles.scss"
@@ -976,7 +1084,10 @@
             "polyfills": "src/laboratory/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/laboratory/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/laboratory/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/laboratory/src/styles.scss"
@@ -1042,7 +1153,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/laboratory/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/laboratory/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/laboratory/src/styles.scss"
@@ -1075,7 +1189,10 @@
             "polyfills": "src/adverse_events/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/adverse_events/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/adverse_events/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/adverse_events/src/styles.scss"
@@ -1141,7 +1258,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/adverse_events/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/adverse_events/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/adverse_events/src/styles.scss"
@@ -1174,7 +1294,10 @@
             "polyfills": "src/donate_blood/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/donate_blood/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/donate_blood/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/donate_blood/src/styles.scss"
@@ -1240,7 +1363,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/donate_blood/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/donate_blood/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/donate_blood/src/styles.scss"
@@ -1273,7 +1399,10 @@
             "polyfills": "src/administration/src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/administration/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/administration/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/administration/src/styles.scss"
@@ -1339,7 +1468,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/administration/src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/administration/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/administration/src/styles.scss"
@@ -1372,7 +1504,10 @@
             "polyfills": "src/auth/src/polyfills.ts",
             "tsConfig": "src/auth/tsconfig.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/auth/src/favicon.ico", "src/auth/src/assets"],
+            "assets": [
+              "src/auth/src/favicon.ico",
+              "src/auth/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/auth/src/styles.scss"
@@ -1443,7 +1578,6 @@
               ],
               "outputHashing": "all"
             },
-
             "dev": {
               "budgets": [
                 {
@@ -1548,7 +1682,10 @@
             "polyfills": "src/reports/src/polyfills.ts",
             "tsConfig": "src/reports/tsconfig.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/reports/src/favicon.ico", "src/reports/src/assets"],
+            "assets": [
+              "src/reports/src/favicon.ico",
+              "src/reports/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/reports/src/styles.scss"
@@ -1619,7 +1756,6 @@
               ],
               "outputHashing": "all"
             },
-
             "dev": {
               "budgets": [
                 {
@@ -1687,7 +1823,10 @@
             "tsConfig": "src/reports/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/reports/src/favicon.ico", "src/reports/src/assets"],
+            "assets": [
+              "src/reports/src/favicon.ico",
+              "src/reports/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/reports/src/styles.scss"
@@ -1799,7 +1938,6 @@
               ],
               "outputHashing": "all"
             },
-
             "dev": {
               "budgets": [
                 {
@@ -1875,7 +2013,10 @@
             "tsConfig": "src/all/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/all/src/favicon.ico", "src/all/src/assets"],
+            "assets": [
+              "src/all/src/favicon.ico",
+              "src/all/src/assets"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/all/src/styles.scss"
