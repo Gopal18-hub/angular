@@ -73,13 +73,27 @@ export class EPOrderService {
       .get(PharmacyApiConstants.epordersearch + data)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
-        this.dataEPOrder = resultData.objOrderDetails_Pharm;
-        this.dataEPOrderHeader_Pharm = resultData.objOrderHeader_Pharm;
+        if (this.pageIndex > 0) {
+          if (resultData.objOrderDetails_Pharm) {
+            resultData.objOrderDetails_Pharm.forEach((item: any) => {
+              this.dataEPOrder.push(item);
+            });
+          }
+          if (resultData.objOrderHeader_Pharm) {
+            resultData.objOrderHeader_Pharm.forEach((item: any) => {
+              this.dataEPOrderHeader_Pharm.push(item);
+            });
+          }
+        } else {
+          this.dataEPOrder = resultData.objOrderDetails_Pharm;
+          this.dataEPOrderHeader_Pharm = resultData.objOrderHeader_Pharm;
+        }
         this.mapListDataEPOrder();
       });
   }
 
   mapListDataEPOrder() {
+    console.log("this.dataEPOrder =>", this.dataEPOrder);
     if (this.dataEPOrder) {
       this.dataEPOrder.forEach((item: any) => {
         if (item.mrpValue !== "" && item.mrpValue !== undefined)

@@ -113,6 +113,7 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
   }
 
   searchFormSubmit() {
+    this.EPOrderService.pageIndex = 0;
     this.EPOrderService.searchFormData = this.searchFormDetailsRequestBody();
     this.EPOrderService.getEPOrderSearchData(
       this.EPOrderService.searchFormData
