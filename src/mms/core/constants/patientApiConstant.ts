@@ -9,15 +9,23 @@ export namespace PatientApiConstants {
   export const patientDetails = (registrationno: number, iacode: string) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientbymaxid/" + //getpatientdetailsbymaxid_pharmacy
+      "api/patient/getpatientdetailsbymaxid_pharmacy/" + //getpatientdetailsbymaxid_pharmacy
       registrationno +
       "/" +
       iacode
     );
   };
 
-  export const similarSoundPatientDetail =
-    environment.PatientApiUrl + "api/patient/getsimilarsoundpatient";
+  // export const similarSoundPatientDetail =
+  //   environment.PatientApiUrl + "api/patient/GetSimilarPatientsPhoneNo"; //getsimilarsoundpatient
+
+  export const similarSoundPatientDetail = (mobileno: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/GetSimilarPatientsPhoneNo/" +
+      mobileno
+    );
+  };
 
   //spcialisation for doctors
   export const getspecialization = `${environment.PatientApiUrl}api/patient/getspecialization`;

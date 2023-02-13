@@ -3,6 +3,9 @@
   margin-bottom: 6px;
   display: block;
 }
+.border-cls{
+  border-right:1px solid #004084;
+}
 .header-wrapper {
   height: 3.188rem;
   background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -103,6 +106,7 @@
 .mat-toolbar-single-row {
   background-color: white;
   height: 50px;
+  padding: 0 7px !important;
 }
 .example-container {
   // height: 100px;
@@ -126,7 +130,9 @@
 .full-width {
   width: 100%;
 }
-
+.wt-20{
+  width:20%;
+}
 .submenu {
   overflow-y: hidden;
   transition: transform 300ms ease;
@@ -149,12 +155,13 @@
   display: contents;
 }
 a.logo img{
-  width: 73px;
-  height: 24px;
+  width: 81px;
+  height: 28px;
 }
 .menu_button{
   border: unset;
   color: var(--primary-color);
+  margin-top:7px;
 }
 .menu-item{
   color:#004084;//#6A8FB6;

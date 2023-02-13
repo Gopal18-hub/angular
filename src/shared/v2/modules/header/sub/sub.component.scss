@@ -60,17 +60,20 @@
       .mat-form-field-wrapper {
         input {
           font-size: 15px;
-          width: 96%;
+          width: 86%;
+          margin: -1px auto 4px;
+          color: rgba(0, 0, 0, 0.87) !important;
+          font-weight: 500;
         }
         .mat-form-field-prefix {
           top: 0.2em !important;
 
         }
         .mat-form-field-suffix {
-          top: 0.2em !important;
+          top: 0.05em !important;
         }
         .mat-form-field-infix {
-          width: 130px !important;
+          width: 112px !important;
         }
       }
     }
@@ -82,20 +85,21 @@
     
     li {
       display: flex;
-      align-items: center;
+      // align-items: center;
       height: 1.925rem;
-      align-self: flex-end;
+      // align-self: flex-end;
       white-space: nowrap;
-      font-size: 15px !important;
+      font-size: 16px !important;
       letter-spacing: 0.32px;
-      color: #000000 !important;
+      color: #000000 !important; //color: rgba(0, 0, 0, 0.87) !important;//
       opacity: 1;
 
       &:first-child {
-        margin-left: 2em;
+        // margin-left: 2em;
       }
       &.active {
-        border-bottom: 3px solid #004084 !important;
+        border-bottom: 4px solid #004084 !important;
+        height:2.8rem;
       }
     }
   }
@@ -345,14 +349,14 @@ ul.top-mat-menu-item li {
   background-color: #004080;
   color:white;
   // height: 2.488rem;
-  padding: 10px 3px;
+  padding: 17px 4px;
   font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-17) var(--unnamed-font-family-proxima-nova);
 letter-spacing: var(--unnamed-character-spacing-0);
 text-align: left;
 font: normal normal normal 15px Proxima Nova;
 letter-spacing: 0px;
 opacity: 1;
-// margin-top: 7px;
+padding-right: 1.5rem;
 }
 .menu-item{
   padding: 8px 3px;

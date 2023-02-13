@@ -50,7 +50,7 @@
             <div *ngIf="icon['tooltip'] === 'HOTLIST'" class="info-icon-setion justify-center" matTooltip="Hotlisted">
               <mat-label class="info-label">{{hotlistInfo}}</mat-label>
             </div>
-            <div *ngIf="icon['tooltip'] === 'Notes'" class="info-icon-setion justify-center" matTooltip="Note">
+            <div *ngIf="icon['tooltip'] === 'Notes'  || icon['type'] === 'note'" class="info-icon-setion justify-center" matTooltip="Note">
               <mat-label class="info-label">{{noteInfo}}</mat-label>
             </div>
             <div *ngIf="icon['tooltip'] === 'VIP'" class="info-icon-vip-section justify-center" matTooltip="VIP">

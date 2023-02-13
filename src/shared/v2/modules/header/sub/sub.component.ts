@@ -59,6 +59,8 @@ export class SubComponent implements OnInit, OnChanges {
   questions: any;
   searchFormProperties: any;
   selectedIndex: number = 1;
+  leftIndex = 0;
+  rightIndex = 3;
   private readonly _destroying$ = new Subject<void>();
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
@@ -91,13 +93,27 @@ export class SubComponent implements OnInit, OnChanges {
     this.station = this.cookie.get("Station");
     this.usrname = this.cookie.get("Name");
     this.user = this.cookie.get("UserName");
-    this.setIndex(0);
+    this.setIndex(0, "/pharmacy/issue-entry");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.processSubModule();
   }
 
+  goRight(index: number) {
+    let fullIndex = this.submodules.length;
+    if (this.rightIndex != fullIndex) {
+      ++this.leftIndex;
+      ++this.rightIndex;
+    }
+  }
+
+  goLeft() {
+    if (this.leftIndex != 0) {
+      --this.leftIndex;
+      --this.rightIndex;
+    }
+  }
   processSubModule() {
     if (!this.submodules) {
       this.submodules = [];
@@ -123,8 +139,10 @@ export class SubComponent implements OnInit, OnChanges {
     });
   }
 
-  setIndex(index: number) {
+  setIndex(index: number, defaultPath: any) {
     this.selectedIndex = index;
+    this.router.navigate([defaultPath]); //["/pharmacy/issue-entry"]);
+    //["/pharmacy/ep-order"]);
   }
 
   reInitiateSearch(type: string) {

@@ -1,12 +1,14 @@
 <div class="flex justify-between submodule-wrapper items-center">
-  <div class="module-name">{{ module.title }}</div>
+  <div class="module-name ml-1">{{ module.title }}</div>
   <div class="mx-1"></div>
     <form class="w-full " autocomplete="off">
       <mat-form-field appearance="outline" class="menu-item mat-form-field-flex">
+        <!-- placeholder="Search Patient" -->
         <input
           matInput
-          placeholder="Search Patient"
+          value="Search Patient"
           #searchVal
+          readonly
           (keydown.enter)="applyFilter(searchVal.value)"
         />
         <span matPrefix class="flex mr-1 tp-1"
@@ -138,19 +140,18 @@
       </form>
     </mat-menu>
   <div class="top-header-menu">
-  <ul #subsefdlkjdsfs class="flex flex-row list-unstyled main-modules items-center top-mat-menu-item">
+  <ul #subsefdlkjdsfs class="flex flex-row list-unstyled main-modules top-mat-menu-item">
     <ng-container>
-      <button *ngIf="submodules.length > 3" mat-icon-button [matMenuTriggerFor]="menu"
-        aria-label="Example icon-button with a menu">
+      <button *ngIf="submodules.length > 3" 
+        mat-icon-button [disabled]="leftIndex == 0" (click)="goLeft()">
         <button class="scroll_button"><mat-icon>keyboard_arrow_left</mat-icon></button>
       </button>
-      <li *ngFor="let module of submodules | slice: 0 : 3; let i = index" 
-      [class.active]="selectedIndex === i" (click)="setIndex(i)"
+      <li  *ngFor="let module of submodules | slice: leftIndex : rightIndex; let i = index" 
+      [class.active]="selectedIndex === i" (click)="setIndex(i,module.defaultPath)"
       class="mr-2 cursor-pointer menu-item"> 
           {{ module.title }}
       </li>
-      <button *ngIf="submodules.length > 3" mat-icon-button [matMenuTriggerFor]="menu"
-        aria-label="Example icon-button with a menu">
+      <button *ngIf="submodules.length > 3" mat-icon-button [disabled]="rightIndex == submodules.length" (click)="goRight(rightIndex)">
         <button class="scroll_button"><mat-icon>keyboard_arrow_right</mat-icon></button>
       </button>
       <mat-menu #menu="matMenu">
