@@ -494,7 +494,7 @@ export class MaxTableComponent implements OnInit, OnChanges {
     const tableViewHeight = e.target.offsetHeight; // viewport
     const tableScrollHeight = e.target.scrollHeight; // length of all table
     const scrollLocation = e.target.scrollTop; // how far user scrolled
-    if (this.scrollHandlerscrollTop != scrollLocation) {
+    if (this.scrollHandlerscrollTop < scrollLocation) {
       // If the user has scrolled within 200px of the bottom, add more data
       const buffer = 200;
       const limit = tableScrollHeight - tableViewHeight - buffer;
