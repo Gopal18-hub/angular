@@ -82,7 +82,7 @@ export class MaxTableComponent implements OnInit, OnChanges {
   dataSource: any;
   displayedColumns: string[] = [];
   displayColumnsInfo: any = [];
-
+  scrollHandlerscrollTop: number = 0;
   @ViewChild(MatSort) sort!: MatSort;
 
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
@@ -486,21 +486,22 @@ export class MaxTableComponent implements OnInit, OnChanges {
     XLSX.writeFile(wb, excelName);
   }
 
-  removeRow(index: number) {
-    this.rowRwmove.emit({ index: index, data: this.dataSource.data[index] });
+  removeRow(index: number, data: any) {
+    this.rowRwmove.emit({ index: index, data: data });
   }
 
   scrollHandler(e: any) {
     const tableViewHeight = e.target.offsetHeight; // viewport
     const tableScrollHeight = e.target.scrollHeight; // length of all table
     const scrollLocation = e.target.scrollTop; // how far user scrolled
-
-    // If the user has scrolled within 200px of the bottom, add more data
-    const buffer = 200;
-    const limit = tableScrollHeight - tableViewHeight - buffer;
-
-    if (scrollLocation > limit) {
-      this.tableScrolling.emit(e);
+    if (this.scrollHandlerscrollTop < scrollLocation) {
+      // If the user has scrolled within 200px of the bottom, add more data
+      const buffer = 200;
+      const limit = tableScrollHeight - tableViewHeight - buffer;
+      if (scrollLocation > limit) {
+        this.scrollHandlerscrollTop = scrollLocation;
+        this.tableScrolling.emit(e);
+      }
     }
   }
 

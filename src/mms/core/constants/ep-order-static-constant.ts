@@ -49,14 +49,14 @@ export namespace EPOrderStaticConstants {
         type: "dropdown",
         placeholder: "--Select--",
         required: false,
-        defaultValue: "3",
+        defaultValue: "1",
         options: [
           {
-            value: "all",
+            value: "0",
             title: "All",
           },
           {
-            value: "3",
+            value: "1",
             title: "Pending",
           },
           {
@@ -64,7 +64,7 @@ export namespace EPOrderStaticConstants {
             title: "Rejected",
           },
           {
-            value: "1",
+            value: "3",
             title: "Dispensed",
           },
         ],
@@ -73,7 +73,7 @@ export namespace EPOrderStaticConstants {
   };
 
   export const linedataEPOrderconfig: any = {
-    clickedRows: false,
+    clickedRows: true,
     clickSelection: "single",
     dateformat: "dd/MM/yyyy hh:mm:ss a",
     selectBox: false,
@@ -207,11 +207,11 @@ export namespace EPOrderStaticConstants {
     displayedColumns: [
       "sno",
       "drug",
-      "scheduleName",
+      "drugDesc",
       "days",
-      "specialization",
+      "dosage",
       "priority",
-      "prescriptionremarks",
+      "remarks",
     ],
     columnsInfo: {
       sno: {
@@ -225,10 +225,10 @@ export namespace EPOrderStaticConstants {
         title: "Drug Name",
         type: "string",
         style: {
-          width: "12rem",
+          width: "13rem",
         },
       },
-      scheduleName: {
+      drugDesc: {
         title: "Instruction",
         type: "string",
         style: {
@@ -239,28 +239,28 @@ export namespace EPOrderStaticConstants {
         title: "Days",
         type: "string",
         style: {
-          width: "4rem",
+          width: "3rem",
         },
       },
-      specialization: {
+      dosage: {
         title: "Dosage",
         type: "string",
         style: {
-          width: "10rem",
+          width: "6rem",
         },
       },
       priority: {
         title: "Priority",
         type: "number",
         style: {
-          width: "7rem",
+          width: "4rem",
         },
       },
-      prescriptionremarks: {
+      remarks: {
         title: "Remarks",
         type: "string",
         style: {
-          width: "13rem",
+          width: "10rem",
         },
         tooltipColumn: "prescriptionremarks",
       },

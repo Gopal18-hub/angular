@@ -12,6 +12,9 @@
   ::ng-deep {
     h4 {
       margin: 0px 0 8px;
+      font: normal normal bold 16px Proxima Nova;
+      letter-spacing: 0.48px;
+      color: #004084;
     }
   }
 }
@@ -20,10 +23,16 @@
   .EPOrderDrugLineItem.animate__animated.animate__slideInRight {
     height: 89% !important;
     h4 {
-      margin: 0px 0 8px !important;
+      margin: 0px 0 5px !important;
+      font: normal normal bold 16px Proxima Nova;
+      letter-spacing: 0.48px;
+      color: #004084;
     }
     .color-block {
       color: #000000;
+    }
+    .label-left-inline{
+      font-weight: 500;
     }
   }
 }

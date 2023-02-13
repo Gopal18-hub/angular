@@ -7,6 +7,6 @@ export namespace PharmacyApiConstants {
   export const eporderdetails =
     environment.PatientApiUrl + "api/patient/getphysicianorderdetailep";
   export const eporderdelete =
-    environment.PatientApiUrl + "api/patient/eporderdelete";
+    environment.BillingApiUrl + "api/outpatientbilling/deleteeporder";
   // EP Order API End
 }

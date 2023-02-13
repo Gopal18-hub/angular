@@ -20,9 +20,9 @@
   </div>
   <div class="flex w-full">
     <div class="">
-      <mat-label>Max ID</mat-label>
+      <mat-label class="label-left-inline">Max ID</mat-label>
       <mat-label class="ml-2 color-block">{{ data?.maxid }}</mat-label>
-      <mat-label class="ml-3">Name</mat-label>
+      <mat-label class="ml-3 label-left-inline">Name</mat-label>
       <mat-label class="ml-2 color-block">{{ data?.ptnName }}</mat-label>
     </div>
   </div>
@@ -41,7 +41,7 @@
 
   <div class="flex mt-3 w-full align-items-center">
     <div class="w-full text-right">
-      <button mat-raised-button color="primary" (click)="onCreateBill()" class="w-1/45" type="button">
+      <button disabled mat-raised-button color="primary" (click)="onCreateBill()" class="w-1/45" type="button">
         Create Bill
       </button>
       <!-- <button
