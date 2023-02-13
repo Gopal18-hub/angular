@@ -50,9 +50,8 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
   todayTemp: any;
   setDefaultValue(): void {
     this.today = new Date();
-    this.todayTemp = new Date("2022-03-01");
-    this.searchFormGroup.controls["fromDate"].setValue(this.todayTemp);
-    this.searchFormGroup.controls["toDate"].setValue(this.todayTemp);
+    this.searchFormGroup.controls["fromDate"].setValue(this.today);
+    this.searchFormGroup.controls["toDate"].setValue(this.today);
     this.searchFormGroup.controls["type"].setValue(
       this.searchFormData.properties.type.defaultValue
     );
@@ -114,11 +113,12 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
   }
 
   searchFormSubmit() {
+    this.EPOrderService.searchFormData = this.searchFormDetailsRequestBody();
     this.EPOrderService.getEPOrderSearchData(
-      this.searchFormDetailsRequestBody()
+      this.EPOrderService.searchFormData
     );
-    this.EPOrderService.searchFormData = this.searchFormGroup.controls;
-    this.EPOrderService.updateFormData.next(true);
+    //this.EPOrderService.searchFormData = this.searchFormGroup.controls;
+    //this.EPOrderService.updateFormData.next(true);
   }
 
   searchFormDetailsRequestBody(): string {
@@ -168,7 +168,6 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
     if (orderStatus && orderStatus != "" && orderStatus != "ALL") {
       re = re + "&Status=" + orderStatus;
     }
-
     return re;
   }
 }

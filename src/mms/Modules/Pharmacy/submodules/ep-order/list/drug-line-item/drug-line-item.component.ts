@@ -3,6 +3,7 @@ import { EPOrderStaticConstants } from "../../../../../../core/constants/ep-orde
 import { EPOrderService } from "../../../../../../core/services/ep-order.service";
 import { Subject } from "rxjs";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { Router } from "@angular/router";
 @Component({
   selector: "op-pharmacy-ep-order-drug-line-item",
   templateUrl: "./drug-line-item.component.html",
@@ -20,11 +21,13 @@ export class OpPharmacyEPOrderDrugLineItemComponent
   constructor(
     public dialogRef: MatDialogRef<OpPharmacyEPOrderDrugLineItemComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public EPOrderService: EPOrderService
+    public EPOrderService: EPOrderService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.calltabledata();
+    // this.calltabledata();
+    this.dataEPOrderDrugLine = this.data.detailsList;
   }
 
   private readonly _destroying$ = new Subject<void>();
@@ -33,15 +36,17 @@ export class OpPharmacyEPOrderDrugLineItemComponent
     this._destroying$.complete();
   }
 
-  calltabledata(): void {
-    this.dataEPOrderDrugLine = this.EPOrderService.dataEPOrderDrugLine;
-  }
   ngAfterViewInit(): void {
     this.drugLineItemdataEPOrderDrugLineTable.stringLinkOutput.subscribe(
       (res: any) => {}
     );
   }
-  onCreateBill() {}
+  onCreateBill() {
+    this.close();
+    // this.router.navigate(["pharmacy", "issue-entry"], {
+    //   queryParams: this.data,
+    // });
+  }
 
   close() {
     this.dialogRef.close({

@@ -6,7 +6,6 @@
       matSort
       (matSortChange)="announceSortChange($event)"
       [class.row-click]="config.clickedRows"
-      (scroll)="scrollHandler($event)"
       fixedLayout="true"
       multiTemplateDataRows
       [class.h-full]="dataSource.data.length == 0"
@@ -161,12 +160,13 @@
           <td
             mat-cell
             *matCellDef="let element; let i = dataIndex"
-          ><mat-divider [vertical]="true"></mat-divider>
+          ><mat-divider [vertical]="true" *ngIf="config?.removeRowstickyEnd"></mat-divider>
             <button matTooltip="Remove Item"
               type="button"
               mat-icon-button
-              color="warn"
-              (click)="removeRow(i)"
+              color="warn" [disabled]="element?.removeRowDisabled"
+              *ngIf="!element?.removeRowHide"
+              (click)="removeRow(i,element)"
             >
               <div class="remove-row-icon-wrapper">
                 <mat-icon>delete_forever</mat-icon>

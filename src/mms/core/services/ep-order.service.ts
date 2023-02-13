@@ -11,6 +11,9 @@ export class EPOrderService {
   searchFormData: any;
   updateFormData = new Subject<boolean>();
   dataEPOrder: any = [];
+  dataEPOrderHeader_Pharm: any = [];
+  pageIndex: number = 0;
+  pageSize: number = 15;
   dataEPOrderDrugLine: any = [];
   clearAll = new Subject<boolean>();
   updateAll = new Subject<boolean>();
@@ -22,6 +25,24 @@ export class EPOrderService {
 
   clear() {
     this.clearAll.next(true);
+  }
+  deleteEPOrder(data: any) {
+    if (data && data.index > -1 && data.data && data.data.orderId) {
+      this.http
+        .get(
+          PharmacyApiConstants.eporderdelete + "/?OrderId=" + data.data.orderId
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultData) => {
+          this.dataEPOrder.splice(
+            this.dataEPOrder.findIndex(
+              (d: any) => d.orderId === data.data.orderId
+            ),
+            1
+          ); //remove element from array
+          this.mapListDataEPOrder();
+        });
+    }
   }
 
   getEPOrderDetails(data: string) {
@@ -46,31 +67,49 @@ export class EPOrderService {
   }
 
   getEPOrderSearchData(data: string) {
+    data = data + "&pageIndex=" + this.pageIndex;
+    data = data + "&pageSize=" + this.pageSize;
     this.http
       .get(PharmacyApiConstants.epordersearch + data)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
-        this.dataEPOrder = resultData.objOrderDetails;
+        this.dataEPOrder = resultData.objOrderDetails_Pharm;
+        this.dataEPOrderHeader_Pharm = resultData.objOrderHeader_Pharm;
         this.mapListDataEPOrder();
       });
   }
 
   mapListDataEPOrder() {
-    this.dataEPOrder.forEach((item: any) => {
-      if (item.mrpValue !== "" && item.mrpValue !== undefined)
-        item.mrpValue = Number(item.mrpValue).toFixed(2);
+    if (this.dataEPOrder) {
+      this.dataEPOrder.forEach((item: any) => {
+        if (item.mrpValue !== "" && item.mrpValue !== undefined)
+          item.mrpValue = Number(item.mrpValue).toFixed(2);
 
-      if (item.mrpValue < 1000) {
-        item.markLegends = "lbelow-1000";
-      } else if (item.mrpValue < 2000) {
-        item.markLegends = "l1000-2000";
-      } else if (item.mrpValue < 4000) {
-        item.markLegends = "l2000-4000";
-      } else {
-        item.markLegends = "labove-4000";
-      }
-      item.viewEP = "View";
-    });
+        if (item.mrpValue < 1000) {
+          item.markLegends = "lbelow-1000";
+        } else if (item.mrpValue < 2000) {
+          item.markLegends = "l1000-2000";
+        } else if (item.mrpValue < 4000) {
+          item.markLegends = "l2000-4000";
+        } else {
+          item.markLegends = "labove-4000";
+        }
+        item.viewEP = "View";
+        // Hide Remove Row
+        if (item.orderStatus === "Rejected") {
+          item.removeRowHide = true;
+        }
+        item.detailsList = this.dataEPOrderHeader_Pharm.filter(
+          (x: any) => x.orderid === item.orderId
+        );
+        item.detailsList.forEach((item: any, i: any) => {
+          item.sno = i + 1;
+          if (item.drugid == 0) {
+            this.dataEPOrderDrugLine.splice(i, 1);
+          }
+        });
+      });
+    }
     this.updateAll.next(true);
   }
 }
