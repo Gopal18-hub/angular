@@ -32,6 +32,6 @@ export class CustomSnackBarComponent implements OnInit {
   }
 
   onClose(buttonAction: string) {
-    this.data.onActionCB && this.data.onActionCB(buttonAction);
+    return this.data.onActionCB && this.data.onActionCB(buttonAction);
   }
 }

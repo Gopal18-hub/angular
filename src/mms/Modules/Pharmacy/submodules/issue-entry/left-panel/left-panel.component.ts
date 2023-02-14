@@ -12,7 +12,9 @@ import { HttpService } from "@shared/v2/services/http.service";
 import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
 import { Subject, takeUntil } from "rxjs";
 import { PatientDetails } from "../../../../../core/models/patientDetailsModel.Model";
-import { PharmacyApiConstants } from "../../../../../core/constants/pharmacyApiConstant";
+import { PatientApiConstants } from "../../../../../core/constants/patientApiConstant";
+import { CommonApiConstants } from "../../../../../core/constants/commonApiConstant";
+import { BillingApiConstants } from "../../../../../core/constants/billingApiConstant";
 import { AgetypeModel } from "../../../../../core/models/ageTypeModel.Model";
 import { GenderModel } from "../../../../../core/models/genderModel.Model";
 import { IssueEntryService } from "../../../../../core/services/issue-entry.service";
@@ -22,6 +24,9 @@ import { SimilarSoundPatientResponse } from "../../../../../core/models/getsimil
 import { ReportService } from "@shared/services/report.service";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { DoctorListComponent } from "../prompts/doctor-list/doctor-list.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { SearchService } from "@shared/v2/services/search.service";
+
 @Component({
   selector: "issue-entry-left-panel",
   templateUrl: "./left-panel.component.html",
@@ -143,7 +148,9 @@ export class LeftPanelComponent implements OnInit {
     private cookie: CookieService,
     public issueEntryService: IssueEntryService,
     private reportService: ReportService,
-    public snackbarService: SnackBarService
+    public snackbarService: SnackBarService,
+    private searchService: SearchService,
+    private _matSnackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -192,12 +199,26 @@ export class LeftPanelComponent implements OnInit {
     } else {
       this.patientform[0].required = true;
     }
+
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata: any) => {
+        let searchResult = formdata.data;
+        let regNumber = Number(searchResult.maxID.split(".")[1]);
+        //HANDLING IF MAX ID IS NOT PRESENT
+        if (regNumber != 0) {
+          this.getPatientDetailsByMaxId(searchResult.maxID);
+        } else if (searchResult.phone != "") {
+          this.getSimilarPatientDetails(searchResult.phone);
+        }
+        // this.searchhotlisting(formdata.data);
+      });
   }
 
   //AGE TYPE LIST
   getAgeTypeList() {
     this.http
-      .get(PharmacyApiConstants.ageTypeLookUp)
+      .get(CommonApiConstants.ageTypeLookUp)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.ageTypeList = resultData;
@@ -211,7 +232,7 @@ export class LeftPanelComponent implements OnInit {
   //GENDER LIST FOR GENDER DROP DOWN
   getGenderList() {
     this.http
-      .get(PharmacyApiConstants.genderLookUp)
+      .get(CommonApiConstants.genderLookUp)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.genderList = resultData;
@@ -247,7 +268,6 @@ export class LeftPanelComponent implements OnInit {
     this.formInit();
   }
   submit() {
-    console.log("submit");
     let isFormValid = this.validateForm();
   }
 
@@ -359,6 +379,7 @@ export class LeftPanelComponent implements OnInit {
     this.issueEntryService.billType = 1;
     this.isRegPatient = false;
     this.isShowCompany = false;
+    this.MaxIDExist = false;
     this.cashInfo = "C";
     this.hotlistInfo = "H";
     this.noteInfo = "N";
@@ -396,7 +417,7 @@ export class LeftPanelComponent implements OnInit {
           // Cancel the default action, if needed
           event.preventDefault();
           this.maxIDSearch = true;
-          this.getPatientDetailsByMaxId();
+          this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
         }
       }
     );
@@ -430,10 +451,10 @@ export class LeftPanelComponent implements OnInit {
       }
     );
 
-    this.patientform[4].elementRef.addEventListener(
-      "blur",
-      this.onAgeTypeChange.bind(this)
-    );
+    // this.patientform[4].elementRef.addEventListener(
+    //   "blur",
+    //   this.onAgeTypeChange.bind(this)
+    // );
   }
 
   MarkasMaxIDChange() {
@@ -442,7 +463,7 @@ export class LeftPanelComponent implements OnInit {
 
   onMaxIDChange() {
     this.maxIDSearch = true;
-    this.getPatientDetailsByMaxId();
+    this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
   }
 
   onAgeTypeChange() {
@@ -456,10 +477,11 @@ export class LeftPanelComponent implements OnInit {
   }
 
   //Get Patient Details by Max ID
-  async getPatientDetailsByMaxId() {
+  async getPatientDetailsByMaxId(maxId: string) {
     this.apiProcessing = true;
 
-    let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
+    //let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
+    let regNumber = Number(maxId.split(".")[1]);
     //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.patientformGroup.value.maxid.split(".")[0];
@@ -476,7 +498,7 @@ export class LeftPanelComponent implements OnInit {
         this.expiredPatient = false;
       }
       this.http
-        .get(PharmacyApiConstants.patientDetails(regNumber, iacode))
+        .get(PatientApiConstants.patientDetails(regNumber, iacode))
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: PatientDetails) => {
@@ -516,6 +538,27 @@ export class LeftPanelComponent implements OnInit {
                 this.categoryIcons.forEach((icon: any) => {
                   if (icon.tooltip === "EWS") {
                     this.isEWSPatient = true;
+                    // let ewsContent = EwspatientPopupComponent;
+                    // this.snackbarService.showSnackBar(
+                    //   "Patient is an Expired Patient!",
+                    //   "error",
+                    //   ""
+                    // );
+                    this._matSnackBar.openFromComponent(
+                      EwspatientPopupComponent,
+                      {
+                        data: {
+                          // message: message,
+                          // actionOne: { name: actionBtnOne, class: "btn-primary" },
+                          // actionTwo: { name: actionBtnTwo, class: "" },
+                          // onActionCB: callBack,
+                          // isSingleLine: true,
+                          // showCloseIcon,
+                        },
+                        panelClass: "info",
+                        // ...this.defaultSBOptions,
+                      }
+                    );
                   } else if (icon.tooltip === "CGHS") {
                     this.isCGHSPatient = true;
                   }
@@ -532,9 +575,6 @@ export class LeftPanelComponent implements OnInit {
               //   this.maxIDChangeCall = false;
               // }, 2000);
               this.maxIDSearch = false;
-              if (this.isEWSPatient) {
-                this._bottomSheet.open(EwspatientPopupComponent);
-              }
             }
           },
           (error) => {
@@ -571,7 +611,7 @@ export class LeftPanelComponent implements OnInit {
   async checkPatientExpired(iacode: string, regNumber: number) {
     const res = await this.http
       .get(
-        PharmacyApiConstants.getforegexpiredpatientdetails(
+        BillingApiConstants.getforegexpiredpatientdetails(
           iacode,
           Number(regNumber)
         )
@@ -602,13 +642,13 @@ export class LeftPanelComponent implements OnInit {
       );
     }
     this.patientformGroup.controls["mobile"].setValue(
-      this.patientDetails?.pphone
+      this.patientDetails?.mobile //pphone
     );
     this.patientformGroup.controls["patientName"].setValue(
-      this.patientDetails?.firstname + " " + this.patientDetails?.lastName
+      this.patientDetails?.name //firstname + " " + this.patientDetails?.lastName
     );
     this.patientformGroup.controls["gender"].setValue(
-      this.patientDetails?.sexName
+      this.patientDetails?.sex //sexName
     );
     this.patientformGroup.controls["patienAge"].setValue(
       this.patientDetails?.age + " " + this.patientDetails?.ageTypeName
@@ -618,7 +658,7 @@ export class LeftPanelComponent implements OnInit {
     );
 
     this.patientformGroup.controls["patienAddress"].setValue(
-      patientDetails?.address1
+      patientDetails?.address //address1
     );
 
     //TODO
@@ -664,7 +704,7 @@ export class LeftPanelComponent implements OnInit {
         if (this.checkForModifiedPatientDetail()) {
           // this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
         } else {
-          this.getSimilarPatientDetails();
+          this.getSimilarPatientDetails(this.patientformGroup.value.mobile);
         }
       }
     }
@@ -682,14 +722,12 @@ export class LeftPanelComponent implements OnInit {
     return this.isPatientdetailModified;
   }
 
-  getSimilarPatientDetails() {
+  getSimilarPatientDetails(mobile: number) {
     // subscribe to component event to know when to deleteconst selfDeleteSub = component.instance.deleteSelf
     this.matDialog.closeAll();
     if (!this.MaxIDExist) {
       this.http
-        .post(PharmacyApiConstants.similarSoundPatientDetail, {
-          phone: this.patientformGroup.value.mobile,
-        })
+        .get(PatientApiConstants.similarSoundPatientDetail(mobile))
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: SimilarSoundPatientResponse[]) => {
@@ -737,7 +775,9 @@ export class LeftPanelComponent implements OnInit {
                     );
                     this.patientformGroup.controls["patienAge"].setValue(age);
                     this.patientformGroup.controls["patientName"].setValue(
-                      result.data["added"][0].firstName
+                      result.data["added"][0].firstName +
+                        " " +
+                        result.data["added"][0].lastName
                     );
                   }
                   this.similarContactPatientList = [];

@@ -1,68 +1,112 @@
 :host {
   width: 100%;
-  // margin-bottom: 6px;
   display: block;
 }
-.header-wrapper {
-  height: 4.188rem;
-  background-color: white;
-  border-radius: 0 0 0 1rem;
-  .right-section {
-    height: 4.088rem;
-    align-items: flex-end;
-    justify-content: space-between;
-    .logout-button {
-      min-width: initial;
-      padding: 0;
-      margin-right: 1.5em;
-    }
-    .user-info {
-      height: 2.1rem;
-      svg {
-        width: 80%;
-      }
-    }
-  }
-  .main-modules {
-    min-width: calc(100% - 180px);
-    clip-path: polygon(
-      0 0,
-      30px 50%,
-      0 100%,
-      calc(100% - 0px) 100%,
-      100% 50%,
-      calc(100% - 0px) 0
-    );
-    height: 2.125rem;
-    background: #45c0be;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    color: #fff;
-    li {
-      display: flex;
-      align-items: center;
-      height: 1.925rem;
-      align-self: flex-end;
-      border-radius: 5px 5px 0 0;
-      padding: 0 0.4rem;
-      white-space: nowrap;
-      font-size: 1rem;
-      font-weight: 400;
-      &:first-child {
-        margin-left: 2em;
-      }
-      &.active {
-        background-color: #fff;
-        color: #45c0be;
-        font-weight: 500;
-      }
-    }
+
+::ng-deep mat-datepicker-toggle {
+  button {
+    top: 0.25em;
   }
 }
+::ng-deep {
+  .sub-header-menu {
+    overflow: hidden;
+    max-width: initial;
+    .max-width {
+      max-width: 50vw !important;
+      &.min-width {
+        width: min-content;
+      }
+    }
+
+    .mat-menu-content {
+      height: 100%;
+      button {
+        text-align: left;
+        &:hover {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .search-header-menu {
+    width: 40vw;
+
+    max-width: initial !important;
+    margin-top: 3%;
+    margin-left:-31%;
+    // maxhealth-question {
+    //   > div {
+    //     display: flex;
+    //     align-items: center;
+    //     mat-label {
+    //       width: 35%;
+    //       font-size: 12px;
+    //     }
+    //     mat-form-field {
+    //       width: 75% !important;
+    //       font-size: 12px;
+    //       .mat-form-field-wrapper {
+    //         padding-bottom: 0;
+    //       }
+    //     }
+    //   }
+    // }
+  }
+}
+.submodule-wrapper {
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        input {
+          font-size: 15px;
+          width: 86%;
+          margin: -1px auto 4px;
+          color: rgba(0, 0, 0, 0.87) !important;
+          font-weight: 500;
+        }
+        .mat-form-field-prefix {
+          top: 0.2em !important;
+
+        }
+        .mat-form-field-suffix {
+          top: 0.05em !important;
+        }
+        .mat-form-field-infix {
+          width: 112px !important;
+        }
+      }
+    }
+  }
+
+
+
+  .main-modules {
+    
+    li {
+      display: flex;
+      // align-items: center;
+      height: 1.925rem;
+      // align-self: flex-end;
+      white-space: nowrap;
+      font-size: 16px !important;
+      letter-spacing: 0.32px;
+      color: #000000 !important; //color: rgba(0, 0, 0, 0.87) !important;//
+      opacity: 1;
+
+      &:first-child {
+        // margin-left: 2em;
+      }
+      &.active {
+        border-bottom: 4px solid #004084 !important;
+        height:2.8rem;
+      }
+    }
+  }
 
 ::ng-deep {
   .header-menu {
     width: 38%;
-    //height: 34vh;
     max-width: initial !important;
     .mat-menu-content {
       height: 100%;
@@ -298,7 +342,6 @@ ul.top-mat-menu-item li {
   }
 }
 
-
 .submodule-wrapper {
   height: 3.188rem;
   align-items: center;
@@ -306,14 +349,14 @@ ul.top-mat-menu-item li {
   background-color: #004080;
   color:white;
   // height: 2.488rem;
-  padding: 10px 3px;
+  padding: 17px 4px;
   font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-17) var(--unnamed-font-family-proxima-nova);
 letter-spacing: var(--unnamed-character-spacing-0);
 text-align: left;
 font: normal normal normal 15px Proxima Nova;
 letter-spacing: 0px;
 opacity: 1;
-// margin-top: 7px;
+padding-right: 1.5rem;
 }
 .menu-item{
   padding: 8px 3px;
@@ -345,9 +388,29 @@ margin-top: 7px;
 }
 .search-note {
   font-size: 10px;
-  font-family: proxima;
-  font-style: normal;
-  //color: red;
+  // font-family: proxima;
+  // font-style: normal;
+  // //color: red;
   float: left;
 }
+
+
+button.second-btn,
+  button.primary-btn {
+    width: 80px;
+    height: 36px;
+    background: #eff3f6 0% 0% no-repeat padding-box;
+    border-radius: 4px;
+    color: #000000;
+    border: none;
+    border: 1px solid #004084;
+  }
+  button.primary-btn {
+    background: #004084 0% 0% no-repeat padding-box;
+border-radius: 4px;
+    color: #ffffff;
+    width: 92px;
+    height: 36px;
+  }
+
 

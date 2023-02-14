@@ -19,7 +19,7 @@ import { MatSort, Sort } from "@angular/material/sort";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
-import { take } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import * as XLSX from "xlsx";
 import {
   animate,
@@ -36,6 +36,7 @@ import {
   FormControl,
   Validators,
 } from "@angular/forms";
+import { fromEvent } from "rxjs";
 
 @Component({
   selector: "maxhealth-table",
@@ -68,7 +69,8 @@ export class MaxTableComponent implements OnInit, OnChanges {
   @Output() stringLinkOutput: EventEmitter<any> = new EventEmitter();
 
   @Output() rowRwmove: EventEmitter<any> = new EventEmitter();
-
+  @Output() tableScrolling: EventEmitter<any> = new EventEmitter();
+  @Output() tableSorting: EventEmitter<any> = new EventEmitter();
   @Output() controlValueChangeTrigger: EventEmitter<any> = new EventEmitter();
 
   @Output() actionItemClickTrigger: EventEmitter<any> = new EventEmitter();
@@ -80,7 +82,7 @@ export class MaxTableComponent implements OnInit, OnChanges {
   dataSource: any;
   displayedColumns: string[] = [];
   displayColumnsInfo: any = [];
-
+  scrollHandlerscrollTop: number = 0;
   @ViewChild(MatSort) sort!: MatSort;
 
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
@@ -337,6 +339,7 @@ export class MaxTableComponent implements OnInit, OnChanges {
     } else {
       this._liveAnnouncer.announce("Sorting cleared");
     }
+    this.tableSorting.emit(sortState);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -483,8 +486,23 @@ export class MaxTableComponent implements OnInit, OnChanges {
     XLSX.writeFile(wb, excelName);
   }
 
-  removeRow(index: number) {
-    this.rowRwmove.emit({ index: index, data: this.dataSource.data[index] });
+  removeRow(index: number, data: any) {
+    this.rowRwmove.emit({ index: index, data: data });
+  }
+
+  scrollHandler(e: any) {
+    const tableViewHeight = e.target.offsetHeight; // viewport
+    const tableScrollHeight = e.target.scrollHeight; // length of all table
+    const scrollLocation = e.target.scrollTop; // how far user scrolled
+    if (this.scrollHandlerscrollTop < scrollLocation) {
+      // If the user has scrolled within 200px of the bottom, add more data
+      const buffer = 200;
+      const limit = tableScrollHeight - tableViewHeight - buffer;
+      if (scrollLocation > limit) {
+        this.scrollHandlerscrollTop = scrollLocation;
+        this.tableScrolling.emit(e);
+      }
+    }
   }
 
   stringLinkClick(data: any) {

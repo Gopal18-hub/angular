@@ -28,7 +28,7 @@ export class SnackBarService {
     className?: string,
     showCloseIcon: boolean = true
   ) {
-    this._matSnackBar.openFromComponent(CustomSnackBarComponent, {
+    return this._matSnackBar.openFromComponent(CustomSnackBarComponent, {
       data: {
         message: message,
         actionOne: { name: actionBtnOne, class: "btn-primary" },
@@ -51,7 +51,7 @@ export class SnackBarService {
     className?: string,
     showCloseIcon: boolean = true
   ) {
-    this._matSnackBar.openFromComponent(CustomSnackBarComponent, {
+    return this._matSnackBar.openFromComponent(CustomSnackBarComponent, {
       data: {
         message: message,
         actionOne: { name: actionBtnOne, class: "btn-primary" },

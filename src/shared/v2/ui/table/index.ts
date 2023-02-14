@@ -32,6 +32,7 @@ import { TextFieldModule } from "@angular/cdk/text-field";
 
 import { ContenteditableValueAccessor } from "../../utilities/directives/contenteditable-value-accessor";
 import { ControlDirtyDirective } from "../../utilities/directives/control-dirty";
+import { MatDividerModule } from "@angular/material/divider";
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { ControlDirtyDirective } from "../../utilities/directives/control-dirty"
     OverlayModule,
     TextFieldModule,
     NgxMatNativeDateModule,
+    MatDividerModule,
   ],
   exports: [MaxTableComponent, MaxTableFormComponent],
   declarations: [

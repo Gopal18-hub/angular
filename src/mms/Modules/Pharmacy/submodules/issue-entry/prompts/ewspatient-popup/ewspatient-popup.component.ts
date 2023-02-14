@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { MatBottomSheet } from "@angular/material/bottom-sheet";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "mms-ewspatient-popup",
@@ -7,11 +7,11 @@ import { MatBottomSheet } from "@angular/material/bottom-sheet";
   styleUrls: ["./ewspatient-popup.component.scss"],
 })
 export class EwspatientPopupComponent implements OnInit {
-  constructor(private _bottomSheet: MatBottomSheet) {}
+  constructor(private _matSnackBar: MatSnackBar) {}
 
   ngOnInit(): void {}
   closeEwsPopup() {
-    this._bottomSheet.dismiss();
+    this._matSnackBar.dismiss();
   }
   submit() {}
 }

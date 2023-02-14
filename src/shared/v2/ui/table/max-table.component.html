@@ -1,4 +1,4 @@
-<div class="border-radius-lg border max-table-wrapper" *ngIf="initiateTable">
+<div #scrollable  (scroll)="scrollHandler($event)" class="border-radius-lg border max-table-wrapper" *ngIf="initiateTable">
   <form [formGroup]="tableForm" novalidate class="h-full">
     <table
       mat-table
@@ -9,6 +9,8 @@
       fixedLayout="true"
       multiTemplateDataRows
       [class.h-full]="dataSource.data.length == 0"
+      [matSortActive]="config?.defaultValueSort?.active" 
+      [matSortDirection]="config?.defaultValueSort?.direction"
     >
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
@@ -151,20 +153,20 @@
       </ng-container>
 
       <ng-container *ngIf="config?.removeRow">
-        <ng-container matColumnDef="maxRemoveRow">
+        <ng-container [stickyEnd]="(config?.removeRowstickyEnd)" matColumnDef="maxRemoveRow">
           <th mat-header-cell *matHeaderCellDef aria-label="row remove-row">
             &nbsp;
           </th>
           <td
             mat-cell
             *matCellDef="let element; let i = dataIndex"
-            class="pl-4"
-          >
-            <button
+          ><mat-divider [vertical]="true" *ngIf="config?.removeRowstickyEnd"></mat-divider>
+            <button matTooltip="Remove Item"
               type="button"
               mat-icon-button
-              color="warn"
-              (click)="removeRow(i)"
+              color="warn" [disabled]="element?.removeRowDisabled"
+              *ngIf="!element?.removeRowHide"
+              (click)="removeRow(i,element)"
             >
               <div class="remove-row-icon-wrapper">
                 <mat-icon>delete_forever</mat-icon>
@@ -241,7 +243,7 @@
         </ng-container>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-header-row sticky *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <ng-container *ngIf="config.clickedRows">
         <tr
           mat-row
