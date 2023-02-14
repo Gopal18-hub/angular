@@ -451,10 +451,10 @@ export class LeftPanelComponent implements OnInit {
       }
     );
 
-    this.patientform[4].elementRef.addEventListener(
-      "blur",
-      this.onAgeTypeChange.bind(this)
-    );
+    // this.patientform[4].elementRef.addEventListener(
+    //   "blur",
+    //   this.onAgeTypeChange.bind(this)
+    // );
   }
 
   MarkasMaxIDChange() {
@@ -642,13 +642,13 @@ export class LeftPanelComponent implements OnInit {
       );
     }
     this.patientformGroup.controls["mobile"].setValue(
-      this.patientDetails?.pphone
+      this.patientDetails?.mobile //pphone
     );
     this.patientformGroup.controls["patientName"].setValue(
-      this.patientDetails?.firstname + " " + this.patientDetails?.lastName
+      this.patientDetails?.name //firstname + " " + this.patientDetails?.lastName
     );
     this.patientformGroup.controls["gender"].setValue(
-      this.patientDetails?.sexName
+      this.patientDetails?.sex //sexName
     );
     this.patientformGroup.controls["patienAge"].setValue(
       this.patientDetails?.age + " " + this.patientDetails?.ageTypeName
@@ -658,7 +658,7 @@ export class LeftPanelComponent implements OnInit {
     );
 
     this.patientformGroup.controls["patienAddress"].setValue(
-      patientDetails?.address1
+      patientDetails?.address //address1
     );
 
     //TODO
@@ -727,9 +727,7 @@ export class LeftPanelComponent implements OnInit {
     this.matDialog.closeAll();
     if (!this.MaxIDExist) {
       this.http
-        .post(PatientApiConstants.similarSoundPatientDetail, {
-          phone: mobile,
-        })
+        .get(PatientApiConstants.similarSoundPatientDetail(mobile))
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: SimilarSoundPatientResponse[]) => {
@@ -777,7 +775,9 @@ export class LeftPanelComponent implements OnInit {
                     );
                     this.patientformGroup.controls["patienAge"].setValue(age);
                     this.patientformGroup.controls["patientName"].setValue(
-                      result.data["added"][0].firstName
+                      result.data["added"][0].firstName +
+                        " " +
+                        result.data["added"][0].lastName
                     );
                   }
                   this.similarContactPatientList = [];
