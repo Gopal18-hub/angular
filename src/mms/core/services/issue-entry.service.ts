@@ -12,6 +12,13 @@ export class IssueEntryService {
   billType: any = 2;
   patientDetailsInfo: any = [];
   doctorDetailsInfo: any = [];
+  public bplCardNo: string = "";
+  public addressonCard: string = "";
+
+  public lastBillNo: string = "";
+  public lastBillDate: string = "";
+  public lastBillStation: string = "";
+  public lastBillAmount: string = "";
 
   categoryIcons: any = {
     cghs: "CGHS_Icon.svg",

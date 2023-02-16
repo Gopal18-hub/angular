@@ -448,12 +448,13 @@ export namespace MaxModules {
           id: -1,
           title: "Pharmacy",
           defaultPath: "",
+          moreOptions: true,
           tenentPath: "/mms",
           childrens: [
             {
               id: 62,
               title: "OP Pharmacy",
-              defaultPath: "oppharmacy",
+              defaultPath: "",
               globalSearchKey: "global",
               allUsersAllow: false,
               moreOptions: true,
@@ -511,7 +512,6 @@ export namespace MaxModules {
               allUsersAllow: true,
             },
           ],
-          moreOptions: true,
         },
         {
           id: -1,

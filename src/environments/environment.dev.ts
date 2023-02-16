@@ -5,14 +5,16 @@ export const environment = {
   cookieUrl: "",
   passwordResetUrl: "https://selfheal.maxhealthcare.com/resetaccount",
 
-  CommonApiUrl: "http://172.30.0.16:1009/",
-  PatientApiUrl: "http://172.30.0.16:1008/",
+  CommonApiUrl: "https://MaxHIS-Common-sit.maxhealthcare.in/",
+  PatientApiUrl: "https://MaxHIS-OpReg-dev.maxhealthcare.in/", //"https://maxhis-opreg-dev.maxhealthcare.in/", //
+  ReportsApiUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/",
+  // ReportsApiUrl: "https://MaxHIS-sit.maxhealthcare.in/MAXHISReport/",
   IdentityServerUrl: "https://MaxHIS-Idsrv-dev.maxhealthcare.in/",
-  IentityServerRedirectUrl: "http://172.30.0.16/",
-  ReportsApiUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
-  BillingApiUrl: "http://172.30.0.16:1007/",
+  IentityServerRedirectUrl: "https://MaxHIS-dev.maxhealthcare.in/",
+  BillingApiUrl: "https://Maxhis-OPBill-dev.maxhealthcare.in/",
   reportTenantUrl:
-    "https://maxhis-dev.maxhealthcare.in/reports/crystal-report/popup/",
-  ReportsSampleUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
-  crystalReportBaseUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
+    "https://maxhis-sit.maxhealthcare.in/reports/crystal-report/popup/",
+  ReportsSampleUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/", //"https://MaxHIS-sit.maxhealthcare.in/MAXHISReport/", //
+  crystalReportBaseUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/", //"https://MaxHIS-sit.maxhealthcare.in/MAXHISReport/", //
+  crystalReportBaseUrl21: "https://localhost:44375/",
 };
