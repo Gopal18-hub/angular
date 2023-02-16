@@ -371,6 +371,12 @@ export class LeftPanelComponent implements OnInit {
     this.showInfoSection = false;
     this.isEWSPatient = false;
     this.isCGHSPatient = false;
+    this.patientformGroup.controls["mobile"].setValue("");
+    this.patientformGroup.controls["patientName"].setValue("");
+    this.patientformGroup.controls["patienAge"].setValue("");
+    this.patientformGroup.controls["ageType"].setValue("");
+    this.patientformGroup.controls["gender"].setValue("");
+    this.patientformGroup.controls["patienAddress"].setValue("");
   }
   reset() {
     // this.formProcessingFlag = true;
