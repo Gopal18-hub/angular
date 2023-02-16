@@ -544,6 +544,10 @@ export class LeftPanelComponent implements OnInit {
                     //   "error",
                     //   ""
                     // );
+                    this.issueEntryService.bplCardNo =
+                      this.patientDetails.bplCardNo;
+                    this.issueEntryService.addressonCard =
+                      this.patientDetails.addressOnCard;
                     this._matSnackBar.openFromComponent(
                       EwspatientPopupComponent,
                       {

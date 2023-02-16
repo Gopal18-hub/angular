@@ -7,7 +7,6 @@
         aria-hidden="false"
         aria-label="Example home icon" (click)="closeEwsPopup()"
         >close</mat-icon>
-
     <div class="ml-4 w-9/10 h-1/10 font-base font-bold justify-content-center ">
         <p class="max-health-primary-color">This is a EWS patient.</p> 
     </div>
@@ -15,17 +14,17 @@
         <p class="max-health-primary-color">BPL Card Details are as follow:</p> 
     </div>
     <div class="ml-4 w-9/10 h-1/10 font-base justify-content-center ">
-        <p class="max-health-primary-color">BPL Card No: 123456</p> 
-        <p class="max-health-primary-color">Address on the Card: Delhi Cant, Delhi</p> 
+        <p class="max-health-primary-color">BPL Card No: {{bplCardNo}}</p> 
+        <p class="max-health-primary-color">Address on the Card: {{addressOnCard}}</p> 
     </div>
     <div class="mt-2 ml-4 w-9/10 h-1/10 font-base font-bold justify-content-center ">
         <p class="max-health-primary-color">Last Bill Details are as follow:</p> 
     </div>
     <div class="ml-4 w-9/10 h-1/10 font-base justify-content-center ">
-        <p class="max-health-primary-color">Last Bill No: 123456</p> 
-        <p class="max-health-primary-color">Bill Date: 06/07/2022 - 00:00:00 AM</p> 
-        <p class="max-health-primary-color">Station: OPD Pharmacy</p> 
-        <p class="max-health-primary-color">Amount Before discount: 3.68</p> 
+        <p class="max-health-primary-color">Last Bill No: {{lastBillNo}}</p> 
+        <p class="max-health-primary-color">Bill Date: {{lastBillDate}}</p> 
+        <p class="max-health-primary-color">Station: {{lastBillStation}}</p> 
+        <p class="max-health-primary-color">Amount Before discount:{{lastBillAmount}}</p> 
     </div>
     <div class="flex full h-1/10 justify-content-end font-base expdepositbtn ">
         <button class="mt-2 mr-2 primary-btn float-right" (click)="closeEwsPopup()">
