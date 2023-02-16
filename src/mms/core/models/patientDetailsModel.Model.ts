@@ -105,7 +105,7 @@ export class PatientDetails {
   panno: string;
   masterCompanyId: number;
   isCghsverified: number;
-  bplcardNo: string;
+  bplCardNo: string;
   addressOnCard: string;
   cghsbeneficiaryCompany: string;
   researchFlag: boolean;
@@ -250,7 +250,7 @@ export class PatientDetails {
     panno: string,
     masterCompanyId: number,
     isCghsverified: number,
-    bplcardNo: string,
+    bplCardNo: string,
     addressOnCard: string,
     cghsbeneficiaryCompany: string,
     researchFlag: boolean,
@@ -395,7 +395,7 @@ export class PatientDetails {
     this.panno = panno;
     this.masterCompanyId = masterCompanyId;
     this.isCghsverified = isCghsverified;
-    this.bplcardNo = bplcardNo;
+    this.bplCardNo = bplCardNo;
     this.addressOnCard = addressOnCard;
     this.cghsbeneficiaryCompany = cghsbeneficiaryCompany;
     this.researchFlag = researchFlag;
