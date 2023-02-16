@@ -22,7 +22,7 @@ export namespace PatientApiConstants {
   export const similarSoundPatientDetail = (mobileno: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/GetSimilarPatientsPhoneNo/" +
+      "api/patient/getsimilarpatientsphoneno/" +
       mobileno
     );
   };

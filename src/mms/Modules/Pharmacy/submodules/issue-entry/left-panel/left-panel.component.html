@@ -84,7 +84,7 @@
             <mat-label>Age/Gender</mat-label>
             <mat-label class="float-right color-block">{{
               patientformGroup?.value?.patienAge
-              }} / {{
+              }}{{patientformGroup?.value?.ageType}}/ {{
               patientformGroup?.value?.gender
               }}</mat-label>
           </div>
@@ -124,19 +124,18 @@
           <maxhealth-question class="w-full" [question]="patientform[7]" [form]="patientformGroup"
             [questions]="patientform[7]" (click)="showDoctorDetails()" [index]="7"></maxhealth-question>
         </div>
-        <div class="flex w-full ">
+        <div class=" w-full " *ngIf="patientformGroup?.value?.doctorMobile!=null">
           <mat-label>Doctor Mobile no.</mat-label>
-          <mat-label class="float-right color-block">{{
-            issueEntryService?.doctorDetailsInfo?.doctorName
-            }}</mat-label>
+          <mat-label class="float-right color-block"> {{patientformGroup?.value?.doctorMobile}}</mat-label>
         </div>
         <div class="my-1"></div>
-        <div class="flex w-full ">
+        <div class=" w-full " *ngIf="patientformGroup?.value?.doctorAddress!=null ">
           <mat-label>Doctor Address</mat-label>
           <mat-label class="float-right color-block">{{
-            issueEntryService?.doctorDetailsInfo?.doctorName
+            patientformGroup?.value?.doctorAddress
             }}</mat-label>
         </div>
+        
         <div class="my-1"></div>
         <div class="my-1" *ngIf="isShowCompany"></div>
         <div class="flex text-scrollbar" *ngIf="isShowCompany">

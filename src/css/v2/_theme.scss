@@ -549,7 +549,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .info {
   background-color: #98E8E7;//#2f96b4;
-  color: #fff;
+  color: #000;
 }
 
 .btn-primary {
@@ -616,10 +616,12 @@ mat-icon.mat-icon.notranslate.material-icons.mat-icon-no-color{
   }
 }
 .animate__slideInRight {
-  -webkit-animation-duration: 0.75s;
-  animation-duration: 0.75s;
+  -webkit-animation-duration: 0.95s;
+  animation-duration: 0.95s;
   -webkit-animation-name: slideInRight;
   animation-name: slideInRight;
+  height:92vh!important;
+  width: 69vw !important;
 }
 // End of the matdialog slideInRight
 .mat-snack-bar-container {
