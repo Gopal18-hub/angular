@@ -51,7 +51,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -60,7 +60,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'string'">
@@ -176,7 +176,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -185,7 +185,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'password'">
@@ -226,7 +226,7 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -235,7 +235,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+        </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'number'">
@@ -285,7 +285,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -294,7 +294,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'currency'">
@@ -344,7 +344,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -353,7 +353,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'tel'">
@@ -403,16 +403,16 @@
             <strong>{{ question.maximum }}</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
-            *ngIf="getValue()"
+            *ngIf="getValue() && !question.readonly"
             matSuffix
             mat-icon-button
             aria-label="Clear"
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+        </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'textarea'">
@@ -448,7 +448,7 @@
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -457,7 +457,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+        </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'buttonTextarea'">
@@ -510,7 +510,7 @@
                   #element
                   [disabled]="question.disabled"
                 ></textarea>
-                <button
+                <span
                   class="clear"
                   *ngIf="getValue()"
                   matSuffix
@@ -519,7 +519,7 @@
                   (click)="setEmptyValue()"
                 >
                   <mat-icon>close</mat-icon>
-                </button>
+               </span>
               </mat-form-field>
             </div>
           </ng-template>
@@ -573,7 +573,7 @@
             {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -582,7 +582,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'colorpicker'">
@@ -609,7 +609,7 @@
             {{ question.label }} is <strong>required</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -618,7 +618,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'radio'">
@@ -682,7 +682,7 @@
             >
           </ng-container>
           {{ getValue() }}
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -691,7 +691,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+         </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'dropdown'">
@@ -740,7 +740,7 @@
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
           
           <!-- <mat-hint>{{getValue()}}</mat-hint> -->
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -749,7 +749,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'autocomplete'">
@@ -803,7 +803,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -812,7 +812,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'date'">
@@ -865,7 +865,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -874,7 +874,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'datetime'">
@@ -918,7 +918,7 @@
             {{ question.customErrorMessage }}</mat-error
           >
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
-          <button
+          <span
             class="clear"
             *ngIf="getValue()"
             matSuffix
@@ -927,7 +927,7 @@
             (click)="setEmptyValue()"
           >
             <mat-icon>close</mat-icon>
-          </button>
+          </span>
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'checkbox'">

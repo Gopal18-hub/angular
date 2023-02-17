@@ -578,9 +578,16 @@ mat-icon.mat-icon.notranslate.material-icons.mat-icon-no-color{
     color: black;
 }
 }
+
 .mat-dialog-content{
   margin:0!important;
 }
+
+.badge .mat-badge-content {
+  background:#B3261E 0% 0% no-repeat padding-box !important;
+}
+
+
 // Start of the matdialog slideInRight
 .cdk-global-overlay-wrapper {
   .cdk-overlay-pane.animate__animated.animate__slideInRight {

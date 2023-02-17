@@ -2,7 +2,7 @@
   <div class="module-name ml-1">{{ module.title }}</div>
   <div class="mx-1"></div>
     <form class="w-full " autocomplete="off">
-      <mat-form-field appearance="outline" class="menu-item mat-form-field-flex">
+      <mat-form-field appearance="outline" class="menu-search mat-form-field-flex">
         <!-- placeholder="Search Patient" -->
         <input
           matInput
@@ -148,8 +148,8 @@
       </button>
       <li  *ngFor="let module of submodules | slice: leftIndex : rightIndex; let i = index" 
       [class.active]="selectedIndex === i" (click)="setIndex(i,module.defaultPath)"
-      class="mr-2 cursor-pointer menu-item"> 
-          {{ module.title }}
+      class="mr-2 cursor-pointer menu-item sublist"> 
+          {{ module.title }} <span *ngIf="module.isBadge" class="subbadge"><mat-icon [matBadge]="module.badgeCount" class="badge badge_large"></mat-icon></span>
       </li>
       <button *ngIf="submodules.length > 3" mat-icon-button [disabled]="rightIndex == submodules.length" (click)="goRight(rightIndex)">
         <button class="scroll_button"><mat-icon>keyboard_arrow_right</mat-icon></button>
