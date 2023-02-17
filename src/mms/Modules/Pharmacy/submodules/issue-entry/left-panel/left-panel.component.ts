@@ -709,7 +709,7 @@ export class LeftPanelComponent implements OnInit {
       this.patientDetails?.sex //sexName
     );
     this.patientformGroup.controls["patienAge"].setValue(
-      this.patientDetails?.age + " " + this.patientDetails?.ageTypeName
+      this.patientDetails?.age + " " //+ this.patientDetails?.ageTypeName
     );
     this.patientformGroup.controls["ageType"].setValue(
       this.patientDetails?.ageTypeName
