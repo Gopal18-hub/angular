@@ -60,12 +60,12 @@ export namespace EPOrderStaticConstants {
             title: "Pending",
           },
           {
-            value: "2",
-            title: "Rejected",
-          },
-          {
             value: "3",
             title: "Dispensed",
+          },
+          {
+            value: "2",
+            title: "Rejected",
           },
         ],
       },
@@ -79,7 +79,7 @@ export namespace EPOrderStaticConstants {
     selectBox: false,
     removeRow: true,
     pagination: true,
-    paginationPageSize: 10,
+    paginationPageSize: 15,
     removeRowstickyEnd: true,
     defaultValueSort: { active: "orderId", direction: "desc" },
     rowLayout: { dynamic: { rowClass: "row['markLegends']" } },
@@ -119,13 +119,12 @@ export namespace EPOrderStaticConstants {
         style: {
           width: "12rem",
         },
-        //tooltipColumn: "ptnName",
       },
       channel: {
         title: "Channel",
         type: "string",
         style: {
-          width: "4rem",
+          width: "5rem",
         },
       },
       docName: {
@@ -134,7 +133,6 @@ export namespace EPOrderStaticConstants {
         style: {
           width: "9rem",
         },
-        //tooltipColumn: "docName",
       },
       deptName: {
         title: "Department",
@@ -142,7 +140,6 @@ export namespace EPOrderStaticConstants {
         style: {
           width: "6rem",
         },
-        // tooltipColumn: "deptName",
       },
       visitDate: {
         title: "Visit Date",
@@ -150,7 +147,6 @@ export namespace EPOrderStaticConstants {
         style: {
           width: "10rem",
         },
-        // tooltipColumn: "visitDate",
       },
       mobileNo: {
         title: "Mobile No.",
@@ -200,7 +196,6 @@ export namespace EPOrderStaticConstants {
 
   export const linedataEPOrderDrugLineconfig: any = {
     clickedRows: true,
-    // clickSelection: "single",
     selectBox: true,
     removeRow: false,
     clickSelection: "multiple",

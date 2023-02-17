@@ -1,6 +1,6 @@
 <div #scrollable  (scroll)="scrollHandler($event)" class="border-radius-lg border max-table-wrapper" *ngIf="initiateTable">
   <form [formGroup]="tableForm" novalidate class="h-full">
-    <table
+    <table  #scrollabletable
       mat-table
       [dataSource]="dataSource"
       matSort
