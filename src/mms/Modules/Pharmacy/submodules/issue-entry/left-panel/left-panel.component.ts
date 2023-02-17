@@ -455,7 +455,7 @@ export class LeftPanelComponent implements OnInit {
           // Cancel the default action, if needed
           event.preventDefault();
           this.maxIDSearch = true;
-          if (this.maxId != this.patientformGroup.value.maxId)
+          if (this.maxId != this.patientformGroup.value.maxid)
             this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
         }
       }
@@ -502,7 +502,7 @@ export class LeftPanelComponent implements OnInit {
 
   onMaxIDChange() {
     this.maxIDSearch = true;
-    if (this.maxId != this.patientformGroup.value.maxId)
+    if (this.maxId != this.patientformGroup.value.maxid)
       this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
   }
 
@@ -569,7 +569,7 @@ export class LeftPanelComponent implements OnInit {
               this.patientDetails = resultData;
               this.apiProcessing = false;
               this.isRegPatient = true;
-              this.maxId = this.patientformGroup.value.maxId;
+              this.maxId = this.patientformGroup.value.maxid;
               this.categoryIcons =
                 this.issueEntryService.getCategoryIconsForPatient(
                   this.patientDetails
