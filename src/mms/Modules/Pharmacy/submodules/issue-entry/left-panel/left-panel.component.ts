@@ -98,7 +98,7 @@ export class LeftPanelComponent implements OnInit {
         title: "Doctor Name ",
         type: "string",
         required: true,
-        readonly:true,
+        readonly: true,
       },
       companyName: {
         //8
@@ -141,6 +141,7 @@ export class LeftPanelComponent implements OnInit {
   ewsInfo: string = "";
   psuInfo: string = "";
   maxIDSearch: boolean = false;
+  maxId: string = "";
   apiProcessing: boolean = false;
   expiredPatient: boolean = false;
   public patientDetails!: PatientDetails;
@@ -178,6 +179,8 @@ export class LeftPanelComponent implements OnInit {
     this.cghsInfo = "CGHS";
     this.ewsInfo = "EWS";
     this.psuInfo = "PSU";
+    this.maxIDSearch = false;
+    this.maxId = "";
     this.formInit();
   }
 
@@ -204,6 +207,7 @@ export class LeftPanelComponent implements OnInit {
     this.patientform = patientformResult.questions;
     this.getAgeTypeList();
     this.getGenderList();
+    this.getAllCompany();
     if (this.issueEntryService.billType == 1) {
       this.patientform[0].required = false;
     } else {
@@ -250,6 +254,22 @@ export class LeftPanelComponent implements OnInit {
         this.patientform[5].options = this.genderList.map((l) => {
           return { title: l.name, value: l.id };
         });
+      });
+  }
+
+  getAllCompany() {
+    this.http
+      .get(
+        CommonApiConstants.getcompanydetail(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data: any[]) => {
+        this.patientform[8].options = data.map((a: any) => {
+          return { title: a.name, value: a.id, company: a };
+        });
+        this.patientform[8] = { ...this.patientform[8] };
       });
   }
 
@@ -392,6 +412,8 @@ export class LeftPanelComponent implements OnInit {
     // this.formProcessingFlag = true;
     this.patientform = [];
     this.showInfoSection = false;
+    this.maxIDSearch = false;
+    this.maxId = "";
     this.issueEntryService.billType = 1;
     this.isRegPatient = false;
     this.isShowCompany = false;
@@ -433,7 +455,8 @@ export class LeftPanelComponent implements OnInit {
           // Cancel the default action, if needed
           event.preventDefault();
           this.maxIDSearch = true;
-          this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
+          if (this.maxId != this.patientformGroup.value.maxid)
+            this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
         }
       }
     );
@@ -479,7 +502,8 @@ export class LeftPanelComponent implements OnInit {
 
   onMaxIDChange() {
     this.maxIDSearch = true;
-    this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
+    if (this.maxId != this.patientformGroup.value.maxid)
+      this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
   }
 
   onAgeTypeChange() {
@@ -545,6 +569,7 @@ export class LeftPanelComponent implements OnInit {
               this.patientDetails = resultData;
               this.apiProcessing = false;
               this.isRegPatient = true;
+              this.maxId = this.patientformGroup.value.maxid;
               this.categoryIcons =
                 this.issueEntryService.getCategoryIconsForPatient(
                   this.patientDetails
@@ -801,19 +826,16 @@ export class LeftPanelComponent implements OnInit {
         );
     }
   }
-  similarDialogOpen(){
-    const similarSoundDialogref = this.matDialog.open(
-      SimilarPatientDialog,
-      {
-        width: "60vw",
-        height: "80vh",
-        data: {
-          searchResults: this.similarContactPatientList,
-        },
-        panelClass: ["animate__animated", "animate__slideInRight"],
-        position: { right: "0px", bottom: "0px" },
-      }
-    );
+  similarDialogOpen() {
+    const similarSoundDialogref = this.matDialog.open(SimilarPatientDialog, {
+      width: "60vw",
+      height: "80vh",
+      data: {
+        searchResults: this.similarContactPatientList,
+      },
+      panelClass: ["animate__animated", "animate__slideInRight"],
+      position: { right: "0px", bottom: "0px" },
+    });
     similarSoundDialogref
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
@@ -824,8 +846,8 @@ export class LeftPanelComponent implements OnInit {
           let ageData = result.data["added"][0].age;
           let ageArray = ageData.split(" ");
           let age = ageArray.slice(0, 1).toString();
-         // let ageType = ageArray.slice(1, 2).toString();
-          let ageType= result.data["added"][0].ageType
+          // let ageType = ageArray.slice(1, 2).toString();
+          let ageType = result.data["added"][0].ageType;
           this.patientformGroup.controls["maxid"].setValue(
             result.data["added"][0].maxid
           );
@@ -857,20 +879,18 @@ export class LeftPanelComponent implements OnInit {
       .afterDismissed()
       .subscribe((response) => {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
-        
+
         let address;
-       if( response[0].address==''||response[0].address==null){
-        address='-'
-        }
-        else{
-          address=response[0].address
+        if (response[0].address == "" || response[0].address == null) {
+          address = "-";
+        } else {
+          address = response[0].address;
         }
         let mobileNo;
-        if(response[0].mobile==''||response[0].mobile==null){
-          mobileNo='-'
-        }
-        else{
-          mobileNo=response[0].mobile
+        if (response[0].mobile == "" || response[0].mobile == null) {
+          mobileNo = "-";
+        } else {
+          mobileNo = response[0].mobile;
         }
         this.patientformGroup.controls["doctorAddress"].setValue(address);
         this.patientformGroup.controls["doctorMobile"].setValue(mobileNo);
@@ -884,14 +904,15 @@ export class LeftPanelComponent implements OnInit {
 })
 export class SimilarPatientDialog {
   @ViewChild("patientDetail") tableRows: any;
-  similardata:any=[]
+  similardata: any = [];
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {
-    setTimeout(() => {   this.similardata=this.data.searchResults},350);
-  
+    setTimeout(() => {
+      this.similardata = this.data.searchResults;
+    }, 350);
   }
 
   ngAfterViewInit() {

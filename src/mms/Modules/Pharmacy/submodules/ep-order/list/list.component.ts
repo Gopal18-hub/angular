@@ -20,7 +20,7 @@ export class OpPharmacyEPOrderListComponent implements OnInit, OnDestroy {
   listdataEPOrderTable: any;
   dataEPOrder: any = [];
   clickedLineItem: any = [];
-
+  pageIndexList = 5;
   defaultValueSort: any = this.linedataEPOrderconfig.defaultValueSort;
   constructor(
     public EPOrderService: EPOrderService,
@@ -36,7 +36,16 @@ export class OpPharmacyEPOrderListComponent implements OnInit, OnDestroy {
         this.searchFilter();
       }
     });
-
+    this.EPOrderService.updateDelete.subscribe((deldata: any) => {
+      
+      this.dataEPOrder.splice(
+        this.dataEPOrder.findIndex(
+          (d: any) => d.orderId === deldata.data.orderId
+        ),
+        1
+      ); //remove element from array
+      this.dataEPOrder = [...this.dataEPOrder];
+    });
     this.EPOrderService.changeEventEPOrderDetails.subscribe((res: any) => {
       if (
         res &&
@@ -53,12 +62,64 @@ export class OpPharmacyEPOrderListComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  searchFilter() {
-    this.dataEPOrder = this.EPOrderService.dataEPOrder;
+  getListDataOnTime() {
+    for (
+      var lis =
+        this.EPOrderService.pageIndex *
+        this.linedataEPOrderconfig.paginationPageSize;
+      lis <
+      (this.EPOrderService.pageIndex + 1) *
+        this.linedataEPOrderconfig.paginationPageSize;
+      lis++
+    ) {
+      if (this.EPOrderService.dataEPOrder[lis]) {
+        this.dataEPOrder.push(this.EPOrderService.dataEPOrder[lis]);
+      }
+    }
     this.dataEPOrder = [...this.dataEPOrder];
   }
+  searchFilter(isrun: boolean = false) {
+    //this.dataEPOrder = this.EPOrderService.dataEPOrder;
+    if (this.EPOrderService.pageIndex === 0) {
+      this.dataEPOrder = [];
+      this.listdataEPOrderTable.scrollTopHandler();
+      this.getListDataOnTime();
+    }
 
+    if (isrun) {
+      this.getListDataOnTime();
+    }
+  }
+
+  ontableScrolling(event: any) {
+    if (!this.EPOrderService.apiProcessing) {
+      this.EPOrderService.pageIndex++;
+      if (Math.round(this.EPOrderService.pageIndex % 2) === 0) {
+        this.EPOrderService.getEPOrderSearchData(
+          this.EPOrderService.searchFormData
+        );
+      }
+      this.searchFilter(true);
+    }
+  }
+  exportAsExcel() {
+    this.listdataEPOrderTable.exportAsExcel();
+  }
+
+  rowRwmoveLineItems(event: any) {
+    this.snackbarService.showConfirmSnackBar(
+      "You want to Reject this(" + event.data.orderId + ") Prescription?",
+      "success",
+      "Yes",
+      "No",
+      (result: any) => {
+        if (result && result == "Yes") {
+          this.EPOrderService.deleteEPOrder(event);
+        }
+        this.snackbarService.closeSnackBar();
+      }
+    );
+  }
   listRowClick(data: any): void {
     if (data && data.column && data.column == "viewEP") {
     } else {
@@ -96,30 +157,6 @@ export class OpPharmacyEPOrderListComponent implements OnInit, OnDestroy {
       data.orderId;
 
     return re;
-  }
-  ontableScrolling(event: any) {
-    this.EPOrderService.pageIndex++;
-    this.EPOrderService.getEPOrderSearchData(
-      this.EPOrderService.searchFormData
-    );
-  }
-  exportAsExcel() {
-    this.listdataEPOrderTable.exportAsExcel();
-  }
-
-  rowRwmoveLineItems(event: any) {
-    this.snackbarService.showConfirmSnackBar(
-      "You want to Reject this(" + event.data.orderId + ") Prescription?",
-      "success",
-      "Yes",
-      "No",
-      (result: any) => {
-        if (result && result == "Yes") {
-          this.EPOrderService.deleteEPOrder(event);
-        }
-        this.snackbarService.closeSnackBar();
-      }
-    );
   }
   private readonly _destroying$ = new Subject<void>();
   ngOnDestroy(): void {

@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
 import { EPOrderStaticConstants } from "../../../../../core/constants/ep-order-static-constant";
 import { EPOrderService } from "../../../../../core/services/ep-order.service";
 import { CookieService } from "@shared/v2/services/cookie.service";
-import { searchFormModel } from "../../../../../core/models/ep-order-searchform.Model";
 import { Subject } from "rxjs";
 import { DatePipe } from "@angular/common";
+import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
 
 @Component({
   selector: "op-pharmacy-ep-order-search-form",
@@ -24,6 +24,7 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
     private formService: QuestionControlService,
     public EPOrderService: EPOrderService,
     private cookie: CookieService,
+    public snackbarService: SnackBarService,
     public datepipe: DatePipe
   ) {}
 
@@ -113,13 +114,24 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
   }
 
   searchFormSubmit() {
+    // var fdate = new Date(this.searchFormGroup.controls["fromDate"].value);
+    // var tdate = new Date(this.searchFormGroup.controls["toDate"].value);
+    // var dif_in_time = tdate.getTime() - fdate.getTime();
+    // var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+    // if (dif_in_days < 30) {
     this.EPOrderService.pageIndex = 0;
+    this.EPOrderService.lastOrderID = 0;
     this.EPOrderService.searchFormData = this.searchFormDetailsRequestBody();
     this.EPOrderService.getEPOrderSearchData(
       this.EPOrderService.searchFormData
     );
-    //this.EPOrderService.searchFormData = this.searchFormGroup.controls;
-    //this.EPOrderService.updateFormData.next(true);
+    // } else {
+    //   this.snackbarService.showSnackBar(
+    //     "Can not process requests for more than 30 Days, Please select the dates accordingly.",
+    //     "error",
+    //     ""
+    //   );
+    // }
   }
 
   searchFormDetailsRequestBody(): string {
@@ -146,11 +158,12 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
         ).toUpperCase()
       : "";
     let orderStatus = this.searchFormGroup.controls["orderStatus"].value
-      ? String(
-          this.searchFormGroup.controls["orderStatus"].value.trim()
-        ).toUpperCase()
+      ? this.searchFormGroup.controls["orderStatus"].value.trim()
       : "";
     re = re + "/?";
+    if (orderStatus && orderStatus != "") {
+      re = re + "Status=" + orderStatus;
+    }
     if (istype && istype != "" && isvvalue && isvvalue != "") {
       if (istype === "maxid") {
         if (isvvalue.toString().split(".")[1]) {
@@ -166,9 +179,6 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (orderStatus && orderStatus != "" && orderStatus != "ALL") {
-      re = re + "&Status=" + orderStatus;
-    }
     return re;
   }
 }
