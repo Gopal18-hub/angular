@@ -9,33 +9,33 @@ export namespace CommonApiConstants {
   export const genderLookUp =
     environment.CommonApiUrl + "api/lookup/genderlookup/0";
 
+  export const getcompanydetail = (locationId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/getcompanydetail/${locationId}`;
+  };
+
   // doctor save
- 
-    export const saveDoctor = (
-      ) =>{
-        return (
-          environment.BillingApiUrl +
-          "api/outpatientbilling/savenewtempreferraldoctor" 
-        );
-      };
-    export const getdoctor = (
-      Type: number,
-      ReferralDoctorName?: string
-    ) => {
-      return (
-        environment.BillingApiUrl +
-        "api/outpatientbilling/getdoctorinfo/" +
-        Type +
-        "?DoctorName=" +
-        ReferralDoctorName
-      );
-    };
-    //spcialisation for doctors
-    export const getspecialization = `${environment.PatientApiUrl}api/patient/getspecialization`;
-    export const getsimilarsoundreferraldoctor = (
-      speciality: string,
-      DoctorName:string,
-      mobile: string
-    ) =>
+
+  export const saveDoctor = () => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/savenewtempreferraldoctor"
+    );
+  };
+  export const getdoctor = (Type: number, ReferralDoctorName?: string) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdoctorinfo/" +
+      Type +
+      "?DoctorName=" +
+      ReferralDoctorName
+    );
+  };
+  //spcialisation for doctors
+  export const getspecialization = `${environment.PatientApiUrl}api/patient/getspecialization`;
+  export const getsimilarsoundreferraldoctor = (
+    speciality: string,
+    DoctorName: string,
+    mobile: string
+  ) =>
     `${environment.PatientApiUrl}api/patient/getsimilarsoundreferraldoctor/${speciality}?DoctorName=${DoctorName}&mobile=${mobile}`;
 }
