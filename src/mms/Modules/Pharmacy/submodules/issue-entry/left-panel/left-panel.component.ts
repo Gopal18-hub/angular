@@ -74,6 +74,7 @@ export class LeftPanelComponent implements OnInit {
         //4
         title: "Type", //Age Type
         type: "dropdown",
+        placeholder: "--Select--",
         required: true,
         options: this.ageTypeList,
       },
@@ -97,6 +98,7 @@ export class LeftPanelComponent implements OnInit {
         title: "Doctor Name ",
         type: "string",
         required: true,
+        readonly:true,
       },
       companyName: {
         //8
@@ -118,7 +120,6 @@ export class LeftPanelComponent implements OnInit {
       doctorAddress: {
         title: "Doctor Address ",
         type: "string",
-        
       },
     },
   };
@@ -186,7 +187,6 @@ export class LeftPanelComponent implements OnInit {
     } else {
       this.patientform[0].required = true;
     }
-
     this.formEvents();
   }
 
@@ -459,7 +459,7 @@ export class LeftPanelComponent implements OnInit {
       "keypress",
       (event: any) => {
         // If the user presses the "Enter" key on the keyboard
-       if (event.key === "Enter") {
+        if (event.key === "Enter") {
           // Cancel the default action, if needed
           event.preventDefault();
           this.onEnterPhoneModify();
@@ -664,6 +664,7 @@ export class LeftPanelComponent implements OnInit {
     this.patientformGroup.controls["mobile"].setValue(
       this.patientDetails?.mobile //pphone
     );
+    this.patientform[1].readonly = true;
     this.patientformGroup.controls["patientName"].setValue(
       this.patientDetails?.name //firstname + " " + this.patientDetails?.lastName
     );
@@ -757,60 +758,12 @@ export class LeftPanelComponent implements OnInit {
             if (
               this.similarContactPatientList.length != 0 
             ) {
-              const similarSoundDialogref = this.matDialog.open(
-                SimilarPatientDialog,
-                {
-                  width: "60vw",
-                  height: "80vh",
-                  data: {
-                    searchResults: this.similarContactPatientList,
-                  },
-                  panelClass: ["animate__animated", "animate__slideInRight"],
-                  position: { right: "0px", bottom: "0px" },
-                }
-              );
-              similarSoundDialogref
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((result) => {
-                  if (result) {
-                    this.isRegPatient = true;
-
-                    let ageData = result.data["added"][0].age;
-                    let ageArray = ageData.split(" ");
-                    let age = ageArray.slice(0, 1).toString();
-                   // let ageType = ageArray.slice(1, 2).toString();
-                    let ageType= result.data["added"][0].ageType
-                    this.patientformGroup.controls["maxid"].setValue(
-                      result.data["added"][0].maxid
-                    );
-                    this.patientformGroup.controls["ageType"].setValue(ageType);
-                    this.patientformGroup.controls["gender"].setValue(
-                      result.data["added"][0].gender
-                    );
-                    this.patientformGroup.controls["mobile"].setValue(
-                      result.data["added"][0].phone
-                    );
-                    this.patientformGroup.controls["patienAddress"].setValue(
-                      result.data["added"][0].address
-                    );
-                    this.patientformGroup.controls["patienAge"].setValue(age);
-                    this.patientformGroup.controls["patientName"].setValue(
-                      result.data["added"][0].firstName +
-                        " " +
-                        result.data["added"][0].lastName
-                    );
-                  }
-                  this.similarContactPatientList = [];
-                });
+              
+              this.similarDialogOpen();
             }
              else {
               console.log("no data found");
-              this.snackbarService.showSnackBar(
-                "No Data Found",
-                "info",
-                ""
-              );
+              this.snackbarService.showSnackBar("No Data Found", "info", "");
             }
             // }
           },
@@ -821,7 +774,54 @@ export class LeftPanelComponent implements OnInit {
         );
     }
   }
+  similarDialogOpen(){
+    const similarSoundDialogref = this.matDialog.open(
+      SimilarPatientDialog,
+      {
+        width: "60vw",
+        height: "80vh",
+        data: {
+          searchResults: this.similarContactPatientList,
+        },
+        panelClass: ["animate__animated", "animate__slideInRight"],
+        position: { right: "0px", bottom: "0px" },
+      }
+    );
+    similarSoundDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          this.isRegPatient = true;
 
+          let ageData = result.data["added"][0].age;
+          let ageArray = ageData.split(" ");
+          let age = ageArray.slice(0, 1).toString();
+         // let ageType = ageArray.slice(1, 2).toString();
+          let ageType= result.data["added"][0].ageType
+          this.patientformGroup.controls["maxid"].setValue(
+            result.data["added"][0].maxid
+          );
+          this.patientformGroup.controls["ageType"].setValue(ageType);
+          this.patientformGroup.controls["gender"].setValue(
+            result.data["added"][0].gender
+          );
+          this.patientformGroup.controls["mobile"].setValue(
+            result.data["added"][0].phone
+          );
+          this.patientformGroup.controls["patienAddress"].setValue(
+            result.data["added"][0].address
+          );
+          this.patientformGroup.controls["patienAge"].setValue(age);
+          this.patientformGroup.controls["patientName"].setValue(
+            result.data["added"][0].firstName +
+              " " +
+              result.data["added"][0].lastName
+          );
+        }
+        this.similarContactPatientList = [];
+      });
+  }
   showDoctorDetails() {
     this._bottomSheet
       .open(DoctorListComponent, {
@@ -830,15 +830,23 @@ export class LeftPanelComponent implements OnInit {
       .afterDismissed()
       .subscribe((response) => {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
-        this.patientformGroup.controls["doctorMobile"].setValue(response[0].mobile);
+        
         let address;
-       if( response[0].address==''){
-        address=null
+       if( response[0].address==''||response[0].address==null){
+        address='-'
         }
         else{
           address=response[0].address
         }
+        let mobileNo;
+        if(response[0].mobile==''||response[0].mobile==null){
+          mobileNo='-'
+        }
+        else{
+          mobileNo=response[0].mobile
+        }
         this.patientformGroup.controls["doctorAddress"].setValue(address);
+        this.patientformGroup.controls["doctorMobile"].setValue(mobileNo);
       });
   }
 }
@@ -849,11 +857,15 @@ export class LeftPanelComponent implements OnInit {
 })
 export class SimilarPatientDialog {
   @ViewChild("patientDetail") tableRows: any;
+  similardata:any=[]
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    setTimeout(() => {   this.similardata=this.data.searchResults},350);
+  
+  }
 
   ngAfterViewInit() {
     this.getMaxID();
