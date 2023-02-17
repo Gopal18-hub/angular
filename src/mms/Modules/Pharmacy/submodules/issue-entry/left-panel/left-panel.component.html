@@ -122,14 +122,14 @@
         <div class="my-1"></div>
         <div class="flex ">
           <maxhealth-question class="w-full" [question]="patientform[7]" [form]="patientformGroup"
-            [questions]="patientform[7]" (click)="showDoctorDetails()" [index]="7"></maxhealth-question>
+            [questions]="patientform[7]" (click)="showDoctorDetails()" [index]="7" ></maxhealth-question>
         </div>
-        <div class=" w-full " *ngIf="patientformGroup?.value?.doctorMobile!=null">
+        <div class=" w-full ">
           <mat-label>Doctor Mobile no.</mat-label>
           <mat-label class="float-right color-block"> {{patientformGroup?.value?.doctorMobile}}</mat-label>
         </div>
         <div class="my-1"></div>
-        <div class=" w-full " *ngIf="patientformGroup?.value?.doctorAddress!=null ">
+        <div class=" w-full " >
           <mat-label>Doctor Address</mat-label>
           <mat-label class="float-right color-block">{{
             patientformGroup?.value?.doctorAddress
