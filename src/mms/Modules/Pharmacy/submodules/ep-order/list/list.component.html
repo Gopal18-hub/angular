@@ -8,6 +8,10 @@
     <div class="w-full mx-table">
       <div class="h-table ep-order-table">
         <ng-container class="w-full">
+          <div *ngIf="EPOrderService?.apiProcessing"
+          class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
           <maxhealth-table
             class=""
             (rowRwmove)="rowRwmoveLineItems($event)"

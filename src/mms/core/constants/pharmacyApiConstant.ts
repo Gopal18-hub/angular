@@ -8,5 +8,8 @@ export namespace PharmacyApiConstants {
     environment.PatientApiUrl + "api/patient/getphysicianorderdetailep";
   export const eporderdelete =
     environment.BillingApiUrl + "api/outpatientbilling/deleteeporder";
+  export const eporderorderscounter =
+    environment.PatientApiUrl + "api/patient/geteprescriptdrugorderscounter";
+
   // EP Order API End
 }

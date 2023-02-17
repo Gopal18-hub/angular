@@ -12,6 +12,7 @@ import {
   NgZone,
   ViewChildren,
   QueryList,
+  ElementRef,
 } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
@@ -490,7 +491,16 @@ export class MaxTableComponent implements OnInit, OnChanges {
     this.rowRwmove.emit({ index: index, data: data });
   }
 
+  @ViewChild("scrollabletable", { read: ElementRef })
+  scrollabletable!: ElementRef;
+  scrollTopHandler() {
+    if (this.scrollabletable)
+      this.scrollabletable.nativeElement.scrollIntoView(true);
+    this.scrollHandlerscrollTop = 0;
+  }
+
   scrollHandler(e: any) {
+    e.preventDefault();
     const tableViewHeight = e.target.offsetHeight; // viewport
     const tableScrollHeight = e.target.scrollHeight; // length of all table
     const scrollLocation = e.target.scrollTop; // how far user scrolled
