@@ -74,6 +74,7 @@ export class LeftPanelComponent implements OnInit {
         //4
         title: "Type", //Age Type
         type: "dropdown",
+        placeholder: "--Select--",
         required: true,
         options: this.ageTypeList,
       },
@@ -118,7 +119,6 @@ export class LeftPanelComponent implements OnInit {
       doctorAddress: {
         title: "Doctor Address ",
         type: "string",
-        
       },
     },
   };
@@ -186,7 +186,6 @@ export class LeftPanelComponent implements OnInit {
     } else {
       this.patientform[0].required = true;
     }
-
     this.formEvents();
   }
 
@@ -459,7 +458,7 @@ export class LeftPanelComponent implements OnInit {
       "keypress",
       (event: any) => {
         // If the user presses the "Enter" key on the keyboard
-       if (event.key === "Enter") {
+        if (event.key === "Enter") {
           // Cancel the default action, if needed
           event.preventDefault();
           this.onEnterPhoneModify();
@@ -664,6 +663,7 @@ export class LeftPanelComponent implements OnInit {
     this.patientformGroup.controls["mobile"].setValue(
       this.patientDetails?.mobile //pphone
     );
+    this.patientform[1].readonly = true;
     this.patientformGroup.controls["patientName"].setValue(
       this.patientDetails?.name //firstname + " " + this.patientDetails?.lastName
     );
@@ -754,9 +754,7 @@ export class LeftPanelComponent implements OnInit {
           (resultData: SimilarSoundPatientResponse[]) => {
             this.apiProcessing = false;
             this.similarContactPatientList = resultData;
-            if (
-              this.similarContactPatientList.length != 0 
-            ) {
+            if (this.similarContactPatientList.length != 0) {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
@@ -779,8 +777,8 @@ export class LeftPanelComponent implements OnInit {
                     let ageData = result.data["added"][0].age;
                     let ageArray = ageData.split(" ");
                     let age = ageArray.slice(0, 1).toString();
-                   // let ageType = ageArray.slice(1, 2).toString();
-                    let ageType= result.data["added"][0].ageType
+                    // let ageType = ageArray.slice(1, 2).toString();
+                    let ageType = result.data["added"][0].ageType;
                     this.patientformGroup.controls["maxid"].setValue(
                       result.data["added"][0].maxid
                     );
@@ -803,14 +801,9 @@ export class LeftPanelComponent implements OnInit {
                   }
                   this.similarContactPatientList = [];
                 });
-            }
-             else {
+            } else {
               console.log("no data found");
-              this.snackbarService.showSnackBar(
-                "No Data Found",
-                "info",
-                ""
-              );
+              this.snackbarService.showSnackBar("No Data Found", "info", "");
             }
             // }
           },
@@ -830,13 +823,14 @@ export class LeftPanelComponent implements OnInit {
       .afterDismissed()
       .subscribe((response) => {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
-        this.patientformGroup.controls["doctorMobile"].setValue(response[0].mobile);
+        this.patientformGroup.controls["doctorMobile"].setValue(
+          response[0].mobile
+        );
         let address;
-       if( response[0].address==''){
-        address=null
-        }
-        else{
-          address=response[0].address
+        if (response[0].address == "") {
+          address = null;
+        } else {
+          address = response[0].address;
         }
         this.patientformGroup.controls["doctorAddress"].setValue(address);
       });

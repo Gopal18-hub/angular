@@ -466,6 +466,8 @@ export namespace MaxModules {
                   defaultPath: "/pharmacy/issue-entry",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  isBadge: false,
+                  badgeCount: 0,
                 },
                 {
                   id: 61,
@@ -473,6 +475,8 @@ export namespace MaxModules {
                   defaultPath: "/pharmacy/ep-order",
                   globalSearchKey: "global",
                   allUsersAllow: false,
+                  isBadge: true,
+                  badgeCount: 0,
                 },
                 {
                   id: 460,
@@ -480,6 +484,8 @@ export namespace MaxModules {
                   defaultPath: "/pharmacy/online-order",
                   globalSearchKey: "global",
                   allUsersAllow: true,
+                  isBadge: false,
+                  badgeCount: 0,
                 },
                 // {
                 //   id: 461,

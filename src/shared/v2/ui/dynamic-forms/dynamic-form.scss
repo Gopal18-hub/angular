@@ -105,7 +105,7 @@ mat-label {
       background: #ffff;
       // padding: 0 10px;
     }
-    button.clear mat-icon {
+    button.clear mat-icon,span.clear mat-icon {
       color: #ffffff;
       border: 0.5px solid #ffffff;
       opacity: 1;
@@ -118,12 +118,12 @@ mat-label {
       width: 14px;
       height: 14px;
     }
-    button.clear {
+    button.clear, span.clear{
       right: -3px;
       display: none !important;
     }
     &:hover, &.mat-focused {
-      button.clear {
+      button.clear,span.clear {
         display: inline-flex !important;
         // top: -5px;
       }
