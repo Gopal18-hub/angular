@@ -584,6 +584,7 @@ export class LeftPanelComponent implements OnInit {
                 incorrect: true,
               });
               this.patientform[0].customErrorMessage = "Invalid Max ID";
+              this.patientform[1].readonly = false;
               this.patientform[1].elementRef.focus();
               this.patientform.markAsDirty();
               this.MaxIDExist = false;
@@ -666,6 +667,7 @@ export class LeftPanelComponent implements OnInit {
                 incorrect: true,
               });
               this.patientform[0].customErrorMessage = "Invalid Max ID";
+              this.patientform[1].readonly = false;
             }
             //this.clear();
             // this.maxIDChangeCall = false;
@@ -673,6 +675,7 @@ export class LeftPanelComponent implements OnInit {
         );
     } else {
       this.apiProcessing = false;
+      this.patientform[1].readonly = false;
       // this.patientformGroup.controls["maxid"].setErrors({
       //   incorrect: true,
       // });
