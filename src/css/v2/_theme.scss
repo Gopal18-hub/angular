@@ -173,7 +173,8 @@ body {
 }
 
 mat-form-field {
-  font-size: 14px;
+  font-size: 14px !important;
+  font-family: Proxima Nova,Regular !important;
   &.mat-form-field-appearance-outline {
     .mat-form-field-outline {
       color: #ababab; //rgba(0, 0, 0); //UAT Defect fix
@@ -190,6 +191,12 @@ mat-form-field {
     .mat-form-field-prefix {
       top: -0.25em; //0.35em;
     }
+    .mat-form-field-label {
+      top: 1.64375em !important;
+  }
+  .mat-input-element{
+    margin-bottom: 0.25em;
+  }
   }
 }
 .mat-form-field:not(.mat-form-field-appearance-legacy)
@@ -470,6 +477,10 @@ input[type="number"]::-webkit-inner-spin-button {
   color: #000;
 }
 
+.mat-select {
+  font-family: Proxima Nova,Regular !important;
+  margin-bottom: 0.25em;
+}
 .disabled {
   pointer-events: none; //This makes it not clickable
   opacity: 0.8;

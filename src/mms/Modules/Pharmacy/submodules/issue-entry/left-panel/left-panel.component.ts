@@ -142,11 +142,11 @@ export class LeftPanelComponent implements OnInit {
   psuInfo: string = "";
   maxIDSearch: boolean = false;
   maxId: string = "";
+  mobile: string = "";
   apiProcessing: boolean = false;
   expiredPatient: boolean = false;
   public patientDetails!: PatientDetails;
   MaxIDExist: boolean = false;
-
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
   phoneNumberFlag: boolean = false;
   isPatientdetailModified: boolean = false;
@@ -180,7 +180,9 @@ export class LeftPanelComponent implements OnInit {
     this.ewsInfo = "EWS";
     this.psuInfo = "PSU";
     this.maxIDSearch = false;
+    this.MaxIDExist = false;
     this.maxId = "";
+    this.mobile = "";
     this.formInit();
   }
 
@@ -226,6 +228,14 @@ export class LeftPanelComponent implements OnInit {
           this.getSimilarPatientDetails(searchResult.phone);
         }
         // this.searchhotlisting(formdata.data);
+      });
+
+    this.patientformGroup.controls["maxid"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value == "") {
+          this.valueClear();
+        }
       });
   }
 
@@ -401,6 +411,7 @@ export class LeftPanelComponent implements OnInit {
     this.showInfoSection = false;
     this.isEWSPatient = false;
     this.isCGHSPatient = false;
+    this.MaxIDExist = false;
     this.patientformGroup.controls["mobile"].setValue("");
     this.patientformGroup.controls["patientName"].setValue("");
     this.patientformGroup.controls["patienAge"].setValue("");
@@ -414,6 +425,7 @@ export class LeftPanelComponent implements OnInit {
     this.showInfoSection = false;
     this.maxIDSearch = false;
     this.maxId = "";
+    this.mobile = "";
     this.issueEntryService.billType = 1;
     this.isRegPatient = false;
     this.isShowCompany = false;
@@ -501,16 +513,19 @@ export class LeftPanelComponent implements OnInit {
   }
 
   valueClear() {
-    if (this.maxId != this.patientformGroup.value.maxid) {
-      this.patientformGroup.controls["mobile"].setValue("");
-      this.patientformGroup.controls["patientName"].setValue("");
-      this.patientformGroup.controls["patienAge"].setValue("");
-      this.patientformGroup.controls["ageType"].setValue("");
-      this.patientformGroup.controls["gender"].setValue("");
-      this.patientformGroup.controls["patienAddress"].setValue("");
-      this.patientform[1].readonly = false;
-      this.maxId = this.patientformGroup.value.maxid;
-    }
+    // if (this.maxId != this.patientformGroup.value.maxid) {
+    this.patientformGroup.controls["maxid"].setValue("");
+    this.patientformGroup.controls["mobile"].setValue("");
+    this.patientformGroup.controls["patientName"].setValue("");
+    this.patientformGroup.controls["patienAge"].setValue("");
+    this.patientformGroup.controls["ageType"].setValue("");
+    this.patientformGroup.controls["gender"].setValue("");
+    this.patientformGroup.controls["patienAddress"].setValue("");
+    this.patientform[1].readonly = false;
+    this.showInfoSection = false;
+    this.MaxIDExist = false;
+    this.maxId = this.patientformGroup.value.maxid;
+    // }
   }
   onMaxIDChange() {
     this.maxIDSearch = true;
@@ -571,6 +586,7 @@ export class LeftPanelComponent implements OnInit {
               this.patientform[0].customErrorMessage = "Invalid Max ID";
               this.patientform[1].elementRef.focus();
               this.patientform.markAsDirty();
+              this.MaxIDExist = false;
               //this.clear();
               // this.maxIDChangeCall = false;
             } else {
@@ -691,11 +707,11 @@ export class LeftPanelComponent implements OnInit {
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
   setValuesToOPRegForm(patientDetails: PatientDetails) {
     this.patientDetails = patientDetails;
-    if (this.patientDetails?.registrationno == 0) {
-      this.patientDetails?.iacode + ".";
+    if (this.patientDetails?.registrationNo == 0) {
+      this.patientDetails?.iaCode + ".";
     } else {
       this.patientformGroup.controls["maxid"].setValue(
-        this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
+        this.patientDetails?.iaCode + "." + this.patientDetails?.registrationNo
       );
     }
     this.patientformGroup.controls["mobile"].setValue(
@@ -706,13 +722,13 @@ export class LeftPanelComponent implements OnInit {
       this.patientDetails?.name //firstname + " " + this.patientDetails?.lastName
     );
     this.patientformGroup.controls["gender"].setValue(
-      this.patientDetails?.sex //sexName
+      this.patientDetails?.gender //sexName
     );
     this.patientformGroup.controls["patienAge"].setValue(
-      this.patientDetails?.age + " " //+ this.patientDetails?.ageTypeName
+      this.patientDetails?.age + " " + this.patientDetails?.ageType
     );
     this.patientformGroup.controls["ageType"].setValue(
-      this.patientDetails?.ageTypeName
+      this.patientDetails?.ageType
     );
 
     this.patientformGroup.controls["patienAddress"].setValue(
@@ -762,7 +778,8 @@ export class LeftPanelComponent implements OnInit {
         if (this.checkForModifiedPatientDetail()) {
           // this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
         } else {
-          this.getSimilarPatientDetails(this.patientformGroup.value.mobile);
+          if (this.mobile != this.patientformGroup.value.mobile)
+            this.getSimilarPatientDetails(this.patientformGroup.value.mobile);
         }
       }
     }
@@ -803,17 +820,14 @@ export class LeftPanelComponent implements OnInit {
               this.similarContactPatientList[0].maxid != ""
             ) {
               this.isRegPatient = true;
-              let ageData = this.similarContactPatientList[0].age;
-              let ageArray = ageData.split(" ");
-              let age = ageArray.slice(0, 1).toString();
-              let ageType = ageArray.slice(1, 2).toString();
+              let ageData =
+                this.similarContactPatientList[0].age +
+                " " +
+                this.similarContactPatientList[0].ageType;
 
               this.patientformGroup.controls["maxid"].setValue(
                 this.similarContactPatientList[0].maxid
               );
-              this.patientformGroup.controls["ageType"].setValue(ageType);
-              // this.patientformGroup.controls["companyName"].setValue(this.similarContactPatientList[0].maxid)
-              // this.patientformGroup.controls["doctorName"].setValue(this.similarContactPatientList[0].maxid)
               this.patientformGroup.controls["gender"].setValue(
                 this.similarContactPatientList[0].gender
               );
@@ -823,9 +837,7 @@ export class LeftPanelComponent implements OnInit {
               this.patientformGroup.controls["patienAddress"].setValue(
                 this.similarContactPatientList[0].address
               );
-              this.patientformGroup.controls["patienAge"].setValue(
-                this.similarContactPatientList[0].age
-              );
+              this.patientformGroup.controls["patienAge"].setValue(ageData);
               this.patientformGroup.controls["patientName"].setValue(
                 this.similarContactPatientList[0].firstName
               );
@@ -858,26 +870,22 @@ export class LeftPanelComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.isRegPatient = true;
-
-          let ageData = result.data["added"][0].age;
-          let ageArray = ageData.split(" ");
-          let age = ageArray.slice(0, 1).toString();
-          // let ageType = ageArray.slice(1, 2).toString();
-          let ageType = result.data["added"][0].ageType;
+          let ageData =
+            result.data["added"][0].age + " " + result.data["added"][0].ageType;
           this.patientformGroup.controls["maxid"].setValue(
             result.data["added"][0].maxid
           );
-          this.patientformGroup.controls["ageType"].setValue(ageType);
           this.patientformGroup.controls["gender"].setValue(
             result.data["added"][0].gender
           );
           this.patientformGroup.controls["mobile"].setValue(
             result.data["added"][0].phone
           );
+          this.mobile = result.data["added"][0].phone;
           this.patientformGroup.controls["patienAddress"].setValue(
             result.data["added"][0].address
           );
-          this.patientformGroup.controls["patienAge"].setValue(age);
+          this.patientformGroup.controls["patienAge"].setValue(ageData);
           this.patientformGroup.controls["patientName"].setValue(
             result.data["added"][0].firstName +
               " " +
@@ -908,6 +916,7 @@ export class LeftPanelComponent implements OnInit {
         } else {
           mobileNo = response[0].mobile;
         }
+        this.mobile = response[0].mobile;
         this.patientformGroup.controls["doctorAddress"].setValue(address);
         this.patientformGroup.controls["doctorMobile"].setValue(mobileNo);
       });
