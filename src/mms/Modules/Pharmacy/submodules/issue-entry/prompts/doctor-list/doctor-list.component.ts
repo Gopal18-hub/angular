@@ -39,13 +39,13 @@ export class DoctorListComponent implements OnInit {
     selectBox: false,
     clickedRows: true,
     clickSelection: "single",
-    displayedColumns: ["name", "specialisation"],
+    displayedColumns: ["name", "speciality"],
     columnsInfo: {
       name: {
         title: "Doctor Name",
         type: "string",
       },
-      specialisation: {
+      speciality: {
         title: "Specialisation",
         type: "string",
       },
@@ -123,39 +123,94 @@ export class DoctorListComponent implements OnInit {
     public snackbarService: SnackBarService
   ) {}
 
-  ngOnInit(): void {
+   ngOnInit() {
     this.doctortype = 1;
     this.formInit();
-    this.showInternalDoctor();
+     //this.showExternalDoctor();
+     this.showInternalDoctor();
+  
   }
   ngAfterViewInit() {
     setTimeout(() => { 
       this.doctableRows.selection.changed.subscribe((res: any) => {
         console.log('dlist',res)
-     this.doctorSelected.push(res["added"][0])
-      this._bottomSheet.dismiss(this.doctorSelected);
+    
+      this.http
+      .get(
+        CommonApiConstants.getdoctordetail(
+         res["added"][0].id
+        )
+      )
+      .subscribe((res: any) => {
+        console.log('doctadd',res)
+       // this.doctorSelected.push(res)
+       this.doctorSelected=res
+        this._bottomSheet.dismiss(this.doctorSelected);
+      });
     }) },1000);
-    this.doctorformGroup.controls["searchDoctor"].valueChanges
-    .pipe(
-      filter((res: any) => {
-        return (res !== null && res.length >= 3) || res == "";
-      }),
-      debounceTime(1000),
-      distinctUntilChanged(),
-      switchMap((val) => {
-        return this.http
-          .get(CommonApiConstants.getdoctor(this.doctortype, val))
-          .pipe(finalize(() => {}));
+    this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(
+      filter(_ => this.doctorformGroup.controls["searchDoctor"].value.length >= 3), 
+      distinctUntilChanged()
+    ).subscribe(value => {
+      console.log('dl',this.doctorList)
+      let a:any=[];
+      let doc
+      this.doctorList.forEach((val:any)=>{
+       a.push( val.name)
+       doc= a.find(
+        (x: any) =>
+
+          x.name == value 
+        
+      );
       })
-    )
-    .subscribe(
-      (data:any) => {
-        this.doctorList = data;
-      },
-      (error:any) => {
-        console.error("There was an error!", error);
-      }
-    );
+      
+      console.log('search va',value)
+      console.log('sed', doc)
+      this.doctorList = doc;
+    });
+  
+    // this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(takeUntil(this._destroying$))
+    // .subscribe((value) => {
+    //   let doc; 
+    //   if(value!=null && value.length >=3 || value==""){
+    //  doc= this.doctorList.filter(
+    //     (x: any) =>
+
+    //       x.name === value 
+        
+    //   );
+    //   console.log('dl',this.doctorList)
+    //   console.log('search doc',doc)
+    //   this.doctorList = doc;
+    //  }
+    // });
+   
+    // this.doctorformGroup.controls["searchDoctor"].valueChanges
+    // .pipe(
+    //   filter((res: any) => {
+    //     return (res !== null && res.length >= 3) || res == "";
+    //   }),
+    //   debounceTime(1000),
+    //   distinctUntilChanged(),
+    //   switchMap((val) => {
+    //     let doc
+    //     doc= this.doctorList.filter(
+    //       (x: any) =>
+  
+    //         x.name === val 
+          
+    //     );
+    //   })
+    // )
+    // .subscribe(
+    //   (data:any) => {
+    //     this.doctorList = data;
+    //   },
+    //   (error:any) => {
+    //     console.error("There was an error!", error);
+    //   }
+    // );
   }
   formInit() {
     let doctorformResult: any = this.formService.createForm(
@@ -185,16 +240,16 @@ export class DoctorListComponent implements OnInit {
     this.apiProcessing = true;
    
     this.http
-      .get(CommonApiConstants.getdoctor(1, ""))
+      .get(CommonApiConstants.getdoctor(1))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        setTimeout(() => { 
-          this.doctableRows.selection.changed.subscribe((res: any) => {
-         this.doctorSelected.push(res["added"][0])
-          this._bottomSheet.dismiss(this.doctorSelected);
-        }) },1000);
+        // setTimeout(() => { 
+        //   this.doctableRows.selection.changed.subscribe((res: any) => {
+        //  this.doctorSelected.push(res["added"][0])
+        //   this._bottomSheet.dismiss(this.doctorSelected);
+        // }) },1000);
       });
   }
   showExternalDoctor() {
@@ -202,16 +257,16 @@ export class DoctorListComponent implements OnInit {
     this.apiProcessing = true;
    
     this.http
-      .get(CommonApiConstants.getdoctor(2, ""))
+      .get(CommonApiConstants.getdoctor(2))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        setTimeout(() => { 
-          this.doctableRows.selection.changed.subscribe((res: any) => {
-         this.doctorSelected.push(res["added"][0])
-          this._bottomSheet.dismiss(this.doctorSelected);
-        }) },1000);
+        // setTimeout(() => { 
+        //   this.doctableRows.selection.changed.subscribe((res: any) => {
+        //  this.doctorSelected.push(res["added"][0])
+        //   this._bottomSheet.dismiss(this.doctorSelected);
+        // }) },1000);
       });
   }
   closeDoctorList() {
@@ -224,7 +279,9 @@ export class DoctorListComponent implements OnInit {
     this.addDoctor=false
   }
   createDoctor($event: any) {
+    alert('working')
     $event.stopPropagation();
+   // this.saveDoctor();
     if (this.acceptToCreateNew) {
       this.saveDoctor();
     } else {
