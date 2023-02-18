@@ -128,4 +128,6 @@ mat-label {
         // top: -5px;
       }
     }
+
+    ::ng-deep .mat-form-field-flex .mat-form-field-suffix mat-icon { display: inline-flex !important; }
   }

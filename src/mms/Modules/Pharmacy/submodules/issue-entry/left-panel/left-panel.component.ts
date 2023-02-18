@@ -500,6 +500,18 @@ export class LeftPanelComponent implements OnInit {
     this.maxIDSearch = true;
   }
 
+  valueClear() {
+    if (this.maxId != this.patientformGroup.value.maxid) {
+      this.patientformGroup.controls["mobile"].setValue("");
+      this.patientformGroup.controls["patientName"].setValue("");
+      this.patientformGroup.controls["patienAge"].setValue("");
+      this.patientformGroup.controls["ageType"].setValue("");
+      this.patientformGroup.controls["gender"].setValue("");
+      this.patientformGroup.controls["patienAddress"].setValue("");
+      this.patientform[1].readonly = false;
+      this.maxId = this.patientformGroup.value.maxid;
+    }
+  }
   onMaxIDChange() {
     this.maxIDSearch = true;
     if (this.maxId != this.patientformGroup.value.maxid)
@@ -697,7 +709,7 @@ export class LeftPanelComponent implements OnInit {
       this.patientDetails?.sex //sexName
     );
     this.patientformGroup.controls["patienAge"].setValue(
-      this.patientDetails?.age + " " + this.patientDetails?.ageTypeName
+      this.patientDetails?.age + " " //+ this.patientDetails?.ageTypeName
     );
     this.patientformGroup.controls["ageType"].setValue(
       this.patientDetails?.ageTypeName
@@ -781,39 +793,43 @@ export class LeftPanelComponent implements OnInit {
             this.apiProcessing = false;
             this.similarContactPatientList = resultData;
             if (
-              this.similarContactPatientList.length != 0 &&this.similarContactPatientList.length >1 ||this.similarContactPatientList[0].maxid==''
+              (this.similarContactPatientList.length != 0 &&
+                this.similarContactPatientList.length > 1) ||
+              this.similarContactPatientList[0].maxid == ""
             ) {
-              
               this.similarDialogOpen();
-            }
-            else if(this.similarContactPatientList.length == 1 && this.similarContactPatientList[0].maxid!=''){
+            } else if (
+              this.similarContactPatientList.length == 1 &&
+              this.similarContactPatientList[0].maxid != ""
+            ) {
               this.isRegPatient = true;
-                let ageData = this.similarContactPatientList[0].age 
-                let ageArray = ageData.split(" ");
-                let age = ageArray.slice(0, 1).toString();
-                let ageType = ageArray.slice(1, 2).toString();
-  
-                this.patientformGroup.controls["maxid"].setValue(
-                  this.similarContactPatientList[0].maxid
-                );
-                this.patientformGroup.controls["ageType"].setValue(ageType);
-                // this.patientformGroup.controls["companyName"].setValue(this.similarContactPatientList[0].maxid)
-                // this.patientformGroup.controls["doctorName"].setValue(this.similarContactPatientList[0].maxid)
-                this.patientformGroup.controls["gender"].setValue(
-                  this.similarContactPatientList[0].gender
-                );
-                this.patientformGroup.controls["mobile"].setValue(
-                  this.similarContactPatientList[0].phone
-                );
-                this.patientformGroup.controls["patienAddress"].setValue(
-                  this.similarContactPatientList[0].address
-                );
-                this.patientformGroup.controls["patienAge"].setValue(this.similarContactPatientList[0].age);
-                this.patientformGroup.controls["patientName"].setValue(
-                  this.similarContactPatientList[0].firstName
-                );
-            }
-             else {
+              let ageData = this.similarContactPatientList[0].age;
+              let ageArray = ageData.split(" ");
+              let age = ageArray.slice(0, 1).toString();
+              let ageType = ageArray.slice(1, 2).toString();
+
+              this.patientformGroup.controls["maxid"].setValue(
+                this.similarContactPatientList[0].maxid
+              );
+              this.patientformGroup.controls["ageType"].setValue(ageType);
+              // this.patientformGroup.controls["companyName"].setValue(this.similarContactPatientList[0].maxid)
+              // this.patientformGroup.controls["doctorName"].setValue(this.similarContactPatientList[0].maxid)
+              this.patientformGroup.controls["gender"].setValue(
+                this.similarContactPatientList[0].gender
+              );
+              this.patientformGroup.controls["mobile"].setValue(
+                this.similarContactPatientList[0].phone
+              );
+              this.patientformGroup.controls["patienAddress"].setValue(
+                this.similarContactPatientList[0].address
+              );
+              this.patientformGroup.controls["patienAge"].setValue(
+                this.similarContactPatientList[0].age
+              );
+              this.patientformGroup.controls["patientName"].setValue(
+                this.similarContactPatientList[0].firstName
+              );
+            } else {
               console.log("no data found");
               this.snackbarService.showSnackBar("No Data Found", "info", "");
             }
