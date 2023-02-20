@@ -706,6 +706,7 @@ export class LeftPanelComponent implements OnInit {
               this.patientform[0].customErrorMessage = "Invalid Max ID";
               this.patientform[1].readonly = false;
             }
+            this.valueClear();
             //this.clear();
             // this.maxIDChangeCall = false;
           }
@@ -716,6 +717,7 @@ export class LeftPanelComponent implements OnInit {
       this.patientformGroup.controls["maxid"].setErrors({
         incorrect: true,
       });
+      this.valueClear();
       this.patientform[0].customErrorMessage = "Invalid Max ID";
       this.flushAllObjects();
     }
