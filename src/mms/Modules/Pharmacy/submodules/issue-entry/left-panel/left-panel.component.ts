@@ -236,8 +236,8 @@ export class LeftPanelComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == "") {
-          // this.valueClear();
-          this.reset();
+          this.valueClear();
+          // this.reset();
         }
       });
 
@@ -245,9 +245,8 @@ export class LeftPanelComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == "") {
-          // this.valueClear();
-          console.log("mobile reset");
-          this.reset();
+          this.valueClear();
+          // this.reset();
         }
       });
   }
