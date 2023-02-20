@@ -1,33 +1,35 @@
 <div class=" justify-center items-center  doctor_list">
-
-    <div class="ml-4 w-9/10 h-1/10 font-base font-bold justify-content-center ">
+    <mat-icon
+    mat-dialog-close
+    class="mr-6 float-right cursor-pointer max-dialog-close-icon"
+    aria-hidden="false"
+    aria-label="Example home icon" (click)="closeDoctorList()"
+    >close</mat-icon>
+    <div class="w-9/10 h-1/10 font-base font-bold justify-content-center ">
         <p class="max-health-primary-color">Due Amout</p> 
     </div>
 
-    <div class="ml-4 w-9/10 h-1/10 font-base justify-content-center ">
-        <p class="max-health-primary-color">This patient have due amount of {{dueAmount}}</p> 
+    <div class="w-9/10 h-1/10 font-base justify-content-center ">
+        <p class="max-health-primary-color">This patient have due amount of Rs.{{dueAmount}}</p> 
     </div>
 
     <div class="doc_buttons">
-        <button mat-flat-button color="primary" class="add_save" (click)="createDoctor()">Pay Now</button>
+        <button mat-flat-button color="primary" class="add_save" disabled >Pay Now</button>
     </div>
-
-    <div class="ml-4 w-9/10 h-1/10 font-base justify-content-center ">
+    <div class="my-2"></div>
+    <div class="w-9/10 h-1/10 font-base justify-content-center ">
         <p class="max-health-primary-color">OR</p> 
     </div>
-
+    <div class="my-1"></div>
     <div class="addnew_doctor">
-        
         <div class="doc_form">
             <form
             [formGroup]="patientformGroup"
             autocomplete="off"
             class="w-full align-items-center"
             >
-
                 <maxhealth-question class="w-1/45" [question]="patientform[0]" [form]="patientformGroup"
             [questions]="patientform[0]" [index]="0" ></maxhealth-question>
-
             </form>
             <div class="doc_buttons">
                 <button mat-flat-button color="primary" class="add_save" (click)="createDoctor()">Save</button>

@@ -19,17 +19,25 @@ export class PatientDuePopupComponent implements OnInit {
   public doctortype = 1;
   private readonly _destroying$ = new Subject<void>();
 
+  skipReason = "";
+
+  skipReasonsList: any = [
+    {
+      title: "Patient will be paying in next visit",
+      value: "Patient will be paying in next visit",
+    },
+  ];
   issueEntryFormData = {
     title: "",
     type: "object",
     properties: {
       ageType: {
         //4
-        title: "Type", //Age Type
+        title: "Select Reason to Skip Due settlement", //Age Type
         type: "dropdown",
         placeholder: "--Select--",
         required: true,
-        // options: this.ageTypeList,
+        options: this.skipReasonsList,
       },
     },
   };
@@ -62,5 +70,7 @@ export class PatientDuePopupComponent implements OnInit {
   closeDoctorList() {
     this._bottomSheet.dismiss();
   }
-  createDoctor() {}
+  createDoctor() {
+    this._bottomSheet.dismiss();
+  }
 }

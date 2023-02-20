@@ -97,8 +97,7 @@ export class SubComponent implements OnInit, OnChanges {
     this.station = this.cookie.get("Station");
     this.usrname = this.cookie.get("Name");
     this.user = this.cookie.get("UserName");
-    this.setIndex(0, "/pharmacy/issue-entry");
-
+    // this.setIndex(0, "/pharmacy/issue-entry");
     this.updateOrdersCount();
   }
 
@@ -159,6 +158,7 @@ export class SubComponent implements OnInit, OnChanges {
     );
     this.searchForm = formResult.form;
     this.questions = formResult.questions;
+    this.questions[0].pattern = "[A-Za-z]+.[0-9]+";
   }
 
   onRouterLinkActive($event: any, imodule: any) {
