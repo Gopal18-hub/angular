@@ -27,10 +27,12 @@ export class SearchService {
           type: "string",
           title: "Max ID",
           defaultValue: this.cookie.get("LocationIACode") + ".",
+          pattern: "[A-Za-z]+.[0-9]+",
         },
         phone: {
           type: "string",
           title: "Mobile No",
+          pattern: "^[1-9]{1}[0-9]{9}",
         },
         name: {
           type: "string",

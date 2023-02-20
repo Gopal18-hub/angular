@@ -25,7 +25,7 @@ export class PatientDuePopupComponent implements OnInit {
     properties: {
       ageType: {
         //4
-        title: "Type", //Age Type
+        title: "Select Reason to Skip Due settlement", //Age Type
         type: "dropdown",
         placeholder: "--Select--",
         required: true,
