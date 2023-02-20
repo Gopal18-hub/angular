@@ -1,7 +1,7 @@
 export class PatientDetails {
   id: number;
-  registrationno: number;
-  iacode: string;
+  registrationNo: number;
+  iaCode: string;
   regDateTime: string;
   regByDeptId: number;
   password: string;
@@ -24,7 +24,7 @@ export class PatientDetails {
   gphone: string;
   gcellno: string;
   gemail: string;
-  agetype: number;
+  // agetype: number;
   age: number;
   address: string;
   address1: string;
@@ -126,9 +126,9 @@ export class PatientDetails {
   identityTypeNumber: string;
   olPaymentPatient: number;
   errorDetails: string;
-  sexName: string;
+  gender: string;
   maritalStatusName: string;
-  ageTypeName: string;
+  ageType: string;
   city: string;
   districtName: string;
   countryName: string;
@@ -145,8 +145,8 @@ export class PatientDetails {
   operatorName?: string;
   constructor(
     id: number,
-    registrationno: number,
-    iacode: string,
+    registrationNo: number,
+    iaCode: string,
     regDateTime: string,
     regByDeptId: number,
     password: string,
@@ -169,7 +169,7 @@ export class PatientDetails {
     gphone: string,
     gcellno: string,
     gemail: string,
-    agetype: number,
+    // agetype: number,
     age: number,
     address: string,
     address1: string,
@@ -271,9 +271,9 @@ export class PatientDetails {
     identityTypeNumber: string,
     olPaymentPatient: number,
     errorDetails: string,
-    sexName: string,
+    gender: string,
     maritalStatusName: string,
-    ageTypeName: string,
+    ageType: string,
     city: string,
     districtName: string,
     countryName: string,
@@ -290,8 +290,8 @@ export class PatientDetails {
     operatorName?: string
   ) {
     this.id = id;
-    this.registrationno = registrationno;
-    this.iacode = iacode;
+    this.registrationNo = registrationNo;
+    this.iaCode = iaCode;
     this.regDateTime = regDateTime;
     this.regByDeptId = regByDeptId;
     this.password = password;
@@ -314,7 +314,7 @@ export class PatientDetails {
     this.gphone = gphone;
     this.gcellno = gcellno;
     this.gemail = gemail;
-    this.agetype = agetype;
+    // this.agetype = agetype;
     this.age = age;
     this.address = address;
     this.address1 = address1;
@@ -416,9 +416,9 @@ export class PatientDetails {
     this.identityTypeNumber = identityTypeNumber;
     this.olPaymentPatient = olPaymentPatient;
     this.errorDetails = errorDetails;
-    this.sexName = sexName;
+    this.gender = gender;
     this.maritalStatusName = maritalStatusName;
-    this.ageTypeName = ageTypeName;
+    this.ageType = ageType;
     this.city = city;
     this.districtName = districtName;
     this.countryName = countryName;

@@ -129,3 +129,22 @@ mat-label {
       }
     }
   }
+
+  mat-form-field.is-autocomplete{
+    ::ng-deep {
+      .mat-form-field-suffix{
+        top: 0.25em;
+        display: flex;
+      }
+      .mat-form-field-flex .mat-form-field-suffix mat-icon {
+        display: inline-flex !important;
+        font-size: 175%;
+      }
+      
+    }
+    &:hover, &.mat-focused {
+      button.clear,span.clear {
+        padding-top: 0.5em;
+      }
+    }
+  }

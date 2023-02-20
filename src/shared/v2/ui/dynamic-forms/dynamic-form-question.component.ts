@@ -8,6 +8,8 @@ import {
   OnChanges,
   SimpleChanges,
   OnDestroy,
+  Output,
+  EventEmitter,
 } from "@angular/core";
 import { FormGroup, FormArray, FormControl, Validators } from "@angular/forms";
 import { Observable, Subject, Subscription } from "rxjs";
@@ -53,6 +55,8 @@ export class DynamicFormQuestionComponent
   @ViewChild("auto") autocomplete!: MatAutocomplete;
 
   @ViewChild(MatAutocompleteTrigger) trigger!: MatAutocompleteTrigger;
+
+  @Output() valueClear: EventEmitter<any> = new EventEmitter();
 
   filteredOptions!: Observable<any>;
 
@@ -307,6 +311,7 @@ export class DynamicFormQuestionComponent
     } else {
       this.form.controls[this.question.key].setValue("");
     }
+    this.valueClear.emit();
   }
 
   @ViewChild("elementsearch") searchElement!: ElementRef;

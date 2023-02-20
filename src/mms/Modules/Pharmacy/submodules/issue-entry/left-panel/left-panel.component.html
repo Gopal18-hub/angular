@@ -36,64 +36,74 @@
       <div class="flex flex-column">
         <div class="flex w-full">
           <maxhealth-question class="w-1/45" [question]="patientform[0]" [form]="patientformGroup"
-            [questions]="patientform[0]" [index]="0"></maxhealth-question>
+            [questions]="patientform[0]" [index]="0" (valueClear)="valueClear()"></maxhealth-question>
           <maxhealth-question class="w-1/2 ml-5" [question]="patientform[1]" [form]="patientformGroup"
-            [questions]="patientform[1]" [index]="1">
+            [questions]="patientform[1]" [index]="1" (valueClear)="valueClear()">
           </maxhealth-question>
         </div>
         <div *ngIf="!isRegPatient || showInfoSection" class="my-1"></div>
         <div class="flex w-full info-section" *ngIf="showInfoSection">
           <div class="flex ml-2 justify-center" *ngFor="let icon of categoryIcons">
-            <div *ngIf="icon['tooltip'] === 'CASH'" class="info-icon-setion justify-center" matTooltip="Cash">
+            <div *ngIf="icon['tooltip'] === 'CASH'  || icon['type'] === 'cash' " class="info-icon-setion justify-center" matTooltip="Cash">
               <mat-label class="info-label">{{cashInfo}}</mat-label>
             </div>
-            <div *ngIf="icon['tooltip'] === 'HOTLIST'" class="info-icon-setion justify-center" matTooltip="Hotlisted">
+            <div *ngIf="icon['tooltip'] === 'HOTLIST'  || icon['type'] === 'hotlist'" class="info-icon-setion justify-center" matTooltip="Hotlisted">
               <mat-label class="info-label">{{hotlistInfo}}</mat-label>
             </div>
             <div *ngIf="icon['tooltip'] === 'Notes'  || icon['type'] === 'note'" class="info-icon-setion justify-center" matTooltip="Note">
               <mat-label class="info-label">{{noteInfo}}</mat-label>
             </div>
-            <div *ngIf="icon['tooltip'] === 'VIP'" class="info-icon-vip-section justify-center" matTooltip="VIP">
+            <div *ngIf="icon['tooltip'] === 'VIP'  || icon['type'] === 'vip'" class="info-icon-vip-section justify-center" matTooltip="VIP">
               <mat-label class="info-label">{{vipInfo}}</mat-label>
             </div>
-            <div *ngIf="icon['tooltip'] === 'HWC'" class="info-icon-hwc-setion justify-center"
+            <div *ngIf="icon['tooltip'] === 'CGHS'  || icon['type'] === 'cghs'" class="info-icon-cghs-setion justify-center" matTooltip="CGHS">
+              <mat-label class="info-label">{{cghsInfo}}</mat-label>
+            </div>
+            <div *ngIf="icon['tooltip'] === 'EWS'  || icon['type'] === 'ews'" class="info-icon-hwc-setion justify-center" matTooltip="CGHS">
+              <mat-label class="info-label">{{ewsInfo}}</mat-label>
+            </div>
+            <div *ngIf="icon['tooltip'] === 'HWC'  || icon['type'] === 'hwc'" class="info-icon-hwc-setion justify-center"
               matTooltip="Handle with care">
               <mat-label class="info-label">{{hwcinfo}}</mat-label>
             </div>
-            <div *ngIf="icon['tooltip'] === 'CGHS'" class="info-icon-cghs-setion justify-center" matTooltip="CGHS">
-              <mat-label class="info-label">{{cghsInfo}}</mat-label>
-            </div>
-            <div *ngIf="icon['tooltip'] === 'EWS'" class="info-icon-hwc-setion justify-center" matTooltip="CGHS">
-              <mat-label class="info-label">{{ewsInfo}}</mat-label>
-            </div>
-            <div *ngIf="icon['tooltip'] === 'PSU'" class="info-icon-hwc-setion justify-center" matTooltip="CGHS">
+            <div *ngIf="icon['tooltip'] === 'PSU'  || icon['type'] === 'psu'" class="info-icon-hwc-setion justify-center" matTooltip="CGHS">
               <mat-label class="info-label">{{psuInfo}}</mat-label>
             </div>
           </div>
         </div>
         <div *ngIf="showInfoSection" class="my-1"></div>
         <div class="flex flex-column w-full" *ngIf="isRegPatient">
-          <div >
-            <mat-label >Patient Name</mat-label>
-            <mat-label class=" float-right color-block">{{
-              patientformGroup?.value?.patientName
-              }}</mat-label>
-          </div>
+          <div class="flex">
+            <div class="flex w-3/10">
+              <mat-label >Patient Name</mat-label>
+            </div>
+            <div class="flex w-7/10 justify-end">
+              <mat-label class=" float-right color-block">{{
+                patientformGroup?.value?.patientName
+                }}</mat-label>
+            </div>
+        </div>
           <div class="my-1"></div>
-          <div >
-            <mat-label>Age/Gender</mat-label>
-            <mat-label class="float-right color-block">{{
-              patientformGroup?.value?.patienAge
-              }}{{patientformGroup?.value?.ageType}}/ {{
-              patientformGroup?.value?.gender
-              }}</mat-label>
-          </div>
+          <div class="flex">
+            <div class="flex w-3/10">
+              <mat-label>Age/Gender</mat-label>
+            </div>
+            <div class="flex w-7/10 justify-end">
+              <mat-label class="float-right color-block">{{
+                patientformGroup?.value?.patienAge
+                }}/ {{
+                patientformGroup?.value?.gender
+                }}</mat-label>
+            </div>
+        </div>
           <div class="my-1"></div>
-          <div >
-            <mat-label>Address</mat-label>
-            <mat-label class="float-right color-block">{{
-              patientformGroup?.value?.patienAddress
-              }}</mat-label>
+          <div class="flex">
+              <div class="flex w-3/10">
+                <mat-label >Address</mat-label>
+              </div>
+              <div class="flex w-7/10 justify-end">
+                <mat-label class="float-right color-block">{{patientformGroup?.value?.patienAddress}}</mat-label>
+              </div>
           </div>
           <div class="my-1"></div>
         </div>
