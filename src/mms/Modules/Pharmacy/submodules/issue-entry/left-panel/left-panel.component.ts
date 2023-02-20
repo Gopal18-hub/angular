@@ -516,7 +516,7 @@ export class LeftPanelComponent implements OnInit {
 
   valueClear() {
     // if (this.maxId != this.patientformGroup.value.maxid) {
-    this.patientformGroup.controls["maxid"].setValue("");
+    // this.patientformGroup.controls["maxid"].setValue("");
     this.patientformGroup.controls["mobile"].setValue("");
     this.patientformGroup.controls["patientName"].setValue("");
     this.patientformGroup.controls["patienAge"].setValue("");
@@ -527,6 +527,10 @@ export class LeftPanelComponent implements OnInit {
     this.showInfoSection = false;
     this.MaxIDExist = false;
     this.maxId = this.patientformGroup.value.maxid;
+    this.mobile = this.patientformGroup.value.mobile;
+    this.patientformGroup.controls["maxid"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
     // }
   }
   onMaxIDChange() {
