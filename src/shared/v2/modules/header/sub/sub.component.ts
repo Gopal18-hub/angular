@@ -18,7 +18,7 @@ import {
   ActivatedRoute,
 } from "@angular/router";
 import { SearchService } from "../../../services/search.service";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, DatePipe } from "@angular/common";
 import { map, filter } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { AuthService } from "@shared/v2/services/auth.service";
@@ -31,6 +31,8 @@ import { Subject, takeUntil } from "rxjs";
 import { ChangepaswordComponent } from "../changepasword/changepasword.component";
 import { SelectimeiComponent } from "../selectIMEI/selectimei.component";
 
+import { HttpService } from "@shared/v2/services/http.service";
+import { PharmacyApiConstants } from "../../../../../mms/core/constants/pharmacyApiConstant";
 @Component({
   selector: "maxhealth-sub-header",
   templateUrl: "./sub.component.html",
@@ -77,7 +79,9 @@ export class SubComponent implements OnInit, OnChanges {
     private searchService: SearchService,
     private cookie: CookieService,
     private dbService: DbService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private http: HttpService,
+    public datepipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +98,8 @@ export class SubComponent implements OnInit, OnChanges {
     this.usrname = this.cookie.get("Name");
     this.user = this.cookie.get("UserName");
     this.setIndex(0, "/pharmacy/issue-entry");
+
+    this.updateOrdersCount();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -320,6 +326,62 @@ export class SubComponent implements OnInit, OnChanges {
       this.cookie.delete("accessToken", "/");
       this.cookie.set("accessToken", accessToken, { path: "/" });
     }
+  }
+
+  updateOrdersCount() {
+    this.http
+      .get(
+        PharmacyApiConstants.eporderorderscounter +
+          "/" +
+          this.datepipe.transform(new Date(), "yyyy-MM-dd") +
+          "/" +
+          this.datepipe.transform(new Date(), "yyyy-MM-dd") +
+          "/" +
+          Number(this.cookie.get("HSPLocationId"))
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        if (res && (res.pendingOrderCount > 0 || res.onlineBillCount > 0)) {
+          this.submodules.forEach((ch: any) => {
+            if (
+              res.onlineBillCount > 0 &&
+              ch.title &&
+              ch.title == "Online Orders"
+            ) {
+              ch.isBadge = true;
+              ch.badgeCount = res.onlineBillCount;
+            }
+            if (
+              res.pendingOrderCount > 0 &&
+              ch.title &&
+              ch.title == "EP Orders"
+            ) {
+              ch.isBadge = true;
+              ch.badgeCount = res.pendingOrderCount;
+            }
+          });
+        }
+        this.submodules.forEach((ch: any) => {
+          if (
+            res.onlineBillCount == 0 &&
+            ch.title &&
+            ch.title == "Online Orders"
+          ) {
+            ch.isBadge = false;
+          }
+          if (
+            res.pendingOrderCount == 0 &&
+            ch.title &&
+            ch.title == "EP Orders"
+          ) {
+            ch.isBadge = false;
+          }
+        });
+
+        setTimeout(() => {
+          this.updateOrdersCount();
+        }, 1000 * 60 * 1); // Every 10 mins
+      });
   }
 }
 
