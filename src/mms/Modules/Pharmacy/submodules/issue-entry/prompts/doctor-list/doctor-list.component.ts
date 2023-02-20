@@ -146,8 +146,6 @@ export class DoctorListComponent implements OnInit {
       });
     }) },1000);
     this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(
-      filter(_ => this.doctorformGroup.controls["searchDoctor"].value.length >= 3), 
-      distinctUntilChanged()
     ).subscribe(value => {
     this.doctorNameList= this.doctorList.filter((search:any)=>
         search.name.includes(value)
@@ -190,6 +188,19 @@ export class DoctorListComponent implements OnInit {
         this.doctorList = res;
         this.apiProcessing = false;
         this.doctorNameList=this.doctorList.slice(0,100)
+        setTimeout(() => { 
+          this.doctableRows.selection.changed.subscribe((res: any) => {
+          this.http
+          .get(
+            CommonApiConstants.getdoctordetail(
+             res["added"][0].id
+            )
+          )
+          .subscribe((res: any) => {
+           this.doctorSelected=res
+            this._bottomSheet.dismiss(this.doctorSelected);
+          });
+        }) },1000);
       });
   }
   showExternalDoctor() {
@@ -203,6 +214,19 @@ export class DoctorListComponent implements OnInit {
         this.doctorList = res;
         this.doctorNameList=this.doctorList.slice(0,100)
         this.apiProcessing = false;
+        setTimeout(() => { 
+          this.doctableRows.selection.changed.subscribe((res: any) => {
+          this.http
+          .get(
+            CommonApiConstants.getdoctordetail(
+             res["added"][0].id
+            )
+          )
+          .subscribe((res: any) => {
+           this.doctorSelected=res
+            this._bottomSheet.dismiss(this.doctorSelected);
+          });
+        }) },1000);
       });
   }
   closeDoctorList() {
