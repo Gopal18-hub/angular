@@ -32,11 +32,12 @@
   }
   
   .bottombtns {
-    height: calc(100vh - 20rem);
+    height: calc(100vh - 21rem);
   }
 }
 maxhealth-question ::ng-deep mat-datepicker-toggle {
   button {
     top: 0.25em;
+    right: 0.25em;
   }
 }

@@ -475,7 +475,7 @@ export namespace MaxModules {
                   defaultPath: "/pharmacy/ep-order",
                   globalSearchKey: "global",
                   allUsersAllow: false,
-                  isBadge: true,
+                  isBadge: false,
                   badgeCount: 0,
                 },
                 {

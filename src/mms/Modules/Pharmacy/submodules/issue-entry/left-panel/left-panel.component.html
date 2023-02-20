@@ -74,10 +74,10 @@
         <div *ngIf="showInfoSection" class="my-1"></div>
         <div class="flex flex-column w-full" *ngIf="isRegPatient">
           <div class="flex">
-            <div class="flex w-1/3">
+            <div class="flex w-3/10">
               <mat-label >Patient Name</mat-label>
             </div>
-            <div class="flex w-2/3 justify-end">
+            <div class="flex w-7/10 justify-end">
               <mat-label class=" float-right color-block">{{
                 patientformGroup?.value?.patientName
                 }}</mat-label>
@@ -85,10 +85,10 @@
         </div>
           <div class="my-1"></div>
           <div class="flex">
-            <div class="flex w-1/3">
+            <div class="flex w-3/10">
               <mat-label>Age/Gender</mat-label>
             </div>
-            <div class="flex w-2/3 justify-end">
+            <div class="flex w-7/10 justify-end">
               <mat-label class="float-right color-block">{{
                 patientformGroup?.value?.patienAge
                 }}/ {{
@@ -98,10 +98,10 @@
         </div>
           <div class="my-1"></div>
           <div class="flex">
-              <div class="flex w-1/3">
+              <div class="flex w-3/10">
                 <mat-label >Address</mat-label>
               </div>
-              <div class="flex w-2/3 justify-end">
+              <div class="flex w-7/10 justify-end">
                 <mat-label class="float-right color-block">{{patientformGroup?.value?.patienAddress}}</mat-label>
               </div>
           </div>
