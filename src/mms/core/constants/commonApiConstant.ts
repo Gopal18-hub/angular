@@ -21,21 +21,25 @@ export namespace CommonApiConstants {
       "api/outpatientbilling/savenewtempreferraldoctor"
     );
   };
-  export const getdoctor = (Type: number, ReferralDoctorName?: string) => {
+  export const getdoctor = (Type: number) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getdoctorinfo/" +
-      Type +
-      "?DoctorName=" +
-      ReferralDoctorName
+      Type 
+     
     );
   };
   //spcialisation for doctors
   export const getspecialization = `${environment.PatientApiUrl}api/patient/getspecialization`;
-  export const getsimilarsoundreferraldoctor = (
-    speciality: string,
-    DoctorName: string,
-    mobile: string
+  export const getdoctordetail = (
+    
+    DoctorID:number
   ) =>
-    `${environment.PatientApiUrl}api/patient/getsimilarsoundreferraldoctor/${speciality}?DoctorName=${DoctorName}&mobile=${mobile}`;
+    `${environment.PatientApiUrl}api/patient/getsimilarsoundreferraldoctor/${DoctorID}`;
+    export const getsimilarsoundreferraldoctor = (
+      speciality: string,
+      DoctorName: string,
+      mobile: string
+    ) =>
+      `${environment.PatientApiUrl}api/patient/getsimilarsoundreferraldoctor_pharm/${speciality}?DoctorName=${DoctorName}&mobile=${mobile}`;
 }

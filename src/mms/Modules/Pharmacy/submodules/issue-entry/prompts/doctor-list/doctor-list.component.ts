@@ -27,6 +27,7 @@ import { CommonApiConstants } from "../../../../../../core/constants/commonApiCo
 import { BillingApiConstants } from "../../../../../../core/constants/billingApiConstant";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
+import { couldStartTrivia } from "typescript";
 @Component({
   selector: "doctor-list",
   templateUrl: "./doctor-list.component.html",
@@ -39,13 +40,13 @@ export class DoctorListComponent implements OnInit {
     selectBox: false,
     clickedRows: true,
     clickSelection: "single",
-    displayedColumns: ["name", "specialisation"],
+    displayedColumns: ["name", "speciality"],
     columnsInfo: {
       name: {
         title: "Doctor Name",
         type: "string",
       },
-      specialisation: {
+      speciality: {
         title: "Specialisation",
         type: "string",
       },
@@ -113,6 +114,7 @@ export class DoctorListComponent implements OnInit {
   special=[]
   acceptToCreateNew: boolean = false;
   alreadyDoctorsExist: any = [];
+  doctorNameList:any=[];
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -123,39 +125,39 @@ export class DoctorListComponent implements OnInit {
     public snackbarService: SnackBarService
   ) {}
 
-  ngOnInit(): void {
+   ngOnInit() {
     this.doctortype = 1;
     this.formInit();
-    this.showInternalDoctor();
+     this.showInternalDoctor();
+  
   }
   ngAfterViewInit() {
     setTimeout(() => { 
       this.doctableRows.selection.changed.subscribe((res: any) => {
         console.log('dlist',res)
-     this.doctorSelected.push(res["added"][0])
-      this._bottomSheet.dismiss(this.doctorSelected);
+    
+      this.http
+      .get(
+        CommonApiConstants.getdoctordetail(
+         res["added"][0].id
+        )
+      )
+      .subscribe((res: any) => {
+        console.log('doctadd',res)
+       this.doctorSelected=res
+        this._bottomSheet.dismiss(this.doctorSelected);
+      });
     }) },1000);
-    this.doctorformGroup.controls["searchDoctor"].valueChanges
-    .pipe(
-      filter((res: any) => {
-        return (res !== null && res.length >= 3) || res == "";
-      }),
-      debounceTime(1000),
-      distinctUntilChanged(),
-      switchMap((val) => {
-        return this.http
-          .get(CommonApiConstants.getdoctor(this.doctortype, val))
-          .pipe(finalize(() => {}));
-      })
-    )
-    .subscribe(
-      (data:any) => {
-        this.doctorList = data;
-      },
-      (error:any) => {
-        console.error("There was an error!", error);
-      }
-    );
+    this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(
+      filter(_ => this.doctorformGroup.controls["searchDoctor"].value.length >= 3), 
+      distinctUntilChanged()
+    ).subscribe(value => {
+    this.doctorNameList= this.doctorList.filter((search:any)=>
+        search.name.includes(value)
+      )
+    
+    });
+  
   }
   formInit() {
     let doctorformResult: any = this.formService.createForm(
@@ -185,16 +187,12 @@ export class DoctorListComponent implements OnInit {
     this.apiProcessing = true;
    
     this.http
-      .get(CommonApiConstants.getdoctor(1, ""))
+      .get(CommonApiConstants.getdoctor(1))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        setTimeout(() => { 
-          this.doctableRows.selection.changed.subscribe((res: any) => {
-         this.doctorSelected.push(res["added"][0])
-          this._bottomSheet.dismiss(this.doctorSelected);
-        }) },1000);
+        this.doctorNameList=this.doctorList
       });
   }
   showExternalDoctor() {
@@ -202,16 +200,12 @@ export class DoctorListComponent implements OnInit {
     this.apiProcessing = true;
    
     this.http
-      .get(CommonApiConstants.getdoctor(2, ""))
+      .get(CommonApiConstants.getdoctor(2))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
+        this.doctorNameList=this.doctorList
         this.apiProcessing = false;
-        setTimeout(() => { 
-          this.doctableRows.selection.changed.subscribe((res: any) => {
-         this.doctorSelected.push(res["added"][0])
-          this._bottomSheet.dismiss(this.doctorSelected);
-        }) },1000);
       });
   }
   closeDoctorList() {
