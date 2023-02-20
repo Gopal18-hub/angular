@@ -911,7 +911,7 @@ export class LeftPanelComponent implements OnInit {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
 
         let address;
-        if (response[0].address == "" || response[0].address == null) {
+        if (response[0].address == "" || response[0].address == null || response[0].address == " ") {
           address = "-";
         } else {
           address = response[0].address;
