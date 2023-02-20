@@ -47,7 +47,7 @@ export class LeftPanelComponent implements OnInit {
         type: "string",
         required: true,
         defaultValue: this.cookie.get("LocationIACode") + ".", //MaxHealthStorage.getCookie("LocationIACode") + ".",
-        pattern: "[A-Za-z]+.[0-9]+",
+        pattern: "[A-Za-z]+\\.[0-9]+",
       },
       mobile: {
         //1
