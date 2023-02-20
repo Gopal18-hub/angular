@@ -26,6 +26,7 @@ import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { DoctorListComponent } from "../prompts/doctor-list/doctor-list.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SearchService } from "@shared/v2/services/search.service";
+import { PatientDuePopupComponent } from "../prompts/patientdue-popup/patientdue-popupcomponent";
 
 @Component({
   selector: "issue-entry-left-panel",
@@ -46,6 +47,7 @@ export class LeftPanelComponent implements OnInit {
         type: "string",
         required: true,
         defaultValue: this.cookie.get("LocationIACode") + ".", //MaxHealthStorage.getCookie("LocationIACode") + ".",
+        // pattern: "^[a-zA-Z '']*.?[a-zA-Z '']*$",
       },
       mobile: {
         //1
@@ -551,9 +553,9 @@ export class LeftPanelComponent implements OnInit {
     let regNumber = Number(maxId.split(".")[1]);
 
     let iaCode = this.cookie.get("LocationIACode") + ".";
-
+    // maxId.search(iaCode) != -1 &&
     //HANDLING IF MAX ID IS NOT PRESENT
-    if (maxId.search(iaCode) != -1 && regNumber != 0) {
+    if (regNumber != 0) {
       let iacode = this.patientformGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
@@ -643,6 +645,12 @@ export class LeftPanelComponent implements OnInit {
               } else {
                 this.showInfoSection = false;
               }
+
+              // if (this.patientDetails.dueAmount == 0) {
+              //   this.showDueAmountPopup();
+              //   this.issueEntryService.dueAmount =
+              //     this.patientDetails.dueAmount;
+              // }
               this.MaxIDExist = true;
               //RESOPONSE DATA BINDING WITH CONTROLS
               this.setValuesToOPRegForm(this.patientDetails);
@@ -826,10 +834,8 @@ export class LeftPanelComponent implements OnInit {
               this.similarContactPatientList[0].maxid != ""
             ) {
               this.isRegPatient = true;
-              let ageData =
-                this.similarContactPatientList[0].age +
-                " " + + "/"
-                this.similarContactPatientList[0].ageType;
+              let ageData = this.similarContactPatientList[0].age + " " + +"/";
+              this.similarContactPatientList[0].ageType;
 
               this.patientformGroup.controls["maxid"].setValue(
                 this.similarContactPatientList[0].maxid
@@ -877,7 +883,10 @@ export class LeftPanelComponent implements OnInit {
         if (result) {
           this.isRegPatient = true;
           let ageData =
-            result.data["added"][0].age + " " + "/" + result.data["added"][0].ageType;
+            result.data["added"][0].age +
+            " " +
+            "/" +
+            result.data["added"][0].ageType;
           this.patientformGroup.controls["maxid"].setValue(
             result.data["added"][0].maxid
           );
@@ -901,6 +910,17 @@ export class LeftPanelComponent implements OnInit {
         this.similarContactPatientList = [];
       });
   }
+
+  showDueAmountPopup() {
+    this._bottomSheet
+      .open(PatientDuePopupComponent, {
+        panelClass: "custom-width",
+      })
+      .afterDismissed()
+      .subscribe((response) => {
+        console.log("due-response", response);
+      });
+  }
   showDoctorDetails() {
     this._bottomSheet
       .open(DoctorListComponent, {
@@ -911,14 +931,14 @@ export class LeftPanelComponent implements OnInit {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
 
         let address;
-        if (response[0].address.trim() == "") {
-          address = "-";
+        if (response[0].address.trim() == "" || response[0].address == null) {
+          address = "NA";
         } else {
           address = response[0].address;
         }
         let mobileNo;
         if (response[0].mobile == "" || response[0].mobile == null) {
-          mobileNo = "-";
+          mobileNo = "NA";
         } else {
           mobileNo = response[0].mobile;
         }
