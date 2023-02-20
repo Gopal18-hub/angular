@@ -72,6 +72,7 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
       this.searchForm[1].pattern = "[A-Za-z]+.[0-9]+";
       this.searchForm[1].onlyKeyPressAlpha = false;
       this.searchForm[1].capitalizeText = false;
+      this.searchForm[1].label = "Max ID";
     }
   }
 
@@ -101,6 +102,8 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
         this.searchForm[1].pattern = "[A-Za-z]+.[0-9]+";
         this.searchForm[1].onlyKeyPressAlpha = false;
         this.searchForm[1].capitalizeText = false;
+        this.searchForm[1].customErrorMessage = "[A-Za-z]+.[0-9]+";
+        this.searchForm[1].label = "Max ID";
         this.searchFormGroup.controls["value"].setValue(
           this.cookie.get("LocationIACode") + "."
         );
@@ -109,18 +112,21 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
         this.searchForm[1].pattern = "^[1-9]{1}[0-9]{9}";
         this.searchForm[1].onlyKeyPressAlpha = false;
         this.searchForm[1].capitalizeText = false;
+        this.searchForm[1].label = "Mobile";
         this.searchFormGroup.controls["value"].setValue("");
       } else if (value == "name") {
         this.searchForm[1].type = "string";
         this.searchForm[1].pattern = "^[a-zA-Z '']*.?[a-zA-Z '']*$";
         this.searchForm[1].onlyKeyPressAlpha = true;
         this.searchForm[1].capitalizeText = true;
+        this.searchForm[1].label = "Name";
         this.searchFormGroup.controls["value"].setValue("");
       } else if (value == "doctor") {
         this.searchForm[1].type = "string";
         this.searchForm[1].pattern = "^[a-zA-Z '']*.?[a-zA-Z '']*$";
         this.searchForm[1].onlyKeyPressAlpha = true;
         this.searchForm[1].capitalizeText = true;
+        this.searchForm[1].label = "Doctor";
         this.searchFormGroup.controls["value"].setValue("");
       } else {
         this.searchFormGroup.controls["value"].setValue("");
