@@ -1,0 +1,17 @@
+.max-op-pharmacy-OnlineOrder-drug-line-item {
+  .mx-table {
+    height: calc(100vh - 13.8rem);
+  }
+
+  ::ng-deep {
+    th.mat-header-cell:first-of-type,
+    td.mat-cell:first-of-type,
+    td.mat-footer-cell:first-of-type {
+      padding-left: 6px;
+    }
+
+    .max-table-wrapper table .mat-header-row .mat-column-select {
+      width: 30px !important;
+    }
+  }
+}

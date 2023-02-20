@@ -4,6 +4,7 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { PharmacyComponent } from "./pharmacy.component";
 import { EPOrderComponent } from "./submodules/ep-order/ep-order.component";
 import { IssueEntryComponent } from "./submodules/issue-entry/issue-entry.component";
+import { OnlineOrderComponent } from "./submodules/online-order/online-order.component";
 const routes: Routes = [
   {
     path: "pharmacy",
@@ -22,6 +23,10 @@ const routes: Routes = [
       {
         path: "ep-order",
         component: EPOrderComponent,
+      },
+      {
+        path: "online-order",
+        component: OnlineOrderComponent,
       },
     ],
   },
