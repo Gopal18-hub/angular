@@ -551,9 +551,9 @@ export class LeftPanelComponent implements OnInit {
     let regNumber = Number(maxId.split(".")[1]);
 
     let iaCode = this.cookie.get("LocationIACode") + ".";
-
+    // maxId.search(iaCode) != -1 &&
     //HANDLING IF MAX ID IS NOT PRESENT
-    if (maxId.search(iaCode) != -1 && regNumber != 0) {
+    if (regNumber != 0) {
       let iacode = this.patientformGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
@@ -826,10 +826,8 @@ export class LeftPanelComponent implements OnInit {
               this.similarContactPatientList[0].maxid != ""
             ) {
               this.isRegPatient = true;
-              let ageData =
-                this.similarContactPatientList[0].age +
-                " " +
-                this.similarContactPatientList[0].ageType;
+              let ageData = this.similarContactPatientList[0].age + " " + +"/";
+              this.similarContactPatientList[0].ageType;
 
               this.patientformGroup.controls["maxid"].setValue(
                 this.similarContactPatientList[0].maxid
@@ -877,7 +875,10 @@ export class LeftPanelComponent implements OnInit {
         if (result) {
           this.isRegPatient = true;
           let ageData =
-            result.data["added"][0].age + " " + result.data["added"][0].ageType;
+            result.data["added"][0].age +
+            " " +
+            "/" +
+            result.data["added"][0].ageType;
           this.patientformGroup.controls["maxid"].setValue(
             result.data["added"][0].maxid
           );
@@ -911,7 +912,7 @@ export class LeftPanelComponent implements OnInit {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
 
         let address;
-        if (response[0].address == "" || response[0].address == null || response[0].address == " ") {
+        if (response[0].address.trim() == "" || response[0].address == null) {
           address = "-";
         } else {
           address = response[0].address;
@@ -943,7 +944,7 @@ export class SimilarPatientDialog {
   ngOnInit(): void {
     setTimeout(() => {
       this.similardata = this.data.searchResults;
-    }, 350);
+    }, 100);
   }
 
   ngAfterViewInit() {
