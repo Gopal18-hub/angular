@@ -27,6 +27,7 @@ import { CommonApiConstants } from "../../../../../../core/constants/commonApiCo
 import { BillingApiConstants } from "../../../../../../core/constants/billingApiConstant";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
+import { couldStartTrivia } from "typescript";
 @Component({
   selector: "doctor-list",
   templateUrl: "./doctor-list.component.html",
@@ -113,6 +114,7 @@ export class DoctorListComponent implements OnInit {
   special=[]
   acceptToCreateNew: boolean = false;
   alreadyDoctorsExist: any = [];
+  doctorNameList:any=[];
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -126,7 +128,6 @@ export class DoctorListComponent implements OnInit {
    ngOnInit() {
     this.doctortype = 1;
     this.formInit();
-     //this.showExternalDoctor();
      this.showInternalDoctor();
   
   }
@@ -143,7 +144,6 @@ export class DoctorListComponent implements OnInit {
       )
       .subscribe((res: any) => {
         console.log('doctadd',res)
-       // this.doctorSelected.push(res)
        this.doctorSelected=res
         this._bottomSheet.dismiss(this.doctorSelected);
       });
@@ -152,65 +152,12 @@ export class DoctorListComponent implements OnInit {
       filter(_ => this.doctorformGroup.controls["searchDoctor"].value.length >= 3), 
       distinctUntilChanged()
     ).subscribe(value => {
-      console.log('dl',this.doctorList)
-      let a:any=[];
-      let doc
-      this.doctorList.forEach((val:any)=>{
-       a.push( val.name)
-       doc= a.find(
-        (x: any) =>
-
-          x.name == value 
-        
-      );
-      })
-      
-      console.log('search va',value)
-      console.log('sed', doc)
-      this.doctorList = doc;
+    this.doctorNameList= this.doctorList.filter((search:any)=>
+        search.name.includes(value)
+      )
+    
     });
   
-    // this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(takeUntil(this._destroying$))
-    // .subscribe((value) => {
-    //   let doc; 
-    //   if(value!=null && value.length >=3 || value==""){
-    //  doc= this.doctorList.filter(
-    //     (x: any) =>
-
-    //       x.name === value 
-        
-    //   );
-    //   console.log('dl',this.doctorList)
-    //   console.log('search doc',doc)
-    //   this.doctorList = doc;
-    //  }
-    // });
-   
-    // this.doctorformGroup.controls["searchDoctor"].valueChanges
-    // .pipe(
-    //   filter((res: any) => {
-    //     return (res !== null && res.length >= 3) || res == "";
-    //   }),
-    //   debounceTime(1000),
-    //   distinctUntilChanged(),
-    //   switchMap((val) => {
-    //     let doc
-    //     doc= this.doctorList.filter(
-    //       (x: any) =>
-  
-    //         x.name === val 
-          
-    //     );
-    //   })
-    // )
-    // .subscribe(
-    //   (data:any) => {
-    //     this.doctorList = data;
-    //   },
-    //   (error:any) => {
-    //     console.error("There was an error!", error);
-    //   }
-    // );
   }
   formInit() {
     let doctorformResult: any = this.formService.createForm(
@@ -245,11 +192,7 @@ export class DoctorListComponent implements OnInit {
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        // setTimeout(() => { 
-        //   this.doctableRows.selection.changed.subscribe((res: any) => {
-        //  this.doctorSelected.push(res["added"][0])
-        //   this._bottomSheet.dismiss(this.doctorSelected);
-        // }) },1000);
+        this.doctorNameList=this.doctorList
       });
   }
   showExternalDoctor() {
@@ -261,12 +204,8 @@ export class DoctorListComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
+        this.doctorNameList=this.doctorList
         this.apiProcessing = false;
-        // setTimeout(() => { 
-        //   this.doctableRows.selection.changed.subscribe((res: any) => {
-        //  this.doctorSelected.push(res["added"][0])
-        //   this._bottomSheet.dismiss(this.doctorSelected);
-        // }) },1000);
       });
   }
   closeDoctorList() {
@@ -279,9 +218,7 @@ export class DoctorListComponent implements OnInit {
     this.addDoctor=false
   }
   createDoctor($event: any) {
-    alert('working')
     $event.stopPropagation();
-   // this.saveDoctor();
     if (this.acceptToCreateNew) {
       this.saveDoctor();
     } else {
