@@ -35,6 +35,7 @@ import { IssueEntryComponent } from "./submodules/issue-entry/issue-entry.compon
 import { RightPanelComponent } from "./submodules/issue-entry/right-panel/right-panel.component";
 import { LeftPanelComponent } from "./submodules/issue-entry/left-panel/left-panel.component";
 import { EwspatientPopupComponent } from "./submodules/issue-entry/prompts/ewspatient-popup/ewspatient-popup.component";
+import { PatientDuePopupComponent } from "./submodules/issue-entry/prompts/patientdue-popup/patientdue-popupcomponent";
 import { CustomSnackBarComponent } from "@shared/v2/ui/snack-bar/custom-snack-bar/custom-snack-bar.component";
 import { SimilarPatientDialog } from "./submodules/issue-entry/left-panel/left-panel.component";
 // import { SsdtComponent } from "./submodules/ssrs-preview/ssdt/ssdt.component";
@@ -44,6 +45,10 @@ import { EPOrderComponent } from "./submodules/ep-order/ep-order.component";
 import { OpPharmacyEPOrderListComponent } from "./submodules/ep-order/list/list.component";
 import { OpPharmacyEPOrderSearchFormComponent } from "./submodules/ep-order/search-form/search-form.component";
 import { OpPharmacyEPOrderDrugLineItemComponent } from "./submodules/ep-order/list/drug-line-item/drug-line-item.component";
+// import { SsrsPreviewComponent } from "./submodules/ssrs-preview/ssrs-preview.component";
+
+// import { WebSocketService } from "../../core/services/web-socket.service";
+// import { NotificationService } from "../../core/services/notification.service";
 
 @NgModule({
   declarations: [
@@ -54,6 +59,8 @@ import { OpPharmacyEPOrderDrugLineItemComponent } from "./submodules/ep-order/li
     EwspatientPopupComponent,
     CustomSnackBarComponent,
     SimilarPatientDialog,
+    PatientDuePopupComponent,
+    // SsrsPreviewComponent,
     // SsdtComponent,
     DoctorListComponent,
 
@@ -96,6 +103,8 @@ import { OpPharmacyEPOrderDrugLineItemComponent } from "./submodules/ep-order/li
     SearchService,
     CookieService,
     AuthGuardService,
+    // NotificationService,
+    // WebSocketService,
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: { ...new MatDialogConfig(), autoFocus: false },

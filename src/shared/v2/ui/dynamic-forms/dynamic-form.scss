@@ -122,9 +122,15 @@ mat-label {
       right: -3px;
       display: none !important;
     }
-    &:hover, &.mat-focused {
+    &:hover {
       button.clear,span.clear {
         display: inline-flex !important;
+        // top: -5px;
+      }
+    }
+    &.mat-focused {
+      button.clear,span.clear {
+        display: none !important;
         // top: -5px;
       }
     }
