@@ -47,7 +47,7 @@
           </div>
           <div
           *ngIf="!apiProcessing">
-                <maxhealth-table #doctortable [config]="config" [data]="doctorList"></maxhealth-table>
+                <maxhealth-table #doctortable [config]="config" [data]="doctorNameList"></maxhealth-table>
             </div>
             <div class="add_doctor" *ngIf="doctortype==2">
                 <button mat-flat-button color="primary" class="add_doctor_button" (click)="addNewDoctor()">Add New External Doctor</button>
