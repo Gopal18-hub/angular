@@ -549,8 +549,11 @@ export class LeftPanelComponent implements OnInit {
 
     //let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
     let regNumber = Number(maxId.split(".")[1]);
+
+    let iaCode = this.cookie.get("LocationIACode") + ".";
+
     //HANDLING IF MAX ID IS NOT PRESENT
-    if (regNumber != 0) {
+    if (maxId.search(iaCode) != -1 && regNumber != 0) {
       let iacode = this.patientformGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
@@ -676,10 +679,10 @@ export class LeftPanelComponent implements OnInit {
     } else {
       this.apiProcessing = false;
       this.patientform[1].readonly = false;
-      // this.patientformGroup.controls["maxid"].setErrors({
-      //   incorrect: true,
-      // });
-      // this.patientform[0].customErrorMessage = "Invalid Max ID";
+      this.patientformGroup.controls["maxid"].setErrors({
+        incorrect: true,
+      });
+      this.patientform[0].customErrorMessage = "Invalid Max ID";
       this.flushAllObjects();
     }
   }
