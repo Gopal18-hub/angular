@@ -61,6 +61,7 @@ export class PatientDetails {
   billAmount: number;
   billedBy: number;
   patientType: number;
+  dueAmount: number;
   educationId: number;
   tokenNo: string;
   reasonForCancellation: string;
@@ -206,6 +207,7 @@ export class PatientDetails {
     billAmount: number,
     billedBy: number,
     patientType: number,
+    dueAmount: number,
     educationId: number,
     tokenNo: string,
     reasonForCancellation: string,
@@ -351,6 +353,7 @@ export class PatientDetails {
     this.billAmount = billAmount;
     this.billedBy = billedBy;
     this.patientType = patientType;
+    this.dueAmount = dueAmount;
     this.educationId = educationId;
     this.tokenNo = tokenNo;
     this.reasonForCancellation = reasonForCancellation;

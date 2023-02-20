@@ -86,10 +86,10 @@ export class EPOrderService {
 
   getEPOrderSearchData(data: string) {
     if (this.preOrderID != this.lastOrderID) {
-      if(this.preOrderID != 1){
+      if (this.lastOrderID != 0) {
         this.preOrderID = this.lastOrderID;
       }
-      
+
       if (this.pageIndex === 0) {
         this.apiProcessing = true;
       }

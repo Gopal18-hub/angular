@@ -14,7 +14,7 @@ export class IssueEntryService {
   doctorDetailsInfo: any = [];
   public bplCardNo: string = "";
   public addressonCard: string = "";
-
+  public dueAmount: number = 0;
   public lastBillNo: string = "";
   public lastBillDate: string = "";
   public lastBillStation: string = "";
