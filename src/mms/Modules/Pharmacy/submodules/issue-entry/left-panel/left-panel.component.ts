@@ -510,6 +510,7 @@ export class LeftPanelComponent implements OnInit {
         if (event.key === "Enter") {
           // Cancel the default action, if needed
           event.preventDefault();
+          this.patientformGroup.controls["mobile"].markAsTouched();
           this.onEnterPhoneModify();
         }
       }
