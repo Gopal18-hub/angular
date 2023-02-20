@@ -69,10 +69,10 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
       this.searchFormGroup.controls["value"].setValue(
         this.cookie.get("LocationIACode") + "."
       );
-      this.searchForm[1].pattern = "[A-Za-z]+.[0-9]+";
+      this.searchForm[1].pattern = "";
       this.searchForm[1].onlyKeyPressAlpha = false;
       this.searchForm[1].capitalizeText = false;
-      this.searchForm[1].label = "Max ID";
+      this.searchForm[1].label = "";
     }
   }
 
@@ -99,11 +99,10 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
 
       if (value == "maxid") {
         this.searchForm[1].type = "string";
-        this.searchForm[1].pattern = "[A-Za-z]+.[0-9]+";
+        this.searchForm[1].pattern = "";
         this.searchForm[1].onlyKeyPressAlpha = false;
         this.searchForm[1].capitalizeText = false;
-        this.searchForm[1].customErrorMessage = "[A-Za-z]+.[0-9]+";
-        this.searchForm[1].label = "Max ID";
+        this.searchForm[1].label = "";
         this.searchFormGroup.controls["value"].setValue(
           this.cookie.get("LocationIACode") + "."
         );
