@@ -828,7 +828,7 @@ export class LeftPanelComponent implements OnInit {
               this.isRegPatient = true;
               let ageData =
                 this.similarContactPatientList[0].age +
-                " " +
+                " " + + "/"
                 this.similarContactPatientList[0].ageType;
 
               this.patientformGroup.controls["maxid"].setValue(
@@ -877,7 +877,7 @@ export class LeftPanelComponent implements OnInit {
         if (result) {
           this.isRegPatient = true;
           let ageData =
-            result.data["added"][0].age + " " + result.data["added"][0].ageType;
+            result.data["added"][0].age + " " + "/" + result.data["added"][0].ageType;
           this.patientformGroup.controls["maxid"].setValue(
             result.data["added"][0].maxid
           );
@@ -911,7 +911,7 @@ export class LeftPanelComponent implements OnInit {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
 
         let address;
-        if (response[0].address == "" || response[0].address == null || response[0].address == " ") {
+        if (response[0].address.trim() == "") {
           address = "-";
         } else {
           address = response[0].address;
@@ -943,7 +943,7 @@ export class SimilarPatientDialog {
   ngOnInit(): void {
     setTimeout(() => {
       this.similardata = this.data.searchResults;
-    }, 350);
+    }, 100);
   }
 
   ngAfterViewInit() {
