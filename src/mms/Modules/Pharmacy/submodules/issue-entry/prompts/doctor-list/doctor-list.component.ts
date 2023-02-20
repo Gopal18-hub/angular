@@ -60,7 +60,7 @@ export class DoctorListComponent implements OnInit {
       searchDoctor: {
         title: "",
         type: "search",
-        placeholder: "Search Docotor",
+        placeholder: "Search Doctor",
       },
     },
   };
@@ -128,14 +128,12 @@ export class DoctorListComponent implements OnInit {
    ngOnInit() {
     this.doctortype = 1;
     this.formInit();
-     this.showInternalDoctor();
+    this.showInternalDoctor();
   
   }
   ngAfterViewInit() {
     setTimeout(() => { 
       this.doctableRows.selection.changed.subscribe((res: any) => {
-        console.log('dlist',res)
-    
       this.http
       .get(
         CommonApiConstants.getdoctordetail(
@@ -143,7 +141,6 @@ export class DoctorListComponent implements OnInit {
         )
       )
       .subscribe((res: any) => {
-        console.log('doctadd',res)
        this.doctorSelected=res
         this._bottomSheet.dismiss(this.doctorSelected);
       });
@@ -192,7 +189,7 @@ export class DoctorListComponent implements OnInit {
       .subscribe((res: any) => {
         this.doctorList = res;
         this.apiProcessing = false;
-        this.doctorNameList=this.doctorList
+        this.doctorNameList=this.doctorList.slice(0,100)
       });
   }
   showExternalDoctor() {
@@ -204,7 +201,7 @@ export class DoctorListComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.doctorList = res;
-        this.doctorNameList=this.doctorList
+        this.doctorNameList=this.doctorList.slice(0,100)
         this.apiProcessing = false;
       });
   }
@@ -269,5 +266,14 @@ export class DoctorListComponent implements OnInit {
   cancelCreateDoctor($event: any) {
     $event.stopPropagation();
     this.addDoctor = false;
+  }
+  ontableScrolling($event:any){
+    const doctorNameLength=this.doctorNameList.length
+    for(var i=doctorNameLength;i<(doctorNameLength+100);i++){
+      if(this.doctorList[i]){
+      this.doctorNameList.push(this.doctorList[i])
+      }
+    }
+    this.doctorNameList=[...this.doctorNameList]
   }
 }
