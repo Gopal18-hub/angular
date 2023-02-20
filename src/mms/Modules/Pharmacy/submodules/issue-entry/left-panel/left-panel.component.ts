@@ -551,9 +551,9 @@ export class LeftPanelComponent implements OnInit {
     let regNumber = Number(maxId.split(".")[1]);
 
     let iaCode = this.cookie.get("LocationIACode") + ".";
-
+    // maxId.search(iaCode) != -1 &&
     //HANDLING IF MAX ID IS NOT PRESENT
-    if (maxId.search(iaCode) != -1 && regNumber != 0) {
+    if (regNumber != 0) {
       let iacode = this.patientformGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
@@ -911,7 +911,11 @@ export class LeftPanelComponent implements OnInit {
         this.patientformGroup.controls["doctorName"].setValue(response[0].name);
 
         let address;
-        if (response[0].address == "" || response[0].address == null || response[0].address == " ") {
+        if (
+          response[0].address == "" ||
+          response[0].address == null ||
+          response[0].address == " "
+        ) {
           address = "-";
         } else {
           address = response[0].address;
