@@ -477,8 +477,9 @@ export class LeftPanelComponent implements OnInit {
         // If the user presses the "Enter" key on the keyboard
         if (event.key === "Enter") {
           // Cancel the default action, if needed
-          event.preventDefault();
+          // event.preventDefault();
           this.maxIDSearch = true;
+          this.patientformGroup.controls["maxid"].markAsTouched();
           if (this.maxId != this.patientformGroup.value.maxid)
             this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
         }
@@ -568,7 +569,7 @@ export class LeftPanelComponent implements OnInit {
     //let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
     let regNumber = Number(maxId.split(".")[1]);
 
-    let iaCode = this.cookie.get("LocationIACode") + ".";
+    // let iaCode = maxId.split(".")[0].trim();
     // maxId.search(iaCode) != -1 &&
     //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
