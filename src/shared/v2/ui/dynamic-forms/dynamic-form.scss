@@ -22,6 +22,9 @@ mat-label {
   .mat-form-field-infix {
     padding-bottom: 1.24375em;
   }
+  ::ng-deep .mat-form-field-suffix{
+    top: -0.95em !important;
+  }
 }
 ::ng-deep mat-label.mat-form-field-required-marker {
   &:empty {
@@ -151,6 +154,20 @@ mat-label {
     &:hover, &.mat-focused {
       button.clear,span.clear {
         padding-top: 0.5em;
+      }
+    }
+  }
+
+  mat-form-field.mat-form-field-type-mat-select {
+    ::ng-deep {
+      .mat-form-field-infix {
+        padding: 0.3rem 0 0.3rem 0 !important;
+      }
+      .mat-form-field-suffix{
+        top: 0;
+      }
+      .mat-select-arrow-wrapper {
+        height: 8px;
       }
     }
   }
