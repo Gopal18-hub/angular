@@ -26,6 +26,7 @@ import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { DoctorListComponent } from "../prompts/doctor-list/doctor-list.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SearchService } from "@shared/v2/services/search.service";
+import { PatientDuePopupComponent } from "../prompts/patientdue-popup/patientdue-popupcomponent";
 
 @Component({
   selector: "issue-entry-left-panel",
@@ -46,6 +47,7 @@ export class LeftPanelComponent implements OnInit {
         type: "string",
         required: true,
         defaultValue: this.cookie.get("LocationIACode") + ".", //MaxHealthStorage.getCookie("LocationIACode") + ".",
+        // pattern: "^[a-zA-Z '']*.?[a-zA-Z '']*$",
       },
       mobile: {
         //1
@@ -643,6 +645,12 @@ export class LeftPanelComponent implements OnInit {
               } else {
                 this.showInfoSection = false;
               }
+
+              // if (this.patientDetails.dueAmount == 0) {
+              //   this.showDueAmountPopup();
+              //   this.issueEntryService.dueAmount =
+              //     this.patientDetails.dueAmount;
+              // }
               this.MaxIDExist = true;
               //RESOPONSE DATA BINDING WITH CONTROLS
               this.setValuesToOPRegForm(this.patientDetails);
@@ -902,6 +910,17 @@ export class LeftPanelComponent implements OnInit {
         this.similarContactPatientList = [];
       });
   }
+
+  showDueAmountPopup() {
+    this._bottomSheet
+      .open(PatientDuePopupComponent, {
+        panelClass: "custom-width",
+      })
+      .afterDismissed()
+      .subscribe((response) => {
+        console.log("due-response", response);
+      });
+  }
   showDoctorDetails() {
     this._bottomSheet
       .open(DoctorListComponent, {
@@ -913,13 +932,13 @@ export class LeftPanelComponent implements OnInit {
 
         let address;
         if (response[0].address.trim() == "" || response[0].address == null) {
-          address = "-";
+          address = "NA";
         } else {
           address = response[0].address;
         }
         let mobileNo;
         if (response[0].mobile == "" || response[0].mobile == null) {
-          mobileNo = "-";
+          mobileNo = "NA";
         } else {
           mobileNo = response[0].mobile;
         }
