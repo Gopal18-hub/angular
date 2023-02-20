@@ -1,28 +1,30 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/v2/ui/dynamic-forms/service/question-control.service";
-import { EPOrderStaticConstants } from "../../../../../core/constants/ep-order-static-constant";
-import { EPOrderService } from "../../../../../core/services/ep-order.service";
+import { OnlineOrderStaticConstants } from "../../../../../core/constants/online-order-static-constant";
+import { OnlineOrderService } from "../../../../../core/services/online-order.service";
 import { CookieService } from "@shared/v2/services/cookie.service";
 import { Subject } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
 
 @Component({
-  selector: "op-pharmacy-ep-order-search-form",
+  selector: "op-pharmacy-online-order-search-form",
   templateUrl: "./search-form.component.html",
   styleUrls: ["./search-form.component.scss"],
 })
-export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
+export class OpPharmacyOnlineOrderSearchFormComponent
+  implements OnInit, OnDestroy
+{
   private readonly _destroying$ = new Subject<void>();
   searchForm: any;
-  searchFormData = EPOrderStaticConstants.searchForm;
+  searchFormData = OnlineOrderStaticConstants.searchForm;
   searchFormGroup!: FormGroup;
   today: any;
 
   constructor(
     private formService: QuestionControlService,
-    public EPOrderService: EPOrderService,
+    public OnlineOrderService: OnlineOrderService,
     private cookie: CookieService,
     public snackbarService: SnackBarService,
     public datepipe: DatePipe
@@ -38,7 +40,7 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
 
     this.setDefaultValue();
     this.searchFormSubmit();
-    this.EPOrderService.clearAll.subscribe((clearItems: any) => {
+    this.OnlineOrderService.clearAll.subscribe((clearItems: any) => {
       if (clearItems) {
         this.clear();
       }
@@ -69,10 +71,6 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
       this.searchFormGroup.controls["value"].setValue(
         this.cookie.get("LocationIACode") + "."
       );
-      this.searchForm[1].pattern = "[A-Za-z]+.[0-9]+";
-      this.searchForm[1].onlyKeyPressAlpha = false;
-      this.searchForm[1].capitalizeText = false;
-      this.searchForm[1].label = "Max ID";
     }
   }
 
@@ -98,41 +96,12 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
       }
 
       if (value == "maxid") {
-        this.searchForm[1].type = "string";
-        this.searchForm[1].pattern = "[A-Za-z]+.[0-9]+";
-        this.searchForm[1].onlyKeyPressAlpha = false;
-        this.searchForm[1].capitalizeText = false;
-        this.searchForm[1].customErrorMessage = "[A-Za-z]+.[0-9]+";
-        this.searchForm[1].label = "Max ID";
         this.searchFormGroup.controls["value"].setValue(
           this.cookie.get("LocationIACode") + "."
         );
-      } else if (value == "mobile") {
-        this.searchForm[1].type = "tel";
-        this.searchForm[1].pattern = "^[1-9]{1}[0-9]{9}";
-        this.searchForm[1].onlyKeyPressAlpha = false;
-        this.searchForm[1].capitalizeText = false;
-        this.searchForm[1].label = "Mobile";
-        this.searchFormGroup.controls["value"].setValue("");
-      } else if (value == "name") {
-        this.searchForm[1].type = "string";
-        this.searchForm[1].pattern = "^[a-zA-Z '']*.?[a-zA-Z '']*$";
-        this.searchForm[1].onlyKeyPressAlpha = true;
-        this.searchForm[1].capitalizeText = true;
-        this.searchForm[1].label = "Name";
-        this.searchFormGroup.controls["value"].setValue("");
-      } else if (value == "doctor") {
-        this.searchForm[1].type = "string";
-        this.searchForm[1].pattern = "^[a-zA-Z '']*.?[a-zA-Z '']*$";
-        this.searchForm[1].onlyKeyPressAlpha = true;
-        this.searchForm[1].capitalizeText = true;
-        this.searchForm[1].label = "Doctor";
-        this.searchFormGroup.controls["value"].setValue("");
       } else {
         this.searchFormGroup.controls["value"].setValue("");
       }
-      this.searchForm = [...this.searchForm];
-      this.searchFormGroup.controls["value"].markAsTouched();
     });
 
     this.searchFormGroup.controls["orderStatus"].valueChanges.subscribe(
@@ -152,11 +121,12 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
     // var dif_in_time = tdate.getTime() - fdate.getTime();
     // var dif_in_days = dif_in_time / (1000 * 3600 * 24);
     // if (dif_in_days < 30) {
-    this.EPOrderService.pageIndex = 0;
-    this.EPOrderService.lastOrderID = 0;
-    this.EPOrderService.searchFormData = this.searchFormDetailsRequestBody();
-    this.EPOrderService.getEPOrderSearchData(
-      this.EPOrderService.searchFormData
+    this.OnlineOrderService.pageIndex = 0;
+    this.OnlineOrderService.lastOrderID = 0;
+    this.OnlineOrderService.searchFormData =
+      this.searchFormDetailsRequestBody();
+    this.OnlineOrderService.getOnlineOrderSearchData(
+      this.OnlineOrderService.searchFormData
     );
     // } else {
     //   this.snackbarService.showSnackBar(

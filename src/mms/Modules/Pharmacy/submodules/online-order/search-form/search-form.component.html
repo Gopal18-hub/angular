@@ -1,0 +1,92 @@
+<div class="max-op-pharmacy-OnlineOrder-search-form">
+  <div class="flex ml-4 w-9/10">
+    <div class="flex w-full">
+      <div class="w-1/2">
+        <div class="my-1"></div>
+        <h4 class="max-health-primary-color">Search Online Orders</h4>
+      </div>
+    </div>
+  </div>
+  <div class="flex ml-4 w-9/10">
+    <form
+      [formGroup]="searchFormGroup"
+      autocomplete="off"
+      class="w-full align-items-center"
+    >
+      <div class="flex text-scrollbar">
+        <div class="w-full flex">
+          <maxhealth-question
+            class="input-group-selesct"
+            [question]="searchForm[0]"
+            [form]="searchFormGroup"
+            [questions]="searchForm[0]"
+            [index]="0"
+          ></maxhealth-question>
+
+          <maxhealth-question
+            class="input-group-textbox"
+            [question]="searchForm[1]"
+            [form]="searchFormGroup"
+            [questions]="searchForm[1]"
+            [index]="1"
+          ></maxhealth-question>
+        </div>
+      </div>
+      <div class="my-1"></div>
+      <div class="flex text-scrollbar">
+        <maxhealth-question
+          class="w-full"
+          [question]="searchForm[2]"
+          [form]="searchFormGroup"
+          [questions]="searchForm[2]"
+          [index]="9"
+        ></maxhealth-question>
+      </div>
+      <div class="my-1"></div>
+      <div class="flex text-scrollbar">
+        <maxhealth-question
+          class="w-full mt-0"
+          [question]="searchForm[3]"
+          [form]="searchFormGroup"
+          [questions]="searchForm[3]"
+          [index]="3"
+        ></maxhealth-question>
+      </div>
+
+      <div class="my-1"></div>
+      <div class="flex text-scrollbar">
+        <maxhealth-question
+          class="w-full mt-0"
+          [question]="searchForm[4]"
+          [form]="searchFormGroup"
+          [questions]="searchForm[4]"
+          [index]="3"
+        ></maxhealth-question>
+      </div>
+
+      <div class="my-1"></div>
+      <div class="flex text-scrollbar">
+        <div class="w-full flex bottombtns align-items-end bottom-0">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!searchFormGroup.valid"
+            (click)="searchFormSubmit()"
+          >
+            Search
+          </button>
+          <button
+            mat-raised-button
+            color="default"
+            class="ml-2"
+            type="button"
+            (click)="clear()"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
