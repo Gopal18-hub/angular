@@ -149,7 +149,10 @@
       </button>
       <li *ngFor="let module of submodules | slice: leftIndex : rightIndex; let i = index"
       class="mr-2 cursor-pointer menu-item sublist"
-      role="presentation" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a class="special-link" [routerLink]="module.defaultPath">{{ module.title }}</a></li>
+      role="presentation" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <a class="special-link" [routerLink]="module.defaultPath">{{ module.title }}
+        <span *ngIf="module.isBadge" class="subbadge"><mat-icon [matBadge]="module.badgeCount" class="badge badge_large"></mat-icon></span>
+      </a></li>
 
       <button *ngIf="submodules.length > 3" mat-icon-button [disabled]="rightIndex == submodules.length" (click)="goRight(rightIndex)">
         <button class="scroll_button"><mat-icon>keyboard_arrow_right</mat-icon></button>

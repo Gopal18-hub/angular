@@ -186,6 +186,41 @@ export class LeftPanelComponent implements OnInit {
     this.maxId = "";
     this.mobile = "";
     this.formInit();
+
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata: any) => {
+        let searchResult = formdata.data;
+        let regNumber = Number(searchResult.maxID.split(".")[1]);
+        //HANDLING IF MAX ID IS NOT PRESENT
+        if (regNumber != 0) {
+          this.getPatientDetailsByMaxId(searchResult.maxID);
+        } else if (searchResult.phone != "") {
+          this.getSimilarPatientDetails(searchResult.phone);
+        }
+        // this.searchhotlisting(formdata.data);
+      });
+
+    this.patientformGroup.controls["maxid"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value == "") {
+          this.valueClear();
+          // this.reset();
+        }
+      });
+
+    this.patientformGroup.controls["mobile"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value == "") {
+          this.mobileClear();
+          // this.reset();
+          this.patientformGroup.controls["maxid"].setValue("", {
+            emitEvent: false,
+          });
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -217,41 +252,6 @@ export class LeftPanelComponent implements OnInit {
     } else {
       this.patientform[0].required = true;
     }
-
-    this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((formdata: any) => {
-        let searchResult = formdata.data;
-        let regNumber = Number(searchResult.maxID.split(".")[1]);
-        //HANDLING IF MAX ID IS NOT PRESENT
-        if (regNumber != 0) {
-          this.getPatientDetailsByMaxId(searchResult.maxID);
-        } else if (searchResult.phone != "") {
-          this.getSimilarPatientDetails(searchResult.phone);
-        }
-        // this.searchhotlisting(formdata.data);
-      });
-
-    this.patientformGroup.controls["maxid"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value == "") {
-          this.valueClear();
-          // this.reset();
-        }
-      });
-
-    this.patientformGroup.controls["mobile"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value == "") {
-          this.mobileClear();
-          // this.reset();
-          this.patientformGroup.controls["maxid"].setValue(
-           "",{emitEvent:false}
-          );
-        }
-      });
   }
 
   //AGE TYPE LIST
@@ -528,20 +528,19 @@ export class LeftPanelComponent implements OnInit {
   MarkasMaxIDChange() {
     this.maxIDSearch = true;
   }
-mobileClear(){
-  
-  this.patientformGroup.controls["mobile"].setValue("");
-  this.patientformGroup.controls["patientName"].setValue("");
-  this.patientformGroup.controls["patienAge"].setValue("");
-  this.patientformGroup.controls["ageType"].setValue("");
-  this.patientformGroup.controls["gender"].setValue("");
-  this.patientformGroup.controls["patienAddress"].setValue("");
-  this.patientform[1].readonly = false;
-  this.showInfoSection = false;
-  this.isRegPatient = false;
-  this.MaxIDExist = false;
- // this.maxId = this.patientformGroup.value.maxid;
-}
+  mobileClear() {
+    this.patientformGroup.controls["mobile"].setValue("");
+    this.patientformGroup.controls["patientName"].setValue("");
+    this.patientformGroup.controls["patienAge"].setValue("");
+    this.patientformGroup.controls["ageType"].setValue("");
+    this.patientformGroup.controls["gender"].setValue("");
+    this.patientformGroup.controls["patienAddress"].setValue("");
+    this.patientform[1].readonly = false;
+    this.showInfoSection = false;
+    this.isRegPatient = false;
+    this.MaxIDExist = false;
+    // this.maxId = this.patientformGroup.value.maxid;
+  }
   valueClear() {
     // if (this.maxId != this.patientformGroup.value.maxid) {
     //this.patientformGroup.controls["maxid"].setValue("");
@@ -785,7 +784,7 @@ mobileClear(){
       this.patientDetails?.gender //sexName
     );
     this.patientformGroup.controls["patienAge"].setValue(
-      this.patientDetails?.age + " " + this.patientDetails?.ageType +"/"
+      this.patientDetails?.age + " " + this.patientDetails?.ageType + "/"
     );
     this.patientformGroup.controls["ageType"].setValue(
       this.patientDetails?.ageType
@@ -880,8 +879,11 @@ mobileClear(){
               this.similarContactPatientList[0].maxid != ""
             ) {
               this.isRegPatient = true;
-              let ageData = this.similarContactPatientList[0].age + " " + 
-              this.similarContactPatientList[0].ageType +"/";
+              let ageData =
+                this.similarContactPatientList[0].age +
+                " " +
+                this.similarContactPatientList[0].ageType +
+                "/";
 
               this.patientformGroup.controls["maxid"].setValue(
                 this.similarContactPatientList[0].maxid
@@ -931,7 +933,8 @@ mobileClear(){
           let ageData =
             result.data["added"][0].age +
             " " +
-            result.data["added"][0].ageType + "/" ;
+            result.data["added"][0].ageType +
+            "/";
           this.patientformGroup.controls["maxid"].setValue(
             result.data["added"][0].maxid
           );
