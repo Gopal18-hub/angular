@@ -21,7 +21,7 @@
 
 ::ng-deep {
   .EPOrderDrugLineItem.animate__animated.animate__slideInRight {
-    height: 89% !important;
+    height: calc(100vh - 3.2rem) !important;
     h4 {
       margin: 0px 0 5px !important;
       font: normal normal bold 16px Proxima Nova;

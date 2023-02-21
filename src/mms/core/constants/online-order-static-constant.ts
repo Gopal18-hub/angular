@@ -32,7 +32,10 @@ export namespace OnlineOrderStaticConstants {
         title: "",
         type: "string",
         required: false,
-        isHideTitle: true,
+        pattern: "[A-Za-z]{1,4}[.][0-9]{0,10}",
+        onlyKeyPressAlpha: false,
+        capitalizeText: false,
+        label: "Max ID",
       },
       fromDate: {
         title: "From Date",
@@ -60,11 +63,11 @@ export namespace OnlineOrderStaticConstants {
             title: "Pending",
           },
           {
-            value: "3",
+            value: "2",
             title: "Dispensed",
           },
           {
-            value: "2",
+            value: "3",
             title: "Rejected",
           },
         ],
@@ -93,7 +96,6 @@ export namespace OnlineOrderStaticConstants {
       "visitDate",
       "mobileNo",
       "mrpValue",
-      "pha_Token",
       "viewP",
       "orderStatus",
       "remarks",
@@ -160,13 +162,6 @@ export namespace OnlineOrderStaticConstants {
         type: "number",
         style: {
           width: "5rem",
-        },
-      },
-      pha_Token: {
-        title: "Token No.",
-        type: "string",
-        style: {
-          width: "6rem",
         },
       },
       viewP: {

@@ -37,7 +37,6 @@ export class OpPharmacyEPOrderListComponent implements OnInit, OnDestroy {
       }
     });
     this.EPOrderService.updateDelete.subscribe((deldata: any) => {
-      
       this.dataEPOrder.splice(
         this.dataEPOrder.findIndex(
           (d: any) => d.orderId === deldata.data.orderId
@@ -103,7 +102,18 @@ export class OpPharmacyEPOrderListComponent implements OnInit, OnDestroy {
     }
   }
   exportAsExcel() {
-    this.listdataEPOrderTable.exportAsExcel();
+    if (this.dataEPOrder && this.dataEPOrder.length > 0) {
+      this.listdataEPOrderTable.exportAsExcel();
+    } else {
+      const popva = this.snackbarService.showSnackBar(
+        "No Record Found",
+        "error",
+        ""
+      );
+      setTimeout(() => {
+        this.snackbarService.closeSnackBar();
+      }, 1000 * 10); //  10 sec
+    }
   }
 
   rowRwmoveLineItems(event: any) {

@@ -105,7 +105,18 @@ export class OpPharmacyOnlineOrderListComponent implements OnInit, OnDestroy {
     }
   }
   exportAsExcel() {
-    this.listdataOnlineOrderTable.exportAsExcel();
+    if (this.dataOnlineOrder && this.dataOnlineOrder.length > 0) {
+      this.listdataOnlineOrderTable.exportAsExcel();
+    } else {
+      const popva = this.snackbarService.showSnackBar(
+        "No Record Found",
+        "error",
+        ""
+      );
+      setTimeout(() => {
+        this.snackbarService.closeSnackBar();
+      }, 1000 * 10); //  10 sec
+    }
   }
 
   rowRwmoveLineItems(event: any) {
