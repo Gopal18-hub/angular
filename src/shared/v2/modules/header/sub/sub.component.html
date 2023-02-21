@@ -1,7 +1,7 @@
 <div class="flex justify-between submodule-wrapper items-center">
   <div class="module-name ml-1">{{ module.title }}</div>
   <div class="mx-1"></div>
-    <form class="w-full " autocomplete="off">
+    <form class="w-full " autocomplete="off" [ngClass]="{'disabled': disableGlobalSearch }">
       <mat-form-field appearance="outline" class="menu-search mat-form-field-flex cursor-pointer">
         <!-- placeholder="Search Patient" -->
         <input
