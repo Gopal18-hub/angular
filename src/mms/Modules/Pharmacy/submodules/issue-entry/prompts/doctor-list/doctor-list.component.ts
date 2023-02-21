@@ -145,12 +145,15 @@ export class DoctorListComponent implements OnInit {
         this._bottomSheet.dismiss(this.doctorSelected);
       });
     }) },1000);
-    this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(
-    ).subscribe(value => {
-    this.doctorNameList= this.doctorList.filter((search:any)=>
+    this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(debounceTime(750),distinctUntilChanged()).subscribe((value:any) => {
+      if(value!=null && value!=""){
+      this.doctorNameList= this.doctorList.filter((search:any)=>
         search.name.includes(value)
       )
-    
+      }
+      else{
+        this.doctorNameList=this.doctorList.slice(0,100)
+      }
     });
   
   }
