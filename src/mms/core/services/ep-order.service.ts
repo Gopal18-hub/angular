@@ -136,6 +136,9 @@ export class EPOrderService {
             this.apiProcessing = false;
             if (error && error.error && typeof error.error == "string") {
               this.snackbarService.showSnackBar(error.error, "error", "");
+              setTimeout(() => {
+                this.snackbarService.closeSnackBar();
+              }, 1000 * 10); //  10 sec
             }
           }
         );
