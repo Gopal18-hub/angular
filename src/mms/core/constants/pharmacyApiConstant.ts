@@ -15,8 +15,8 @@ export namespace PharmacyApiConstants {
 
   // Online Order API Start
   export const onlineordersearch =
-    environment.PatientApiUrl + "api/patient/geteprescriptdrugorders_pharmacy";
+    environment.PatientApiUrl + "api/patient/getonlineorders_pharmacy";
   export const onlineorderdelete =
-    environment.BillingApiUrl + "api/outpatientbilling/deleteeporder";
+    environment.BillingApiUrl + "api/outpatientbilling/deleteonlinorder";
   // Online Order API End
 }

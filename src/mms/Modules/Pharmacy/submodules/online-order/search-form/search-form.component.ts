@@ -49,6 +49,7 @@ export class OpPharmacyOnlineOrderSearchFormComponent
   clear(): void {
     this.searchFormGroup.reset();
     this.setDefaultValue();
+    this.searchFormSubmit();
   }
   todayTemp: any;
   setDefaultValue(): void {
@@ -71,6 +72,10 @@ export class OpPharmacyOnlineOrderSearchFormComponent
       this.searchFormGroup.controls["value"].setValue(
         this.cookie.get("LocationIACode") + "."
       );
+      this.searchForm[1].pattern = "[A-Za-z]{1,4}[.][0-9]{0,10}";
+      this.searchForm[1].onlyKeyPressAlpha = false;
+      this.searchForm[1].capitalizeText = false;
+      this.searchForm[1].label = "Max ID";
     }
   }
 
@@ -96,12 +101,40 @@ export class OpPharmacyOnlineOrderSearchFormComponent
       }
 
       if (value == "maxid") {
+        this.searchForm[1].type = "string";
+        this.searchForm[1].pattern = "[A-Za-z]{1,4}[.][0-9]{0,10}";
+        this.searchForm[1].onlyKeyPressAlpha = false;
+        this.searchForm[1].capitalizeText = false;
+        this.searchForm[1].label = "Max ID";
         this.searchFormGroup.controls["value"].setValue(
           this.cookie.get("LocationIACode") + "."
         );
+      } else if (value == "mobile") {
+        this.searchForm[1].type = "tel";
+        this.searchForm[1].pattern = "^[1-9]{1}[0-9]{9}";
+        this.searchForm[1].onlyKeyPressAlpha = false;
+        this.searchForm[1].capitalizeText = false;
+        this.searchForm[1].label = "Mobile";
+        this.searchFormGroup.controls["value"].setValue("");
+      } else if (value == "name") {
+        this.searchForm[1].type = "string";
+        this.searchForm[1].pattern = "^[a-zA-Z '']*.?[a-zA-Z '']*$";
+        this.searchForm[1].onlyKeyPressAlpha = true;
+        this.searchForm[1].capitalizeText = true;
+        this.searchForm[1].label = "Name";
+        this.searchFormGroup.controls["value"].setValue("");
+      } else if (value == "doctor") {
+        this.searchForm[1].type = "string";
+        this.searchForm[1].pattern = "^[a-zA-Z '']*.?[a-zA-Z '']*$";
+        this.searchForm[1].onlyKeyPressAlpha = true;
+        this.searchForm[1].capitalizeText = true;
+        this.searchForm[1].label = "Doctor";
+        this.searchFormGroup.controls["value"].setValue("");
       } else {
         this.searchFormGroup.controls["value"].setValue("");
       }
+      this.searchForm = [...this.searchForm];
+      this.searchFormGroup.controls["value"].markAsUntouched();
     });
 
     this.searchFormGroup.controls["orderStatus"].valueChanges.subscribe(
@@ -116,25 +149,18 @@ export class OpPharmacyOnlineOrderSearchFormComponent
   }
 
   searchFormSubmit() {
-    // var fdate = new Date(this.searchFormGroup.controls["fromDate"].value);
-    // var tdate = new Date(this.searchFormGroup.controls["toDate"].value);
-    // var dif_in_time = tdate.getTime() - fdate.getTime();
-    // var dif_in_days = dif_in_time / (1000 * 3600 * 24);
-    // if (dif_in_days < 30) {
-    this.OnlineOrderService.pageIndex = 0;
-    this.OnlineOrderService.lastOrderID = 0;
-    this.OnlineOrderService.searchFormData =
-      this.searchFormDetailsRequestBody();
-    this.OnlineOrderService.getOnlineOrderSearchData(
-      this.OnlineOrderService.searchFormData
-    );
-    // } else {
-    //   this.snackbarService.showSnackBar(
-    //     "Can not process requests for more than 30 Days, Please select the dates accordingly.",
-    //     "error",
-    //     ""
-    //   );
-    // }
+    console.log("this.searchFormGroup", this.searchFormGroup);
+    if (this.searchFormGroup && this.searchFormGroup.valid) {
+      this.OnlineOrderService.pageIndex = 0;
+      this.OnlineOrderService.lastOrderID = 0;
+      this.OnlineOrderService.searchFormData =
+        this.searchFormDetailsRequestBody();
+      this.OnlineOrderService.getOnlineOrderSearchData(
+        this.OnlineOrderService.searchFormData
+      );
+    } else {
+      this.searchFormGroup.markAsTouched();
+    }
   }
 
   searchFormDetailsRequestBody(): string {

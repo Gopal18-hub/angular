@@ -32,7 +32,10 @@ export namespace EPOrderStaticConstants {
         title: "",
         type: "string",
         required: false,
-        isHideTitle: true,
+        pattern: "[A-Za-z]{1,4}[.][0-9]{0,10}",
+        onlyKeyPressAlpha: false,
+        capitalizeText: false,
+        label: "Max ID",
       },
       fromDate: {
         title: "From Date",

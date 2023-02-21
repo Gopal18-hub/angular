@@ -47,6 +47,7 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
   clear(): void {
     this.searchFormGroup.reset();
     this.setDefaultValue();
+    this.searchFormSubmit();
   }
   todayTemp: any;
   setDefaultValue(): void {
@@ -69,10 +70,10 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
       this.searchFormGroup.controls["value"].setValue(
         this.cookie.get("LocationIACode") + "."
       );
-      this.searchForm[1].pattern = "";
+      this.searchForm[1].pattern = "[A-Za-z]{1,4}[.][0-9]{0,10}";
       this.searchForm[1].onlyKeyPressAlpha = false;
       this.searchForm[1].capitalizeText = false;
-      this.searchForm[1].label = "";
+      this.searchForm[1].label = "Max ID";
     }
   }
 
@@ -99,10 +100,10 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
 
       if (value == "maxid") {
         this.searchForm[1].type = "string";
-        this.searchForm[1].pattern = "";
+        this.searchForm[1].pattern = "[A-Za-z]{1,4}[.][0-9]{0,10}";
         this.searchForm[1].onlyKeyPressAlpha = false;
         this.searchForm[1].capitalizeText = false;
-        this.searchForm[1].label = "";
+        this.searchForm[1].label = "Max ID";
         this.searchFormGroup.controls["value"].setValue(
           this.cookie.get("LocationIACode") + "."
         );
@@ -131,7 +132,7 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
         this.searchFormGroup.controls["value"].setValue("");
       }
       this.searchForm = [...this.searchForm];
-      this.searchFormGroup.controls["value"].markAsTouched();
+      this.searchFormGroup.controls["value"].markAsUntouched();
     });
 
     this.searchFormGroup.controls["orderStatus"].valueChanges.subscribe(
@@ -146,24 +147,16 @@ export class OpPharmacyEPOrderSearchFormComponent implements OnInit, OnDestroy {
   }
 
   searchFormSubmit() {
-    // var fdate = new Date(this.searchFormGroup.controls["fromDate"].value);
-    // var tdate = new Date(this.searchFormGroup.controls["toDate"].value);
-    // var dif_in_time = tdate.getTime() - fdate.getTime();
-    // var dif_in_days = dif_in_time / (1000 * 3600 * 24);
-    // if (dif_in_days < 30) {
-    this.EPOrderService.pageIndex = 0;
-    this.EPOrderService.lastOrderID = 0;
-    this.EPOrderService.searchFormData = this.searchFormDetailsRequestBody();
-    this.EPOrderService.getEPOrderSearchData(
-      this.EPOrderService.searchFormData
-    );
-    // } else {
-    //   this.snackbarService.showSnackBar(
-    //     "Can not process requests for more than 30 Days, Please select the dates accordingly.",
-    //     "error",
-    //     ""
-    //   );
-    // }
+    if (this.searchFormGroup && this.searchFormGroup.valid) {
+      this.EPOrderService.pageIndex = 0;
+      this.EPOrderService.lastOrderID = 0;
+      this.EPOrderService.searchFormData = this.searchFormDetailsRequestBody();
+      this.EPOrderService.getEPOrderSearchData(
+        this.EPOrderService.searchFormData
+      );
+    } else {
+      this.searchFormGroup.markAsTouched();
+    }
   }
 
   searchFormDetailsRequestBody(): string {
