@@ -38,7 +38,7 @@
           <maxhealth-question class="w-1/45" [question]="patientform[0]" [form]="patientformGroup"
             [questions]="patientform[0]" [index]="0" (valueClear)="valueClear()"></maxhealth-question>
           <maxhealth-question class="w-1/2 ml-5" [question]="patientform[1]" [form]="patientformGroup"
-            [questions]="patientform[1]" [index]="1" (valueClear)="valueClear()">
+            [questions]="patientform[1]" [index]="1" (mobileClear)="mobileClear()">
           </maxhealth-question>
         </div>
         <div *ngIf="!isRegPatient || showInfoSection" class="my-1"></div>
