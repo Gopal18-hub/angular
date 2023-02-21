@@ -148,7 +148,7 @@ export class DoctorListComponent implements OnInit {
     this.doctorformGroup.controls["searchDoctor"].valueChanges.pipe(debounceTime(750),distinctUntilChanged()).subscribe((value:any) => {
       if(value!=null && value!=""){
       this.doctorNameList= this.doctorList.filter((search:any)=>
-        search.name.includes(value)
+        search.name.toLowerCase().includes(value.toLowerCase())
       )
       }
       else{
