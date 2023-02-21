@@ -933,9 +933,21 @@ export class LeftPanelComponent implements OnInit {
             " " +
             result.data["added"][0].ageType +
             "/";
+            let maxId;
+            if(result.data["added"][0].maxid==''||result.data["added"][0].maxid==null){
+              this.patientformGroup.controls["maxid"].setValue(
+                "",{emitEvent:false}
+               );
+            }
+            else{
+              maxId=result.data["added"][0].maxid
+            }
           this.patientformGroup.controls["maxid"].setValue(
-            result.data["added"][0].maxid
+            maxId
           );
+          // this.patientformGroup.controls["maxid"].setValue(
+          //   result.data["added"][0].maxid
+          // );
           this.patientformGroup.controls["gender"].setValue(
             result.data["added"][0].gender
           );
