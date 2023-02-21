@@ -1,0 +1,38 @@
+.op-pharmacy-online-order {
+  --lbelow-1000-color: #ffffff;
+  --l1000-2000-color: #f9fca6;
+  --l2000-4000-color: #ffd194;
+  --labove-4000-color: #ff9494;
+  div.flex.w-full.bg-secondary {
+    overflow: auto;
+  }
+  .max-body-wrapper {
+    height: calc(100vh - 4.3rem);
+  }
+  ::ng-deep {
+    h4 {
+      margin: 0px 0 8px;
+      font: normal normal bold 16px Proxima Nova;
+      letter-spacing: 0.48px;
+      color: #004084;
+    }
+  }
+}
+
+::ng-deep {
+  .OnlineOrderDrugLineItem.animate__animated.animate__slideInRight {
+    height: 89% !important;
+    h4 {
+      margin: 0px 0 5px !important;
+      font: normal normal bold 16px Proxima Nova;
+      letter-spacing: 0.48px;
+      color: #004084;
+    }
+    .color-block {
+      color: #000000;
+    }
+    .label-left-inline{
+      font-weight: 500;
+    }
+  }
+}

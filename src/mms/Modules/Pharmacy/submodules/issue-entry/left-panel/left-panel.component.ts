@@ -47,7 +47,7 @@ export class LeftPanelComponent implements OnInit {
         type: "string",
         required: true,
         defaultValue: this.cookie.get("LocationIACode") + ".", //MaxHealthStorage.getCookie("LocationIACode") + ".",
-        // pattern: "^[a-zA-Z '']*.?[a-zA-Z '']*$",
+        pattern: "[A-Za-z]+\\.[0-9]+",
       },
       mobile: {
         //1
@@ -237,6 +237,16 @@ export class LeftPanelComponent implements OnInit {
       .subscribe((value: any) => {
         if (value == "") {
           this.valueClear();
+          // this.reset();
+        }
+      });
+
+    this.patientformGroup.controls["mobile"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value == "") {
+          this.valueClear();
+          // this.reset();
         }
       });
   }
@@ -467,8 +477,9 @@ export class LeftPanelComponent implements OnInit {
         // If the user presses the "Enter" key on the keyboard
         if (event.key === "Enter") {
           // Cancel the default action, if needed
-          event.preventDefault();
+          // event.preventDefault();
           this.maxIDSearch = true;
+          this.patientformGroup.controls["maxid"].markAsTouched();
           if (this.maxId != this.patientformGroup.value.maxid)
             this.getPatientDetailsByMaxId(this.patientformGroup.value.maxid);
         }
@@ -499,6 +510,7 @@ export class LeftPanelComponent implements OnInit {
         if (event.key === "Enter") {
           // Cancel the default action, if needed
           event.preventDefault();
+          this.patientformGroup.controls["mobile"].markAsTouched();
           this.onEnterPhoneModify();
         }
       }
@@ -525,12 +537,14 @@ export class LeftPanelComponent implements OnInit {
     this.patientformGroup.controls["patienAddress"].setValue("");
     this.patientform[1].readonly = false;
     this.showInfoSection = false;
+    this.isRegPatient = false;
     this.MaxIDExist = false;
     this.maxId = this.patientformGroup.value.maxid;
     this.mobile = this.patientformGroup.value.mobile;
-    this.patientformGroup.controls["maxid"].setValue(
-      this.cookie.get("LocationIACode") + "."
-    );
+    // this.patientformGroup.controls["maxid"].setValue("");
+    // this.patientformGroup.controls["maxid"].setValue(
+    //   this.cookie.get("LocationIACode") + "."
+    // );
     // }
   }
   onMaxIDChange() {
@@ -556,7 +570,7 @@ export class LeftPanelComponent implements OnInit {
     //let regNumber = Number(this.patientformGroup.value.maxid.split(".")[1]);
     let regNumber = Number(maxId.split(".")[1]);
 
-    let iaCode = this.cookie.get("LocationIACode") + ".";
+    // let iaCode = maxId.split(".")[0].trim();
     // maxId.search(iaCode) != -1 &&
     //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
@@ -627,21 +641,23 @@ export class LeftPanelComponent implements OnInit {
                       this.patientDetails.bplCardNo;
                     this.issueEntryService.addressonCard =
                       this.patientDetails.addressOnCard;
-                    this._matSnackBar.openFromComponent(
-                      EwspatientPopupComponent,
-                      {
-                        data: {
-                          // message: message,
-                          // actionOne: { name: actionBtnOne, class: "btn-primary" },
-                          // actionTwo: { name: actionBtnTwo, class: "" },
-                          // onActionCB: callBack,
-                          // isSingleLine: true,
-                          // showCloseIcon,
-                        },
-                        panelClass: "info",
-                        // ...this.defaultSBOptions,
-                      }
-                    );
+                    if (this.isEWSPatient) {
+                      this._matSnackBar.openFromComponent(
+                        EwspatientPopupComponent,
+                        {
+                          data: {
+                            // message: message,
+                            // actionOne: { name: actionBtnOne, class: "btn-primary" },
+                            // actionTwo: { name: actionBtnTwo, class: "" },
+                            // onActionCB: callBack,
+                            // isSingleLine: true,
+                            // showCloseIcon,
+                          },
+                          panelClass: "info",
+                          // ...this.defaultSBOptions,
+                        }
+                      );
+                    }
                   } else if (icon.tooltip === "CGHS") {
                     this.isCGHSPatient = true;
                   }
@@ -650,11 +666,19 @@ export class LeftPanelComponent implements OnInit {
                 this.showInfoSection = false;
               }
 
-              // if (this.patientDetails.dueAmount == 0) {
-              //   this.showDueAmountPopup();
-              //   this.issueEntryService.dueAmount =
-              //     this.patientDetails.dueAmount;
-              // }
+              if (this.patientDetails.dueAmount != 0) {
+                // this.showDueAmountPopup();
+                this.issueEntryService.dueAmount =
+                  this.patientDetails.dueAmount;
+                this._bottomSheet
+                  .open(PatientDuePopupComponent, {
+                    panelClass: "custom-width",
+                  })
+                  .afterDismissed()
+                  .subscribe((response) => {
+                    // console.log("due-response", response);
+                  });
+              }
               this.MaxIDExist = true;
               //RESOPONSE DATA BINDING WITH CONTROLS
               this.setValuesToOPRegForm(this.patientDetails);
@@ -684,6 +708,7 @@ export class LeftPanelComponent implements OnInit {
               this.patientform[0].customErrorMessage = "Invalid Max ID";
               this.patientform[1].readonly = false;
             }
+            this.valueClear();
             //this.clear();
             // this.maxIDChangeCall = false;
           }
@@ -694,6 +719,7 @@ export class LeftPanelComponent implements OnInit {
       this.patientformGroup.controls["maxid"].setErrors({
         incorrect: true,
       });
+      this.valueClear();
       this.patientform[0].customErrorMessage = "Invalid Max ID";
       this.flushAllObjects();
     }
@@ -915,16 +941,7 @@ export class LeftPanelComponent implements OnInit {
       });
   }
 
-  showDueAmountPopup() {
-    this._bottomSheet
-      .open(PatientDuePopupComponent, {
-        panelClass: "custom-width",
-      })
-      .afterDismissed()
-      .subscribe((response) => {
-        console.log("due-response", response);
-      });
-  }
+  showDueAmountPopup() {}
   showDoctorDetails() {
     this._bottomSheet
       .open(DoctorListComponent, {

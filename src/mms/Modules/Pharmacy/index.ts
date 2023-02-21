@@ -45,6 +45,10 @@ import { EPOrderComponent } from "./submodules/ep-order/ep-order.component";
 import { OpPharmacyEPOrderListComponent } from "./submodules/ep-order/list/list.component";
 import { OpPharmacyEPOrderSearchFormComponent } from "./submodules/ep-order/search-form/search-form.component";
 import { OpPharmacyEPOrderDrugLineItemComponent } from "./submodules/ep-order/list/drug-line-item/drug-line-item.component";
+import { OnlineOrderComponent } from "./submodules/online-order/online-order.component";
+import { OpPharmacyOnlineOrderListComponent } from "./submodules/online-order/list/list.component";
+import { OpPharmacyOnlineOrderSearchFormComponent } from "./submodules/online-order/search-form/search-form.component";
+import { OpPharmacyOnlineOrderDrugLineItemComponent } from "./submodules/online-order/list/drug-line-item/drug-line-item.component";
 // import { SsrsPreviewComponent } from "./submodules/ssrs-preview/ssrs-preview.component";
 
 // import { WebSocketService } from "../../core/services/web-socket.service";
@@ -68,6 +72,11 @@ import { OpPharmacyEPOrderDrugLineItemComponent } from "./submodules/ep-order/li
     OpPharmacyEPOrderListComponent,
     OpPharmacyEPOrderSearchFormComponent,
     OpPharmacyEPOrderDrugLineItemComponent,
+
+    OnlineOrderComponent,
+    OpPharmacyOnlineOrderListComponent,
+    OpPharmacyOnlineOrderSearchFormComponent,
+    OpPharmacyOnlineOrderDrugLineItemComponent,
   ],
   imports: [
     PharmacyRoutingModule,

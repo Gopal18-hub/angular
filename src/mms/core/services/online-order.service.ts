@@ -2,36 +2,34 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { PharmacyApiConstants } from "../constants/pharmacyApiConstant";
 import { takeUntil } from "rxjs/operators";
-import { EPOrderStaticConstants } from "../constants/ep-order-static-constant";
+import { OnlineOrderStaticConstants } from "../constants/online-order-static-constant";
 import { SnackBarService } from "@shared/v2/ui/snack-bar/snack-bar.service";
 import { HttpService } from "@shared/v2/services/http.service";
-import { DatePipe } from "@angular/common";
 @Injectable({
   providedIn: "root",
 })
-export class EPOrderService {
+export class OnlineOrderService {
   private readonly _destroying$ = new Subject<void>();
   searchFormData: any;
   updateFormData = new Subject<boolean>();
-  dataEPOrder: any = [];
-  dataEPOrderHeader_Pharm: any = [];
+  dataOnlineOrder: any = [];
+  dataOnlineOrderHeader_Pharm: any = [];
   pageIndex: number = 0;
   lastOrderID: number = 0;
   preOrderID: number = 1;
   apiProcessing: boolean = false;
   pageSize: number =
-    EPOrderStaticConstants.linedataEPOrderconfig.paginationPageSize;
-  dataEPOrderDrugLine: any = [];
+    OnlineOrderStaticConstants.linedataOnlineOrderconfig.paginationPageSize;
+  dataOnlineOrderDrugLine: any = [];
   clearAll = new Subject<boolean>();
   updateAll = new Subject<boolean>();
   updateDelete = new Subject<boolean>();
-  changeEventEPOrderDetails = new Subject<boolean>();
+  changeEventOnlineOrderDetails = new Subject<boolean>();
   firstTimeCall: boolean = true;
 
   constructor(
     private http: HttpService,
-    public snackbarService: SnackBarService,
-    public datepipe: DatePipe
+    public snackbarService: SnackBarService
   ) {}
 
   ngOnInit() {}
@@ -39,21 +37,19 @@ export class EPOrderService {
   clear() {
     this.clearAll.next(true);
   }
-  deleteEPOrder(data: any) {
+  deleteOnlineOrder(data: any) {
     if (data && data.index > -1 && data.data && data.data.orderId) {
       this.http
         .get(
-          PharmacyApiConstants.eporderdelete +
+          PharmacyApiConstants.onlineorderdelete +
             "/?OrderId=" +
-            data.data.orderId +
-            "&datetime=" +
-            this.datepipe.transform(new Date(), "dd/MM/yyyy HH:mm:ss")
+            data.data.orderId
         )
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {
-            this.dataEPOrder.splice(
-              this.dataEPOrder.findIndex(
+            this.dataOnlineOrder.splice(
+              this.dataOnlineOrder.findIndex(
                 (d: any) => d.orderId === data.data.orderId
               ),
               1
@@ -69,28 +65,7 @@ export class EPOrderService {
     }
   }
 
-  getEPOrderDetails(data: string) {
-    this.http
-      .get(PharmacyApiConstants.eporderdetails + data)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData) => {
-        this.dataEPOrderDrugLine = resultData.physicianOrderDetail;
-        this.mapListDataEPOrderDrugLine();
-        //this.changeEventEPOrderDetails.next(true);
-      });
-  }
-
-  mapListDataEPOrderDrugLine() {
-    this.dataEPOrderDrugLine.forEach((item: any, i: any) => {
-      item.sno = i + 1;
-      if (item.drugid == 0) {
-        this.dataEPOrderDrugLine.splice(i, 1);
-      }
-    });
-    this.changeEventEPOrderDetails.next(true);
-  }
-
-  getEPOrderSearchData(data: string) {
+  getOnlineOrderSearchData(data: string) {
     if (this.preOrderID != this.lastOrderID) {
       if (this.lastOrderID != 0) {
         this.preOrderID = this.lastOrderID;
@@ -104,7 +79,7 @@ export class EPOrderService {
         req = data + "&LastOrderId=" + this.lastOrderID;
       }
       this.http
-        .get(PharmacyApiConstants.epordersearch + req)
+        .get(PharmacyApiConstants.onlineordersearch + req)
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {
@@ -112,19 +87,20 @@ export class EPOrderService {
             if (this.pageIndex > 0) {
               if (resultData.objOrderDetails_Pharm) {
                 resultData.objOrderDetails_Pharm.forEach((item: any) => {
-                  this.dataEPOrder.push(item);
+                  this.dataOnlineOrder.push(item);
                 });
               }
               if (resultData.objOrderHeader_Pharm) {
                 resultData.objOrderHeader_Pharm.forEach((item: any) => {
-                  this.dataEPOrderHeader_Pharm.push(item);
+                  this.dataOnlineOrderHeader_Pharm.push(item);
                 });
               }
             } else {
-              this.dataEPOrder = resultData.objOrderDetails_Pharm;
-              this.dataEPOrderHeader_Pharm = resultData.objOrderHeader_Pharm;
+              this.dataOnlineOrder = resultData.objOrderDetails_Pharm;
+              this.dataOnlineOrderHeader_Pharm =
+                resultData.objOrderHeader_Pharm;
             }
-            this.mapListDataEPOrder();
+            this.mapListDataOnlineOrder();
             if (resultData.objOrderDetails_Pharm.length > 0) {
               this.lastOrderID =
                 resultData.objOrderDetails_Pharm[
@@ -141,14 +117,14 @@ export class EPOrderService {
         );
     } else {
       setTimeout(() => {
-        this.getEPOrderSearchData(data);
+        this.getOnlineOrderSearchData(data);
       }, 1000);
     }
   }
 
-  mapListDataEPOrder() {
-    if (this.dataEPOrder) {
-      this.dataEPOrder.forEach((item: any) => {
+  mapListDataOnlineOrder() {
+    if (this.dataOnlineOrder) {
+      this.dataOnlineOrder.forEach((item: any) => {
         if (item.mrpValue !== "" && item.mrpValue !== undefined)
           item.mrpValue = Number(item.mrpValue).toFixed(2);
 
@@ -161,23 +137,23 @@ export class EPOrderService {
         } else {
           item.markLegends = "labove-4000";
         }
-        item.viewEP = "View";
+        item.viewP = "View";
         // Hide Remove Row
         if (item.orderStatus === "Rejected") {
           item.removeRowHide = true;
         }
-        item.detailsList = this.dataEPOrderHeader_Pharm.filter(
+        item.detailsList = this.dataOnlineOrderHeader_Pharm.filter(
           (x: any) => x.orderid === item.orderId
         );
         item.detailsList.forEach((item: any, i: any) => {
           item.sno = i + 1;
           if (item.drugid == 0) {
-            this.dataEPOrderDrugLine.splice(i, 1);
+            this.dataOnlineOrderDrugLine.splice(i, 1);
           }
         });
       });
     }
-    this.dataEPOrder.sort(function (a: any, b: any) {
+    this.dataOnlineOrder.sort(function (a: any, b: any) {
       return b.orderId - a.orderId;
     });
     this.updateAll.next(true);

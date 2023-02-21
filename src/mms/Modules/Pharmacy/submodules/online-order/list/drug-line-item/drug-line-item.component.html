@@ -1,0 +1,57 @@
+<div
+  class="relative max-health-primary-color max-op-pharmacy-OnlineOrder-drug-line-item"
+>
+  <div class="flex w-full">
+    <div class="w-1/2">
+      <h4 class="max-health-primary-color">Order Details</h4>
+    </div>
+    <div class="w-1/2 text-right">
+      <button
+        mat-icon-button
+        (click)="close()"
+        aria-label="close dialog"
+        mat-dialog-close
+        class="absolute max-dialog-close-icon"
+        type="button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="flex w-full">
+    <div class="">
+      <mat-label class="label-left-inline">Max ID</mat-label>
+      <mat-label class="ml-2 color-block">{{ data?.maxid }}</mat-label>
+      <mat-label class="ml-3 label-left-inline">Name</mat-label>
+      <mat-label class="ml-2 color-block">{{ data?.ptnName }}</mat-label>
+    </div>
+  </div>
+  <div class="flex w-full mx-table">
+    <div class="h-table online-order-table">
+      <ng-container class="w-full">
+        <maxhealth-table
+          class=""
+          [config]="linedataOnlineOrderDrugLineconfig"
+          [data]="dataOnlineOrderDrugLine"
+          #drugLineItemdataOnlineOrderDrugLineTable
+        ></maxhealth-table>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="flex mt-3 w-full align-items-center">
+    <div class="w-full text-right">
+      <button disabled mat-raised-button color="primary" (click)="onCreateBill()" class="w-1/45" type="button">
+        Create Bill
+      </button>
+      <!-- <button
+        mat-raised-button
+        color="default"
+        class="w-1/45 ml-2"
+        type="button"
+      >
+        Print
+      </button> -->
+    </div>
+  </div>
+</div>
