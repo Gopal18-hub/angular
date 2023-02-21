@@ -206,7 +206,6 @@ export class LeftPanelComponent implements OnInit {
       .subscribe((value: any) => {
         if (value == "") {
           this.valueClear();
-          // this.reset();
         }
       });
 
@@ -215,7 +214,6 @@ export class LeftPanelComponent implements OnInit {
       .subscribe((value: any) => {
         if (value == "") {
           this.mobileClear();
-          // this.reset();
           this.patientformGroup.controls["maxid"].setValue("", {
             emitEvent: false,
           });

@@ -64,6 +64,7 @@ export class SubComponent implements OnInit, OnChanges {
   leftIndex = 0;
   rightIndex = 3;
   private readonly _destroying$ = new Subject<void>();
+  disableGlobalSearch: Boolean = false;
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
     this.router.navigate(["/registration"]);
@@ -120,6 +121,10 @@ export class SubComponent implements OnInit, OnChanges {
     }
   }
   processSubModule() {
+    const disableURL = ["/mms/pharmacy/ep-order", "/mms/pharmacy/online-order"];
+    this.disableGlobalSearch =
+      disableURL.indexOf(window.location.pathname) > -1;
+
     if (!this.submodules) {
       this.submodules = [];
     }
